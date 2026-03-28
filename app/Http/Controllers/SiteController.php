@@ -1,0 +1,184 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Course;
+use App\Models\Sector;
+use App\Models\Event; // Importante: garante que o Model de Eventos seja reconhecido
+use App\Models\Document;
+use App\Models\Teacher;
+
+class SiteController extends Controller
+{
+
+    public function sector($slug)
+    {
+        $sector = \App\Models\Sector::where('slug', $slug)->firstOrFail();
+        return view('pages.sector', compact('sector'));
+    }
+
+    public function index()
+    {
+        // 1. Buscamos as UNIDADES e contamos quantos cursos cada uma tem
+        $units = \App\Models\Unit::withCount('courses')->get();
+
+        // 2. Buscamos eventos (se houver) para o calendário
+        $nextEvents = \App\Models\Event::where('start_date', '>=', now())
+            ->orderBy('start_date')
+            ->take(3)
+            ->get();
+
+        // 3. Enviamos para a tela 'welcome'
+        return view('welcome', compact('units', 'nextEvents'));
+    }
+
+    public function unit($id)
+    {
+        // PÁGINA INTERNA: Carrega a unidade, o coordenador e os cursos dela
+        $unit = \App\Models\Unit::with(['courses', 'coordinator'])->findOrFail($id);
+
+        return view('pages.unit', compact('unit'));
+    }
+
+
+    public function home()
+    {
+        // 1. Busca os setores (Escola Fazenda)
+        $sectors = Sector::all();
+
+        // 2. Busca os cursos para a variável $featuredCourses que deu erro
+        // Se não tiver cursos no banco, retorna uma lista vazia para não quebrar
+        //$featuredCourses = Course::take(3)->get();
+        //$featuredCourses = Course::orderBy('title', 'asc')->get();
+        $featuredCourses = Course::all();
+
+        // 3. Busca os próximos eventos (se a tabela events existir)
+        // Se você ainda não criou a tabela de eventos, pode comentar estas linhas abaixo:
+        try {
+            $nextEvents = Event::where('start_date', '>=', now())
+                ->orderBy('start_date', 'asc')
+                ->take(2)
+                ->get();
+        } catch (\Exception $e) {
+            $nextEvents = []; // Retorna vazio se der erro no banco
+        }
+
+        // 4. Envia TUDO para a view 'home'
+        return view('home', compact('sectors', 'featuredCourses', 'nextEvents'));
+    }
+
+    public function secretariat()
+    {
+        // Agrupa os documentos por categoria para facilitar a exibição
+        $documents = Document::all()->groupBy('category');
+        return view('pages.secretariat', compact('documents'));
+    }
+
+    public function contact()
+    {
+        return view('pages.contact');
+    }
+
+
+    public function administrative()
+    {
+        // 1. Busca o Superintendente (NOVO)
+        $superintendent = \App\Models\Teacher::where('role', 'Superintendente')->first();
+
+        // 2. Busca a Diretora de Serviços (Mantido)
+        $director = \App\Models\Teacher::where('role', 'Diretora de Serviços Administrativos')->first();
+
+        // 3. Busca a Equipe (Mantido)
+        $staff = \App\Models\Teacher::whereIn('role', ['Agente Administrativo', 'Assistente de RH', 'Auxiliar Financeiro'])->get();
+
+        // 4. Busca Downloads e Links (Mantido)
+        $downloads = \App\Models\Document::where('category', 'Administrativo')->get();
+        $links = [ /* ... seus links já existentes ... */];
+
+        // NÃO ESQUEÇA DE ADICIONAR 'superintendent' NO COMPACT
+        return view('pages.administrative', compact('superintendent', 'director', 'staff', 'links', 'downloads'));
+    }
+    // Certifique-se de ter: use App\Models\Teacher; no topo
+
+    public function institutional()
+    {
+        // Tenta encontrar o Superintendente ou Diretor
+        $direcaoGeral = Teacher::where('role', 'like', '%Superintendente%')
+            ->orWhere('role', 'like', '%Diretor de Escola%')
+            ->first();
+
+        // Pega os outros departamentos
+        $departamentos = Teacher::where('role', 'not like', '%Superintendente%')
+            ->where('role', 'not like', '%Diretor de Escola%')
+            ->get();
+
+        // Envia para a view
+        return view('pages.institutional', compact('direcaoGeral', 'departamentos'));
+    }
+
+
+    // ... dentro da classe SiteController ...
+
+    public function agenda()
+    {
+        // Busca eventos futuros, ordenados por data
+        // O 'get()->groupBy...' agrupa os resultados pelo mês/ano (ex: "03/2026")
+        $events = Event::where('start_date', '>=', now()->startOfDay())
+            ->orderBy('start_date', 'asc')
+            ->get()
+            ->groupBy(function ($date) {
+                return \Carbon\Carbon::parse($date->start_date)->format('m/Y');
+            });
+
+        return view('pages.agenda', compact('events'));
+    }
+
+    public function show($slug)
+    {
+        // Busca o curso pelo "apelido" (slug) no banco de dados
+        // Se não achar, mostra erro 404 automaticamente
+        $course = \App\Models\Course::where('slug', $slug)->firstOrFail();
+
+        // Carrega a visualização de detalhes
+        return view('pages.course-detail', compact('course'));
+    }
+
+    public function courses()
+    {
+        // Busca todas as unidades que possuem cursos, trazendo junto os cursos e o coordenador
+        $units = \App\Models\Unit::with(['courses', 'coordinator'])
+            ->has('courses') // Só mostra escola que tem curso
+            ->get();
+
+        return view('pages.courses-list', compact('units'));
+    }
+
+    public function library()
+    {
+        // Busca apenas os documentos da categoria Biblioteca
+        $documents = \App\Models\Document::where('category', 'Biblioteca')->get();
+        return view('pages.library', compact('documents'));
+    }
+
+    public function academic()
+    {
+        // 1. Busca a Equipe
+        $director = \App\Models\Teacher::where('role', 'Diretora de Secretaria Acadêmica')->first();
+        $staff = \App\Models\Teacher::where('role', 'Agente Técnico e Administrativo')->get();
+
+        // 2. Busca os Downloads da categoria 'Secretaria'
+        $downloads = \App\Models\Document::where('category', 'Secretaria')->get();
+
+        // 3. Links Úteis para Alunos
+        $links = [
+            ['name' => 'NSA Online', 'desc' => 'Notas e Frequência', 'url' => 'https://nsa.cps.sp.gov.br/', 'icon' => '🎓'],
+            ['name' => 'Vestibulinho Etec', 'desc' => 'Inscrições e Provas', 'url' => 'https://www.vestibulinhoetec.com.br/', 'icon' => '📝'],
+            ['name' => 'Email Institucional', 'desc' => 'Acesso ao Teams/Email', 'url' => 'http://mail.etec.sp.gov.br/', 'icon' => '📧'],
+            ['name' => 'Carteirinha Digital', 'desc' => 'Documento do Estudante', 'url' => '#', 'icon' => '🆔'],
+            ['name' => 'Calendário Escolar', 'desc' => 'Datas Importantes', 'url' => '#', 'icon' => '📅'],
+        ];
+
+        return view('pages.academic', compact('director', 'staff', 'links', 'downloads'));
+    }
+}

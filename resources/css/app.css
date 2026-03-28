@@ -1,0 +1,28 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+/* Configuração do Tema (Paleta Etec) */
+@theme {
+    /* Define as cores personalizadas como variáveis CSS nativas */
+    /* O Tailwind v4 detecta isso e cria as classes bg-etec-dark, text-etec-accent, etc. */
+
+    --color-etec-dark: #1B4D3E;   /* Verde Institucional */
+    --color-etec-medium: #2E7D32; /* Verde Ação */
+    --color-etec-light: #F1F8E9;  /* Fundo Claro */
+    --color-etec-accent: #D4A017; /* Dourado/Terra */
+
+    /* Fonte padrão */
+    --font-sans: 'Figtree', sans-serif;
+}
+
+/* Seus estilos personalizados extras, se houver */
+/* Estilos globais para suavidade */
+body {
+    background-color: var(--color-gray-50);
+    color: var(--color-gray-800);
+    -webkit-font-smoothing: antialiased;
+}
