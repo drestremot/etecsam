@@ -31,7 +31,6 @@
                 </div>
             </a>
 
-
             <nav class="hidden md:flex gap-6 font-medium text-sm">
                 <a href="{{ route('home') }}" class="text-etec-dark hover:text-etec-main">Início</a>
                 <a href="{{ route('institutional') }}" class="hover:text-etec-accent transition">A Escola</a>
@@ -39,7 +38,7 @@
                 <a href="{{ route('home') }}#cursos" class="hover:text-etec-accent transition">Cursos</a>
                 <a href="{{ route('home') }}#fazenda" class="hover:text-etec-accent transition">Escola Fazenda</a>
                 <a href="{{ route('academic') }}" class="hover:text-etec-accent transition">Secretaria</a>
-               <a href="{{ route('administrative') }}" class="hover:text-etec-accent transition">Diretoria de Serviços</a>
+                <a href="{{ route('administrative') }}" class="hover:text-etec-accent transition">Diretoria de Serviços</a>
                 <a href="{{ route('contact') }}" class="hover:text-etec-accent transition">Contato</a>
                 <a href="{{ route('agenda') }}" class="hover:text-etec-accent transition">Agenda</a>
 
@@ -49,7 +48,6 @@
                     <img src="{{ asset('imagens/logo/logo-cps-2022.svg') }}" alt="Centro Paula Souza"
                         class="h-20 md:h-20 w-auto transition transform group-hover:scale-105">
                 </div>
-
             </nav>
         </div>
     </header>
@@ -78,16 +76,14 @@
             <div>
                 <h3 class="text-lg font-bold mb-4 border-b border-etec-main pb-2 inline-block">Localização</h3>
                 <p class="text-sm text-gray-300 mb-2">Estrada Vicinal, Km 5 - Andradina/SP</p>
-                <div class="h-24 bg-gray-600 rounded flex items-center justify-center">
-                    [Mapa Google Aqui]
-                </div>
+                <p class="text-sm text-gray-300">(18) 3702-6850</p>
+                <p class="text-sm text-gray-300">e028dir@cps.sp.gov.br</p>
             </div>
         </div>
-        <div class="text-center text-xs text-gray-400 mt-10 border-t border-gray-700 pt-4">
-            &copy; {{ date('Y') }} Etec Sebastiana Augusta de Moraes. Desenvolvido com Laravel.
+        <div class="container mx-auto px-4 mt-8 pt-4 border-t border-gray-700 text-center text-xs text-gray-500">
+            &copy; {{ date('Y') }} Etec Sebastiana Augusta de Moraes — Centro Paula Souza
         </div>
     </footer>
 
 </body>
-
 </html>
