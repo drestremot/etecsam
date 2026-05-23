@@ -6,13 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
 
-class Laboratory extends Model
+class Project extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'name', 'slug', 'description', 'full_description', 'location',
-        'capacity', 'photo', 'responsible_id', 'unit_id', 'course_id', 'is_active',
+        'name', 'slug', 'description', 'objectives', 'status',
+        'start_date', 'end_date', 'image', 'responsible_id', 'department_id', 'is_active',
+    ];
+
+    protected $casts = [
+        'start_date' => 'date',
+        'end_date'   => 'date',
     ];
 
     protected static function boot()
@@ -30,13 +35,8 @@ class Laboratory extends Model
         return $this->belongsTo(Teacher::class, 'responsible_id');
     }
 
-    public function unit()
+    public function department()
     {
-        return $this->belongsTo(Unit::class);
-    }
-
-    public function course()
-    {
-        return $this->belongsTo(Course::class);
+        return $this->belongsTo(Department::class);
     }
 }

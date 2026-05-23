@@ -30,12 +30,9 @@ class DatabaseSeeder extends Seeder
     {
 
         // =========================================================================
-        // 1. USUÁRIOS ADMINISTRATIVOS (MANTIDO)
+        // 1. USUÁRIOS ADMINISTRATIVOS
         // =========================================================================
-
-        // Crie aqui seus usuários fixos (Diretoria, Admins) se necessário
-        // Exemplo:
-        // User::factory()->create(['email' => 'admin@etec.sp.gov.br']);
+        $this->call(AdminUserSeeder::class);
 
         // =========================================================================
         // 2. IMPORTAÇÃO DO QUADRO DE AULAS (AUTOMÁTICO)
