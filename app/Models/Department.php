@@ -6,13 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
 
-class Laboratory extends Model
+class Department extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'name', 'slug', 'description', 'full_description', 'location',
-        'capacity', 'photo', 'responsible_id', 'unit_id', 'course_id', 'is_active',
+        'name', 'slug', 'description', 'email', 'phone', 'location',
+        'responsible_id', 'is_active',
     ];
 
     protected static function boot()
@@ -30,13 +30,8 @@ class Laboratory extends Model
         return $this->belongsTo(Teacher::class, 'responsible_id');
     }
 
-    public function unit()
+    public function projects()
     {
-        return $this->belongsTo(Unit::class);
-    }
-
-    public function course()
-    {
-        return $this->belongsTo(Course::class);
+        return $this->hasMany(Project::class);
     }
 }

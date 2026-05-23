@@ -1,26 +1,49 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SiteController;
+use Illuminate\Support\Facades\Route;
 
-// Define que a página inicial do site já carrega o Controller da Home
-Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// ─── Site Público ────────────────────────────────────────────────────────────
 
-Route::get('/fale-conosco', [SiteController::class, 'contact'])->name('contact');
-// Rota Institucional ("A Escola")
-Route::get('/escola', [SiteController::class, 'institutional'])->name('institutional');
-// Rota de Detalhes do Curso (A QUE ESTAVA FALTANDO)
-// Rota para visualizar os DETALHES de um curso específico
-// O nome 'courses.show' é o que estamos usando nos links da tela
-Route::get('/curso/{slug}', [App\Http\Controllers\SiteController::class, 'show'])->name('courses.show');
-Route::get('/secretaria', [App\Http\Controllers\SiteController::class, 'academic'])->name('academic');
-Route::get('/contato', [SiteController::class, 'contact'])->name('contact');
-Route::get('/agenda', [SiteController::class, 'agenda'])->name('agenda');
-Route::get('/diretoria-servicos', [App\Http\Controllers\SiteController::class, 'administrative'])->name('administrative');
-Route::get('/biblioteca', [SiteController::class, 'library'])->name('library');
-// Rota para ver os cursos de uma UNIDADE específica
-Route::get('/unidade/{id}', [App\Http\Controllers\SiteController::class, 'unit'])->name('units.show');
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])
-    ->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/home', [HomeController::class, 'index']);
 
-Route::get('/unidade-didatica/{slug}', [App\Http\Controllers\SiteController::class, 'sector'])->name('sectors.show');
+Route::get('/escola',              [SiteController::class, 'institutional'])->name('institutional');
+Route::get('/curso/{slug}',        [SiteController::class, 'show'])->name('courses.show');
+Route::get('/secretaria',          [SiteController::class, 'academic'])->name('academic');
+Route::get('/contato',             [SiteController::class, 'contact'])->name('contact');
+Route::get('/fale-conosco',        [SiteController::class, 'contact']);
+Route::get('/agenda',              [SiteController::class, 'agenda'])->name('agenda');
+Route::get('/diretoria-servicos',  [SiteController::class, 'administrative'])->name('administrative');
+Route::get('/biblioteca',          [SiteController::class, 'library'])->name('library');
+Route::get('/unidade/{id}',        [SiteController::class, 'unit'])->name('units.show');
+Route::get('/unidade-didatica/{slug}', [SiteController::class, 'sector'])->name('sectors.show');
+
+// ─── Autenticação (Breeze) ────────────────────────────────────────────────────
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__.'/auth.php';
+
+// ─── Painel Administrativo ────────────────────────────────────────────────────
+
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
+
+    Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+
+    Route::resource('teachers',    \App\Http\Controllers\Admin\TeacherController::class)->except(['show']);
+    Route::resource('departments', \App\Http\Controllers\Admin\DepartmentController::class)->except(['show']);
+    Route::resource('laboratories',\App\Http\Controllers\Admin\LaboratoryController::class)->except(['show']);
+    Route::resource('projects',    \App\Http\Controllers\Admin\ProjectController::class)->except(['show']);
+    Route::resource('courses',     \App\Http\Controllers\Admin\CourseController::class)->except(['show']);
+    Route::resource('units',       \App\Http\Controllers\Admin\UnitController::class)->except(['show']);
+    Route::resource('sectors',     \App\Http\Controllers\Admin\SectorController::class)->except(['show']);
+    Route::resource('events',      \App\Http\Controllers\Admin\EventController::class)->except(['show']);
+    Route::resource('documents',   \App\Http\Controllers\Admin\DocumentController::class)->except(['show']);
+});
