@@ -7,46 +7,96 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Etec Sebastiana Augusta de Moraes - Andradina</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body class="font-sans antialiased text-gray-700 bg-gray-50 flex flex-col min-h-screen">
 
-    <div class="bg-etec-dark text-white text-xs py-2">
+    {{-- Top bar --}}
+    <div class="bg-etec-dark text-white text-xs py-2 border-b border-white/10">
         <div class="container mx-auto px-4 flex justify-between items-center">
-            <span>Centro Paula Souza - Governo de SP</span>
-            <span>(18) 3702-6850 | e028dir@cps.sp.gov.br</span>
+            <span class="text-gray-300">Centro Paula Souza &mdash; Governo do Estado de São Paulo</span>
+            <div class="flex items-center gap-4">
+                <a href="tel:1837026850" class="flex items-center gap-1.5 text-gray-300 hover:text-white transition">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 7V5z"/></svg>
+                    (18) 3702-6850
+                </a>
+                <a href="mailto:e028dir@cps.sp.gov.br" class="flex items-center gap-1.5 text-gray-300 hover:text-white transition">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    e028dir@cps.sp.gov.br
+                </a>
+            </div>
         </div>
     </div>
 
-    <header class="bg-white shadow-md sticky top-0 z-50">
-        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-            <a href="{{ route('home') }}" class="flex items-center gap-3">
+    <header class="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="{{ route('home') }}" class="flex items-center group">
                 <img src="{{ asset('imagens/logo/etec.png') }}" alt="Logo Etec Sebastiana Augusta de Moraes"
-                    class="h-20 md:h-20 w-auto transition transform group-hover:scale-105">
-
-                <div class="hidden md:block leading-tight text-white">
-                    <span class="block text-xs font-light tracking-widest uppercase opacity-80">Etec</span>
-                    <span class="block font-serif font-bold text-lg">Sebastiana Augusta de Moraes</span>
-                </div>
+                    class="h-14 w-auto">
             </a>
 
-            <nav class="hidden md:flex gap-6 font-medium text-sm">
-                <a href="{{ route('home') }}" class="text-etec-dark hover:text-etec-main">Início</a>
-                <a href="{{ route('institutional') }}" class="hover:text-etec-accent transition">A Escola</a>
-                <a href="{{ route('library') }}" class="hover:text-etec-accent transition">Biblioteca</a>
-                <a href="{{ route('home') }}#cursos" class="hover:text-etec-accent transition">Cursos</a>
-                <a href="{{ route('home') }}#fazenda" class="hover:text-etec-accent transition">Escola Fazenda</a>
-                <a href="{{ route('academic') }}" class="hover:text-etec-accent transition">Secretaria</a>
-                <a href="{{ route('administrative') }}" class="hover:text-etec-accent transition">Diretoria de Serviços</a>
-                <a href="{{ route('contact') }}" class="hover:text-etec-accent transition">Contato</a>
-                <a href="{{ route('agenda') }}" class="hover:text-etec-accent transition">Agenda</a>
+            <nav class="hidden lg:flex items-center gap-0.5 text-sm font-medium">
+                <a href="{{ route('home') }}" class="px-4 py-2 text-etec-dark hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Início</a>
+                <a href="{{ route('institutional') }}" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">A Escola</a>
+                <a href="{{ route('library') }}" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Biblioteca</a>
+                <a href="{{ route('home') }}#unidades" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Cursos</a>
+                <a href="{{ route('home') }}#fazenda" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Escola Fazenda</a>
+                <a href="{{ route('academic') }}" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Secretaria</a>
 
-                <a href="#" class="px-4 py-2 bg-etec-main text-white rounded hover:bg-etec-dark transition">Vestibulinho</a>
-
-                <div class="hidden md:block">
-                    <img src="{{ asset('imagens/logo/logo-cps-2022.svg') }}" alt="Centro Paula Souza"
-                        class="h-20 md:h-20 w-auto transition transform group-hover:scale-105">
+                {{-- Dropdown Gestão --}}
+                <div class="relative group">
+                    <button class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition flex items-center gap-1 select-none">
+                        Gestão
+                        <svg class="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="absolute top-full left-0 pt-1 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-150 z-50">
+                        <div class="bg-white rounded-xl shadow-lg border border-gray-100 py-1.5 min-w-[220px] overflow-hidden">
+                            <a href="{{ route('superintendence') }}"
+                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:text-etec-main hover:bg-gray-50 transition">
+                                <div class="w-7 h-7 bg-etec-light rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-3.5 h-3.5 text-etec-main" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <strong class="block font-semibold text-gray-800 text-xs">Superintendência</strong>
+                                    <span class="text-xs text-gray-400">Direção da Unidade</span>
+                                </div>
+                            </a>
+                            <a href="{{ route('academic-division') }}"
+                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:text-etec-main hover:bg-gray-50 transition">
+                                <div class="w-7 h-7 bg-etec-light rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-3.5 h-3.5 text-etec-main" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <strong class="block font-semibold text-gray-800 text-xs">Diretoria Acadêmica</strong>
+                                    <span class="text-xs text-gray-400">Coordenação Pedagógica</span>
+                                </div>
+                            </a>
+                            <a href="{{ route('administrative') }}"
+                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:text-etec-main hover:bg-gray-50 transition">
+                                <div class="w-7 h-7 bg-etec-light rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-3.5 h-3.5 text-etec-main" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <strong class="block font-semibold text-gray-800 text-xs">Diretoria de Serviços</strong>
+                                    <span class="text-xs text-gray-400">Administrativo e Financeiro</span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <a href="{{ route('contact') }}" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Contato</a>
+                <a href="{{ route('agenda') }}" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Agenda</a>
+                <a href="#" class="ml-2 px-4 py-2 bg-etec-accent text-etec-dark rounded-lg hover:bg-yellow-400 transition font-semibold text-sm shadow-sm">Vestibulinho</a>
+                <div class="ml-4 pl-4 border-l border-gray-200">
+                    <img src="{{ asset('imagens/logo/logo-cps-2022.svg') }}" alt="Centro Paula Souza" class="h-10 w-auto opacity-80 hover:opacity-100 transition">
                 </div>
             </nav>
         </div>
@@ -56,32 +106,49 @@
         @yield('content')
     </main>
 
-    <footer class="bg-etec-dark text-white py-10 mt-10">
-        <div class="container mx-auto px-4 grid md:grid-cols-3 gap-8">
-            <div>
-                <h3 class="text-lg font-bold mb-4 border-b border-etec-main pb-2 inline-block">Sobre a Etec</h3>
-                <p class="text-sm text-gray-300">
-                    A Escola Agrícola de Andradina é referência em ensino técnico de qualidade,
-                    formando profissionais competentes para o agronegócio e tecnologia.
-                </p>
+    <footer class="bg-etec-dark text-white pt-12 pb-6 mt-12">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-3 gap-10 pb-10 border-b border-white/10">
+                <div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <img src="{{ asset('imagens/logo/etec.png') }}" alt="Logo" class="h-10 w-auto brightness-200 opacity-80">
+                        <span class="font-bold text-lg leading-tight text-white/90">Etec Sebastiana<br>Augusta de Moraes</span>
+                    </div>
+                    <p class="text-sm text-gray-400 leading-relaxed">
+                        Referência em ensino técnico agrícola, formando profissionais competentes para o agronegócio e a tecnologia desde 1994.
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold uppercase tracking-widest text-gray-300 mb-4">Links Rápidos</h3>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" class="hover:text-etec-accent transition flex items-center gap-2"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>Portal do Aluno (NSA)</a></li>
+                        <li><a href="#" class="hover:text-etec-accent transition flex items-center gap-2"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>Calendário Escolar</a></li>
+                        <li><a href="#" class="hover:text-etec-accent transition flex items-center gap-2"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>Transparência Pública</a></li>
+                        <li><a href="{{ route('library') }}" class="hover:text-etec-accent transition flex items-center gap-2"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>Biblioteca</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold uppercase tracking-widest text-gray-300 mb-4">Localização e Contato</h3>
+                    <ul class="space-y-3 text-sm text-gray-400">
+                        <li class="flex items-start gap-2.5">
+                            <svg class="w-4 h-4 mt-0.5 text-etec-accent flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            <span>Estrada Vicinal Sebastião Lourenço da Silva, Km 5<br>Andradina/SP — CEP 16900-000</span>
+                        </li>
+                        <li class="flex items-center gap-2.5">
+                            <svg class="w-4 h-4 text-etec-accent flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 7V5z"/></svg>
+                            <a href="tel:1837026850" class="hover:text-white transition">(18) 3702-6850</a>
+                        </li>
+                        <li class="flex items-center gap-2.5">
+                            <svg class="w-4 h-4 text-etec-accent flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            <a href="mailto:e028dir@cps.sp.gov.br" class="hover:text-white transition">e028dir@cps.sp.gov.br</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <div>
-                <h3 class="text-lg font-bold mb-4 border-b border-etec-main pb-2 inline-block">Links Rápidos</h3>
-                <ul class="text-sm space-y-2 text-gray-300">
-                    <li><a href="#" class="hover:text-etec-accent">Portal do Aluno (NSA)</a></li>
-                    <li><a href="#" class="hover:text-etec-accent">Calendário Escolar</a></li>
-                    <li><a href="#" class="hover:text-etec-accent">Transparência</a></li>
-                </ul>
+            <div class="pt-6 flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-gray-500">
+                <span>&copy; {{ date('Y') }} Etec Sebastiana Augusta de Moraes &mdash; Centro Paula Souza</span>
+                <a href="{{ route('admin.dashboard') }}" class="hover:text-gray-300 transition">Acesso Administrativo</a>
             </div>
-            <div>
-                <h3 class="text-lg font-bold mb-4 border-b border-etec-main pb-2 inline-block">Localização</h3>
-                <p class="text-sm text-gray-300 mb-2">Estrada Vicinal, Km 5 - Andradina/SP</p>
-                <p class="text-sm text-gray-300">(18) 3702-6850</p>
-                <p class="text-sm text-gray-300">e028dir@cps.sp.gov.br</p>
-            </div>
-        </div>
-        <div class="container mx-auto px-4 mt-8 pt-4 border-t border-gray-700 text-center text-xs text-gray-500">
-            &copy; {{ date('Y') }} Etec Sebastiana Augusta de Moraes — Centro Paula Souza
         </div>
     </footer>
 

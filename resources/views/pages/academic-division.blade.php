@@ -8,13 +8,13 @@
         <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0">
             <svg class="w-8 h-8 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                      d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                      d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
             </svg>
         </div>
         <div>
             <p class="text-etec-accent text-xs font-bold uppercase tracking-widest mb-1">Gestão Escolar</p>
-            <h1 class="text-3xl font-bold mb-1">Diretoria de Serviços</h1>
-            <p class="text-gray-300 text-sm">Gestão Administrativa, Financeira e de Infraestrutura</p>
+            <h1 class="text-3xl font-bold mb-1">Diretoria Acadêmica</h1>
+            <p class="text-gray-300 text-sm">Coordenação Pedagógica e Atividades Acadêmicas</p>
         </div>
     </div>
 </div>
@@ -47,7 +47,7 @@
                         @if($director->phone)
                         <div class="flex items-center gap-2.5 text-sm text-gray-600">
                             <svg class="w-4 h-4 text-etec-medium flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 7V5z"/></svg>
-                            <a href="tel:{{ preg_replace('/\D/', '', $director->phone) }}" class="hover:text-etec-main">{{ $director->phone }}</a>
+                            <a href="tel:{{ preg_replace('/\D/', '', $director->phone) }}" class="hover:text-etec-main transition">{{ $director->phone }}</a>
                         </div>
                         @endif
                         @if($director->email)
@@ -69,25 +69,25 @@
             @endif
         </div>
 
-        {{-- Equipe + Sistemas --}}
+        {{-- Equipe + Áreas --}}
         <div class="lg:col-span-2 space-y-10">
 
             {{-- Equipe --}}
             <div>
-                <h2 class="text-xl font-bold text-gray-800 mb-6 border-l-4 border-etec-medium pl-3">Equipe Administrativa</h2>
+                <h2 class="text-xl font-bold text-gray-800 mb-6 border-l-4 border-etec-medium pl-3">Colaboradores do Departamento</h2>
 
                 @if($staff->isNotEmpty())
                 <div class="grid md:grid-cols-2 gap-5">
                     @foreach($staff as $member)
                     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex gap-4 hover:shadow-md transition items-start">
                         <img src="{{ photo_url($member->photo) }}"
-                             onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($member->name) }}&background=fef3c7&color=92400e'"
+                             onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($member->name) }}&background=dbeafe&color=1a3a6e'"
                              class="w-14 h-14 rounded-full object-cover border-2 border-gray-100 flex-shrink-0">
                         <div class="min-w-0 flex-grow">
                             <h4 class="font-bold text-gray-800 leading-tight">{{ $member->name }}</h4>
                             <span class="text-xs font-bold text-etec-medium uppercase tracking-wide block mb-1.5">{{ $member->role }}</span>
                             @if($member->specialty)
-                            <p class="text-xs text-gray-500 mb-2 line-clamp-2 leading-relaxed">{{ $member->specialty }}</p>
+                            <p class="text-xs text-gray-500 mb-2 leading-relaxed line-clamp-2">{{ $member->specialty }}</p>
                             @endif
                             <div class="space-y-1">
                                 @if($member->phone)
@@ -114,24 +114,31 @@
                 @endif
             </div>
 
-            {{-- Acesso Rápido --}}
-            <div>
-                <h2 class="text-xl font-bold text-gray-800 mb-5 border-l-4 border-etec-accent pl-3 flex items-center gap-2">
-                    <svg class="w-5 h-5 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                    Acesso Rápido aos Sistemas
+            {{-- Responsabilidades --}}
+            <div class="bg-blue-50 rounded-2xl p-8 border border-blue-100">
+                <h2 class="text-xl font-bold text-gray-800 mb-5 flex items-center gap-2.5">
+                    <svg class="w-5 h-5 text-etec-medium" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                    </svg>
+                    Áreas de Atuação
                 </h2>
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                    @foreach($links as $link)
-                    <a href="{{ $link['url'] }}" target="_blank"
-                       class="bg-white border border-gray-200 p-4 rounded-xl hover:shadow-lg hover:border-etec-accent hover:-translate-y-1 transition group text-center flex flex-col items-center gap-2">
-                        <div class="text-2xl bg-gray-50 w-14 h-14 rounded-xl flex items-center justify-center group-hover:bg-etec-light transition font-bold">
-                            {{ $link['icon'] }}
+                <div class="grid sm:grid-cols-2 gap-3">
+                    @foreach([
+                        ['icon' => 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253', 'label' => 'Grade Curricular e Planos de Ensino'],
+                        ['icon' => 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z', 'label' => 'Acompanhamento Pedagógico dos Docentes'],
+                        ['icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01', 'label' => 'Avaliação e Desempenho Escolar'],
+                        ['icon' => 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z', 'label' => 'Calendário Acadêmico e Eventos'],
+                        ['icon' => 'M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z', 'label' => 'Coordenação dos Cursos Técnicos'],
+                        ['icon' => 'M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9', 'label' => 'Atividades Extracurriculares'],
+                    ] as $item)
+                    <div class="flex items-center gap-3 bg-white rounded-lg px-4 py-3 shadow-sm border border-blue-50">
+                        <div class="w-8 h-8 bg-etec-light text-etec-main rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $item['icon'] }}"/>
+                            </svg>
                         </div>
-                        <div>
-                            <strong class="block text-sm text-etec-dark group-hover:text-etec-accent transition leading-tight">{{ $link['name'] }}</strong>
-                            <span class="text-xs text-gray-500">{{ $link['desc'] }}</span>
-                        </div>
-                    </a>
+                        <span class="text-sm text-gray-700 font-medium">{{ $item['label'] }}</span>
+                    </div>
                     @endforeach
                 </div>
             </div>
@@ -143,7 +150,7 @@
     <div class="mt-12 bg-gray-50 rounded-2xl p-8 border border-gray-200">
         <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2.5">
             <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
-            Arquivos e Formulários
+            Documentos Acadêmicos
         </h2>
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             @foreach($downloads as $file)
@@ -151,16 +158,11 @@
                 <div class="w-10 h-10 bg-red-50 text-red-400 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-red-500 group-hover:text-white transition">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 </div>
-                <div class="flex-grow min-w-0">
-                    <h4 class="font-bold text-gray-800 text-sm mb-1 leading-tight">{{ $file->title }}</h4>
-                    @if($file->published_at)
-                    <span class="text-xs text-gray-400 block mb-2">
-                        {{ \Carbon\Carbon::parse($file->published_at)->format('d/m/Y') }}
-                    </span>
-                    @endif
+                <div>
+                    <h4 class="font-bold text-gray-800 text-sm mb-1">{{ $file->title }}</h4>
                     <a href="{{ $file->file_path }}" class="inline-flex items-center gap-1 text-xs font-bold text-etec-accent hover:underline">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                        Baixar Arquivo
+                        Baixar
                     </a>
                 </div>
             </div>

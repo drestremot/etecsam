@@ -7,84 +7,136 @@
     <link rel="icon" type="image/png" href="{{ asset('imagens/logo/etec.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-gray-100 font-sans">
+<body class="bg-gray-100 font-sans antialiased">
 
 <div class="flex min-h-screen">
 
     {{-- Sidebar --}}
     <aside class="w-64 bg-gray-900 text-white flex flex-col flex-shrink-0">
-        <div class="px-6 py-5 border-b border-gray-700">
+        <div class="px-5 py-4 border-b border-gray-800">
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3">
                 <img src="{{ asset('imagens/logo/etec.png') }}" alt="Etec" class="h-10 w-auto">
                 <div>
-                    <p class="text-xs text-gray-400 uppercase tracking-widest">Painel</p>
-                    <p class="font-bold text-sm leading-tight">Etec SAM</p>
+                    <p class="text-[10px] text-gray-500 uppercase tracking-widest font-semibold">Painel Admin</p>
+                    <p class="font-bold text-sm leading-tight text-white">Etec SAM</p>
                 </div>
             </a>
         </div>
 
-        <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto text-sm">
+        <nav class="flex-1 px-3 py-4 overflow-y-auto text-sm space-y-0.5">
+
+            {{-- Dashboard --}}
             <a href="{{ route('admin.dashboard') }}"
-               class="flex items-center gap-2 px-3 py-2 rounded-lg {{ request()->routeIs('admin.dashboard') ? 'bg-indigo-600 text-white' : 'text-gray-300 hover:bg-gray-800' }}">
-                <span>🏠</span> Dashboard
+               class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition {{ request()->routeIs('admin.dashboard') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                </svg>
+                <span class="font-medium">Dashboard</span>
             </a>
 
-            <p class="px-3 pt-4 pb-1 text-xs font-semibold text-gray-500 uppercase tracking-widest">Pessoas</p>
+            {{-- Pessoas --}}
+            <p class="px-3 pt-5 pb-1.5 text-[10px] font-bold text-gray-600 uppercase tracking-widest">Pessoas</p>
 
             <a href="{{ route('admin.teachers.index') }}"
-               class="flex items-center gap-2 px-3 py-2 rounded-lg {{ request()->routeIs('admin.teachers*') ? 'bg-indigo-600 text-white' : 'text-gray-300 hover:bg-gray-800' }}">
-                <span>👥</span> Professores / Funcionários
+               class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition {{ request()->routeIs('admin.teachers*') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                <span>Professores / Funcionários</span>
             </a>
 
-            <p class="px-3 pt-4 pb-1 text-xs font-semibold text-gray-500 uppercase tracking-widest">Estrutura</p>
+            {{-- Estrutura --}}
+            <p class="px-3 pt-5 pb-1.5 text-[10px] font-bold text-gray-600 uppercase tracking-widest">Estrutura</p>
 
             <a href="{{ route('admin.departments.index') }}"
-               class="flex items-center gap-2 px-3 py-2 rounded-lg {{ request()->routeIs('admin.departments*') ? 'bg-indigo-600 text-white' : 'text-gray-300 hover:bg-gray-800' }}">
-                <span>🏛️</span> Departamentos
-            </a>
-            <a href="{{ route('admin.units.index') }}"
-               class="flex items-center gap-2 px-3 py-2 rounded-lg {{ request()->routeIs('admin.units*') ? 'bg-indigo-600 text-white' : 'text-gray-300 hover:bg-gray-800' }}">
-                <span>🏫</span> Unidades Escolares
-            </a>
-            <a href="{{ route('admin.sectors.index') }}"
-               class="flex items-center gap-2 px-3 py-2 rounded-lg {{ request()->routeIs('admin.sectors*') ? 'bg-indigo-600 text-white' : 'text-gray-300 hover:bg-gray-800' }}">
-                <span>🚜</span> Setores / Escola Fazenda
-            </a>
-            <a href="{{ route('admin.laboratories.index') }}"
-               class="flex items-center gap-2 px-3 py-2 rounded-lg {{ request()->routeIs('admin.laboratories*') ? 'bg-indigo-600 text-white' : 'text-gray-300 hover:bg-gray-800' }}">
-                <span>🧪</span> Laboratórios
+               class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition {{ request()->routeIs('admin.departments*') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                </svg>
+                <span>Departamentos</span>
             </a>
 
-            <p class="px-3 pt-4 pb-1 text-xs font-semibold text-gray-500 uppercase tracking-widest">Acadêmico</p>
+            <a href="{{ route('admin.units.index') }}"
+               class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition {{ request()->routeIs('admin.units*') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"/>
+                </svg>
+                <span>Unidades Escolares</span>
+            </a>
+
+            <a href="{{ route('admin.sectors.index') }}"
+               class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition {{ request()->routeIs('admin.sectors*') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                </svg>
+                <span>Setores / Escola Fazenda</span>
+            </a>
+
+            <a href="{{ route('admin.laboratories.index') }}"
+               class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition {{ request()->routeIs('admin.laboratories*') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3h6m-5 0v6L5 19a2 2 0 002 2h10a2 2 0 002-2L14 9V3M5 15h14"/>
+                </svg>
+                <span>Laboratórios</span>
+            </a>
+
+            {{-- Acadêmico --}}
+            <p class="px-3 pt-5 pb-1.5 text-[10px] font-bold text-gray-600 uppercase tracking-widest">Acadêmico</p>
 
             <a href="{{ route('admin.courses.index') }}"
-               class="flex items-center gap-2 px-3 py-2 rounded-lg {{ request()->routeIs('admin.courses*') ? 'bg-indigo-600 text-white' : 'text-gray-300 hover:bg-gray-800' }}">
-                <span>📚</span> Cursos
-            </a>
-            <a href="{{ route('admin.projects.index') }}"
-               class="flex items-center gap-2 px-3 py-2 rounded-lg {{ request()->routeIs('admin.projects*') ? 'bg-indigo-600 text-white' : 'text-gray-300 hover:bg-gray-800' }}">
-                <span>🔬</span> Projetos
+               class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition {{ request()->routeIs('admin.courses*') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                </svg>
+                <span>Cursos</span>
             </a>
 
-            <p class="px-3 pt-4 pb-1 text-xs font-semibold text-gray-500 uppercase tracking-widest">Comunicação</p>
+            <a href="{{ route('admin.projects.index') }}"
+               class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition {{ request()->routeIs('admin.projects*') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                </svg>
+                <span>Projetos</span>
+            </a>
+
+            {{-- Comunicação --}}
+            <p class="px-3 pt-5 pb-1.5 text-[10px] font-bold text-gray-600 uppercase tracking-widest">Comunicação</p>
 
             <a href="{{ route('admin.events.index') }}"
-               class="flex items-center gap-2 px-3 py-2 rounded-lg {{ request()->routeIs('admin.events*') ? 'bg-indigo-600 text-white' : 'text-gray-300 hover:bg-gray-800' }}">
-                <span>📅</span> Agenda / Eventos
+               class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition {{ request()->routeIs('admin.events*') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                <span>Agenda / Eventos</span>
             </a>
+
             <a href="{{ route('admin.documents.index') }}"
-               class="flex items-center gap-2 px-3 py-2 rounded-lg {{ request()->routeIs('admin.documents*') ? 'bg-indigo-600 text-white' : 'text-gray-300 hover:bg-gray-800' }}">
-                <span>📄</span> Documentos
+               class="flex items-center gap-3 px-3 py-2.5 rounded-lg transition {{ request()->routeIs('admin.documents*') ? 'bg-indigo-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <span>Documentos</span>
             </a>
         </nav>
 
-        <div class="px-4 py-4 border-t border-gray-700">
-            <p class="text-xs text-gray-400 truncate">{{ auth()->user()->name }}</p>
-            <div class="flex gap-3 mt-2">
-                <a href="{{ route('home') }}" class="text-xs text-gray-400 hover:text-white">Ver site</a>
+        <div class="px-4 py-4 border-t border-gray-800 bg-gray-950/40">
+            <div class="flex items-center gap-2 mb-3">
+                <div class="w-7 h-7 rounded-full bg-indigo-600 flex items-center justify-center text-xs font-bold text-white flex-shrink-0">
+                    {{ substr(auth()->user()->name, 0, 1) }}
+                </div>
+                <p class="text-xs text-gray-400 truncate">{{ auth()->user()->name }}</p>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="{{ route('home') }}" target="_blank" class="flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-200 transition">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    Ver site
+                </a>
                 <form method="POST" action="{{ route('logout') }}" class="inline">
                     @csrf
-                    <button type="submit" class="text-xs text-red-400 hover:text-red-300">Sair</button>
+                    <button type="submit" class="flex items-center gap-1.5 text-xs text-red-500 hover:text-red-300 transition">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                        Sair
+                    </button>
                 </form>
             </div>
         </div>
@@ -92,24 +144,28 @@
 
     {{-- Conteúdo principal --}}
     <main class="flex-1 flex flex-col overflow-hidden">
-        <header class="bg-white shadow-sm px-6 py-4 flex items-center justify-between">
-            <h1 class="text-lg font-semibold text-gray-800">@yield('page-title', 'Painel')</h1>
-            <div class="flex items-center gap-4">
+        <header class="bg-white border-b border-gray-200 px-6 py-3.5 flex items-center justify-between">
+            <h1 class="text-base font-semibold text-gray-800 tracking-tight">@yield('page-title', 'Painel')</h1>
+            <div class="flex items-center gap-3">
                 @yield('header-actions')
             </div>
         </header>
 
         <div class="flex-1 overflow-y-auto p-6">
             @if(session('success'))
-                <div class="mb-4 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg flex items-center gap-2">
-                    <span>✅</span> {{ session('success') }}
+                <div class="mb-5 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-xl flex items-center gap-3 text-sm">
+                    <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    {{ session('success') }}
                 </div>
             @endif
 
             @if($errors->any())
-                <div class="mb-4 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg">
-                    <p class="font-semibold mb-1">Por favor, corrija os erros abaixo:</p>
-                    <ul class="list-disc list-inside text-sm space-y-1">
+                <div class="mb-5 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-xl text-sm">
+                    <div class="flex items-center gap-2 font-semibold mb-2">
+                        <svg class="w-4 h-4 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        Por favor, corrija os erros abaixo:
+                    </div>
+                    <ul class="list-disc list-inside space-y-1 pl-1">
                         @foreach($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach

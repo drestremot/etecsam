@@ -107,7 +107,7 @@
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Foto do Curso</label>
                     @if($action === 'edit' && $course->image)
                         <div class="flex items-center gap-4 mb-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                            <img src="{{ Storage::url($course->image) }}" class="w-20 h-14 rounded-lg object-cover border border-gray-200">
+                            <img src="{{ photo_url($course->image) }}" class="w-20 h-14 rounded-lg object-cover border border-gray-200">
                             <p class="text-xs text-gray-400">Selecione um novo arquivo para substituir</p>
                         </div>
                     @endif

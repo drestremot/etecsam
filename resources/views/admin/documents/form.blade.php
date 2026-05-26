@@ -71,7 +71,7 @@
                             <span class="text-2xl">📄</span>
                             <div>
                                 <p class="text-sm font-medium text-gray-700">Arquivo atual</p>
-                                <a href="{{ Storage::url($document->file_path) }}" target="_blank"
+                                <a href="{{ photo_url($document->file_path) }}" target="_blank"
                                    class="text-xs text-indigo-600 hover:underline">Abrir arquivo</a>
                             </div>
                         </div>

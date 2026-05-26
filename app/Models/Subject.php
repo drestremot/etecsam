@@ -11,10 +11,11 @@ class Subject extends Model
 
     protected $fillable = [
         'course_id',
-        'teacher_id', // <--- ESTE CAMPO É OBRIGATÓRIO AQUI!
+        'teacher_id',
         'name',
         'workload',
         'ptd_file',
+        'semester',
     ];
 
     public function teacher()

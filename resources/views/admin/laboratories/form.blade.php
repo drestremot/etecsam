@@ -112,7 +112,7 @@
             <div class="p-6">
                 @if($action === 'edit' && $laboratory->photo)
                     <div class="flex items-center gap-4 mb-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                        <img src="{{ Storage::url($laboratory->photo) }}" class="w-20 h-14 rounded-lg object-cover border border-gray-200">
+                        <img src="{{ photo_url($laboratory->photo) }}" class="w-20 h-14 rounded-lg object-cover border border-gray-200">
                         <div>
                             <p class="text-sm font-medium text-gray-700">Foto atual</p>
                             <p class="text-xs text-gray-400 mt-0.5">Selecione um novo arquivo para substituir</p>
