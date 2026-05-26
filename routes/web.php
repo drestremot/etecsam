@@ -16,6 +16,8 @@ Route::get('/secretaria',          [SiteController::class, 'academic'])->name('a
 Route::get('/contato',             [SiteController::class, 'contact'])->name('contact');
 Route::get('/fale-conosco',        [SiteController::class, 'contact']);
 Route::get('/agenda',              [SiteController::class, 'agenda'])->name('agenda');
+Route::get('/superintendencia',    [SiteController::class, 'superintendence'])->name('superintendence');
+Route::get('/diretoria-academica', [SiteController::class, 'academicDivision'])->name('academic-division');
 Route::get('/diretoria-servicos',  [SiteController::class, 'administrative'])->name('administrative');
 Route::get('/biblioteca',          [SiteController::class, 'library'])->name('library');
 Route::get('/unidade/{id}',        [SiteController::class, 'unit'])->name('units.show');
@@ -42,6 +44,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::resource('laboratories',\App\Http\Controllers\Admin\LaboratoryController::class)->except(['show']);
     Route::resource('projects',    \App\Http\Controllers\Admin\ProjectController::class)->except(['show']);
     Route::resource('courses',     \App\Http\Controllers\Admin\CourseController::class)->except(['show']);
+    Route::resource('courses.subjects', \App\Http\Controllers\Admin\SubjectController::class)->except(['show']);
     Route::resource('units',       \App\Http\Controllers\Admin\UnitController::class)->except(['show']);
     Route::resource('sectors',     \App\Http\Controllers\Admin\SectorController::class)->except(['show']);
     Route::resource('events',      \App\Http\Controllers\Admin\EventController::class)->except(['show']);

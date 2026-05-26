@@ -81,7 +81,7 @@
             <div class="p-6">
                 @if($action === 'edit' && $teacher->photo)
                     <div class="flex items-center gap-4 mb-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                        <img src="{{ Storage::url($teacher->photo) }}" class="w-16 h-16 rounded-full object-cover border-2 border-white shadow">
+                        <img src="{{ photo_url($teacher->photo) }}" class="w-16 h-16 rounded-full object-cover border-2 border-white shadow">
                         <div>
                             <p class="text-sm font-medium text-gray-700">Foto atual</p>
                             <p class="text-xs text-gray-400 mt-0.5">Selecione um novo arquivo para substituir</p>

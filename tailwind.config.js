@@ -12,14 +12,14 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['"Segoe UI"', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Helvetica Neue"', 'Arial', 'sans-serif'],
             },
             colors: {
-                'etec-dark':   '#1a2e1a',
-                'etec-main':   '#2d5a27',
-                'etec-medium': '#4a7c44',
+                'etec-dark':   '#0c1f3f',
+                'etec-main':   '#1a3a6e',
+                'etec-medium': '#2563eb',
                 'etec-accent': '#f5a623',
-                'etec-light':  '#d4edda',
+                'etec-light':  '#dbeafe',
             },
         },
     },

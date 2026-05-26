@@ -25,7 +25,7 @@
                 </td>
                 <td class="px-4 py-3 text-gray-500 text-xs">
                     @if(!empty($doc->file_path))
-                        <a href="{{ Storage::url($doc->file_path) }}" target="_blank" class="text-indigo-600 hover:underline">Arquivo</a>
+                        <a href="{{ photo_url($doc->file_path) }}" target="_blank" class="text-indigo-600 hover:underline">Arquivo</a>
                     @elseif(!empty($doc->url))
                         <a href="{{ $doc->url }}" target="_blank" class="text-indigo-600 hover:underline truncate block max-w-xs">Link externo</a>
                     @else

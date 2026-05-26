@@ -22,7 +22,7 @@
             <tr class="hover:bg-gray-50">
                 <td class="px-4 py-3 font-medium text-gray-800">
                     @if($teacher->photo)
-                        <img src="{{ Storage::url($teacher->photo) }}" class="w-8 h-8 rounded-full object-cover inline-block mr-2">
+                        <img src="{{ photo_url($teacher->photo) }}" class="w-8 h-8 rounded-full object-cover inline-block mr-2">
                     @endif
                     {{ $teacher->name }}
                 </td>

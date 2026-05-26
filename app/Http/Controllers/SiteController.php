@@ -81,25 +81,80 @@ class SiteController extends Controller
     }
 
 
+    public function superintendence()
+    {
+        // Diretor da Unidade (Marcos Antonio Estremote)
+        $director = \App\Models\Teacher::where('role', 'like', '%Diretor%')
+            ->orWhere('role', 'like', '%Superintendente%')
+            ->orderByRaw("CASE WHEN role LIKE '%Diretor de Escola%' THEN 0 ELSE 1 END")
+            ->first();
+
+        // Equipe de apoio da Superintendência
+        $staff = \App\Models\Teacher::where('role', 'like', '%Vice-Diretor%')
+            ->orWhere('role', 'like', '%Assistente de Direção%')
+            ->get();
+
+        $downloads = \App\Models\Document::where('category', 'Superintendência')->get();
+
+        return view('pages.superintendence', compact('director', 'staff', 'downloads'));
+    }
+
+    public function academicDivision()
+    {
+        // Diretora Acadêmica (Gelcilene)
+        $director = \App\Models\Teacher::where('role', 'like', '%Acadêm%')
+            ->orderByRaw("CASE WHEN role LIKE '%Diretora%' OR role LIKE '%Diretor%' THEN 0 ELSE 1 END")
+            ->first();
+
+        // Colaboradores: coordenadores pedagógicos, orientadores, equipe acadêmica
+        $staff = \App\Models\Teacher::where(function ($q) {
+                $q->where('role', 'like', '%Coordenador%')
+                  ->orWhere('role', 'like', '%Pedagóg%')
+                  ->orWhere('role', 'like', '%Orientador%')
+                  ->orWhere('role', 'like', '%Acadêm%');
+            })
+            ->where(function ($q) use ($director) {
+                if ($director) $q->where('id', '!=', $director->id);
+            })
+            ->get();
+
+        $downloads = \App\Models\Document::where('category', 'Acadêmico')->get();
+
+        return view('pages.academic-division', compact('director', 'staff', 'downloads'));
+    }
+
     public function administrative()
     {
-        // 1. Busca o Superintendente (NOVO)
-        $superintendent = \App\Models\Teacher::where('role', 'Superintendente')->first();
+        // Diretora de Serviços (Myruane)
+        $director = \App\Models\Teacher::where('role', 'like', '%Serviços%')
+            ->orderByRaw("CASE WHEN role LIKE '%Diretora%' OR role LIKE '%Diretor%' THEN 0 ELSE 1 END")
+            ->first();
 
-        // 2. Busca a Diretora de Serviços (Mantido)
-        $director = \App\Models\Teacher::where('role', 'Diretora de Serviços Administrativos')->first();
+        // Colaboradores administrativos
+        $staff = \App\Models\Teacher::where(function ($q) {
+                $q->where('role', 'like', '%Administrativo%')
+                  ->orWhere('role', 'like', '%Financeiro%')
+                  ->orWhere('role', 'like', '%Recursos Humanos%')
+                  ->orWhere('role', 'like', '%Manutenção%')
+                  ->orWhere('role', 'like', '%Agente%');
+            })
+            ->where(function ($q) use ($director) {
+                if ($director) $q->where('id', '!=', $director->id);
+            })
+            ->get();
 
-        // 3. Busca a Equipe (Mantido)
-        $staff = \App\Models\Teacher::whereIn('role', ['Agente Administrativo', 'Assistente de RH', 'Auxiliar Financeiro'])->get();
-
-        // 4. Busca Downloads e Links (Mantido)
         $downloads = \App\Models\Document::where('category', 'Administrativo')->get();
-        $links = [ /* ... seus links já existentes ... */];
 
-        // NÃO ESQUEÇA DE ADICIONAR 'superintendent' NO COMPACT
-        return view('pages.administrative', compact('superintendent', 'director', 'staff', 'links', 'downloads'));
+        $links = [
+            ['name' => 'GDAE',          'desc' => 'Gestão Escolar',       'url' => 'https://www.gdae.sp.gov.br/',         'icon' => '📋'],
+            ['name' => 'SEP',           'desc' => 'Portal do Servidor',    'url' => 'https://www.sep.sp.gov.br/',          'icon' => '👤'],
+            ['name' => 'e-RH',          'desc' => 'Folha de Pagamento',    'url' => 'https://erh.sp.gov.br/',             'icon' => '💰'],
+            ['name' => 'SIEEESP',       'desc' => 'Legislação',            'url' => 'https://www.sieeesp.org.br/',         'icon' => '⚖️'],
+            ['name' => 'Transparência', 'desc' => 'Dados Públicos',        'url' => 'https://www.cps.sp.gov.br/transparencia/', 'icon' => '🔍'],
+        ];
+
+        return view('pages.administrative', compact('director', 'staff', 'links', 'downloads'));
     }
-    // Certifique-se de ter: use App\Models\Teacher; no topo
 
     public function institutional()
     {
