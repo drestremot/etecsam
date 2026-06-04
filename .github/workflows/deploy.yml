@@ -1,0 +1,59 @@
+name: Deploy - Etec SAM
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout do codigo
+        uses: actions/checkout@v4
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Instalar dependencias JS
+        run: npm ci
+
+      - name: Build dos assets (Vite)
+        run: npm run build
+
+      - name: Instalar PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Instalar dependencias PHP
+        run: composer install --no-dev --optimize-autoloader --no-interaction
+
+      - name: Deploy via SSH para Hostinger
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 22
+          script: |
+            cd ~/domains/etecsam.com.br/public_html/etecsam
+            echo "Atualizando codigo..."
+            git pull origin main
+            echo "Instalando dependencias PHP..."
+            composer install --no-dev --optimize-autoloader --no-interaction
+            echo "Rodando migrations..."
+            php artisan migrate --force
+            echo "Limpando caches..."
+            php artisan config:clear
+            php artisan route:clear
+            php artisan view:clear
+            echo "Otimizando para producao..."
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            php artisan storage:link --force
+            echo "Deploy concluido!"
