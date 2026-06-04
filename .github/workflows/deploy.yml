@@ -32,13 +32,22 @@ jobs:
       - name: Instalar dependencias PHP
         run: composer install --no-dev --optimize-autoloader --no-interaction
 
+      - name: Verificar secrets SSH
+        run: |
+          if [ -z "${{ secrets.SSH_HOST }}" ]; then
+            echo "ERRO: SSH_HOST esta vazio!"
+            exit 1
+          fi
+          echo "SSH_HOST definido (primeiros chars): ${{ secrets.SSH_HOST }}"
+
       - name: Deploy via SSH para Hostinger
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
-          port: 22
+          port: ${{ secrets.SSH_PORT || '65002' }}
+          timeout: 60s
           script: |
             cd ~/domains/etecsam.com.br/public_html/etecsam
             echo "Atualizando codigo..."
