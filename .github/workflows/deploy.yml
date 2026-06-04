@@ -32,13 +32,16 @@ jobs:
       - name: Instalar dependencias PHP
         run: composer install --no-dev --optimize-autoloader --no-interaction
 
-      - name: Verificar secrets SSH
-        run: |
-          if [ -z "${{ secrets.SSH_HOST }}" ]; then
-            echo "ERRO: SSH_HOST esta vazio!"
-            exit 1
-          fi
-          echo "SSH_HOST definido (primeiros chars): ${{ secrets.SSH_HOST }}"
+      - name: Enviar assets build via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.SSH_PORT || '65002' }}
+          source: "public/build/"
+          target: "~/domains/etecsam.com.br/public_html/etecsam/public/build/"
+          strip_components: 2
 
       - name: Deploy via SSH para Hostinger
         uses: appleboy/ssh-action@v1.0.3
@@ -65,4 +68,4 @@ jobs:
             php artisan route:cache
             php artisan view:cache
             php artisan storage:link --force
-            echo "Deploy concluido!"
+            echo "Deploy concluido com sucesso!"
