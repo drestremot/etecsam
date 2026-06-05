@@ -32,63 +32,22 @@ jobs:
       - name: Instalar dependencias PHP
         run: composer install --no-dev --optimize-autoloader --no-interaction
 
-      - name: Enviar assets build via SCP
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          port: ${{ secrets.SSH_PORT || '65002' }}
-          source: "public/build/"
-          target: "~/domains/etecsam.com.br/public_html/etecsam/public/build/"
-          strip_components: 2
-
-      - name: Deploy via SSH para Hostinger
+      - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT || '65002' }}
-          timeout: 60s
+          timeout: 120s
+          script_stop: false
           script: |
             cd ~/domains/etecsam.com.br/public_html/etecsam
-
-            echo "Atualizando codigo..."
             git pull origin main
-
-            echo "Instalando dependencias PHP..."
             composer install --no-dev --optimize-autoloader --no-interaction
-
-            echo "Rodando migrations..."
             php artisan migrate --force
-
-            echo "Criando usuario admin..."
             php artisan db:seed --class=AdminSeeder --force
-
-            echo "Limpando caches..."
-            php artisan config:clear
-            php artisan route:clear
-            php artisan view:clear
-
-            echo "Otimizando para producao..."
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
-
-            echo "Sincronizando imagens para public/storage/..."
-            php -r "
-            function rcopy(\$s, \$d) {
-              if (!is_dir(\$d)) mkdir(\$d, 0755, true);
-              foreach (scandir(\$s) as \$f) {
-                if (\$f==='.'||\$f==='..') continue;
-                \$sp=\$s.'/'.$f; \$dp=\$d.'/'.$f;
-                is_dir(\$sp) ? rcopy(\$sp,\$dp) : copy(\$sp,\$dp);
-              }
-            }
-            \$src=__DIR__.'/storage/app/public';
-            \$dst=__DIR__.'/public/storage';
-            if(is_dir(\$src)) { rcopy(\$src,\$dst); echo 'Storage sincronizado!'.PHP_EOL; }
-            "
-
-            echo "Deploy concluido com sucesso!"
+            php artisan config:clear && php artisan route:clear && php artisan view:clear
+            php artisan config:cache && php artisan route:cache && php artisan view:cache
+            php -r "function rc($s,$d){if(!is_dir($d))mkdir($d,0755,true);foreach(scandir($s)as $f){if($f==='.'||$f==='..') continue;$sp=$s.'/'.$f;$dp=$d.'/'.$f;is_dir($sp)?rc($sp,$dp):copy($sp,$dp);}}rc('storage/app/public','public/storage');echo 'OK';"
+            echo Deploy OK
