@@ -6,6 +6,9 @@ on:
     paths-ignore:
       - 'public/build/**'
 
+permissions:
+  contents: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -30,11 +33,10 @@ jobs:
 
       - name: Commitar build no repositorio
         run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
+          git config user.name "GitHub Actions Bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add public/build/
-          git diff --staged --quiet || git commit -m "ci: atualiza public/build [skip ci]"
-          git push origin main
+          git diff --staged --quiet && echo "Sem mudancas no build" || (git commit -m "ci: atualiza public/build [skip ci]" && git push origin main)
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
