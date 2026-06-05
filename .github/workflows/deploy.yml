@@ -12,18 +12,6 @@ jobs:
       - name: Checkout do codigo
         uses: actions/checkout@v4
 
-      - name: Instalar Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Instalar dependencias JS
-        run: npm ci
-
-      - name: Build dos assets (Vite)
-        run: npm run build
-
       - name: Instalar PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -39,15 +27,40 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT || '65002' }}
-          timeout: 120s
+          timeout: 180s
           script_stop: false
           script: |
             cd ~/domains/etecsam.com.br/public_html/etecsam
+
+            echo "=== git pull ==="
             git pull origin main
+
+            echo "=== composer ==="
             composer install --no-dev --optimize-autoloader --no-interaction
+
+            echo "=== npm build ==="
+            export NVM_DIR=~/.nvm
+            [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+            if command -v npm &> /dev/null; then
+              npm ci && npm run build && echo "Build OK"
+            else
+              echo "npm nao disponivel, pulando build"
+            fi
+
+            echo "=== migrations ==="
             php artisan migrate --force
+
+            echo "=== seeder ==="
             php artisan db:seed --class=AdminSeeder --force
+
+            echo "=== cache ==="
             php artisan config:clear && php artisan route:clear && php artisan view:clear
             php artisan config:cache && php artisan route:cache && php artisan view:cache
-            php -r "function rc($s,$d){if(!is_dir($d))mkdir($d,0755,true);foreach(scandir($s)as $f){if($f==='.'||$f==='..') continue;$sp=$s.'/'.$f;$dp=$d.'/'.$f;is_dir($sp)?rc($sp,$dp):copy($sp,$dp);}}rc('storage/app/public','public/storage');echo 'OK';"
-            echo Deploy OK
+
+            echo "=== storage sync ==="
+            php -r "
+            function rc($s,$d){if(!is_dir($d))mkdir($d,0755,true);foreach(scandir($s)as $f){if($f==='.'||$f==='..') continue;$sp=$s.'/'.$f;$dp=$d.'/'.$f;is_dir($sp)?rc($sp,$dp):copy($sp,$dp);}}
+            rc('storage/app/public','public/storage');
+            echo 'Storage OK';
+            "
+            echo "=== Deploy OK! ==="
