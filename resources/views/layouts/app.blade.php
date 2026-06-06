@@ -7,6 +7,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Etec Sebastiana Augusta de Moraes - Andradina</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    {{-- Hamburger Menu Responsivo --}}
+    <style>
+        .mobile-hamburger { display: flex; align-items: center; gap: 0.75rem; }
+        .mobile-nav-menu  { display: block; }
+        @media (min-width: 1024px) {
+            .mobile-hamburger { display: none !important; }
+            .mobile-nav-menu  { display: none !important; }
+        }
+    </style>
 </head>
 
 <body class="font-sans antialiased text-gray-700 bg-gray-50 flex flex-col min-h-screen">
@@ -28,7 +38,7 @@
         </div>
     </div>
 
-    <header class="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100">
+    <header class="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100" x-data="{ open: false }">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <a href="{{ route('home') }}" class="flex items-center group">
                 <img src="{{ asset('imagens/logo/etec.png') }}" alt="Logo Etec Sebastiana Augusta de Moraes"
@@ -98,8 +108,40 @@
                 <div class="ml-4 pl-4 border-l border-gray-200">
                     <img src="{{ asset('imagens/logo/logo-cps-2022.svg') }}" alt="Centro Paula Souza" class="h-10 w-auto opacity-80 hover:opacity-100 transition">
                 </div>
+            
+            {{-- Hamburger Button: visível apenas em mobile (< lg) --}}
+            <div class="mobile-hamburger">
+                <img src="{{ asset('imagens/logo/logo-cps-2022.svg') }}" alt="Centro Paula Souza" class="h-8 w-auto opacity-70">
+                <button @click="open = !open"
+                    class="p-2 rounded-lg text-gray-600 hover:text-etec-main hover:bg-gray-100 transition focus:outline-none">
+                    <svg x-show="!open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                    <svg x-show="open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display:none">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+        </div>
+
+        {{-- Menu Mobile --}}
+        <div x-show="open" x-transition class="mobile-nav-menu border-t border-gray-100 bg-white shadow-lg" style="display:none">
+            <nav class="container mx-auto px-4 py-3 flex flex-col gap-0.5 text-sm font-medium">
+                <a href="{{ route('home') }}" @click="open=false" class="px-4 py-3 text-etec-dark hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Início</a>
+                <a href="{{ route('institutional') }}" @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">A Escola</a>
+                <a href="{{ route('library') }}" @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Biblioteca</a>
+                <a href="{{ route('home') }}#unidades" @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Cursos</a>
+                <a href="{{ route('home') }}#fazenda" @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Escola Fazenda</a>
+                <a href="{{ route('academic') }}" @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Secretaria</a>
+                <a href="{{ route('contact') }}" @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Contato</a>
+                <a href="{{ route('agenda') }}" @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Agenda</a>
+                <div class="pt-2 pb-1">
+                    <a href="#" @click="open=false" class="block px-4 py-3 bg-etec-accent text-etec-dark rounded-lg hover:bg-yellow-400 transition font-semibold text-center shadow-sm">Vestibulinho</a>
+                </div>
             </nav>
         </div>
+
     </header>
 
     <main class="flex-grow">
