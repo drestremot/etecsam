@@ -95,6 +95,16 @@
         </div>
 
         <div class="flex items-center gap-3 pt-1">
+            
+            {{-- Data de Nascimento --}}
+            <div class="mb-4">
+                <x-label for="birth_date" :value="__('Data de Nascimento')" />
+                <input id="birth_date" type="date" name="birth_date"
+                    value="{{ old('birth_date', isset($teacher) ? ($teacher->birth_date ? \Carbon\Carbon::parse($teacher->birth_date)->format('Y-m-d') : '') : '') }}"
+                    class="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                <p class="text-xs text-gray-400 mt-1">Sera exibido na secao de aniversariantes do mes na Agenda</p>
+            </div>
+
             <button type="submit"
                     class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-6 py-2.5 rounded-lg shadow-sm transition">
                 {{ $action === 'create' ? '✓ Cadastrar Funcionário' : '✓ Salvar Alterações' }}
