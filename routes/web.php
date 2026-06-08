@@ -49,4 +49,13 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::resource('sectors',     \App\Http\Controllers\Admin\SectorController::class)->except(['show']);
     Route::resource('events',      \App\Http\Controllers\Admin\EventController::class)->except(['show']);
     Route::resource('documents',   \App\Http\Controllers\Admin\DocumentController::class)->except(['show']);
+
+    // Parceiros
+    Route::resource('partners', Admin\PartnerController::class);
+
+    // Temas do Site
+    Route::resource('themes', Admin\ThemeController::class);
+    Route::post('themes/{theme}/activate', [Admin\ThemeController::class, 'activate'])->name('themes.activate');
+    Route::post('themes/deactivate', [Admin\ThemeController::class, 'deactivate'])->name('themes.deactivate');
+
 });
