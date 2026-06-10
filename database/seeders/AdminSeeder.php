@@ -6,6 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
+// Seeder garantido: garante que o admin existe com is_admin=1
 class AdminSeeder extends Seeder
 {
     public function run(): void
@@ -13,12 +14,12 @@ class AdminSeeder extends Seeder
         DB::table('users')->updateOrInsert(
             ['email' => 'admin@etecsam.com.br'],
             [
-                'name'           => 'Administrador',
-                'email'          => 'admin@etecsam.com.br',
-                'password'       => Hash::make('Admin@2025'),
-                'is_admin'       => 1,
+                'name'              => 'Administrador',
+                'email'             => 'admin@etecsam.com.br',
+                'password'          => Hash::make('Admin@2025'),
+                'is_admin'          => 1,
                 'email_verified_at' => now(),
-                'updated_at'     => now(),
+                'updated_at'        => now(),
             ]
         );
     }
