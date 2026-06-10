@@ -100,7 +100,7 @@
             <div class="mb-4">
                 <x-label for="birth_date" :value="__('Data de Nascimento')" />
                 <input id="birth_date" type="date" name="birth_date"
-                    value="{{ old('birth_date', isset($teacher) ? ($teacher->birth_date ? \Carbon\Carbon::parse($teacher->birth_date)->format('Y-m-d') : '') : '') }}"
+                    value="{{ old('birth_date', isset($teacher) ? ($teacher->birth_date ?? '') : '') }}"
                     class="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                 <p class="text-xs text-gray-400 mt-1">Sera exibido na secao de aniversariantes do mes na Agenda</p>
             </div>
