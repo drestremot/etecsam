@@ -51,11 +51,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::resource('documents',   \App\Http\Controllers\Admin\DocumentController::class)->except(['show']);
 
     // Parceiros
-    Route::resource('partners', Admin\PartnerController::class);
+    Route::resource('partners', \App\Http\Controllers\Admin\PartnerController::class);
 
     // Temas do Site
-    Route::resource('themes', Admin\ThemeController::class);
-    Route::post('themes/{theme}/activate', [Admin\ThemeController::class, 'activate'])->name('themes.activate');
-    Route::post('themes/deactivate', [Admin\ThemeController::class, 'deactivate'])->name('themes.deactivate');
+    Route::resource('themes', \App\Http\Controllers\Admin\ThemeController::class);
+    Route::post('themes/{theme}/activate', [\App\Http\Controllers\Admin\ThemeController::class, 'activate'])->name('themes.activate');
+    Route::post('themes/deactivate', [\App\Http\Controllers\Admin\ThemeController::class, 'deactivate'])->name('themes.deactivate');
 
 });
