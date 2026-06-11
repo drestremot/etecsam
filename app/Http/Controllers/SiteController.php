@@ -8,6 +8,7 @@ use App\Models\Sector;
 use App\Models\Event; // Importante: garante que o Model de Eventos seja reconhecido
 use App\Models\Document;
 use App\Models\Teacher;
+use App\Models\Partner;
 
 class SiteController extends Controller
 {
@@ -179,14 +180,20 @@ class SiteController extends Controller
     {
         // Busca eventos futuros, ordenados por data
         // O 'get()->groupBy...' agrupa os resultados pelo mês/ano (ex: "03/2026")
-        $events = Event::where('start_date', '>=', now()->startOfDay())
+        $events = Event::whereYear('start_date', now()->year)
             ->orderBy('start_date', 'asc')
             ->get()
             ->groupBy(function ($date) {
                 return \Carbon\Carbon::parse($date->start_date)->format('m/Y');
             });
 
-        return view('pages.agenda', compact('events'));
+        // Aniversariantes do mês atual
+        $birthdays = Teacher::whereNotNull('birth_date')
+            ->whereMonth('birth_date', now()->month)
+            ->orderByRaw("strftime('%d', birth_date)")
+            ->get();
+
+        return view('pages.agenda', compact('events', 'birthdays'));
     }
 
     public function show($slug)
