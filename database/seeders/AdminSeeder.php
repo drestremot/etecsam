@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
-// Seeder garantido: garante que o admin existe com is_admin=1
+// Seeder garantido v3 - admin com is_admin=1 e senha Admin@2025
 class AdminSeeder extends Seeder
 {
     public function run(): void
