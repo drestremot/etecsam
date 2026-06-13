@@ -15,8 +15,14 @@ class LaboratoryController extends Controller
 {
     public function index()
     {
-        $laboratories = Laboratory::with(['responsible', 'unit'])->orderBy('name')->paginate(20);
+        $laboratories = Laboratory::with(['responsible', 'unit'])->orderByDesc('is_active')->orderBy('name')->paginate(50);
         return view('admin.laboratories.index', compact('laboratories'));
+    }
+
+    public function toggle(Laboratory $laboratory)
+    {
+        $laboratory->update(['is_active' => !$laboratory->is_active]);
+        return back()->with('success', '"' . $laboratory->name . '" ' . ($laboratory->is_active ? 'ativado' : 'desativado') . '.');
     }
 
     public function create()

@@ -11,8 +11,14 @@ class PartnerController extends Controller
 {
     public function index()
     {
-        $partners = Partner::orderBy('order')->get();
+        $partners = Partner::orderByDesc('active')->orderBy('order')->get();
         return view('admin.partners.index', compact('partners'));
+    }
+
+    public function toggle(Partner $partner)
+    {
+        $partner->update(['active' => !$partner->active]);
+        return back()->with('success', '"' . $partner->name . '" ' . ($partner->active ? 'ativado' : 'desativado') . '.');
     }
 
     public function create()

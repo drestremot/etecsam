@@ -50,8 +50,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::resource('events',      \App\Http\Controllers\Admin\EventController::class)->except(['show']);
     Route::resource('documents',   \App\Http\Controllers\Admin\DocumentController::class)->except(['show']);
 
+    // Rotas de toggle (ativar/desativar)
+    Route::patch('courses/{course}/toggle',         [\App\Http\Controllers\Admin\CourseController::class,     'toggle'])->name('courses.toggle');
+    Route::patch('departments/{department}/toggle', [\App\Http\Controllers\Admin\DepartmentController::class, 'toggle'])->name('departments.toggle');
+    Route::patch('laboratories/{laboratory}/toggle',[\App\Http\Controllers\Admin\LaboratoryController::class, 'toggle'])->name('laboratories.toggle');
+
     // Parceiros
     Route::resource('partners', \App\Http\Controllers\Admin\PartnerController::class);
+    Route::patch('partners/{partner}/toggle', [\App\Http\Controllers\Admin\PartnerController::class, 'toggle'])->name('partners.toggle');
 
     // Temas do Site
     Route::resource('themes', \App\Http\Controllers\Admin\ThemeController::class);
