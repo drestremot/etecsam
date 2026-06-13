@@ -108,12 +108,21 @@
                 <div class="ml-4 pl-4 border-l border-gray-200">
                     <img src="{{ asset('imagens/logo/logo-cps-2022.svg') }}" alt="Centro Paula Souza" class="h-10 w-auto opacity-80 hover:opacity-100 transition">
                 </div>
-            
-            {{-- Hamburger Button: visível apenas em mobile (< lg) --}}
+            </nav>
+            {{-- ↑ FIM DO MENU DESKTOP (hidden lg:flex) — NÃO REMOVER esta tag </nav> --}}
+
+            {{-- ═══════════════════════════════════════════════════════════════
+                 HAMBÚRGUER — visível APENAS em mobile (< 1024px)
+                 ATENÇÃO: este bloco deve ficar FORA da <nav> acima e DENTRO
+                 do <div class="container ... flex justify-between">.
+                 O CSS .mobile-hamburger esconde-o em desktop via media query.
+                 NÃO mover este bloco para dentro da <nav class="hidden lg:flex">.
+            ════════════════════════════════════════════════════════════════ --}}
             <div class="mobile-hamburger">
                 <img src="{{ asset('imagens/logo/logo-cps-2022.svg') }}" alt="Centro Paula Souza" class="h-8 w-auto opacity-70">
                 <button @click="open = !open"
-                    class="p-2 rounded-lg text-gray-600 hover:text-etec-main hover:bg-gray-100 transition focus:outline-none">
+                    class="p-2 rounded-lg text-gray-600 hover:text-etec-main hover:bg-gray-100 transition focus:outline-none"
+                    aria-label="Abrir menu">
                     <svg x-show="!open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                     </svg>
@@ -122,25 +131,52 @@
                     </svg>
                 </button>
             </div>
+            {{-- FIM DO HAMBÚRGUER --}}
 
-        </div>
+        </div>{{-- fim container flex justify-between --}}
 
-        {{-- Menu Mobile --}}
+        {{-- ═══════════════════════════════════════════════════════════════
+             MENU MOBILE — abre/fecha via Alpine.js x-show="open"
+             Atualizar SEMPRE que adicionar itens ao menu desktop acima.
+             Inclui todos os itens + subpáginas de Gestão expandidas.
+        ════════════════════════════════════════════════════════════════ --}}
         <div x-show="open" x-transition class="mobile-nav-menu border-t border-gray-100 bg-white shadow-lg" style="display:none">
             <nav class="container mx-auto px-4 py-3 flex flex-col gap-0.5 text-sm font-medium">
-                <a href="{{ route('home') }}" @click="open=false" class="px-4 py-3 text-etec-dark hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Início</a>
+                <a href="{{ route('home') }}"         @click="open=false" class="px-4 py-3 text-etec-dark hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Início</a>
                 <a href="{{ route('institutional') }}" @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">A Escola</a>
-                <a href="{{ route('library') }}" @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Biblioteca</a>
+                <a href="{{ route('library') }}"       @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Biblioteca</a>
                 <a href="{{ route('home') }}#unidades" @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Cursos</a>
-                <a href="{{ route('home') }}#fazenda" @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Escola Fazenda</a>
-                <a href="{{ route('academic') }}" @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Secretaria</a>
-                <a href="{{ route('contact') }}" @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Contato</a>
-                <a href="{{ route('agenda') }}" @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Agenda</a>
+                <a href="{{ route('home') }}#fazenda"  @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Escola Fazenda</a>
+                <a href="{{ route('academic') }}"      @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Secretaria</a>
+
+                {{-- Gestão (expandido no mobile) --}}
+                <div class="border-t border-gray-100 pt-1 mt-1">
+                    <p class="px-4 py-1.5 text-xs font-bold text-gray-400 uppercase tracking-widest">Gestão</p>
+                    <a href="{{ route('superintendence') }}"   @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition flex items-center gap-2">
+                        <svg class="w-4 h-4 text-etec-medium" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                        Superintendência
+                    </a>
+                    <a href="{{ route('academic-division') }}" @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition flex items-center gap-2">
+                        <svg class="w-4 h-4 text-etec-medium" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
+                        Diretoria Acadêmica
+                    </a>
+                    <a href="{{ route('administrative') }}"    @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition flex items-center gap-2">
+                        <svg class="w-4 h-4 text-etec-medium" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        Diretoria de Serviços
+                    </a>
+                </div>
+
+                <div class="border-t border-gray-100 pt-1 mt-1">
+                    <a href="{{ route('contact') }}" @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Contato</a>
+                    <a href="{{ route('agenda') }}"  @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Agenda</a>
+                </div>
+
                 <div class="pt-2 pb-1">
                     <a href="#" @click="open=false" class="block px-4 py-3 bg-etec-accent text-etec-dark rounded-lg hover:bg-yellow-400 transition font-semibold text-center shadow-sm">Vestibulinho</a>
                 </div>
             </nav>
         </div>
+        {{-- FIM DO MENU MOBILE --}}
 
     </header>
 
