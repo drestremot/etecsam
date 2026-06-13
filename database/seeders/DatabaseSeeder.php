@@ -35,6 +35,11 @@ class DatabaseSeeder extends Seeder
         $this->call(AdminUserSeeder::class);
 
         // =========================================================================
+        // 2. TEMAS DO SITE (campanhas de saúde e datas especiais)
+        // =========================================================================
+        $this->call(ThemeSeeder::class);
+
+        // =========================================================================
         // 2. IMPORTAÇÃO DO QUADRO DE AULAS (AUTOMÁTICO)
         // =========================================================================
 

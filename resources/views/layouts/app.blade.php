@@ -17,6 +17,78 @@
             .mobile-nav-menu  { display: none !important; }
         }
     </style>
+
+    @php $activeTheme = \App\Models\SiteTheme::getActive(); @endphp
+
+    @if($activeTheme)
+    {{-- ═══════════════════════════════════════════════════════════════
+         TEMA ATIVO: {{ $activeTheme->name }}
+         CSS dinâmico que sobrepõe as cores etec-* quando o usuário
+         não desativou o tema (classe etec-themed no <html>).
+         As cores originais voltam removendo a classe via localStorage.
+    ════════════════════════════════════════════════════════════════ --}}
+    <style id="etec-theme-css">
+        /* Backgrounds */
+        html.etec-themed .bg-etec-dark  { background-color: {{ $activeTheme->primary_color }}   !important; }
+        html.etec-themed .bg-etec-main  { background-color: {{ $activeTheme->secondary_color }} !important; }
+        html.etec-themed .bg-etec-medium{ background-color: {{ $activeTheme->secondary_color }} !important; }
+        html.etec-themed .bg-etec-accent{ background-color: {{ $activeTheme->accent_color }}    !important; }
+        html.etec-themed .bg-etec-light { background-color: {{ $activeTheme->accent_color }}1a  !important; }
+        /* Texts */
+        html.etec-themed .text-etec-dark  { color: {{ $activeTheme->primary_color }}   !important; }
+        html.etec-themed .text-etec-main  { color: {{ $activeTheme->secondary_color }} !important; }
+        html.etec-themed .text-etec-medium{ color: {{ $activeTheme->secondary_color }} !important; }
+        html.etec-themed .text-etec-accent{ color: {{ $activeTheme->accent_color }}    !important; }
+        /* Borders */
+        html.etec-themed .border-etec-dark  { border-color: {{ $activeTheme->primary_color }}   !important; }
+        html.etec-themed .border-etec-main  { border-color: {{ $activeTheme->secondary_color }} !important; }
+        html.etec-themed .border-etec-medium{ border-color: {{ $activeTheme->secondary_color }} !important; }
+        html.etec-themed .border-etec-accent{ border-color: {{ $activeTheme->accent_color }}    !important; }
+        /* Gradients */
+        html.etec-themed .from-etec-dark  { --tw-gradient-from: {{ $activeTheme->primary_color }}   !important; }
+        html.etec-themed .from-etec-main  { --tw-gradient-from: {{ $activeTheme->secondary_color }} !important; }
+        html.etec-themed .to-etec-main    { --tw-gradient-to:   {{ $activeTheme->secondary_color }} !important; }
+        html.etec-themed .to-etec-medium  { --tw-gradient-to:   {{ $activeTheme->secondary_color }} !important; }
+        html.etec-themed .to-etec-dark    { --tw-gradient-to:   {{ $activeTheme->primary_color }}   !important; }
+        /* Hover states */
+        html.etec-themed .hover\:bg-etec-main:hover   { background-color: {{ $activeTheme->secondary_color }} !important; }
+        html.etec-themed .hover\:bg-etec-accent:hover { background-color: {{ $activeTheme->accent_color }}    !important; }
+        html.etec-themed .hover\:text-etec-main:hover { color: {{ $activeTheme->secondary_color }} !important; }
+        html.etec-themed .hover\:text-etec-accent:hover { color: {{ $activeTheme->accent_color }} !important; }
+        /* Border accent on top bar */
+        html.etec-themed .border-b-4.border-etec-accent { border-color: {{ $activeTheme->accent_color }} !important; }
+        /* Ring */
+        html.etec-themed .ring-etec-accent { --tw-ring-color: {{ $activeTheme->accent_color }} !important; }
+        /* Faixa colorida no topo do site (indicador visual do tema) */
+        html.etec-themed body::before {
+            content: '';
+            display: block;
+            height: 4px;
+            background: linear-gradient(90deg,
+                {{ $activeTheme->primary_color }},
+                {{ $activeTheme->secondary_color }},
+                {{ $activeTheme->accent_color }},
+                {{ $activeTheme->secondary_color }},
+                {{ $activeTheme->primary_color }});
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+        }
+    </style>
+
+    {{-- Aplica a classe antes do paint para evitar flash --}}
+    <script>
+        (function () {
+            var slug = '{{ $activeTheme->slug }}';
+            var key  = 'etec_theme_off_' + slug;
+            if (!localStorage.getItem(key)) {
+                document.documentElement.classList.add('etec-themed');
+            }
+        })();
+    </script>
+    @endif
 </head>
 
 <body class="font-sans antialiased text-gray-700 bg-gray-50 flex flex-col min-h-screen">
@@ -229,6 +301,159 @@
             </div>
         </div>
     </footer>
+
+    @if($activeTheme ?? null)
+    {{-- ═══════════════════════════════════════════════════════
+         POPUP DO TEMA — exibido uma vez por sessão
+         Mostra a imagem e a descrição da campanha ativa.
+    ════════════════════════════════════════════════════════ --}}
+    <div id="etec-theme-popup"
+         class="fixed inset-0 z-[999] flex items-center justify-center p-4"
+         style="display:none !important; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden"
+             style="max-height: 90vh; overflow-y: auto;">
+
+            {{-- Cabeçalho colorido --}}
+            <div class="relative h-32 flex items-end px-6 pb-4"
+                 style="background: linear-gradient(135deg, {{ $activeTheme->primary_color }}, {{ $activeTheme->secondary_color }})">
+                @if($activeTheme->popup_image)
+                <img src="{{ photo_url($activeTheme->popup_image) }}" alt="{{ $activeTheme->name }}"
+                     class="absolute inset-0 w-full h-full object-cover opacity-40">
+                @endif
+                <div class="relative">
+                    <p class="text-white/80 text-xs font-bold uppercase tracking-widest mb-0.5">Campanha do Mês</p>
+                    <h2 class="text-white text-2xl font-bold drop-shadow">{{ $activeTheme->name }}</h2>
+                </div>
+                <button onclick="etecClosePopup()"
+                        class="absolute top-3 right-3 w-8 h-8 bg-black/20 hover:bg-black/40 rounded-full flex items-center justify-center text-white transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            {{-- Paleta de cores --}}
+            <div class="flex gap-0 h-2">
+                <div class="flex-1" style="background: {{ $activeTheme->primary_color }}"></div>
+                <div class="flex-1" style="background: {{ $activeTheme->secondary_color }}"></div>
+                <div class="flex-1" style="background: {{ $activeTheme->accent_color }}"></div>
+            </div>
+
+            {{-- Conteúdo --}}
+            <div class="p-6">
+                @if($activeTheme->description)
+                <p class="text-gray-600 text-sm leading-relaxed">{{ $activeTheme->description }}</p>
+                @else
+                <p class="text-gray-500 text-sm italic">As cores do site estão adaptadas para esta data comemorativa.</p>
+                @endif
+
+                <div class="mt-6 flex flex-col sm:flex-row gap-3">
+                    <button onclick="etecClosePopup()"
+                            class="flex-1 py-2.5 px-4 rounded-lg text-white text-sm font-semibold transition hover:opacity-90"
+                            style="background: {{ $activeTheme->primary_color }}">
+                        Entendi, obrigado!
+                    </button>
+                    <button onclick="etecDisableTheme()"
+                            class="flex-1 py-2.5 px-4 rounded-lg bg-gray-100 text-gray-600 text-sm font-medium hover:bg-gray-200 transition">
+                        Preferir cores originais
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- ═══════════════════════════════════════════════════════
+         BOTÃO FLUTUANTE — toggle tema on/off
+         Fica visível no canto inferior direito quando há tema ativo.
+    ════════════════════════════════════════════════════════ --}}
+    <button id="etec-theme-toggle"
+            onclick="etecToggleTheme()"
+            title="Alternar cores da campanha"
+            class="fixed bottom-6 right-6 z-[998] w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-110 focus:outline-none"
+            style="background: linear-gradient(135deg, {{ $activeTheme->primary_color }}, {{ $activeTheme->accent_color }})">
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
+        </svg>
+        {{-- Tooltip --}}
+        <span id="etec-toggle-tooltip"
+              class="absolute bottom-14 right-0 bg-gray-800 text-white text-xs rounded-lg px-3 py-1.5 whitespace-nowrap opacity-0 pointer-events-none transition-opacity"
+              style="min-width: 140px; text-align: center;">
+            Clique para alternar cores
+        </span>
+    </button>
+
+    <script>
+    (function () {
+        var SLUG       = '{{ $activeTheme->slug }}';
+        var KEY_OFF    = 'etec_theme_off_'    + SLUG;
+        var KEY_POPUP  = 'etec_theme_popup_'  + SLUG;
+        var TODAY      = new Date().toDateString();
+
+        // ── Popup ────────────────────────────────────────────────
+        function showPopup() {
+            var el = document.getElementById('etec-theme-popup');
+            if (el) el.style.display = 'flex';
+        }
+        window.etecClosePopup = function () {
+            var el = document.getElementById('etec-theme-popup');
+            if (el) el.style.display = 'none';
+            localStorage.setItem(KEY_POPUP, TODAY);
+        };
+
+        // Mostra popup se tema estiver ativo e usuário ainda não viu hoje
+        if (!localStorage.getItem(KEY_OFF) && localStorage.getItem(KEY_POPUP) !== TODAY) {
+            setTimeout(showPopup, 600);
+        }
+
+        // ── Toggle ───────────────────────────────────────────────
+        function updateToggleBtn() {
+            var btn     = document.getElementById('etec-theme-toggle');
+            var tooltip = document.getElementById('etec-toggle-tooltip');
+            var isOn    = document.documentElement.classList.contains('etec-themed');
+            if (btn) {
+                btn.style.opacity = isOn ? '1' : '0.45';
+                btn.title = isOn ? 'Desativar cores da campanha' : 'Reativar cores da campanha';
+            }
+            if (tooltip) {
+                tooltip.textContent = isOn ? 'Desativar cores do tema' : 'Reativar cores do tema';
+            }
+        }
+
+        window.etecToggleTheme = function () {
+            var html = document.documentElement;
+            if (html.classList.contains('etec-themed')) {
+                html.classList.remove('etec-themed');
+                localStorage.setItem(KEY_OFF, '1');
+            } else {
+                html.classList.add('etec-themed');
+                localStorage.removeItem(KEY_OFF);
+            }
+            updateToggleBtn();
+        };
+
+        window.etecDisableTheme = function () {
+            document.documentElement.classList.remove('etec-themed');
+            localStorage.setItem(KEY_OFF, '1');
+            etecClosePopup();
+            updateToggleBtn();
+        };
+
+        // Tooltip hover
+        var btn = document.getElementById('etec-theme-toggle');
+        if (btn) {
+            btn.addEventListener('mouseenter', function () {
+                document.getElementById('etec-toggle-tooltip').style.opacity = '1';
+            });
+            btn.addEventListener('mouseleave', function () {
+                document.getElementById('etec-toggle-tooltip').style.opacity = '0';
+            });
+        }
+
+        updateToggleBtn();
+    })();
+    </script>
+    @endif
 
 </body>
 </html>

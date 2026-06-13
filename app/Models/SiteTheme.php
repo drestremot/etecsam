@@ -7,8 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class SiteTheme extends Model
 {
     protected $fillable = [
-        'name', 'slug', 'month', 'primary_color', 'secondary_color',
-        'accent_color', 'text_color', 'active',
+        'name', 'slug', 'month',
+        'primary_color', 'secondary_color', 'accent_color', 'text_color',
+        'description', 'popup_image',
+        'active',
     ];
 
     protected $casts = [
