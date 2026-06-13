@@ -8,6 +8,9 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (!Schema::hasTable('teachers')) {
+            return; // create_teachers_table já inclui birth_date
+        }
         Schema::table('teachers', function (Blueprint $table) {
             if (!Schema::hasColumn('teachers', 'birth_date')) {
                 $table->date('birth_date')->nullable()->after('phone');
