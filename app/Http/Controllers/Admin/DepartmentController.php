@@ -12,8 +12,14 @@ class DepartmentController extends Controller
 {
     public function index()
     {
-        $departments = Department::with('responsible')->orderBy('name')->paginate(20);
+        $departments = Department::with('responsible')->orderByDesc('is_active')->orderBy('name')->paginate(50);
         return view('admin.departments.index', compact('departments'));
+    }
+
+    public function toggle(Department $department)
+    {
+        $department->update(['is_active' => !$department->is_active]);
+        return back()->with('success', '"' . $department->name . '" ' . ($department->is_active ? 'ativado' : 'desativado') . '.');
     }
 
     public function create()

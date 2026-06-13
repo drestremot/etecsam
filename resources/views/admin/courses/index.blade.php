@@ -6,21 +6,44 @@
 @endsection
 
 @section('content')
-<div class="bg-white rounded-xl shadow-sm overflow-hidden">
+<div class="bg-white rounded-xl shadow-sm overflow-hidden" x-data="adminTable()">
+
+    {{-- Busca --}}
+    <div class="px-4 py-3 border-b border-gray-100 flex items-center gap-2">
+        <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <input x-model="q" @input="search()" type="text" placeholder="Buscar por curso, tipo, unidade..."
+               class="flex-1 text-sm border-0 outline-none bg-transparent text-gray-700 placeholder-gray-400">
+        <button x-show="q" @click="q='';search()" class="text-gray-400 hover:text-gray-600 text-xs">✕ limpar</button>
+    </div>
+
     <table class="min-w-full divide-y divide-gray-200 text-sm">
         <thead class="bg-gray-50">
             <tr>
-                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Curso</th>
-                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Tipo</th>
-                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Unidade</th>
+                <th @click="sort('titulo')" class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none">
+                    Curso <span class="ml-1 text-gray-400" x-text="icon('titulo')"></span>
+                </th>
+                <th @click="sort('tipo')" class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none">
+                    Tipo <span class="ml-1 text-gray-400" x-text="icon('tipo')"></span>
+                </th>
+                <th @click="sort('unidade')" class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none">
+                    Unidade <span class="ml-1 text-gray-400" x-text="icon('unidade')"></span>
+                </th>
                 <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Coord. Técnico</th>
-                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Status</th>
-                <th class="px-4 py-3"></th>
+                <th @click="sort('status')" class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none">
+                    Status <span class="ml-1 text-gray-400" x-text="icon('status')"></span>
+                </th>
+                <th class="px-4 py-3 w-32"></th>
             </tr>
         </thead>
         <tbody class="divide-y divide-gray-100">
             @forelse($courses as $course)
-            <tr class="hover:bg-gray-50">
+            <tr class="hover:bg-gray-50 {{ !$course->is_active ? 'opacity-60' : '' }}"
+                data-row="{{ strtolower($course->title . ' ' . $course->type . ' ' . ($course->unit?->name ?? '') . ' ' . ($course->technicalCoordinator?->name ?? '')) }}"
+                data-active="{{ $course->is_active ? '1' : '0' }}"
+                data-titulo="{{ strtolower($course->title) }}"
+                data-tipo="{{ strtolower($course->type) }}"
+                data-unidade="{{ strtolower($course->unit?->name ?? '') }}"
+                data-status="{{ $course->is_active ? 'ativo' : 'inativo' }}">
                 <td class="px-4 py-3 font-medium text-gray-800">{{ $course->title }}</td>
                 <td class="px-4 py-3 text-gray-500 text-xs">{{ $course->type }}</td>
                 <td class="px-4 py-3 text-gray-500">{{ $course->unit?->name ?? '—' }}</td>
@@ -30,21 +53,38 @@
                         {{ $course->is_active ? 'Ativo' : 'Inativo' }}
                     </span>
                 </td>
-                <td class="px-4 py-3 text-right">
-                    <div class="flex items-center justify-end gap-3">
-                        <a href="{{ route('admin.courses.subjects.index', $course) }}"
-                           class="inline-flex items-center gap-1 text-xs font-medium text-emerald-600 hover:text-emerald-800 hover:underline"
-                           title="Gerenciar Grade Curricular">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                            </svg>
-                            Grade
+                <td class="px-4 py-3">
+                    <div class="flex items-center justify-end gap-1">
+                        {{-- Grade --}}
+                        <a href="{{ route('admin.courses.subjects.index', $course) }}" title="Grade curricular"
+                           class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                         </a>
-                        <a href="{{ route('admin.courses.edit', $course) }}" class="text-indigo-600 hover:underline text-xs font-medium">Editar</a>
-                        <form action="{{ route('admin.courses.destroy', $course) }}" method="POST" class="inline" onsubmit="return confirm('Remover?')">
+                        {{-- Toggle --}}
+                        <form action="{{ route('admin.courses.toggle', $course) }}" method="POST" class="inline">
+                            @csrf @method('PATCH')
+                            <button type="submit" title="{{ $course->is_active ? 'Desativar' : 'Ativar' }}"
+                                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg transition {{ $course->is_active ? 'bg-green-50 text-green-600 hover:bg-green-100' : 'bg-gray-100 text-gray-400 hover:bg-gray-200' }}">
+                                @if($course->is_active)
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                @else
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                @endif
+                            </button>
+                        </form>
+                        {{-- Editar --}}
+                        <a href="{{ route('admin.courses.edit', $course) }}" title="Editar"
+                           class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                        </a>
+                        {{-- Excluir --}}
+                        <form action="{{ route('admin.courses.destroy', $course) }}" method="POST" class="inline"
+                              onsubmit="return confirm('Remover o curso \'{{ addslashes($course->title) }}\'?')">
                             @csrf @method('DELETE')
-                            <button class="text-red-500 hover:underline text-xs font-medium">Excluir</button>
+                            <button type="submit" title="Excluir"
+                                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            </button>
                         </form>
                     </div>
                 </td>
@@ -56,4 +96,5 @@
     </table>
     <div class="px-4 py-3">{{ $courses->links() }}</div>
 </div>
+@include('admin.partials.table-script')
 @endsection

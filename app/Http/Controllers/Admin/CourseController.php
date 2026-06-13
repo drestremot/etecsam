@@ -14,8 +14,14 @@ class CourseController extends Controller
 {
     public function index()
     {
-        $courses = Course::with(['unit', 'technicalCoordinator'])->orderBy('title')->paginate(20);
+        $courses = Course::with(['unit', 'technicalCoordinator'])->orderByDesc('is_active')->orderBy('title')->paginate(50);
         return view('admin.courses.index', compact('courses'));
+    }
+
+    public function toggle(Course $course)
+    {
+        $course->update(['is_active' => !$course->is_active]);
+        return back()->with('success', '"' . $course->title . '" ' . ($course->is_active ? 'ativado' : 'desativado') . '.');
     }
 
     public function create()
