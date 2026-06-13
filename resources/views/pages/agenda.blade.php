@@ -103,7 +103,12 @@
                 @foreach($birthdays as $teacher)
                 <div class="flex items-center gap-3 p-3 bg-yellow-50 rounded-xl border border-yellow-100">
                     @if($teacher->photo)
-                        <img src="{{ Storage::url($teacher->photo) }}" alt="{{ $teacher->name }}" class="w-12 h-12 rounded-full object-cover border-2 border-yellow-200">
+                        <img src="{{ photo_url($teacher->photo) }}" alt="{{ $teacher->name }}"
+                             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+                             class="w-12 h-12 rounded-full object-cover border-2 border-yellow-200">
+                        <div style="display:none" class="w-12 h-12 rounded-full bg-yellow-200 flex items-center justify-center text-yellow-700 font-bold text-lg">
+                            {{ strtoupper(substr($teacher->name, 0, 1)) }}
+                        </div>
                     @else
                         <div class="w-12 h-12 rounded-full bg-yellow-200 flex items-center justify-center text-yellow-700 font-bold text-lg">
                             {{ strtoupper(substr($teacher->name, 0, 1)) }}

@@ -63,7 +63,10 @@
             <div class="p-6 text-center">
                 <div class="w-24 h-24 mx-auto bg-gray-100 rounded-full mb-4 overflow-hidden border-4 border-etec-light shadow-sm">
                     @if($course->technicalCoordinator && $course->technicalCoordinator->photo)
-                        <img src="{{ photo_url($course->technicalCoordinator->photo) }}" class="w-full h-full object-cover">
+                        <img src="{{ photo_url($course->technicalCoordinator->photo) }}"
+                             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+                             class="w-full h-full object-cover">
+                        <div style="display:none" class="w-full h-full flex items-center justify-center bg-etec-medium text-white text-2xl font-bold">{{ substr($course->technicalCoordinator->name ?? 'C',0,1) }}</div>
                     @else
                         <div class="w-full h-full flex items-center justify-center bg-etec-medium text-white text-2xl font-bold">
                             {{ substr($course->technicalCoordinator->name ?? 'C', 0, 1) }}
@@ -120,7 +123,10 @@
                     <div class="flex items-start gap-4 md:w-1/3 md:border-r border-gray-100 md:pr-6 flex-shrink-0">
                         <div class="w-14 h-14 rounded-full bg-gray-100 overflow-hidden flex-shrink-0 border-2 border-gray-50">
                             @if($subject->teacher && $subject->teacher->photo)
-                                <img src="{{ photo_url($subject->teacher->photo) }}" class="w-full h-full object-cover">
+                                <img src="{{ photo_url($subject->teacher->photo) }}"
+                                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+                                     class="w-full h-full object-cover">
+                                <div style="display:none" class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-500 text-xl font-bold">{{ substr($subject->teacher->name,0,1) }}</div>
                             @else
                                 <div class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-500">
                                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>

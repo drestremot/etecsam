@@ -114,7 +114,10 @@
                     <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-100 text-center max-w-sm w-full hover:-translate-y-1 transition duration-300">
                         <div class="w-28 h-28 mx-auto bg-etec-dark text-white rounded-full flex items-center justify-center text-5xl mb-5 shadow-md overflow-hidden">
                             @if ($direcaoGeral->photo)
-                                <img src="{{ photo_url($direcaoGeral->photo) }}" class="w-full h-full object-cover">
+                                <img src="{{ photo_url($direcaoGeral->photo) }}"
+                                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+                                     class="w-full h-full object-cover">
+                                <div style="display:none" class="w-full h-full flex items-center justify-center bg-etec-dark text-white font-bold text-2xl">{{ substr($direcaoGeral->name,0,1) }}</div>
                             @else
                                 <svg class="w-14 h-14 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                             @endif
