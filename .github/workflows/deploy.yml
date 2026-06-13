@@ -55,5 +55,10 @@ jobs:
             php artisan db:seed --class=AdminSeeder --force
             php artisan config:clear && php artisan route:clear && php artisan view:clear
             php artisan config:cache && php artisan route:cache && php artisan view:cache
-            php -r "function rc($s,$d){if(!is_dir($d))mkdir($d,0755,true);foreach(scandir($s)as $f){if($f==='.'||$f==='..') continue;$sp=$s.'/'.$f;$dp=$d.'/'.$f;is_dir($sp)?rc($sp,$dp):copy($sp,$dp);}}rc('storage/app/public','public/storage');echo 'Storage OK';"
+            if [ ! -e public/storage ]; then
+              ln -s /home/u615674013/domains/etecsam.com.br/public_html/etecsam/storage/app/public public/storage
+              echo "Symlink storage criado"
+            else
+              echo "Symlink storage ja existe"
+            fi
             echo "Deploy concluido!"
