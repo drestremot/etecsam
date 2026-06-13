@@ -4,10 +4,19 @@ if (!function_exists('photo_url')) {
     /**
      * Retorna a URL correta de uma foto/imagem armazenada no banco.
      *
-     * Lida com dois padrões existentes no projeto:
-     *  - Caminhos legados: "imagens/docentes/..."  → ficam em public/, usa asset()
-     *  - Uploads via admin: "teachers/xxx.png"     → ficam em storage/, usa asset('storage/...')
-     *  - URLs externas: "https://..."              → usa diretamente
+     * Regras de resolução (em ordem):
+     *  1. null / vazio        → retorna null
+     *  2. URL externa (http)  → retorna como está
+     *  3. imagens/ ou icons/  → arquivo em public/, usa asset()
+     *  4. qualquer outra coisa → arquivo em storage/app/public/, usa Storage::url()
+     *
+     * Usar Storage::url() (em vez de asset('storage/...')) garante que o caminho
+     * gerado respeite a configuração do disco 'public' em config/filesystems.php,
+     * o que funciona tanto em desenvolvimento local quanto em servidores de produção.
+     *
+     * IMPORTANTE para deploy:
+     *  - Definir APP_URL corretamente no .env do servidor
+     *  - Executar `php artisan storage:link` após deploy
      */
     function photo_url(?string $path): ?string
     {
@@ -20,12 +29,12 @@ if (!function_exists('photo_url')) {
             return $path;
         }
 
-        // Arquivos legados em public/ (imagens/, icons/, etc.)
+        // Arquivos estáticos em public/ (imagens/, icons/, etc.)
         if (str_starts_with($path, 'imagens/') || str_starts_with($path, 'icons/')) {
             return asset($path);
         }
 
         // Uploads via admin — estão em storage/app/public/
-        return asset('storage/' . $path);
+        return \Illuminate\Support\Facades\Storage::disk('public')->url($path);
     }
 }
