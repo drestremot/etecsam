@@ -40,6 +40,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('teachers',    \App\Http\Controllers\Admin\TeacherController::class)->except(['show']);
+    Route::patch('teachers/{teacher}/toggle', [\App\Http\Controllers\Admin\TeacherController::class, 'toggle'])->name('teachers.toggle');
     Route::resource('departments', \App\Http\Controllers\Admin\DepartmentController::class)->except(['show']);
     Route::resource('laboratories',\App\Http\Controllers\Admin\LaboratoryController::class)->except(['show']);
     Route::resource('projects',    \App\Http\Controllers\Admin\ProjectController::class)->except(['show']);

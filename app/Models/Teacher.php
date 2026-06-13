@@ -15,5 +15,8 @@ class Teacher extends Model
         'photo',
         'lattes_url',
         'birth_date',
+        'is_active',
     ];
+
+    protected $casts = ['is_active' => 'boolean'];
 }
