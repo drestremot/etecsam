@@ -11,8 +11,14 @@ class TeacherController extends Controller
 {
     public function index()
     {
-        $teachers = Teacher::orderBy('name')->paginate(20);
+        $teachers = Teacher::orderByDesc('is_active')->orderBy('name')->paginate(50);
         return view('admin.teachers.index', compact('teachers'));
+    }
+
+    public function toggle(Teacher $teacher)
+    {
+        $teacher->update(['is_active' => !$teacher->is_active]);
+        return back()->with('success', '"' . $teacher->name . '" ' . ($teacher->is_active ? 'ativado' : 'desativado') . '.');
     }
 
     public function create()
