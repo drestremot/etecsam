@@ -23,13 +23,14 @@ class TeacherController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name'      => 'required|string|max:255',
-            'role'      => 'required|string|max:255',
-            'specialty' => 'nullable|string|max:255',
-            'email'     => 'nullable|email|max:255',
-            'phone'     => 'nullable|string|max:30',
-            'lattes_url'=> 'nullable|url|max:500',
-            'photo'     => 'nullable|image|max:2048',
+            'name'       => 'required|string|max:255',
+            'role'       => 'required|string|max:255',
+            'specialty'  => 'nullable|string|max:255',
+            'email'      => 'nullable|email|max:255',
+            'phone'      => 'nullable|string|max:30',
+            'lattes_url' => 'nullable|url|max:500',
+            'birth_date' => 'nullable|date',
+            'photo'      => 'nullable|image|max:2048',
         ]);
 
         if ($request->hasFile('photo')) {
@@ -48,13 +49,14 @@ class TeacherController extends Controller
     public function update(Request $request, Teacher $teacher)
     {
         $data = $request->validate([
-            'name'      => 'required|string|max:255',
-            'role'      => 'required|string|max:255',
-            'specialty' => 'nullable|string|max:255',
-            'email'     => 'nullable|email|max:255',
-            'phone'     => 'nullable|string|max:30',
-            'lattes_url'=> 'nullable|url|max:500',
-            'photo'     => 'nullable|image|max:2048',
+            'name'       => 'required|string|max:255',
+            'role'       => 'required|string|max:255',
+            'specialty'  => 'nullable|string|max:255',
+            'email'      => 'nullable|email|max:255',
+            'phone'      => 'nullable|string|max:30',
+            'lattes_url' => 'nullable|url|max:500',
+            'birth_date' => 'nullable|date',
+            'photo'      => 'nullable|image|max:2048',
         ]);
 
         if ($request->hasFile('photo')) {
