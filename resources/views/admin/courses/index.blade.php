@@ -28,7 +28,7 @@
                 <th @click="sort('unidade')" class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none">
                     Unidade <span class="ml-1 text-gray-400" x-text="icon('unidade')"></span>
                 </th>
-                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Coord. Técnico</th>
+                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Coordenadores</th>
                 <th @click="sort('status')" class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none">
                     Status <span class="ml-1 text-gray-400" x-text="icon('status')"></span>
                 </th>
@@ -38,7 +38,7 @@
         <tbody class="divide-y divide-gray-100">
             @forelse($courses as $course)
             <tr class="hover:bg-gray-50 {{ !$course->is_active ? 'opacity-60' : '' }}"
-                data-row="{{ strtolower($course->title . ' ' . $course->type . ' ' . ($course->unit?->name ?? '') . ' ' . ($course->technicalCoordinator?->name ?? '')) }}"
+                data-row="{{ strtolower($course->title . ' ' . $course->type . ' ' . ($course->unit?->name ?? '') . ' ' . $course->technicalCoordinators->pluck('name')->implode(' ')) }}"
                 data-active="{{ $course->is_active ? '1' : '0' }}"
                 data-titulo="{{ strtolower($course->title) }}"
                 data-tipo="{{ strtolower($course->type) }}"
@@ -47,7 +47,13 @@
                 <td class="px-4 py-3 font-medium text-gray-800">{{ $course->title }}</td>
                 <td class="px-4 py-3 text-gray-500 text-xs">{{ $course->type }}</td>
                 <td class="px-4 py-3 text-gray-500">{{ $course->unit?->name ?? '—' }}</td>
-                <td class="px-4 py-3 text-gray-600">{{ $course->technicalCoordinator?->name ?? '—' }}</td>
+                <td class="px-4 py-3 text-gray-600 text-xs">
+                    @forelse($course->technicalCoordinators as $c)
+                        <span class="block">{{ $c->name }}</span>
+                    @empty
+                        <span class="text-gray-400">—</span>
+                    @endforelse
+                </td>
                 <td class="px-4 py-3">
                     <span class="px-2 py-1 rounded-full text-xs font-semibold {{ $course->is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500' }}">
                         {{ $course->is_active ? 'Ativo' : 'Inativo' }}

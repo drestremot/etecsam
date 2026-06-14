@@ -52,24 +52,41 @@
                     </div>
                 </div>
 
+                @php
+                    $selectedTecnico = old('technical_coordinators',
+                        $course->technicalCoordinators?->pluck('id')->toArray() ?? []);
+                    $selectedDesc = old('decentralized_coordinators',
+                        $course->decentralizedCoordinators?->pluck('id')->toArray() ?? []);
+                @endphp
+
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Coordenador Técnico</label>
-                        <select name="technical_coordinator_id"
-                                class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition bg-white">
-                            <option value="">— Selecione —</option>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">
+                            Coordenadores Técnicos
+                            <span class="text-xs font-normal text-gray-400 ml-1">Ctrl+clique para selecionar vários</span>
+                        </label>
+                        <select name="technical_coordinators[]" multiple
+                                class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition bg-white"
+                                size="5">
                             @foreach($teachers as $t)
-                                <option value="{{ $t->id }}" {{ old('technical_coordinator_id', $course->technical_coordinator_id) == $t->id ? 'selected' : '' }}>{{ $t->name }}</option>
+                                <option value="{{ $t->id }}" {{ in_array($t->id, $selectedTecnico) ? 'selected' : '' }}>
+                                    {{ $t->name }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Coord. Descentralizado</label>
-                        <select name="decentralized_coordinator_id"
-                                class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition bg-white">
-                            <option value="">— Selecione —</option>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">
+                            Coords. Descentralizados
+                            <span class="text-xs font-normal text-gray-400 ml-1">Ctrl+clique para selecionar vários</span>
+                        </label>
+                        <select name="decentralized_coordinators[]" multiple
+                                class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition bg-white"
+                                size="5">
                             @foreach($teachers as $t)
-                                <option value="{{ $t->id }}" {{ old('decentralized_coordinator_id', $course->decentralized_coordinator_id) == $t->id ? 'selected' : '' }}>{{ $t->name }}</option>
+                                <option value="{{ $t->id }}" {{ in_array($t->id, $selectedDesc) ? 'selected' : '' }}>
+                                    {{ $t->name }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
