@@ -178,7 +178,10 @@
                 <a href="{{ route('agenda') }}" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Agenda</a>
                 <a href="https://vestibulinho.etec.sp.gov.br/home/" class="ml-2 px-4 py-2 bg-etec-accent text-etec-dark rounded-lg hover:bg-yellow-400 transition font-semibold text-sm shadow-sm">Vestibulinho</a>
                 <div class="ml-4 pl-4 border-l border-gray-200">
-                    <img src="{{ asset('imagens/logo/logo-cps-2022.svg') }}" alt="Centro Paula Souza" class="h-10 w-auto opacity-80 hover:opacity-100 transition">
+                    <a href="https://www.cps.sp.gov.br/">
+                        <img src="{{ asset('imagens/logo/logo-cps-2022.svg') }}" alt="Centro Paula Souza" class="h-10 w-auto opacity-80 hover:opacity-100 transition">
+                    </a>
+
                 </div>
             </nav>
             {{-- ↑ FIM DO MENU DESKTOP (hidden lg:flex) — NÃO REMOVER esta tag </nav> --}}
