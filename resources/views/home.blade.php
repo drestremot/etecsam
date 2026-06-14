@@ -208,7 +208,7 @@
         <h2 class="text-3xl font-bold mb-4">Venha fazer parte da Etec SAM</h2>
         <p class="text-white/80 mb-8 max-w-xl mx-auto">Inscrições abertas para o Vestibulinho do Centro Paula Souza. Educação técnica pública e gratuita.</p>
         <div class="flex flex-col sm:flex-row justify-center gap-4">
-            <a href="#" class="inline-flex items-center justify-center gap-2 bg-etec-accent text-etec-dark font-bold px-8 py-3.5 rounded-lg hover:bg-yellow-400 transition shadow-lg">
+            <a href="https://vestibulinho.etec.sp.gov.br/home/" class="inline-flex items-center justify-center gap-2 bg-etec-accent text-etec-dark font-bold px-8 py-3.5 rounded-lg hover:bg-yellow-400 transition shadow-lg">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                 Inscreva-se no Vestibulinho
             </a>
