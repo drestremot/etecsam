@@ -149,7 +149,7 @@ class SiteController extends Controller
         $links = [
             ['name' => 'GDAE',          'desc' => 'Gestão Escolar',       'url' => 'https://www.gdae.sp.gov.br/',         'icon' => '📋'],
             ['name' => 'SEP',           'desc' => 'Portal do Servidor',    'url' => 'https://www.sep.sp.gov.br/',          'icon' => '👤'],
-            ['name' => 'e-RH',          'desc' => 'Folha de Pagamento',    'url' => 'https://erh.sp.gov.br/',             'icon' => '💰'],
+            ['name' => 'e-Folha',          'desc' => 'Folha de Pagamento',    'url' => 'https://www.e-folha.prodesp.sp.gov.br/',             'icon' => '💰'],
             ['name' => 'SIEEESP',       'desc' => 'Legislação',            'url' => 'https://www.sieeesp.org.br/',         'icon' => '⚖️'],
             ['name' => 'Transparência', 'desc' => 'Dados Públicos',        'url' => 'https://www.cps.sp.gov.br/transparencia/', 'icon' => '🔍'],
         ];
