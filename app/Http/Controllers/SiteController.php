@@ -200,9 +200,9 @@ class SiteController extends Controller
     {
         // Busca o curso pelo "apelido" (slug) no banco de dados
         // Se não achar, mostra erro 404 automaticamente
-        $course = \App\Models\Course::where('slug', $slug)->firstOrFail();
+        $course = \App\Models\Course::with(['unit', 'coordinators', 'subjects.teacher'])
+                                     ->where('slug', $slug)->firstOrFail();
 
-        // Carrega a visualização de detalhes
         return view('pages.course-detail', compact('course'));
     }
 

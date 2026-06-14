@@ -8,6 +8,9 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('site_themes')) {
+            return;
+        }
         Schema::create('site_themes', function (Blueprint $table) {
             $table->id();
             $table->string('name');
