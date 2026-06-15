@@ -12,31 +12,16 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    steps:
 
+    steps:
       - name: Checkout do codigo
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Instalar Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-
-      - name: Instalar dependencias JS
-        run: npm ci
-
-      - name: Build dos assets (Vite)
-        run: npm run build
-
-      - name: Commitar build no repositorio
-        run: |
-          git config user.name "GitHub Actions Bot"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/build/
-          git diff --staged --quiet && echo "Sem mudancas no build" || (git commit -m "ci: atualiza public/build [skip ci]" && git push origin main)
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
@@ -46,17 +31,52 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT || '65002' }}
           timeout: 120s
-          script_stop: false
           script: |
             cd ~/domains/etecsam.com.br/public_html/etecsam
+
+            # === PROTECAO DO BANCO DE DADOS ===
+            # 1. Remover banco do rastreamento Git (sem apagar o arquivo)
+            git rm --cached database/database.sqlite 2>/dev/null || true
+            git rm --cached database/database.sqlite-wal 2>/dev/null || true
+            git rm --cached database/database.sqlite-shm 2>/dev/null || true
+
+            # 2. Backup do banco antes de qualquer operacao
+            if [ -f database/database.sqlite ]; then
+              cp database/database.sqlite database/database.sqlite.bak
+              echo "Backup do banco criado: database.sqlite.bak"
+            fi
+
+            # 3. Atualizar o codigo (sem sobrescrever o banco)
+            git fetch origin main
+            git checkout -- .  # restaurar arquivos modificados localmente (exceto banco)
             git pull origin main
+
+            # 4. Restaurar banco se foi sobrescrito pelo pull
+            if [ -f database/database.sqlite.bak ]; then
+              # Comparar tamanhos: se o banco ficou menor apos pull, restaurar backup
+              BACKUP_SIZE=$(stat -c%s database/database.sqlite.bak)
+              CURRENT_SIZE=$(stat -c%s database/database.sqlite 2>/dev/null || echo "0")
+              if [ "$CURRENT_SIZE" -lt "$BACKUP_SIZE" ]; then
+                cp database/database.sqlite.bak database/database.sqlite
+                echo "Banco restaurado do backup (pull havia sobrescrito)"
+              fi
+            fi
+            # === FIM PROTECAO ===
+
+            # Instalar dependencias PHP
             composer install --no-dev --optimize-autoloader --no-interaction
+
+            # Rodar apenas migrations pendentes (nao apaga dados existentes)
             php artisan migrate --force
+
+            # Garantir usuario admin (updateOrInsert - nao apaga outros dados)
             php artisan db:seed --class=AdminSeeder --force
-            php artisan db:seed --class=ThemeSeeder --force
+
+            # Limpar e recriar caches
             php artisan config:clear && php artisan route:clear && php artisan view:clear
             php artisan config:cache && php artisan route:cache
-            rm -f public/storage
-            ln -s /home/u615674013/domains/etecsam.com.br/public_html/etecsam/storage/app/public public/storage
-            echo "Symlink storage: $(readlink -f public/storage)"
-            echo "Deploy concluido!"
+
+            # Criar symlink do storage se necessario
+            php -r "function rc($s,$d){if(!is_dir($d))mkdir($d,0755,true);foreach(scandir($s)as $f){if($f==='.'|||$f==='..') continue;$sp=$s.'/'.'$f;$dp=$d.'/'.'$f;is_dir($sp)?rc($sp,$dp):copy($sp,$dp);}}rc('storage/app/public','public/storage');echo 'Storage OK';"
+
+            echo "Deploy concluido com sucesso!"
