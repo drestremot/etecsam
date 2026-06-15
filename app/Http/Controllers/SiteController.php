@@ -180,7 +180,8 @@ class SiteController extends Controller
     {
         // Busca eventos futuros, ordenados por data
         // O 'get()->groupBy...' agrupa os resultados pelo mês/ano (ex: "03/2026")
-        $events = Event::whereYear('start_date', now()->year)
+        $events = Event::with('photos')
+            ->whereYear('start_date', now()->year)
             ->orderBy('start_date', 'asc')
             ->get()
             ->groupBy(function ($date) {
