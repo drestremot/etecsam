@@ -49,6 +49,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::resource('units',       \App\Http\Controllers\Admin\UnitController::class)->except(['show']);
     Route::resource('sectors',     \App\Http\Controllers\Admin\SectorController::class)->except(['show']);
     Route::resource('events',      \App\Http\Controllers\Admin\EventController::class)->except(['show']);
+    Route::delete('event-photos/{photo}', [\App\Http\Controllers\Admin\EventController::class, 'destroyPhoto'])->name('event-photos.destroy');
     Route::resource('documents',   \App\Http\Controllers\Admin\DocumentController::class)->except(['show']);
 
     // Rotas de toggle (ativar/desativar)
