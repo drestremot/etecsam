@@ -18,7 +18,15 @@
         }
     </style>
 
-    @php $activeTheme = \App\Models\SiteTheme::getActive(); @endphp
+    @php
+    try {
+        $activeTheme = \Illuminate\Support\Facades\Schema::hasTable('site_themes')
+            ? \App\Models\SiteTheme::getActive()
+            : null;
+    } catch (\Exception $e) {
+        $activeTheme = null;
+    }
+@endphp
 
     @if($activeTheme)
     {{-- ═══════════════════════════════════════════════════════════════
