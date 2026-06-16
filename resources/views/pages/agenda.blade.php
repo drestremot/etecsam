@@ -130,9 +130,104 @@
 </div>
 
 
-{{-- Seção de Aniversariantes do Mês --}}
+{{-- Seção de Aniversariantes --}}
 @if(isset($birthdays) && $birthdays->count() > 0)
-<div class="container mx-auto px-4 py-10">
+<div class="container mx-auto px-4 pb-16">
+
+    {{-- ★ DESTAQUE: Aniversariante(s) do DIA ★ --}}
+    @if($todayBirthdays->count() > 0)
+    <div class="mb-8"
+         x-data="{
+            current: 0,
+            total: {{ $todayBirthdays->count() }},
+            timer: null,
+            start() {
+                if (this.total > 1) {
+                    this.timer = setInterval(() => { this.current = (this.current + 1) % this.total }, 4000);
+                }
+            },
+            go(i) { this.current = i; clearInterval(this.timer); this.start(); }
+         }"
+         x-init="start()">
+
+        <div class="relative rounded-2xl overflow-hidden shadow-lg"
+             style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 40%, #fbbf24 100%);">
+
+            {{-- Confetes decorativos --}}
+            <div class="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+                <span class="absolute text-3xl opacity-20 top-4 left-6">🎊</span>
+                <span class="absolute text-2xl opacity-20 top-6 right-10">🎉</span>
+                <span class="absolute text-2xl opacity-15 bottom-4 left-16">✨</span>
+                <span class="absolute text-3xl opacity-20 bottom-3 right-8">🎈</span>
+            </div>
+
+            {{-- Badge do dia --}}
+            <div class="absolute top-4 left-1/2 -translate-x-1/2">
+                <span class="inline-flex items-center gap-1.5 bg-white/80 backdrop-blur-sm text-amber-700 text-xs font-bold px-4 py-1.5 rounded-full shadow-sm uppercase tracking-widest">
+                    🎂 Aniversário Hoje · {{ now()->translatedFormat('d \d\e F') }}
+                </span>
+            </div>
+
+            {{-- Slides dos aniversariantes do dia --}}
+            <div class="pt-14 pb-8 px-6 flex flex-col items-center text-center min-h-[260px] justify-center">
+                @foreach($todayBirthdays as $i => $teacher)
+                <div x-show="current === {{ $i }}"
+                     x-transition:enter="transition ease-out duration-500"
+                     x-transition:enter-start="opacity-0 scale-95"
+                     x-transition:enter-end="opacity-100 scale-100"
+                     x-transition:leave="transition ease-in duration-300"
+                     x-transition:leave-start="opacity-100 scale-100"
+                     x-transition:leave-end="opacity-0 scale-95"
+                     class="flex flex-col items-center gap-4">
+
+                    {{-- Foto grande centralizada --}}
+                    <div class="relative">
+                        <div class="w-28 h-28 rounded-full overflow-hidden border-4 border-white shadow-xl ring-4 ring-amber-300/50">
+                            @if($teacher->photo)
+                                <img src="{{ photo_url($teacher->photo) }}" alt="{{ $teacher->name }}"
+                                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+                                     class="w-full h-full object-cover">
+                                <div style="display:none" class="w-full h-full flex items-center justify-center bg-amber-500 text-white font-bold text-4xl">
+                                    {{ strtoupper(substr($teacher->name, 0, 1)) }}
+                                </div>
+                            @else
+                                <div class="w-full h-full flex items-center justify-center bg-amber-500 text-white font-bold text-4xl">
+                                    {{ strtoupper(substr($teacher->name, 0, 1)) }}
+                                </div>
+                            @endif
+                        </div>
+                        {{-- Ícone de parabéns --}}
+                        <span class="absolute -bottom-1 -right-1 text-2xl">🎂</span>
+                    </div>
+
+                    {{-- Nome e cargo --}}
+                    <div>
+                        <h3 class="text-xl font-bold text-amber-900 leading-tight">{{ $teacher->name }}</h3>
+                        @if($teacher->role)
+                        <p class="text-sm text-amber-700 font-medium mt-0.5">{{ $teacher->role }}</p>
+                        @endif
+                        <p class="mt-2 text-amber-800 font-semibold text-sm">🎉 Parabéns pelo seu aniversário!</p>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+
+            {{-- Dots do carrossel (só aparece se > 1 pessoa) --}}
+            @if($todayBirthdays->count() > 1)
+            <div class="flex justify-center gap-2 pb-5">
+                @foreach($todayBirthdays as $i => $teacher)
+                <button @click="go({{ $i }})"
+                        :class="current === {{ $i }} ? 'w-6 bg-amber-700' : 'w-2 bg-amber-400/60'"
+                        class="h-2 rounded-full transition-all duration-300 focus:outline-none"
+                        :aria-label="'{{ $teacher->name }}'"></button>
+                @endforeach
+            </div>
+            @endif
+        </div>
+    </div>
+    @endif
+
+    {{-- Grade: todos os aniversariantes do mês --}}
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
             <div class="w-10 h-10 bg-yellow-100 rounded-xl flex items-center justify-center text-xl">🎂</div>
@@ -144,23 +239,27 @@
         <div class="p-6">
             <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 @foreach($birthdays as $teacher)
-                <div class="flex items-center gap-3 p-3 bg-yellow-50 rounded-xl border border-yellow-100">
+                @php $isToday = \Carbon\Carbon::parse($teacher->birth_date)->day === now()->day; @endphp
+                <div class="flex items-center gap-3 p-3 rounded-xl border transition
+                            {{ $isToday ? 'bg-amber-50 border-amber-200 ring-1 ring-amber-300' : 'bg-yellow-50 border-yellow-100' }}">
                     @if($teacher->photo)
                         <img src="{{ photo_url($teacher->photo) }}" alt="{{ $teacher->name }}"
                              onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
-                             class="w-12 h-12 rounded-full object-cover border-2 border-yellow-200">
-                        <div style="display:none" class="w-12 h-12 rounded-full bg-yellow-200 flex items-center justify-center text-yellow-700 font-bold text-lg">
+                             class="w-12 h-12 rounded-full object-cover border-2 {{ $isToday ? 'border-amber-300' : 'border-yellow-200' }} flex-shrink-0">
+                        <div style="display:none" class="w-12 h-12 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg
+                                    {{ $isToday ? 'bg-amber-300 text-amber-800' : 'bg-yellow-200 text-yellow-700' }}">
                             {{ strtoupper(substr($teacher->name, 0, 1)) }}
                         </div>
                     @else
-                        <div class="w-12 h-12 rounded-full bg-yellow-200 flex items-center justify-center text-yellow-700 font-bold text-lg">
+                        <div class="w-12 h-12 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg
+                                    {{ $isToday ? 'bg-amber-300 text-amber-800' : 'bg-yellow-200 text-yellow-700' }}">
                             {{ strtoupper(substr($teacher->name, 0, 1)) }}
                         </div>
                     @endif
-                    <div>
-                        <p class="font-semibold text-gray-800 text-sm leading-tight">{{ $teacher->name }}</p>
-                        <p class="text-xs text-yellow-600 font-medium">
-                            🎉 Dia {{ \Carbon\Carbon::parse($teacher->birth_date)->format('d') }}
+                    <div class="min-w-0">
+                        <p class="font-semibold text-gray-800 text-sm leading-tight truncate">{{ $teacher->name }}</p>
+                        <p class="text-xs font-medium mt-0.5 {{ $isToday ? 'text-amber-600' : 'text-yellow-600' }}">
+                            {{ $isToday ? '🎂 Hoje!' : '🎉 Dia ' . \Carbon\Carbon::parse($teacher->birth_date)->format('d') }}
                         </p>
                     </div>
                 </div>
@@ -168,6 +267,7 @@
             </div>
         </div>
     </div>
+
 </div>
 @endif
 
