@@ -13,8 +13,8 @@
         </div>
         <div>
             <p class="text-etec-accent text-xs font-bold uppercase tracking-widest mb-1">Gestão Escolar</p>
-            <h1 class="text-3xl font-bold mb-1">Diretoria Acadêmica</h1>
-            <p class="text-gray-300 text-sm">Coordenação Pedagógica e Atividades Acadêmicas</p>
+            <h1 class="text-3xl font-bold mb-1">Gestão Pedagógica</h1>
+            <p class="text-gray-300 text-sm">Coordenação, Orientação Educacional e Cursos Técnicos</p>
         </div>
     </div>
 </div>
@@ -69,52 +69,53 @@
             @endif
         </div>
 
-        {{-- Equipe + Áreas --}}
-        <div class="lg:col-span-2 space-y-10">
+        {{-- Equipe por grupos de cargo --}}
+        <div class="lg:col-span-2 space-y-8">
 
-            {{-- Equipe --}}
-            <div>
-                <h2 class="text-xl font-bold text-gray-800 mb-6 border-l-4 border-etec-medium pl-3">Colaboradores do Departamento</h2>
-
-                @if($staff->isNotEmpty())
-                <div class="grid md:grid-cols-2 gap-5">
-                    @foreach($staff as $member)
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex gap-4 hover:shadow-md transition items-start">
-                        <img src="{{ photo_url($member->photo) }}"
-                             onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($member->name) }}&background=dbeafe&color=1a3a6e'"
-                             class="w-14 h-14 rounded-full object-cover border-2 border-gray-100 flex-shrink-0">
-                        <div class="min-w-0 flex-grow">
-                            <h4 class="font-bold text-gray-800 leading-tight">{{ $member->name }}</h4>
-                            <span class="text-xs font-bold text-etec-medium uppercase tracking-wide block mb-1.5">{{ $member->role }}</span>
-                            @if($member->specialty)
-                            <p class="text-xs text-gray-500 mb-2 leading-relaxed line-clamp-2">{{ $member->specialty }}</p>
-                            @endif
-                            <div class="space-y-1">
-                                @if($member->phone)
-                                <div class="flex items-center gap-1.5 text-xs text-gray-500">
-                                    <svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 7V5z"/></svg>
-                                    {{ $member->phone }}
+            @if($staffGroups->isNotEmpty())
+                @foreach($staffGroups as $roleName => $members)
+                <div>
+                    <h2 class="text-base font-bold text-gray-700 mb-4 border-l-4 border-etec-medium pl-3 uppercase tracking-wide">
+                        {{ $roleName }}
+                    </h2>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        @foreach($members as $member)
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex gap-4 hover:shadow-md transition items-start">
+                            <img src="{{ photo_url($member->photo) }}"
+                                 onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($member->name) }}&background=dbeafe&color=1a3a6e'"
+                                 class="w-14 h-14 rounded-full object-cover border-2 border-gray-100 flex-shrink-0">
+                            <div class="min-w-0 flex-grow">
+                                <h4 class="font-bold text-gray-800 leading-tight">{{ $member->name }}</h4>
+                                @if($member->specialty)
+                                <p class="text-xs text-gray-500 mt-1 mb-2 leading-relaxed line-clamp-2">{{ $member->specialty }}</p>
+                                @endif
+                                <div class="space-y-1 mt-1">
+                                    @if($member->phone)
+                                    <div class="flex items-center gap-1.5 text-xs text-gray-500">
+                                        <svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 7V5z"/></svg>
+                                        {{ $member->phone }}
+                                    </div>
+                                    @endif
+                                    @if($member->email)
+                                    <a href="mailto:{{ $member->email }}" class="inline-flex items-center gap-1 text-xs text-etec-main hover:underline">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                        {{ $member->email }}
+                                    </a>
+                                    @endif
                                 </div>
-                                @endif
-                                @if($member->email)
-                                <a href="mailto:{{ $member->email }}" class="inline-flex items-center gap-1 text-xs text-etec-main hover:underline">
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                                    {{ $member->email }}
-                                </a>
-                                @endif
                             </div>
                         </div>
+                        @endforeach
                     </div>
-                    @endforeach
                 </div>
-                @else
-                <div class="bg-gray-50 rounded-xl p-8 text-center border border-dashed border-gray-200">
-                    <p class="text-gray-500 text-sm">Equipe em atualização.</p>
-                </div>
-                @endif
+                @endforeach
+            @else
+            <div class="bg-gray-50 rounded-xl p-8 text-center border border-dashed border-gray-200">
+                <p class="text-gray-500 text-sm">Equipe em atualização.</p>
             </div>
+            @endif
 
-            {{-- Responsabilidades --}}
+            {{-- Áreas de Atuação --}}
             <div class="bg-blue-50 rounded-2xl p-8 border border-blue-100">
                 <h2 class="text-xl font-bold text-gray-800 mb-5 flex items-center gap-2.5">
                     <svg class="w-5 h-5 text-etec-medium" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -127,9 +128,9 @@
                         ['icon' => 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253', 'label' => 'Grade Curricular e Planos de Ensino'],
                         ['icon' => 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z', 'label' => 'Acompanhamento Pedagógico dos Docentes'],
                         ['icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01', 'label' => 'Avaliação e Desempenho Escolar'],
-                        ['icon' => 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z', 'label' => 'Calendário Acadêmico e Eventos'],
+                        ['icon' => 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z', 'label' => 'Orientação Educacional aos Alunos'],
                         ['icon' => 'M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z', 'label' => 'Coordenação dos Cursos Técnicos'],
-                        ['icon' => 'M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9', 'label' => 'Atividades Extracurriculares'],
+                        ['icon' => 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z', 'label' => 'Calendário Acadêmico e Eventos'],
                     ] as $item)
                     <div class="flex items-center gap-3 bg-white rounded-lg px-4 py-3 shadow-sm border border-blue-50">
                         <div class="w-8 h-8 bg-etec-light text-etec-main rounded-lg flex items-center justify-center flex-shrink-0">

@@ -172,8 +172,8 @@
                     </svg>
                 </div>
                 <div class="flex-grow">
-                    <h3 class="font-bold text-gray-800 group-hover:text-etec-main transition">Diretoria Acadêmica</h3>
-                    <p class="text-sm text-gray-500">Coordenação pedagógica, cursos e atividades acadêmicas</p>
+                    <h3 class="font-bold text-gray-800 group-hover:text-etec-main transition">Gestão Pedagógica</h3>
+                    <p class="text-sm text-gray-500">Coordenação, orientação e cursos técnicos</p>
                 </div>
                 <svg class="w-5 h-5 text-gray-300 group-hover:text-etec-medium transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
