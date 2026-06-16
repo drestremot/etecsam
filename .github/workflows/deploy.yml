@@ -65,8 +65,9 @@ jobs:
             # Rodar apenas migrations pendentes (nao apaga dados existentes)
             php artisan migrate --force
 
-            # Garantir usuario admin
+            # Garantir usuario admin e temas do site
             php artisan db:seed --class=AdminSeeder --force
+            php artisan db:seed --class=ThemeSeeder --force
 
             # Limpar e recriar caches
             php artisan config:clear
