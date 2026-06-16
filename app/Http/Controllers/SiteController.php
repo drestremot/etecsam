@@ -103,26 +103,33 @@ class SiteController extends Controller
 
     public function academicDivision()
     {
-        // Diretora Acadêmica (Gelcilene)
+        // Responsável pela Gestão Pedagógica (Diretora Acadêmica)
         $director = \App\Models\Teacher::where('role', 'like', '%Acadêm%')
             ->orderByRaw("CASE WHEN role LIKE '%Diretora%' OR role LIKE '%Diretor%' THEN 0 ELSE 1 END")
             ->first();
 
-        // Colaboradores: coordenadores pedagógicos, orientadores, equipe acadêmica
-        $staff = \App\Models\Teacher::where(function ($q) {
+        // Toda a equipe pedagógica agrupada por cargo
+        $staffAll = \App\Models\Teacher::where(function ($q) {
                 $q->where('role', 'like', '%Coordenador%')
+                  ->orWhere('role', 'like', '%Coordenadora%')
                   ->orWhere('role', 'like', '%Pedagóg%')
                   ->orWhere('role', 'like', '%Orientador%')
+                  ->orWhere('role', 'like', '%Orientadora%')
                   ->orWhere('role', 'like', '%Acadêm%');
             })
             ->where(function ($q) use ($director) {
                 if ($director) $q->where('id', '!=', $director->id);
             })
+            ->orderBy('role')
+            ->orderBy('name')
             ->get();
+
+        // Agrupa por cargo para exibição em seções
+        $staffGroups = $staffAll->groupBy('role');
 
         $downloads = \App\Models\Document::where('category', 'Acadêmico')->get();
 
-        return view('pages.academic-division', compact('director', 'staff', 'downloads'));
+        return view('pages.academic-division', compact('director', 'staffGroups', 'downloads'));
     }
 
     public function administrative()
