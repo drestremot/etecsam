@@ -1,6 +1,17 @@
 @extends('admin.layouts.app')
 @section('page-title', $action === 'create' ? 'Novo Evento' : 'Editar Evento')
 
+@push('head')
+<link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+<style>
+    #description-editor { min-height: 140px; font-size: 0.875rem; }
+    #description-editor .ql-editor { min-height: 120px; }
+    .ql-toolbar.ql-snow { border-radius: 0.5rem 0.5rem 0 0; border-color: #d1d5db; background: #f9fafb; }
+    .ql-container.ql-snow { border-radius: 0 0 0.5rem 0.5rem; border-color: #d1d5db; }
+    .ql-toolbar.ql-snow .ql-formats { margin-right: 10px; }
+</style>
+@endpush
+
 @section('content')
 <div class="max-w-2xl">
 
@@ -66,9 +77,9 @@
 
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1.5">Descrição</label>
-                    <textarea name="description" rows="4"
-                              class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition resize-none"
-                              placeholder="Detalhes sobre o evento, programação, informações adicionais...">{{ old('description', $event->description) }}</textarea>
+                    <input type="hidden" name="description" id="description-input">
+                    <div id="description-editor"></div>
+                    <p class="text-xs text-gray-400 mt-1">Use a barra de ferramentas para formatar fonte, cor, tamanho, espaçamento e alinhamento.</p>
                 </div>
 
             </div>
@@ -148,7 +159,41 @@
     </form>
 </div>
 
+<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
 <script>
+// ── Editor de texto rico (Quill) ─────────────────────────────────────
+var Font = Quill.import('formats/font');
+Font.whitelist = ['sans-serif', 'serif', 'monospace', 'arial', 'georgia', 'verdana', 'tahoma'];
+Quill.register(Font, true);
+
+var quill = new Quill('#description-editor', {
+    theme: 'snow',
+    placeholder: 'Detalhes sobre o evento, programação, informações adicionais...',
+    modules: {
+        toolbar: [
+            [{ 'font': Font.whitelist }],
+            [{ 'size': ['small', false, 'large', 'huge'] }],
+            ['bold', 'italic', 'underline'],
+            [{ 'color': [] }],
+            [{ 'align': [] }],
+            [{ 'indent': '-1' }, { 'indent': '+1' }],
+            ['clean'],
+        ]
+    }
+});
+
+// Preenche o editor com o conteúdo existente (edição)
+var initialContent = @json(old('description', $event->description ?? ''));
+if (initialContent) {
+    quill.root.innerHTML = initialContent;
+}
+
+// Copia o HTML para o campo oculto antes de enviar o formulário
+document.querySelector('form').addEventListener('submit', function () {
+    document.getElementById('description-input').value = quill.root.innerHTML;
+});
+
+// ── Linha de fotos dinâmica ──────────────────────────────────────────
 function addPhotoRow() {
     const container = document.getElementById('photo-rows');
     const row = document.createElement('div');

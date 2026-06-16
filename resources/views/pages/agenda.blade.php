@@ -1,5 +1,23 @@
 @extends('layouts.app')
 
+@push('styles')
+<style>
+    .event-description p, #modal-description p { margin-bottom: 0.5em; }
+    .event-description p:last-child, #modal-description p:last-child { margin-bottom: 0; }
+    .event-description strong, #modal-description strong { font-weight: 700; }
+    .event-description em, #modal-description em { font-style: italic; }
+    .event-description u, #modal-description u { text-decoration: underline; }
+    .event-description .ql-align-center, #modal-description .ql-align-center { text-align: center; }
+    .event-description .ql-align-right, #modal-description .ql-align-right { text-align: right; }
+    .event-description .ql-align-justify, #modal-description .ql-align-justify { text-align: justify; }
+    .event-description .ql-indent-1, #modal-description .ql-indent-1 { padding-left: 2em; }
+    .event-description .ql-indent-2, #modal-description .ql-indent-2 { padding-left: 4em; }
+    .event-description .ql-size-small, #modal-description .ql-size-small { font-size: 0.75em; }
+    .event-description .ql-size-large, #modal-description .ql-size-large { font-size: 1.25em; }
+    .event-description .ql-size-huge, #modal-description .ql-size-huge { font-size: 1.5em; }
+</style>
+@endpush
+
 @section('content')
 
 <div class="bg-etec-dark text-white py-12 border-b-4 border-etec-accent">
@@ -100,7 +118,7 @@
                                 @endif
                             </div>
                             @if($event->description)
-                            <p class="text-gray-600 text-sm leading-relaxed">{{ $event->description }}</p>
+                            <div class="event-description text-gray-600 text-sm leading-relaxed">{!! $event->description !!}</div>
                             @endif
                         </div>
                     </div>
@@ -249,7 +267,7 @@ function openEventModal(data) {
     const descWrap = document.getElementById('modal-description-wrap');
     const descEl   = document.getElementById('modal-description');
     if (data.description) {
-        descEl.textContent = data.description;
+        descEl.innerHTML = data.description;
         descWrap.classList.remove('hidden');
     } else {
         descWrap.classList.add('hidden');

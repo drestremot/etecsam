@@ -6,6 +6,7 @@
     <title>Admin — Etec SAM</title>
     <link rel="icon" type="image/png" href="{{ asset('imagens/logo/etec.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @stack('head')
 </head>
 <body class="bg-gray-100 font-sans antialiased">
 
