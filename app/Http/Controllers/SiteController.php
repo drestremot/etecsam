@@ -103,9 +103,9 @@ class SiteController extends Controller
 
     public function academicDivision()
     {
-        // Responsável pela Gestão Pedagógica (Diretora Acadêmica)
-        $director = \App\Models\Teacher::where('role', 'like', '%Acadêm%')
-            ->orderByRaw("CASE WHEN role LIKE '%Diretora%' OR role LIKE '%Diretor%' THEN 0 ELSE 1 END")
+        // Responsável pela Gestão Pedagógica (Coordenadora Pedagógica)
+        $director = \App\Models\Teacher::where('role', 'like', '%Coordenadora Pedagóg%')
+            ->orWhere('role', 'like', '%Coordenador Pedagóg%')
             ->first();
 
         // Toda a equipe pedagógica agrupada por cargo
