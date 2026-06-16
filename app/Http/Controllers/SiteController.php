@@ -196,7 +196,12 @@ class SiteController extends Controller
             ->orderByRaw("strftime('%d', birth_date)")
             ->get();
 
-        return view('pages.agenda', compact('events', 'birthdays'));
+        // Aniversariantes de HOJE (destaque)
+        $todayBirthdays = $birthdays->filter(
+            fn($t) => \Carbon\Carbon::parse($t->birth_date)->day === now()->day
+        )->values();
+
+        return view('pages.agenda', compact('events', 'birthdays', 'todayBirthdays'));
     }
 
     public function show($slug)
