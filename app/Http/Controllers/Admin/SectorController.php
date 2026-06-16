@@ -11,8 +11,14 @@ class SectorController extends Controller
 {
     public function index()
     {
-        $sectors = Sector::orderBy('name')->paginate(20);
+        $sectors = Sector::orderByDesc('is_active')->orderBy('name')->paginate(20);
         return view('admin.sectors.index', compact('sectors'));
+    }
+
+    public function toggle(Sector $sector)
+    {
+        $sector->update(['is_active' => !$sector->is_active]);
+        return back()->with('success', '"' . $sector->name . '" ' . ($sector->is_active ? 'ativado' : 'desativado') . '.');
     }
 
     public function create()
@@ -32,6 +38,7 @@ class SectorController extends Controller
 
         $data['slug'] = Str::slug($data['name']);
         $data['images'] = $data['images'] ? array_filter(array_map('trim', explode("\n", $data['images']))) : null;
+        $data['is_active'] = $request->boolean('is_active');
 
         Sector::create($data);
         return redirect()->route('admin.sectors.index')->with('success', 'Setor cadastrado com sucesso!');
@@ -54,6 +61,7 @@ class SectorController extends Controller
 
         $data['slug'] = Str::slug($data['name']);
         $data['images'] = $data['images'] ? array_filter(array_map('trim', explode("\n", $data['images']))) : null;
+        $data['is_active'] = $request->boolean('is_active');
 
         $sector->update($data);
         return redirect()->route('admin.sectors.index')->with('success', 'Setor atualizado!');

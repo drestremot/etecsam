@@ -12,8 +12,14 @@ class UnitController extends Controller
 {
     public function index()
     {
-        $units = Unit::with('coordinator')->orderBy('city')->orderBy('name')->paginate(20);
+        $units = Unit::with('coordinator')->orderByDesc('is_active')->orderBy('city')->orderBy('name')->paginate(20);
         return view('admin.units.index', compact('units'));
+    }
+
+    public function toggle(Unit $unit)
+    {
+        $unit->update(['is_active' => !$unit->is_active]);
+        return back()->with('success', '"' . $unit->name . '" ' . ($unit->is_active ? 'ativada' : 'desativada') . '.');
     }
 
     public function create()
@@ -31,6 +37,8 @@ class UnitController extends Controller
             'image'          => 'nullable|image|max:4096',
             'coordinator_id' => 'nullable|exists:teachers,id',
         ]);
+
+        $data['is_active'] = $request->boolean('is_active');
 
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('units', 'public');
@@ -55,6 +63,8 @@ class UnitController extends Controller
             'image'          => 'nullable|image|max:4096',
             'coordinator_id' => 'nullable|exists:teachers,id',
         ]);
+
+        $data['is_active'] = $request->boolean('is_active');
 
         if ($request->hasFile('image')) {
             if ($unit->image) {

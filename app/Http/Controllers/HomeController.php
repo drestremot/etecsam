@@ -14,12 +14,13 @@ class HomeController extends Controller
     // ALTERAÇÃO AQUI: Adicionei ->orderBy('city')
     // Também coloquei ->orderBy('name') para organizar alfabeticamente dentro da mesma cidade
     $units = Unit::withCount('courses')
+                 ->where('is_active', true)
                  ->orderBy('city', 'asc')
                  ->orderBy('name', 'asc')
                  ->get();
 
     // ... (o resto do código continua igual)
-    $sectors = Sector::all();
+    $sectors = Sector::where('is_active', true)->get();
     $nextEvents = Event::where('start_date', '>=', now())
                     ->orderBy('start_date')
                     ->take(3)
