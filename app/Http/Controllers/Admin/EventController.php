@@ -12,8 +12,15 @@ class EventController extends Controller
 {
     public function index()
     {
-        $events = Event::orderBy('start_date', 'desc')->paginate(20);
+        $events = Event::orderByDesc('is_active')->orderBy('start_date', 'desc')->paginate(20);
         return view('admin.events.index', compact('events'));
+    }
+
+    public function toggle(Event $event)
+    {
+        $event->update(['is_active' => !$event->is_active]);
+        $status = $event->is_active ? 'ativado' : 'desativado';
+        return back()->with('success', '"' . $event->title . '" ' . $status . '.');
     }
 
     public function create()
