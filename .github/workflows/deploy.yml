@@ -33,34 +33,28 @@ jobs:
             cd ~/domains/etecsam.com.br/public_html/etecsam
 
             # === PROTECAO DO BANCO DE DADOS ===
-            # Remover banco do rastreamento Git sem apagar o arquivo
-            git rm --cached database/database.sqlite 2>/dev/null || true
-            git rm --cached database/database.sqlite-wal 2>/dev/null || true
-            git rm --cached database/database.sqlite-shm 2>/dev/null || true
-
-            # Backup do banco antes de qualquer operacao
-            if [ -f database/database.sqlite ]; then
-              cp database/database.sqlite database/database.sqlite.bak
-              echo "Backup do banco criado: database.sqlite.bak"
+            # Salva o banco em local FORA do repositorio (git nunca toca este caminho)
+            if [ -f database/database.sqlite ] && [ -s database/database.sqlite ]; then
+              cp database/database.sqlite ~/etecsam_db.sqlite.tmp \
+                && mv ~/etecsam_db.sqlite.tmp ~/etecsam_db.sqlite \
+                && echo "Banco salvo em ~/etecsam_db.sqlite ($(stat -c%s ~/etecsam_db.sqlite) bytes)"
             fi
 
             # Atualizar o codigo
+            # git reset --hard apaga database.sqlite pois o arquivo foi removido do git
             git fetch origin main
             git reset --hard origin/main
 
-            # Restaurar banco se o reset o sobrescreveu
-            if [ -f database/database.sqlite.bak ]; then
-              BACKUP_SIZE=$(stat -c%s database/database.sqlite.bak)
-              CURRENT_SIZE=$(stat -c%s database/database.sqlite 2>/dev/null || echo "0")
-              if [ "$CURRENT_SIZE" -lt "$BACKUP_SIZE" ]; then
-                cp database/database.sqlite.bak database/database.sqlite
-                echo "Banco restaurado do backup"
-              fi
+            # Restaura o banco do local seguro
+            if [ -f ~/etecsam_db.sqlite ] && [ -s ~/etecsam_db.sqlite ]; then
+              cp ~/etecsam_db.sqlite database/database.sqlite
+              chmod 664 database/database.sqlite
+              echo "Banco restaurado ($(stat -c%s database/database.sqlite) bytes)"
+            else
+              touch database/database.sqlite
+              chmod 664 database/database.sqlite
+              echo "Primeira instalacao: banco vazio criado"
             fi
-
-            # Garantir que o arquivo SQLite existe (Laravel 12 nao cria automaticamente)
-            touch database/database.sqlite
-            chmod 664 database/database.sqlite
             # === FIM PROTECAO ===
 
             # Instalar dependencias PHP
