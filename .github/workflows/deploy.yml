@@ -80,7 +80,7 @@ jobs:
             ln -s ~/domains/etecsam.com.br/public_html/etecsam/storage/app/public public/storage
             echo "Storage symlink: $(readlink -f public/storage)"
 
-            echo "=== Ultimas linhas do laravel.log ==="
-            tail -30 storage/logs/laravel.log 2>/dev/null || echo "(log vazio ou inexistente)"
+            echo "=== ERROS no laravel.log ==="
+            grep -a "local\.ERROR\|local\.CRITICAL\|local\.EMERGENCY" storage/logs/laravel.log 2>/dev/null | tail -5 || echo "(sem erros no log)"
 
             echo "=== Deploy concluido ==="
