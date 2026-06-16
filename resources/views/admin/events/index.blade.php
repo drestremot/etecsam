@@ -27,17 +27,21 @@
                 <th @click="sort('local')" class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none">
                     Local <span class="ml-1 text-gray-400" x-text="icon('local')"></span>
                 </th>
-                <th class="px-4 py-3 w-24"></th>
+                <th @click="sort('status')" class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none w-28">
+                    Status <span class="ml-1 text-gray-400" x-text="icon('status')"></span>
+                </th>
+                <th class="px-4 py-3 w-28"></th>
             </tr>
         </thead>
         <tbody class="divide-y divide-gray-100">
             @forelse($events as $event)
-            <tr class="hover:bg-gray-50"
+            <tr class="hover:bg-gray-50 {{ !$event->is_active ? 'opacity-60' : '' }}"
                 data-row="{{ strtolower($event->title . ' ' . ($event->location ?? '')) }}"
-                data-active="1"
+                data-active="{{ $event->is_active ? '1' : '0' }}"
                 data-titulo="{{ strtolower($event->title) }}"
                 data-data="{{ $event->start_date }}"
-                data-local="{{ strtolower($event->location ?? '') }}">
+                data-local="{{ strtolower($event->location ?? '') }}"
+                data-status="{{ $event->is_active ? 'ativo' : 'inativo' }}">
                 <td class="px-4 py-3 font-medium text-gray-800">{{ $event->title }}</td>
                 <td class="px-4 py-3 text-gray-500">
                     {{ \Carbon\Carbon::parse($event->start_date)->format('d/m/Y') }}
@@ -47,11 +51,30 @@
                 </td>
                 <td class="px-4 py-3 text-gray-500">{{ $event->location ?? '—' }}</td>
                 <td class="px-4 py-3">
+                    <span class="px-2 py-1 rounded-full text-xs font-semibold {{ $event->is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500' }}">
+                        {{ $event->is_active ? 'Ativo' : 'Inativo' }}
+                    </span>
+                </td>
+                <td class="px-4 py-3">
                     <div class="flex items-center justify-end gap-1">
+                        {{-- Toggle ativo/inativo --}}
+                        <form action="{{ route('admin.events.toggle', $event) }}" method="POST" class="inline">
+                            @csrf @method('PATCH')
+                            <button type="submit" title="{{ $event->is_active ? 'Desativar' : 'Ativar' }}"
+                                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg transition {{ $event->is_active ? 'bg-green-50 text-green-600 hover:bg-green-100' : 'bg-gray-100 text-gray-400 hover:bg-gray-200' }}">
+                                @if($event->is_active)
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                @else
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                @endif
+                            </button>
+                        </form>
+                        {{-- Editar --}}
                         <a href="{{ route('admin.events.edit', $event) }}" title="Editar"
                            class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                         </a>
+                        {{-- Excluir --}}
                         <form action="{{ route('admin.events.destroy', $event) }}" method="POST" class="inline"
                               onsubmit="return confirm('Remover \'{{ addslashes($event->title) }}\'?')">
                             @csrf @method('DELETE')

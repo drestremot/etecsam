@@ -57,7 +57,8 @@ class SiteController extends Controller
         // 3. Busca os próximos eventos (se a tabela events existir)
         // Se você ainda não criou a tabela de eventos, pode comentar estas linhas abaixo:
         try {
-            $nextEvents = Event::where('start_date', '>=', now())
+            $nextEvents = Event::where('is_active', true)
+                ->where('start_date', '>=', now())
                 ->orderBy('start_date', 'asc')
                 ->take(2)
                 ->get();
@@ -181,6 +182,7 @@ class SiteController extends Controller
         // Busca eventos futuros, ordenados por data
         // O 'get()->groupBy...' agrupa os resultados pelo mês/ano (ex: "03/2026")
         $events = Event::with('photos')
+            ->where('is_active', true)
             ->whereYear('start_date', now()->year)
             ->orderBy('start_date', 'asc')
             ->get()
