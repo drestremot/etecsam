@@ -75,10 +75,38 @@ jobs:
             php artisan config:cache
             php artisan route:cache
 
+            # Garantir que os diretorios do storage existem
+            mkdir -p storage/framework/views
+            mkdir -p storage/framework/sessions
+            mkdir -p storage/framework/cache/data
+            mkdir -p storage/logs
+
+            # Corrigir permissoes de escrita
+            chmod -R 775 storage/
+            chmod -R 775 bootstrap/cache/
+            chmod 664 database/database.sqlite 2>/dev/null || true
+
             # Criar/recriar symlink do storage
             rm -f public/storage
             ln -s ~/domains/etecsam.com.br/public_html/etecsam/storage/app/public public/storage
             echo "Storage symlink: $(readlink -f public/storage)"
+
+            echo "=== DIAGNOSTICO ==="
+            php --version
+            echo "APP_KEY definida: $(grep -q 'APP_KEY=base64' .env 2>/dev/null && echo SIM || echo NAO)"
+            echo ".env existe: $([ -f .env ] && echo SIM || echo NAO)"
+            echo "APP_ENV: $(grep 'APP_ENV=' .env 2>/dev/null | head -1)"
+            echo "APP_DEBUG: $(grep 'APP_DEBUG=' .env 2>/dev/null | head -1)"
+            echo "SQLite existe: $([ -f database/database.sqlite ] && echo SIM || echo NAO)"
+            echo "SQLite tamanho: $(stat -c%s database/database.sqlite 2>/dev/null || echo 0) bytes"
+            echo "storage/framework/views: $([ -d storage/framework/views ] && echo OK || echo FALTA)"
+            echo "storage/framework/sessions: $([ -d storage/framework/sessions ] && echo OK || echo FALTA)"
+            php -r "echo 'pdo_sqlite: ' . (extension_loaded('pdo_sqlite') ? 'OK' : 'FALTA') . PHP_EOL;"
+            echo "PHP error_log:"
+            cat ~/logs/php_error.log 2>/dev/null | tail -10 \
+              || cat ~/public_html/error_log 2>/dev/null | tail -10 \
+              || cat ~/domains/etecsam.com.br/public_html/error_log 2>/dev/null | tail -10 \
+              || echo "(log PHP nao encontrado)"
 
             echo "=== ERROS no laravel.log ==="
             grep -a "local\.ERROR\|local\.CRITICAL\|local\.EMERGENCY" storage/logs/laravel.log 2>/dev/null | tail -5 || echo "(sem erros no log)"
