@@ -57,6 +57,10 @@ jobs:
                 echo "Banco restaurado do backup"
               fi
             fi
+
+            # Garantir que o arquivo SQLite existe (Laravel 12 nao cria automaticamente)
+            touch database/database.sqlite
+            chmod 664 database/database.sqlite
             # === FIM PROTECAO ===
 
             # Instalar dependencias PHP
@@ -110,6 +114,6 @@ jobs:
               || echo "(log PHP nao encontrado)"
 
             echo "=== ERROS no laravel.log ==="
-            grep -a "local\.ERROR\|local\.CRITICAL\|local\.EMERGENCY" storage/logs/laravel.log 2>/dev/null | tail -5 || echo "(sem erros no log)"
+            grep -a "\.ERROR\|\.CRITICAL\|\.EMERGENCY" storage/logs/laravel.log 2>/dev/null | tail -5 || echo "(sem erros no log)"
 
             echo "=== Deploy concluido ==="
