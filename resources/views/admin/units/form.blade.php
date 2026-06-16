@@ -81,6 +81,18 @@
             </div>
         </div>
 
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+            <label class="flex items-center gap-3 cursor-pointer select-none">
+                <input type="checkbox" name="is_active" value="1"
+                       {{ old('is_active', $unit->is_active ?? true) ? 'checked' : '' }}
+                       class="w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                <span>
+                    <span class="text-sm font-semibold text-gray-700">Unidade ativa</span>
+                    <span class="block text-xs text-gray-400 mt-0.5">Visível nas páginas do site</span>
+                </span>
+            </label>
+        </div>
+
         <div class="flex items-center gap-3 pt-1">
             <button type="submit"
                     class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-6 py-2.5 rounded-lg shadow-sm transition">

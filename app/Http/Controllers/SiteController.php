@@ -15,14 +15,14 @@ class SiteController extends Controller
 
     public function sector($slug)
     {
-        $sector = \App\Models\Sector::where('slug', $slug)->firstOrFail();
+        $sector = \App\Models\Sector::where('slug', $slug)->where('is_active', true)->firstOrFail();
         return view('pages.sector', compact('sector'));
     }
 
     public function index()
     {
         // 1. Buscamos as UNIDADES e contamos quantos cursos cada uma tem
-        $units = \App\Models\Unit::withCount('courses')->get();
+        $units = \App\Models\Unit::withCount('courses')->where('is_active', true)->get();
 
         // 2. Buscamos eventos (se houver) para o calendário
         $nextEvents = \App\Models\Event::where('start_date', '>=', now())
@@ -37,7 +37,7 @@ class SiteController extends Controller
     public function unit($id)
     {
         // PÁGINA INTERNA: Carrega a unidade, o coordenador e os cursos dela
-        $unit = \App\Models\Unit::with(['courses', 'coordinator'])->findOrFail($id);
+        $unit = \App\Models\Unit::with(['courses', 'coordinator'])->where('is_active', true)->findOrFail($id);
 
         return view('pages.unit', compact('unit'));
     }
@@ -46,7 +46,7 @@ class SiteController extends Controller
     public function home()
     {
         // 1. Busca os setores (Escola Fazenda)
-        $sectors = Sector::all();
+        $sectors = Sector::where('is_active', true)->get();
 
         // 2. Busca os cursos para a variável $featuredCourses que deu erro
         // Se não tiver cursos no banco, retorna uma lista vazia para não quebrar
@@ -213,6 +213,7 @@ class SiteController extends Controller
     {
         // Busca todas as unidades que possuem cursos, trazendo junto os cursos e o coordenador
         $units = \App\Models\Unit::with(['courses', 'coordinator'])
+            ->where('is_active', true)
             ->has('courses') // Só mostra escola que tem curso
             ->get();
 

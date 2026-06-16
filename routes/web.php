@@ -57,6 +57,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::patch('departments/{department}/toggle', [\App\Http\Controllers\Admin\DepartmentController::class, 'toggle'])->name('departments.toggle');
     Route::patch('laboratories/{laboratory}/toggle',[\App\Http\Controllers\Admin\LaboratoryController::class, 'toggle'])->name('laboratories.toggle');
     Route::patch('events/{event}/toggle',           [\App\Http\Controllers\Admin\EventController::class,      'toggle'])->name('events.toggle');
+    Route::patch('units/{unit}/toggle',             [\App\Http\Controllers\Admin\UnitController::class,       'toggle'])->name('units.toggle');
+    Route::patch('sectors/{sector}/toggle',         [\App\Http\Controllers\Admin\SectorController::class,     'toggle'])->name('sectors.toggle');
 
     // Parceiros
     Route::resource('partners', \App\Http\Controllers\Admin\PartnerController::class);
