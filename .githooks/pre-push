@@ -1,0 +1,36 @@
+#!/bin/sh
+#
+# Git hook: pre-push
+# Exporta os dados do banco para ExportedDataSeeder.php antes de cada push.
+# Se o arquivo mudar, cria um commit automatico incluido no mesmo push.
+#
+
+echo ""
+echo "==> [pre-push] Exportando dados do banco para seeder..."
+
+# Vai para a raiz do repositorio
+ROOT="$(git rev-parse --show-toplevel)"
+cd "$ROOT" || exit 0
+
+# Roda o comando Laravel
+php artisan db:export-seeders
+
+if [ $? -ne 0 ]; then
+    echo "==> AVISO: falha ao exportar seeder (banco vazio ou Laravel indisponivel)."
+    echo "==> Push continuando sem snapshot."
+    echo ""
+    exit 0
+fi
+
+# Verifica se o seeder foi modificado
+if ! git diff --quiet database/seeders/ExportedDataSeeder.php 2>/dev/null; then
+    echo "==> Snapshot atualizado — criando commit automatico..."
+    git add database/seeders/ExportedDataSeeder.php
+    git commit -m "chore: snapshot automatico dos dados [pre-push]"
+    echo "==> Commit criado. O push incluira o snapshot."
+else
+    echo "==> Sem alteracoes nos dados. Nenhum commit extra necessario."
+fi
+
+echo ""
+exit 0
