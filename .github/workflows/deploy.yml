@@ -31,34 +31,33 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT || '65002' }}
           timeout: 120s
+          script_stop: false
           script: |
             cd ~/domains/etecsam.com.br/public_html/etecsam
 
             # === PROTECAO DO BANCO DE DADOS ===
-            # 1. Remover banco do rastreamento Git (sem apagar o arquivo)
+            # Remover banco do rastreamento Git sem apagar o arquivo
             git rm --cached database/database.sqlite 2>/dev/null || true
             git rm --cached database/database.sqlite-wal 2>/dev/null || true
             git rm --cached database/database.sqlite-shm 2>/dev/null || true
 
-            # 2. Backup do banco antes de qualquer operacao
+            # Backup do banco antes de qualquer operacao
             if [ -f database/database.sqlite ]; then
               cp database/database.sqlite database/database.sqlite.bak
               echo "Backup do banco criado: database.sqlite.bak"
             fi
 
-            # 3. Atualizar o codigo (sem sobrescrever o banco)
+            # Atualizar o codigo
             git fetch origin main
-            git checkout -- .  # restaurar arquivos modificados localmente (exceto banco)
-            git pull origin main
+            git reset --hard origin/main
 
-            # 4. Restaurar banco se foi sobrescrito pelo pull
+            # Restaurar banco se o reset o sobrescreveu
             if [ -f database/database.sqlite.bak ]; then
-              # Comparar tamanhos: se o banco ficou menor apos pull, restaurar backup
               BACKUP_SIZE=$(stat -c%s database/database.sqlite.bak)
               CURRENT_SIZE=$(stat -c%s database/database.sqlite 2>/dev/null || echo "0")
               if [ "$CURRENT_SIZE" -lt "$BACKUP_SIZE" ]; then
                 cp database/database.sqlite.bak database/database.sqlite
-                echo "Banco restaurado do backup (pull havia sobrescrito)"
+                echo "Banco restaurado do backup"
               fi
             fi
             # === FIM PROTECAO ===
@@ -69,14 +68,19 @@ jobs:
             # Rodar apenas migrations pendentes (nao apaga dados existentes)
             php artisan migrate --force
 
-            # Garantir usuario admin (updateOrInsert - nao apaga outros dados)
+            # Garantir usuario admin
             php artisan db:seed --class=AdminSeeder --force
 
             # Limpar e recriar caches
-            php artisan config:clear && php artisan route:clear && php artisan view:clear
-            php artisan config:cache && php artisan route:cache
+            php artisan config:clear
+            php artisan route:clear
+            php artisan view:clear
+            php artisan config:cache
+            php artisan route:cache
 
-            # Criar symlink do storage se necessario
-            php -r "function rc($s,$d){if(!is_dir($d))mkdir($d,0755,true);foreach(scandir($s)as $f){if($f==='.'|||$f==='..') continue;$sp=$s.'/'.'$f;$dp=$d.'/'.'$f;is_dir($sp)?rc($sp,$dp):copy($sp,$dp);}}rc('storage/app/public','public/storage');echo 'Storage OK';"
+            # Criar/recriar symlink do storage
+            rm -f public/storage
+            ln -s ~/domains/etecsam.com.br/public_html/etecsam/storage/app/public public/storage
+            echo "Storage symlink: $(readlink -f public/storage)"
 
             echo "Deploy concluido com sucesso!"
