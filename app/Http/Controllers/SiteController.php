@@ -52,7 +52,7 @@ class SiteController extends Controller
         // Se não tiver cursos no banco, retorna uma lista vazia para não quebrar
         //$featuredCourses = Course::take(3)->get();
         //$featuredCourses = Course::orderBy('title', 'asc')->get();
-        $featuredCourses = Course::all();
+        $featuredCourses = Course::where('is_active', true)->get();
 
         // 3. Busca os próximos eventos (se a tabela events existir)
         // Se você ainda não criou a tabela de eventos, pode comentar estas linhas abaixo:
@@ -204,7 +204,7 @@ class SiteController extends Controller
         // Busca o curso pelo "apelido" (slug) no banco de dados
         // Se não achar, mostra erro 404 automaticamente
         $course = \App\Models\Course::with(['unit', 'coordinators', 'subjects.teacher'])
-                                     ->where('slug', $slug)->firstOrFail();
+                                     ->where('slug', $slug)->where('is_active', true)->firstOrFail();
 
         return view('pages.course-detail', compact('course'));
     }
@@ -212,9 +212,9 @@ class SiteController extends Controller
     public function courses()
     {
         // Busca todas as unidades que possuem cursos, trazendo junto os cursos e o coordenador
-        $units = \App\Models\Unit::with(['courses', 'coordinator'])
+        $units = \App\Models\Unit::with(['coordinator', 'courses' => fn($q) => $q->where('is_active', true)])
             ->where('is_active', true)
-            ->has('courses') // Só mostra escola que tem curso
+            ->whereHas('courses', fn($q) => $q->where('is_active', true))
             ->get();
 
         return view('pages.courses-list', compact('units'));
