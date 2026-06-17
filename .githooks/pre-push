@@ -1,36 +1,87 @@
 #!/bin/sh
 #
 # Git hook: pre-push
-# Exporta os dados do banco para ExportedDataSeeder.php antes de cada push.
-# Se o arquivo mudar, cria um commit automatico incluido no mesmo push.
+# Executado automaticamente antes de cada "git push"
+#
+# O que este hook faz:
+#   1. Faz backup LOCAL do banco SQLite antes de qualquer operacao
+#   2. Exporta os dados para ExportedDataSeeder.php (snapshot)
+#   3. Se o seeder mudou, cria commit automatico incluido no push
 #
 
-echo ""
-echo "==> [pre-push] Exportando dados do banco para seeder..."
-
-# Vai para a raiz do repositorio
 ROOT="$(git rev-parse --show-toplevel)"
 cd "$ROOT" || exit 0
 
-# Roda o comando Laravel
-php artisan db:export-seeders
+DB_FILE="database/database.sqlite"
+echo ""
+echo "╔══════════════════════════════════════════════════════╗"
+echo "║           [pre-push] Iniciando backup...            ║"
+echo "╚══════════════════════════════════════════════════════╝"
 
-if [ $? -ne 0 ]; then
-    echo "==> AVISO: falha ao exportar seeder (banco vazio ou Laravel indisponivel)."
-    echo "==> Push continuando sem snapshot."
+# ============================================================
+# PASSO 1: BACKUP LOCAL DO BANCO (na propria maquina)
+# ============================================================
+# Cria pasta de backups fora do repositorio git
+BACKUP_DIR="$ROOT/../db_backups_local"
+mkdir -p "$BACKUP_DIR"
+
+TIMESTAMP=$(date +"%Y%m%d_%H%M%S" 2>/dev/null || echo "backup")
+BACKUP_FILE="$BACKUP_DIR/database_$TIMESTAMP.sqlite"
+LATEST_FILE="$BACKUP_DIR/latest.sqlite"
+
+if [ -f "$DB_FILE" ] && [ -s "$DB_FILE" ]; then
+    cp "$DB_FILE" "$BACKUP_FILE"
+    cp "$DB_FILE" "$LATEST_FILE"
+    echo "==> [pre-push] ✓ Backup local salvo em:"
+    echo "    $BACKUP_FILE"
+else
+    echo "==> [pre-push] ⚠ Banco nao encontrado ou vazio - sem backup local"
+fi
+
+# Manter apenas os ultimos 15 backups locais
+if command -v ls > /dev/null 2>&1; then
+    BACKUP_COUNT=$(ls "$BACKUP_DIR"/database_*.sqlite 2>/dev/null | wc -l)
+    if [ "$BACKUP_COUNT" -gt 15 ]; then
+        ls -t "$BACKUP_DIR"/database_*.sqlite 2>/dev/null | tail -n +16 | xargs rm -f 2>/dev/null
+        echo "==> [pre-push] Backups antigos removidos (mantendo 15 mais recentes)"
+    fi
+fi
+
+# ============================================================
+# PASSO 2: EXPORTAR DADOS PARA SEEDER (snapshot para git)
+# ============================================================
+echo "==> [pre-push] Exportando dados do banco para seeder..."
+
+# Tenta exportar via artisan
+if command -v php > /dev/null 2>&1; then
+    php artisan db:export-seeders 2>/dev/null
+    EXPORT_STATUS=$?
+else
+    EXPORT_STATUS=1
+fi
+
+if [ $EXPORT_STATUS -ne 0 ]; then
+    echo "==> [pre-push] ⚠ Falha ao exportar seeder (banco vazio ou artisan indisponivel)"
+    echo "==> [pre-push] Push continuando sem snapshot dos dados."
     echo ""
     exit 0
 fi
 
-# Verifica se o seeder foi modificado
-if ! git diff --quiet database/seeders/ExportedDataSeeder.php 2>/dev/null; then
-    echo "==> Snapshot atualizado — criando commit automatico..."
-    git add database/seeders/ExportedDataSeeder.php
+# ============================================================
+# PASSO 3: COMMIT AUTOMATICO DO SEEDER (se mudou)
+# ============================================================
+if ! git diff --quiet "$ROOT/database/seeders/ExportedDataSeeder.php" 2>/dev/null; then
+    echo "==> [pre-push] Snapshot atualizado — criando commit automatico..."
+    git add "$ROOT/database/seeders/ExportedDataSeeder.php"
     git commit -m "chore: snapshot automatico dos dados [pre-push]"
-    echo "==> Commit criado. O push incluira o snapshot."
+    echo "==> [pre-push] ✓ Commit criado. Push incluira o snapshot."
 else
-    echo "==> Sem alteracoes nos dados. Nenhum commit extra necessario."
+    echo "==> [pre-push] Sem alteracoes nos dados. Nenhum commit extra necessario."
 fi
 
+echo "╔══════════════════════════════════════════════════════╗"
+echo "║  [pre-push] Backup concluido! Push prosseguindo...  ║"
+echo "║  Backups locais em: db_backups_local/               ║"
+echo "╚══════════════════════════════════════════════════════╝"
 echo ""
 exit 0
