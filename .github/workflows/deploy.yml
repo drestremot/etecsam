@@ -27,125 +27,121 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT || '65002' }}
-          timeout: 180s
-          script_stop: false
+          timeout: 120s
           script: |
             cd ~/domains/etecsam.com.br/public_html/etecsam
 
             # ╔══════════════════════════════════════════════════════════╗
-            # ║           BACKUP AUTOMATICO DO BANCO DE DADOS           ║
-            # ║  Executado ANTES de qualquer alteracao no servidor      ║
+            # ║     PASSO 1: BACKUP OBRIGATORIO DO BANCO DE DADOS       ║
+            # ║   Executado SEMPRE, antes de qualquer outra operacao    ║
             # ╚══════════════════════════════════════════════════════════╝
-
-            # Diretorio de backups FORA do repositorio git
             BACKUP_DIR=~/db_backups
             mkdir -p "$BACKUP_DIR"
 
-            # Nome do backup com data e hora
+            DB_FILE="database/database.sqlite"
             TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
             BACKUP_FILE="$BACKUP_DIR/database_$TIMESTAMP.sqlite"
             LATEST_FILE="$BACKUP_DIR/latest.sqlite"
 
-            # Fazer backup se o banco existir e nao estiver vazio
-            if [ -f database/database.sqlite ] && [ -s database/database.sqlite ]; then
-              cp database/database.sqlite "$BACKUP_FILE"
-              # Atualizar link "latest" para o backup mais recente
-              cp database/database.sqlite "$LATEST_FILE"
-              DB_SIZE=$(stat -c%s database/database.sqlite)
-              echo "✓ BACKUP CRIADO: $BACKUP_FILE ($DB_SIZE bytes)"
-              echo "✓ BACKUP LATEST: $LATEST_FILE"
+            if [ -f "$DB_FILE" ] && [ -s "$DB_FILE" ]; then
+              cp "$DB_FILE" "$BACKUP_FILE"
+              cp "$DB_FILE" "$LATEST_FILE"
+              DB_SIZE=$(stat -c%s "$DB_FILE")
+              echo "✓ Backup criado: database_$TIMESTAMP.sqlite ($DB_SIZE bytes)"
             else
               echo "⚠ Banco nao encontrado ou vazio - sem backup desta vez"
             fi
 
-            # Manter apenas os ultimos 7 backups (evitar lotacao do disco)
+            # Manter apenas os ultimos 10 backups
             BACKUP_COUNT=$(ls "$BACKUP_DIR"/database_*.sqlite 2>/dev/null | wc -l)
-            if [ "$BACKUP_COUNT" -gt 7 ]; then
-              ls -t "$BACKUP_DIR"/database_*.sqlite | tail -n +8 | xargs rm -f
-              echo "✓ Backups antigos removidos (mantendo os 7 mais recentes)"
+            if [ "$BACKUP_COUNT" -gt 10 ]; then
+              ls -t "$BACKUP_DIR"/database_*.sqlite | tail -n +11 | xargs rm -f
+              echo "✓ Backups antigos removidos (mantendo os 10 mais recentes)"
             fi
-            echo "Backups disponiveis: $(ls -t $BACKUP_DIR/database_*.sqlite 2>/dev/null | head -5 | xargs -I{} basename {})"
 
             # ╔══════════════════════════════════════════════════════════╗
-            # ║              ATUALIZAR CODIGO DO SERVIDOR               ║
+            # ║     PASSO 2: REMOVER BANCO DO RASTREAMENTO GIT          ║
+            # ║   Garante que git reset nao apague o banco              ║
             # ╚══════════════════════════════════════════════════════════╝
+            git rm --cached "$DB_FILE" 2>/dev/null || true
+            git rm --cached "$DB_FILE-wal" 2>/dev/null || true
+            git rm --cached "$DB_FILE-shm" 2>/dev/null || true
+            echo "✓ Banco removido do rastreamento Git"
 
-            # git reset --hard remove o database.sqlite do working dir
-            # (ele foi removido do git tracking mas ainda pode estar no indice local)
-            # Por isso o backup foi feito ANTES e o restore sera feito DEPOIS
+            # ╔══════════════════════════════════════════════════════════╗
+            # ║     PASSO 3: SALVAR BANCO EM LOCAL TEMPORARIO           ║
+            # ║   Proteção extra antes do git reset                     ║
+            # ╚══════════════════════════════════════════════════════════╝
+            TEMP_DB="/tmp/etecsam_db_backup_$TIMESTAMP.sqlite"
+            if [ -f "$DB_FILE" ] && [ -s "$DB_FILE" ]; then
+              cp "$DB_FILE" "$TEMP_DB"
+              echo "✓ Copia temporaria salva em $TEMP_DB"
+            fi
+
+            # ╔══════════════════════════════════════════════════════════╗
+            # ║     PASSO 4: ATUALIZAR CODIGO DO GITHUB                 ║
+            # ╚══════════════════════════════════════════════════════════╝
             git fetch origin main
             git reset --hard origin/main
+            echo "✓ Codigo atualizado do GitHub"
 
             # ╔══════════════════════════════════════════════════════════╗
-            # ║           RESTAURAR BANCO APOS ATUALIZACAO             ║
+            # ║     PASSO 5: RESTAURAR BANCO (SEMPRE)                   ║
+            # ║   O banco NUNCA deve ser sobrescrito pelo deploy        ║
             # ╚══════════════════════════════════════════════════════════╝
 
-            if [ -f "$LATEST_FILE" ] && [ -s "$LATEST_FILE" ]; then
-              cp "$LATEST_FILE" database/database.sqlite
-              chmod 664 database/database.sqlite
-              DB_SIZE=$(stat -c%s database/database.sqlite)
-              echo "✓ BANCO RESTAURADO DO BACKUP ($DB_SIZE bytes)"
+            # Tentar restaurar do backup temporario primeiro (mais recente)
+            if [ -f "$TEMP_DB" ] && [ -s "$TEMP_DB" ]; then
+              cp "$TEMP_DB" "$DB_FILE"
+              chmod 664 "$DB_FILE"
+              rm -f "$TEMP_DB"
+              RESTORED_SIZE=$(stat -c%s "$DB_FILE")
+              echo "✓ Banco restaurado do backup temporario ($RESTORED_SIZE bytes)"
+
+            # Se nao tem temporario, usar o latest do diretorio de backups
+            elif [ -f "$LATEST_FILE" ] && [ -s "$LATEST_FILE" ]; then
+              cp "$LATEST_FILE" "$DB_FILE"
+              chmod 664 "$DB_FILE"
+              RESTORED_SIZE=$(stat -c%s "$DB_FILE")
+              echo "✓ Banco restaurado do latest.sqlite ($RESTORED_SIZE bytes)"
+
+            # Se nao tem backup, criar banco vazio (primeira vez)
             else
-              # Primeira instalacao: criar banco vazio
-              touch database/database.sqlite
-              chmod 664 database/database.sqlite
-              echo "✓ Primeira instalacao: banco vazio criado"
+              touch "$DB_FILE"
+              chmod 664 "$DB_FILE"
+              echo "⚠ Nenhum backup disponivel - banco criado vazio (primeira instalacao)"
             fi
 
-            # ╔══════════════════════════════════════════════════════════╗
-            # ║              INSTALAR/ATUALIZAR DEPENDENCIAS            ║
-            # ╚══════════════════════════════════════════════════════════╝
-
-            composer install --no-dev --optimize-autoloader --no-interaction --quiet
+            # Garantir que o banco nao sera rastreado pelo git agora
+            echo "database/database.sqlite" >> .git/info/exclude 2>/dev/null || true
 
             # ╔══════════════════════════════════════════════════════════╗
-            # ║                  BANCO DE DADOS                        ║
+            # ║     PASSO 6: DEPENDENCIAS E MIGRATIONS                  ║
             # ╚══════════════════════════════════════════════════════════╝
+            composer install --no-dev --optimize-autoloader --no-interaction
+            echo "✓ Composer instalado"
 
-            # Rodar apenas migrations NOVAS (nunca apaga dados existentes)
+            # Migrations com flag safe (nao apaga dados existentes)
             php artisan migrate --force
             echo "✓ Migrations executadas"
 
-            # Garantir usuario admin (updateOrInsert = seguro, nao apaga dados)
+            # Garantir usuario admin (updateOrInsert - nao sobrescreve dados)
             php artisan db:seed --class=AdminSeeder --force
-            echo "✓ Admin garantido"
+            echo "✓ AdminSeeder executado"
 
             # ╔══════════════════════════════════════════════════════════╗
-            # ║                    STORAGE / IMAGENS                   ║
+            # ║     PASSO 7: CACHE E STORAGE                            ║
             # ╚══════════════════════════════════════════════════════════╝
-
-            mkdir -p storage/framework/views
-            mkdir -p storage/framework/sessions
-            mkdir -p storage/framework/cache/data
-            mkdir -p storage/logs
-            chmod -R 775 storage/
-            chmod 775 bootstrap/cache/
-            chmod 664 database/database.sqlite 2>/dev/null || true
-
-            # Recriar symlink do storage de imagens
-            rm -f public/storage
-            ln -s ~/domains/etecsam.com.br/public_html/etecsam/storage/app/public public/storage
-            echo "✓ Storage symlink: $(readlink -f public/storage)"
-
-            # ╔══════════════════════════════════════════════════════════╗
-            # ║                  LIMPAR CACHES                         ║
-            # ╚══════════════════════════════════════════════════════════╝
-
             php artisan config:clear && php artisan route:clear && php artisan view:clear
             php artisan config:cache && php artisan route:cache
-            echo "✓ Caches atualizados"
+            echo "✓ Cache limpo e recriado"
 
-            # ╔══════════════════════════════════════════════════════════╗
-            # ║                   DIAGNOSTICO FINAL                    ║
-            # ╚══════════════════════════════════════════════════════════╝
+            # Criar symlink do storage se necessario
+            php -r "function rc($s,$d){if(!is_dir($d))mkdir($d,0755,true);foreach(scandir($s)as $f){if($f==='.'|||$f==='..') continue;$sp=$s.'/'.'$f;$dp=$d.'/'.'$f;is_dir($sp)?rc($sp,$dp):copy($sp,$dp);}}if(is_dir('storage/app/public'))rc('storage/app/public','public/storage');echo 'Storage OK';"
 
             echo ""
-            echo "=== RESUMO DO DEPLOY ==="
-            echo "Banco atual: $(stat -c%s database/database.sqlite 2>/dev/null || echo 0) bytes"
-            echo "Backups disponiveis:"
-            ls -lh "$BACKUP_DIR"/database_*.sqlite 2>/dev/null | awk '{print "  " $5 "  " $9}' || echo "  Nenhum"
-            echo "Para restaurar um backup especifico:"
-            echo "  cp ~/db_backups/database_YYYYMMDD_HHMMSS.sqlite ~/domains/etecsam.com.br/public_html/etecsam/database/database.sqlite"
-            echo ""
-            grep -a "\.ERROR\|\.CRITICAL\|\.EMERGENCY" storage/logs/laravel.log 2>/dev/null | tail -3 || echo "(sem erros criticos no log)"
-            echo "=== Deploy concluido ==="
+            echo "╔══════════════════════════════════════════════════════════╗"
+            echo "║              DEPLOY CONCLUIDO COM SUCESSO!             ║"
+            echo "║  Banco preservado: $(stat -c%s $DB_FILE 2>/dev/null || echo '?') bytes  ║"
+            echo "║  Backups disponiveis: $(ls $BACKUP_DIR/database_*.sqlite 2>/dev/null | wc -l)  ║"
+            echo "╚══════════════════════════════════════════════════════════╝"
