@@ -1,0 +1,52 @@
+#!/bin/sh
+# ============================================================
+# PRE-COMMIT HOOK - Etec SAM
+# Executa AUTOMATICAMENTE antes de cada "git commit"
+#
+# O QUE ELE FAZ:
+#  1. Detecta se o banco SQLite esta no staging (git add)
+#  2. Remove automaticamente e avisa o usuario
+#  3. Faz backup do banco antes do commit
+# ============================================================
+
+DB_FILE="database/database.sqlite"
+BACKUP_DIR="database/backups"
+TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+
+# Verificar se algum .sqlite esta no staging
+SQLITE_STAGED=$(git diff --cached --name-only | grep -E "\.sqlite")
+
+if [ -n "$SQLITE_STAGED" ]; then
+    echo ""
+    echo "=============================================="
+    echo "  PRE-COMMIT: Banco SQLite detectado!"
+    echo "=============================================="
+    echo ""
+    echo "Arquivo(s) encontrado(s) no staging:"
+    echo "$SQLITE_STAGED"
+    echo ""
+    echo "Removendo automaticamente para proteger dados..."
+    echo ""
+
+    # Remover todos os arquivos sqlite do staging
+    git rm --cached database/database.sqlite 2>/dev/null
+    git rm --cached database/database.sqlite-wal 2>/dev/null
+    git rm --cached database/database.sqlite-shm 2>/dev/null
+
+    echo "OK! Banco removido do commit."
+    echo "Seus dados locais NAO foram apagados."
+    echo ""
+fi
+
+# Backup preventivo antes de qualquer commit
+if [ -f "$DB_FILE" ] && [ -s "$DB_FILE" ]; then
+    mkdir -p "$BACKUP_DIR"
+    BACKUP_FILE="$BACKUP_DIR/pre-commit_${TIMESTAMP}.sqlite"
+    cp "$DB_FILE" "$BACKUP_FILE"
+
+    # Manter apenas os 5 backups pre-commit mais recentes
+    ls -t "$BACKUP_DIR"/pre-commit_*.sqlite 2>/dev/null | tail -n +6 | xargs rm -f 2>/dev/null
+    echo ">>> Backup do banco criado: $BACKUP_FILE"
+fi
+
+exit 0
