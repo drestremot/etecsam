@@ -242,8 +242,8 @@ class SiteController extends Controller
     public function academic()
     {
         // 1. Busca a Equipe
-        $director = \App\Models\Teacher::where('role', 'Diretora de Secretaria Acadêmica')->first();
-        $staff = \App\Models\Teacher::where('role', 'Agente Técnico e Administrativo')->get();
+        $director = \App\Models\Teacher::where('role', 'like', '%acadêmica%')->first();
+        $staff = \App\Models\Teacher::where('role', 'like', '%secretaria%')->get();
 
         // 2. Busca os Downloads da categoria 'Secretaria'
         $downloads = \App\Models\Document::where('category', 'Secretaria')->get();
