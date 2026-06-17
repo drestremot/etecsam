@@ -1,0 +1,54 @@
+#!/bin/sh
+# ============================================================
+# PRE-PUSH HOOK - Etec SAM
+# Executa AUTOMATICAMENTE antes de cada "git push"
+#
+# O QUE ELE FAZ:
+#  1. Faz backup do banco (database.sqlite) em database/backups/
+#  2. Remove o banco do staging se adicionado por engano
+#  3. Aplica git rm --cached para proteger o banco
+# ============================================================
+
+DB_FILE="database/database.sqlite"
+BACKUP_DIR="database/backups"
+TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+
+echo ""
+echo ">>> PRE-PUSH: Protegendo banco de dados..."
+
+# PASSO 1: Backup do banco LOCAL antes do push
+if [ -f "$DB_FILE" ] && [ -s "$DB_FILE" ]; then
+    mkdir -p "$BACKUP_DIR"
+    BACKUP_FILE="$BACKUP_DIR/backup_${TIMESTAMP}.sqlite"
+    cp "$DB_FILE" "$BACKUP_FILE"
+
+    # Manter apenas os 10 backups mais recentes
+    ls -t "$BACKUP_DIR"/backup_*.sqlite 2>/dev/null | tail -n +11 | xargs rm -f 2>/dev/null
+
+    TOTAL=$(ls "$BACKUP_DIR"/backup_*.sqlite 2>/dev/null | wc -l)
+    echo ">>> Backup criado: $BACKUP_FILE"
+    echo ">>> Total de backups em $BACKUP_DIR: $TOTAL"
+else
+    echo ">>> Banco nao encontrado - nenhum backup necessario"
+fi
+
+# PASSO 2: Remover banco do staging se foi adicionado por engano
+STAGED=$(git diff --cached --name-only 2>/dev/null | grep -E "\.sqlite")
+
+if [ -n "$STAGED" ]; then
+    echo ""
+    echo ">>> ATENCAO: SQLite detectado no staging! Removendo..."
+    git rm --cached database/database.sqlite 2>/dev/null
+    git rm --cached database/database.sqlite-wal 2>/dev/null
+    git rm --cached database/database.sqlite-shm 2>/dev/null
+    echo ">>> Banco removido do staging com sucesso!"
+fi
+
+# PASSO 3: Garantir git rm --cached (sempre, por seguranca)
+git rm --cached database/database.sqlite 2>/dev/null
+git rm --cached database/database.sqlite-wal 2>/dev/null
+git rm --cached database/database.sqlite-shm 2>/dev/null
+
+echo ">>> Pre-push concluido! Enviando codigo..."
+echo ""
+exit 0
