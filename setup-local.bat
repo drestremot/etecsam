@@ -127,5 +127,47 @@ echo   git add .
 echo   git commit -m "sua mensagem"
 echo   git push origin main
 echo   (O deploy no servidor acontece automaticamente)
+
+REM ===================================================
+REM PASSO EXTRA: Instalar Git Hooks (backup automatico)
+REM ===================================================
+echo [+] Instalando Git Hooks para protecao do banco...
+
+REM Criar pasta de backups e adicionar .gitkeep
+if not exist "database\backups" (
+    mkdir "database\backups"
+)
+if not exist "database\backups\.gitkeep" (
+    echo. > "database\backups\.gitkeep"
+)
+
+REM Instalar hooks (copiar de scripts/hooks para .git/hooks)
+if exist "scripts\hooks\pre-commit" (
+    copy /Y "scripts\hooks\pre-commit" ".git\hooks\pre-commit" > nul
+    echo     Hook pre-commit instalado!
+) else (
+    echo     AVISO: scripts/hooks/pre-commit nao encontrado
+    echo     Execute: git pull origin main
+)
+
+if exist "scripts\hooks\pre-push" (
+    copy /Y "scripts\hooks\pre-push" ".git\hooks\pre-push" > nul
+    echo     Hook pre-push instalado!
+) else (
+    echo     AVISO: scripts/hooks/pre-push nao encontrado
+    echo     Execute: git pull origin main
+)
+
+echo     Hooks instalados com sucesso!
+echo     - pre-commit: protege contra commitar o banco
+echo     - pre-push: faz backup automatico antes do push
+
+REM Remover banco do rastreamento Git (operacao segura)
+echo [+] Garantindo que banco nao seja rastreado pelo Git...
+git rm --cached database/database.sqlite 2>nul
+git rm --cached database/database.sqlite-wal 2>nul
+git rm --cached database/database.sqlite-shm 2>nul
+echo     Banco protegido!
+
 echo.
 pause
