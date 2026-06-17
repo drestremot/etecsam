@@ -32,99 +32,120 @@ jobs:
           script: |
             cd ~/domains/etecsam.com.br/public_html/etecsam
 
-            # === PROTECAO DO BANCO DE DADOS ===
-            # Salva o banco em local FORA do repositorio (git nunca toca este caminho)
+            # ╔══════════════════════════════════════════════════════════╗
+            # ║           BACKUP AUTOMATICO DO BANCO DE DADOS           ║
+            # ║  Executado ANTES de qualquer alteracao no servidor      ║
+            # ╚══════════════════════════════════════════════════════════╝
+
+            # Diretorio de backups FORA do repositorio git
+            BACKUP_DIR=~/db_backups
+            mkdir -p "$BACKUP_DIR"
+
+            # Nome do backup com data e hora
+            TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+            BACKUP_FILE="$BACKUP_DIR/database_$TIMESTAMP.sqlite"
+            LATEST_FILE="$BACKUP_DIR/latest.sqlite"
+
+            # Fazer backup se o banco existir e nao estiver vazio
             if [ -f database/database.sqlite ] && [ -s database/database.sqlite ]; then
-              cp database/database.sqlite ~/etecsam_db.sqlite.tmp \
-                && mv ~/etecsam_db.sqlite.tmp ~/etecsam_db.sqlite \
-                && echo "Banco salvo em ~/etecsam_db.sqlite ($(stat -c%s ~/etecsam_db.sqlite) bytes)"
+              cp database/database.sqlite "$BACKUP_FILE"
+              # Atualizar link "latest" para o backup mais recente
+              cp database/database.sqlite "$LATEST_FILE"
+              DB_SIZE=$(stat -c%s database/database.sqlite)
+              echo "✓ BACKUP CRIADO: $BACKUP_FILE ($DB_SIZE bytes)"
+              echo "✓ BACKUP LATEST: $LATEST_FILE"
+            else
+              echo "⚠ Banco nao encontrado ou vazio - sem backup desta vez"
             fi
 
-            # Atualizar o codigo
-            # git reset --hard apaga database.sqlite pois o arquivo foi removido do git
+            # Manter apenas os ultimos 7 backups (evitar lotacao do disco)
+            BACKUP_COUNT=$(ls "$BACKUP_DIR"/database_*.sqlite 2>/dev/null | wc -l)
+            if [ "$BACKUP_COUNT" -gt 7 ]; then
+              ls -t "$BACKUP_DIR"/database_*.sqlite | tail -n +8 | xargs rm -f
+              echo "✓ Backups antigos removidos (mantendo os 7 mais recentes)"
+            fi
+            echo "Backups disponiveis: $(ls -t $BACKUP_DIR/database_*.sqlite 2>/dev/null | head -5 | xargs -I{} basename {})"
+
+            # ╔══════════════════════════════════════════════════════════╗
+            # ║              ATUALIZAR CODIGO DO SERVIDOR               ║
+            # ╚══════════════════════════════════════════════════════════╝
+
+            # git reset --hard remove o database.sqlite do working dir
+            # (ele foi removido do git tracking mas ainda pode estar no indice local)
+            # Por isso o backup foi feito ANTES e o restore sera feito DEPOIS
             git fetch origin main
             git reset --hard origin/main
 
-            # Restaura o banco do local seguro
-            if [ -f ~/etecsam_db.sqlite ] && [ -s ~/etecsam_db.sqlite ]; then
-              cp ~/etecsam_db.sqlite database/database.sqlite
+            # ╔══════════════════════════════════════════════════════════╗
+            # ║           RESTAURAR BANCO APOS ATUALIZACAO             ║
+            # ╚══════════════════════════════════════════════════════════╝
+
+            if [ -f "$LATEST_FILE" ] && [ -s "$LATEST_FILE" ]; then
+              cp "$LATEST_FILE" database/database.sqlite
               chmod 664 database/database.sqlite
-              echo "Banco restaurado ($(stat -c%s database/database.sqlite) bytes)"
+              DB_SIZE=$(stat -c%s database/database.sqlite)
+              echo "✓ BANCO RESTAURADO DO BACKUP ($DB_SIZE bytes)"
             else
+              # Primeira instalacao: criar banco vazio
               touch database/database.sqlite
               chmod 664 database/database.sqlite
-              echo "Primeira instalacao: banco vazio criado"
+              echo "✓ Primeira instalacao: banco vazio criado"
             fi
-            # === FIM PROTECAO ===
 
-            # Instalar dependencias PHP
-            composer install --no-dev --optimize-autoloader --no-interaction
+            # ╔══════════════════════════════════════════════════════════╗
+            # ║              INSTALAR/ATUALIZAR DEPENDENCIAS            ║
+            # ╚══════════════════════════════════════════════════════════╝
 
-            # Rodar apenas migrations pendentes (nunca apaga dados existentes)
+            composer install --no-dev --optimize-autoloader --no-interaction --quiet
+
+            # ╔══════════════════════════════════════════════════════════╗
+            # ║                  BANCO DE DADOS                        ║
+            # ╚══════════════════════════════════════════════════════════╝
+
+            # Rodar apenas migrations NOVAS (nunca apaga dados existentes)
             php artisan migrate --force
+            echo "✓ Migrations executadas"
 
-            # Seed inicial: so executa se o banco estiver vazio (primeira instalacao)
-            USER_COUNT=$(php -r "
-              try {
-                \$db = new PDO('sqlite:database/database.sqlite');
-                echo \$db->query('SELECT COUNT(*) FROM users')->fetchColumn();
-              } catch(Exception \$e) { echo 0; }
-            " 2>/dev/null || echo 0)
-            if [ "\$USER_COUNT" = "0" ]; then
-              echo "Banco vazio - executando seed inicial..."
-              php artisan db:seed --class=AdminSeeder --force
-              php artisan db:seed --class=ThemeSeeder --force
-            else
-              echo "Banco com dados (${USER_COUNT} usuarios) - seed ignorado"
-            fi
+            # Garantir usuario admin (updateOrInsert = seguro, nao apaga dados)
+            php artisan db:seed --class=AdminSeeder --force
+            echo "✓ Admin garantido"
 
-            # Atualiza backup com estado pos-migracao (garante que proximo deploy use banco atual)
-            if [ -f database/database.sqlite ] && [ -s database/database.sqlite ]; then
-              cp database/database.sqlite ~/etecsam_db.sqlite
-              echo "Backup pos-deploy atualizado ($(stat -c%s ~/etecsam_db.sqlite) bytes)"
-            fi
+            # ╔══════════════════════════════════════════════════════════╗
+            # ║                    STORAGE / IMAGENS                   ║
+            # ╚══════════════════════════════════════════════════════════╝
 
-            # Limpar e recriar caches
-            php artisan config:clear
-            php artisan route:clear
-            php artisan view:clear
-            php artisan config:cache
-            php artisan route:cache
-
-            # Garantir que os diretorios do storage existem
             mkdir -p storage/framework/views
             mkdir -p storage/framework/sessions
             mkdir -p storage/framework/cache/data
             mkdir -p storage/logs
-
-            # Corrigir permissoes de escrita
             chmod -R 775 storage/
-            chmod -R 775 bootstrap/cache/
+            chmod 775 bootstrap/cache/
             chmod 664 database/database.sqlite 2>/dev/null || true
 
-            # Criar/recriar symlink do storage
+            # Recriar symlink do storage de imagens
             rm -f public/storage
             ln -s ~/domains/etecsam.com.br/public_html/etecsam/storage/app/public public/storage
-            echo "Storage symlink: $(readlink -f public/storage)"
+            echo "✓ Storage symlink: $(readlink -f public/storage)"
 
-            echo "=== DIAGNOSTICO ==="
-            php --version
-            echo "APP_KEY definida: $(grep -q 'APP_KEY=base64' .env 2>/dev/null && echo SIM || echo NAO)"
-            echo ".env existe: $([ -f .env ] && echo SIM || echo NAO)"
-            echo "APP_ENV: $(grep 'APP_ENV=' .env 2>/dev/null | head -1)"
-            echo "APP_DEBUG: $(grep 'APP_DEBUG=' .env 2>/dev/null | head -1)"
-            echo "SQLite existe: $([ -f database/database.sqlite ] && echo SIM || echo NAO)"
-            echo "SQLite tamanho: $(stat -c%s database/database.sqlite 2>/dev/null || echo 0) bytes"
-            echo "storage/framework/views: $([ -d storage/framework/views ] && echo OK || echo FALTA)"
-            echo "storage/framework/sessions: $([ -d storage/framework/sessions ] && echo OK || echo FALTA)"
-            php -r "echo 'pdo_sqlite: ' . (extension_loaded('pdo_sqlite') ? 'OK' : 'FALTA') . PHP_EOL;"
-            echo "PHP error_log:"
-            cat ~/logs/php_error.log 2>/dev/null | tail -10 \
-              || cat ~/public_html/error_log 2>/dev/null | tail -10 \
-              || cat ~/domains/etecsam.com.br/public_html/error_log 2>/dev/null | tail -10 \
-              || echo "(log PHP nao encontrado)"
+            # ╔══════════════════════════════════════════════════════════╗
+            # ║                  LIMPAR CACHES                         ║
+            # ╚══════════════════════════════════════════════════════════╝
 
-            echo "=== ERROS no laravel.log ==="
-            grep -a "\.ERROR\|\.CRITICAL\|\.EMERGENCY" storage/logs/laravel.log 2>/dev/null | tail -5 || echo "(sem erros no log)"
+            php artisan config:clear && php artisan route:clear && php artisan view:clear
+            php artisan config:cache && php artisan route:cache
+            echo "✓ Caches atualizados"
 
+            # ╔══════════════════════════════════════════════════════════╗
+            # ║                   DIAGNOSTICO FINAL                    ║
+            # ╚══════════════════════════════════════════════════════════╝
+
+            echo ""
+            echo "=== RESUMO DO DEPLOY ==="
+            echo "Banco atual: $(stat -c%s database/database.sqlite 2>/dev/null || echo 0) bytes"
+            echo "Backups disponiveis:"
+            ls -lh "$BACKUP_DIR"/database_*.sqlite 2>/dev/null | awk '{print "  " $5 "  " $9}' || echo "  Nenhum"
+            echo "Para restaurar um backup especifico:"
+            echo "  cp ~/db_backups/database_YYYYMMDD_HHMMSS.sqlite ~/domains/etecsam.com.br/public_html/etecsam/database/database.sqlite"
+            echo ""
+            grep -a "\.ERROR\|\.CRITICAL\|\.EMERGENCY" storage/logs/laravel.log 2>/dev/null | tail -3 || echo "(sem erros criticos no log)"
             echo "=== Deploy concluido ==="
