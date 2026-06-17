@@ -5,47 +5,58 @@
 // APAGUE ESTE ARQUIVO APOS O DOWNLOAD!
 // ================================================================
 
-// Verificar token de seguranca
 $token_correto = "EtecSAM2026download";
 $token_recebido = $_GET["token"] ?? "";
 
 if ($token_recebido !== $token_correto) {
     http_response_code(404);
-    echo "Not Found";
-    exit;
+    exit("Not Found");
 }
 
-// Caminho do banco de dados
-$db_path = realpath(__DIR__ . "/../database/database.sqlite");
+// Tentar varios caminhos possiveis para o banco
+$possible_paths = [
+    __DIR__ . "/../database/database.sqlite",
+    "/home/u615674013/public_html/etecsam/database/database.sqlite",
+    "/home/u615674013/domains/etecsam.com.br/public_html/etecsam/database/database.sqlite",
+    dirname(__DIR__) . "/database/database.sqlite",
+];
 
-if (!$db_path || !file_exists($db_path)) {
+$db_path = null;
+foreach ($possible_paths as $path) {
+    $resolved = realpath($path);
+    if ($resolved && file_exists($resolved) && filesize($resolved) > 0) {
+        $db_path = $resolved;
+        break;
+    }
+}
+
+if (!$db_path) {
     http_response_code(500);
-    echo "Banco nao encontrado em: " . __DIR__ . "/../database/database.sqlite";
+    echo "Banco nao encontrado. Caminhos tentados:<br>";
+    foreach ($possible_paths as $p) {
+        $r = realpath($p);
+        $exists = $r && file_exists($r);
+        $size = $exists ? filesize($r) : 0;
+        echo "- $p => " . ($r ?: "INVALIDO") . " | exists=${$exists} | size=$size<br>";
+    }
+    echo "<br>__DIR__: " . __DIR__;
     exit;
 }
 
-// Verificar tamanho
 $size = filesize($db_path);
-if ($size === 0) {
-    http_response_code(500);
-    echo "Banco esta vazio!";
-    exit;
-}
-
-// Servir o arquivo para download
 $timestamp = date("Ymd_His");
-$filename = "database_servidor_$timestamp.sqlite";
+$filename = "database_servidor_{$timestamp}.sqlite";
 
 header("Content-Type: application/octet-stream");
-header("Content-Disposition: attachment; filename=\"$filename\"");
-header("Content-Length: $size");
+header("Content-Disposition: attachment; filename=\"{$filename}\"");
+header("Content-Length: {$size}");
 header("Cache-Control: no-cache, no-store, must-revalidate");
 header("Pragma: no-cache");
+header("X-DB-Path: {$db_path}");
+header("X-DB-Size: {$size}");
 
-// Enviar o arquivo
 readfile($db_path);
 
-// Auto-deletar apos o download (seguranca)
 register_shutdown_function(function() {
     @unlink(__FILE__);
 });
