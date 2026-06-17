@@ -22,7 +22,9 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 
-# Banco de dados local (nunca commitar o SQLite de producao)
+# Banco de dados local e backups automaticos (nunca commitar)
+
 /database/database.sqlite
 /database/database.sqlite-wal
 /database/database.sqlite-shm
+/database/backups/
