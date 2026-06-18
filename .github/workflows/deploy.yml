@@ -146,6 +146,10 @@ jobs:
               echo "⚠ storage/app/public nao existe ainda - nada para sincronizar"
             fi
 
+            echo "--- AUDITORIA TEMPORARIA DE IMAGENS ---"
+            php artisan images:audit 2>&1
+            echo "--- FIM AUDITORIA ---"
+
             echo ""
             echo "╔══════════════════════════════════════════════════════════╗"
             echo "║              DEPLOY CONCLUIDO COM SUCESSO!             ║"
