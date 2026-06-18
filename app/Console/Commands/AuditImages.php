@@ -89,6 +89,6 @@ class AuditImages extends Command
             return public_path($trimmed);
         }
 
-        return storage_path('app/public/'.$trimmed);
+        return \Illuminate\Support\Facades\Storage::disk('public')->path($trimmed);
     }
 }
