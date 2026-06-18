@@ -40,7 +40,11 @@ return [
 
         'public' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
+            // Aponta direto para public/storage (em vez de storage/app/public + symlink)
+            // porque o Hostinger nao garante symlink, e isso fazia uploads so aparecerem
+            // depois do proximo deploy. Localmente public/storage e' uma junction para
+            // storage/app/public, entao o comportamento de dev nao muda.
+            'root' => public_path('storage'),
             'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage',
             'visibility' => 'public',
             'throw' => false,
