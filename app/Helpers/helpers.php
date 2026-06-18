@@ -24,34 +24,45 @@ if (!function_exists('photo_url')) {
             return null;
         }
 
-        // URL externa — usa como está
-        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+        // Trim whitespace
+        $path = trim($path);
+
+        // External URL (case-insensitive)
+        if (stripos($path, 'http://') === 0 || stripos($path, 'https://') === 0) {
             return $path;
         }
 
-        // Normalize leading slash e prefixos públicos comuns.
-        if (str_starts_with($path, '/')) {
-            $path = ltrim($path, '/');
+        // Normalize leading slash and common public prefixes (case-insensitive checks)
+        $trimmed = ltrim($path, '/');
+
+        $lower = strtolower($trimmed);
+
+        if (strpos($lower, 'public/') === 0) {
+            $trimmed = substr($trimmed, strlen('public/'));
+            $lower = substr($lower, strlen('public/'));
         }
 
-        if (str_starts_with($path, 'public/')) {
-            $path = substr($path, strlen('public/'));
+        if (strpos($lower, 'storage/app/public/') === 0) {
+            $trimmed = substr($trimmed, strlen('storage/app/public/'));
+            $lower = substr($lower, strlen('storage/app/public/'));
         }
 
-        if (str_starts_with($path, 'storage/app/public/')) {
-            $path = substr($path, strlen('storage/app/public/'));
+        if (strpos($lower, 'public/storage/') === 0) {
+            $trimmed = substr($trimmed, strlen('public/storage/'));
+            $lower = substr($lower, strlen('public/storage/'));
         }
 
-        // Arquivos estáticos em public/ (imagens/, images/, icons/, etc.)
-        if (str_starts_with($path, 'imagens/') || str_starts_with($path, 'images/') || str_starts_with($path, 'icons/')) {
-            return asset($path);
+        // Static public assets
+        if (str_starts_with($lower, 'imagens/') || str_starts_with($lower, 'images/') || str_starts_with($lower, 'icons/')) {
+            return asset($trimmed);
         }
 
-        if (str_starts_with($path, 'storage/')) {
-            return asset($path);
+        // If path already looks like storage/relative (public/storage/...), serve via asset
+        if (str_starts_with($lower, 'storage/')) {
+            return asset($trimmed);
         }
 
-        // Uploads via admin — estão em storage/app/public/
-        return \Illuminate\Support\Facades\Storage::disk('public')->url($path);
+        // Default: assume file is on the 'public' disk (storage/app/public)
+        return \Illuminate\Support\Facades\Storage::disk('public')->url($trimmed);
     }
 }
