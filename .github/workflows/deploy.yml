@@ -115,25 +115,32 @@ jobs:
             # Garantir que o banco nao sera rastreado pelo git agora
             echo "database/database.sqlite" >> .git/info/exclude 2>/dev/null || true
 
+            echo "--- DIAG[1] pos-restore ---"; stat -c "%n %s bytes %a" "$DB_FILE" 2>&1
+
             # ╔══════════════════════════════════════════════════════════╗
             # ║     PASSO 6: DEPENDENCIAS E MIGRATIONS                  ║
             # ╚══════════════════════════════════════════════════════════╝
             composer install --no-dev --optimize-autoloader --no-interaction
             echo "✓ Composer instalado"
+            echo "--- DIAG[2] pos-composer ---"; stat -c "%n %s bytes %a" "$DB_FILE" 2>&1
 
             # Migrations com flag safe (nao apaga dados existentes)
             php artisan migrate --force
             echo "✓ Migrations executadas"
+            echo "--- DIAG[3] pos-migrate ---"; stat -c "%n %s bytes %a" "$DB_FILE" 2>&1
 
             # Garantir usuario admin (updateOrInsert - nao sobrescreve dados)
             php artisan db:seed --class=AdminSeeder --force
             echo "✓ AdminSeeder executado"
+            echo "--- DIAG[4] pos-seed ---"; stat -c "%n %s bytes %a" "$DB_FILE" 2>&1
 
             # ╔══════════════════════════════════════════════════════════╗
             # ║     PASSO 7: CACHE E STORAGE                            ║
             # ╚══════════════════════════════════════════════════════════╝
             php artisan config:clear && php artisan route:clear && php artisan view:clear
+            echo "--- DIAG[5] pos-config:clear/route:clear/view:clear ---"; stat -c "%n %s bytes %a" "$DB_FILE" 2>&1
             php artisan config:cache && php artisan route:cache
+            echo "--- DIAG[6] pos-config:cache/route:cache ---"; stat -c "%n %s bytes %a" "$DB_FILE" 2>&1
             echo "✓ Cache limpo e recriado"
 
             # Sincronizar storage/app/public -> public/storage
@@ -145,10 +152,20 @@ jobs:
             else
               echo "⚠ storage/app/public nao existe ainda - nada para sincronizar"
             fi
+            echo "--- DIAG[7] pos-storage-sync ---"; stat -c "%n %s bytes %a" "$DB_FILE" 2>&1
 
             echo ""
             echo "╔══════════════════════════════════════════════════════════╗"
             echo "║              DEPLOY CONCLUIDO COM SUCESSO!             ║"
-            echo "║  Banco preservado: $(stat -c%s $DB_FILE 2>/dev/null || echo '?') bytes  ║"
+            echo "║  Banco preservado: $(stat -c%s "$DB_FILE" 2>/dev/null || echo '?') bytes  ║"
             echo "║  Backups disponiveis: $(ls $BACKUP_DIR/database_*.sqlite 2>/dev/null | wc -l)  ║"
             echo "╚══════════════════════════════════════════════════════════╝"
+
+            echo "--- DIAG[8] espera 5s e rechecka ---"
+            sleep 5
+            stat -c "%n %s bytes %a" "$DB_FILE" 2>&1
+            echo "--- DIAG[9] quota de disco ---"
+            df -h . 2>&1 | head -5
+            du -sh ~ 2>&1
+            echo "--- DIAG[10] procurando database.sqlite em todo o home (possivel quarentena) ---"
+            find ~ -iname "database.sqlite*" 2>/dev/null
