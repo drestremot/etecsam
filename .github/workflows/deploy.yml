@@ -136,8 +136,15 @@ jobs:
             php artisan config:cache && php artisan route:cache
             echo "✓ Cache limpo e recriado"
 
-            # Criar symlink do storage se necessario
-            php -r "function rc($s,$d){if(!is_dir($d))mkdir($d,0755,true);foreach(scandir($s)as $f){if($f==='.'|||$f==='..') continue;$sp=$s.'/'.'$f;$dp=$d.'/'.'$f;is_dir($sp)?rc($sp,$dp):copy($sp,$dp);}}if(is_dir('storage/app/public'))rc('storage/app/public','public/storage');echo 'Storage OK';"
+            # Sincronizar storage/app/public -> public/storage
+            # (Hostinger normalmente nao suporta symlink, por isso copiamos os arquivos)
+            mkdir -p public/storage
+            if [ -d "storage/app/public" ]; then
+              cp -rf storage/app/public/. public/storage/
+              echo "✓ Storage sincronizado (storage/app/public -> public/storage)"
+            else
+              echo "⚠ storage/app/public nao existe ainda - nada para sincronizar"
+            fi
 
             echo ""
             echo "╔══════════════════════════════════════════════════════════╗"
