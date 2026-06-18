@@ -23,14 +23,20 @@
             @if($unit->coordinator)
             <div class="bg-white text-gray-800 p-5 rounded-2xl shadow-lg flex items-center gap-4 min-w-[300px]">
                 <div class="w-16 h-16 rounded-full bg-gray-200 overflow-hidden border-2 border-etec-light flex-shrink-0">
+                    @php
+                        $coordinatorInitials = strtoupper(substr($unit->coordinator->name, 0, 1));
+                        if (preg_match('/\s+(\S)/u', $unit->coordinator->name, $matches)) {
+                            $coordinatorInitials .= strtoupper($matches[1]);
+                        }
+                    @endphp
                     @if($unit->coordinator->photo)
                         <img src="{{ photo_url($unit->coordinator->photo) }}"
                              onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
                              class="w-full h-full object-cover">
-                        <div style="display:none" class="w-full h-full flex items-center justify-center bg-etec-dark text-white font-bold text-xl">{{ substr($unit->coordinator->name,0,1) }}</div>
+                        <div style="display:none" class="w-full h-full flex items-center justify-center bg-etec-dark text-white font-bold text-xl">{{ $coordinatorInitials }}</div>
                     @else
                         <div class="w-full h-full flex items-center justify-center bg-etec-dark text-white font-bold text-xl">
-                            {{ substr($unit->coordinator->name, 0, 1) }}
+                            {{ $coordinatorInitials }}
                         </div>
                     @endif
                 </div>
