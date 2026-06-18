@@ -138,13 +138,23 @@ jobs:
 
             # Sincronizar storage/app/public -> public/storage
             # (Hostinger normalmente nao suporta symlink, por isso copiamos os arquivos)
+            echo "--- DIAGNOSTICO: pwd ---"
+            pwd
+            echo "--- DIAGNOSTICO: conteudo de storage/app/public ---"
+            ls -la storage/app/public 2>&1 || echo "storage/app/public nao existe"
+            echo "--- DIAGNOSTICO: conteudo de storage/app/public/units (se existir) ---"
+            ls -la storage/app/public/units 2>&1 || echo "storage/app/public/units nao existe"
+
             mkdir -p public/storage
             if [ -d "storage/app/public" ]; then
-              cp -rf storage/app/public/. public/storage/
+              cp -rfv storage/app/public/. public/storage/ 2>&1
               echo "✓ Storage sincronizado (storage/app/public -> public/storage)"
             else
               echo "⚠ storage/app/public nao existe ainda - nada para sincronizar"
             fi
+
+            echo "--- DIAGNOSTICO: conteudo de public/storage/units (depois da copia) ---"
+            ls -la public/storage/units 2>&1 || echo "public/storage/units nao existe"
 
             echo ""
             echo "╔══════════════════════════════════════════════════════════╗"
