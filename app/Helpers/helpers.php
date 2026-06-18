@@ -29,8 +29,25 @@ if (!function_exists('photo_url')) {
             return $path;
         }
 
-        // Arquivos estáticos em public/ (imagens/, icons/, etc.)
-        if (str_starts_with($path, 'imagens/') || str_starts_with($path, 'icons/')) {
+        // Normalize leading slash e prefixos públicos comuns.
+        if (str_starts_with($path, '/')) {
+            $path = ltrim($path, '/');
+        }
+
+        if (str_starts_with($path, 'public/')) {
+            $path = substr($path, strlen('public/'));
+        }
+
+        if (str_starts_with($path, 'storage/app/public/')) {
+            $path = substr($path, strlen('storage/app/public/'));
+        }
+
+        // Arquivos estáticos em public/ (imagens/, images/, icons/, etc.)
+        if (str_starts_with($path, 'imagens/') || str_starts_with($path, 'images/') || str_starts_with($path, 'icons/')) {
+            return asset($path);
+        }
+
+        if (str_starts_with($path, 'storage/')) {
             return asset($path);
         }
 

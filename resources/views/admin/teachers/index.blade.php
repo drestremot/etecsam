@@ -44,10 +44,22 @@
                 data-email="{{ strtolower($teacher->email ?? '') }}"
                 data-status="{{ $teacher->is_active ? 'ativo' : 'inativo' }}">
                 <td class="px-4 py-3 font-medium text-gray-800">
-                    @if($teacher->photo)
-                        <img src="{{ photo_url($teacher->photo) }}" class="w-8 h-8 rounded-full object-cover inline-block mr-2"
-                             onerror="this.style.display='none'">
-                    @endif
+                    @php
+                        $teacherInitials = strtoupper(substr($teacher->name, 0, 1));
+                        if (preg_match('/\s+(\S)/u', $teacher->name, $matches)) {
+                            $teacherInitials .= strtoupper($matches[1]);
+                        }
+                    @endphp
+                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gray-200 text-gray-700 font-semibold text-xs overflow-hidden inline-block mr-2">
+                        @if($teacher->photo)
+                            <img src="{{ photo_url($teacher->photo) }}" alt="{{ $teacher->name }}"
+                                 class="w-full h-full object-cover"
+                                 onerror="this.style.display='none'; this.parentElement.querySelector('.initials-fallback').classList.remove('hidden')">
+                            <span class="initials-fallback hidden">{{ $teacherInitials }}</span>
+                        @else
+                            {{ $teacherInitials }}
+                        @endif
+                    </span>
                     {{ $teacher->name }}
                 </td>
                 <td class="px-4 py-3 text-gray-600">{{ $teacher->role }}</td>
