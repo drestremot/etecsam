@@ -36,7 +36,7 @@ class TeacherController extends Controller
             'phone'      => 'nullable|string|max:30',
             'lattes_url' => 'nullable|url|max:500',
             'birth_date' => 'nullable|date',
-            'photo'      => 'nullable|image|max:2048',
+            'photo'      => 'nullable|image|max:4096',
         ]);
 
         if ($request->hasFile('photo')) {
@@ -62,7 +62,7 @@ class TeacherController extends Controller
             'phone'      => 'nullable|string|max:30',
             'lattes_url' => 'nullable|url|max:500',
             'birth_date' => 'nullable|date',
-            'photo'      => 'nullable|image|max:2048',
+            'photo'      => 'nullable|image|max:4096',
         ]);
 
         if ($request->hasFile('photo')) {

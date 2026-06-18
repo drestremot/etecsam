@@ -87,7 +87,7 @@
                                     {{-- Foto de capa preenchendo todo o card --}}
                                     <img src="{{ photo_url($unit->image) }}" alt="{{ $unit->name }}"
                                          class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-700 ease-in-out"
-                                         onerror="this.style.display='none'; this.parentElement.querySelector('.unit-card-fallback').classList.remove('hidden')">
+                                         onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name={{ urlencode($unit->name) }}&background=1a3a6e&color=fff&bold=true&size=512'">
                                     {{-- Gradiente sutil para legibilidade do badge inferior --}}
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"></div>
                                 @endif
