@@ -1,0 +1,3 @@
+Coloque aqui as fotos de docentes correspondentes ao seeder.
+Nomes esperados (exemplo): marissol-cristiane-barbosa-moco-veras.jpg
+Você pode enviar via FTP/Hostinger para esta pasta.
