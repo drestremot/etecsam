@@ -114,9 +114,9 @@ class SiteController extends Controller
                   ->orWhere('role', 'like', '%Coordenadora%')
                   ->orWhere('role', 'like', '%Pedagóg%')
                   ->orWhere('role', 'like', '%Orientador%')
-                  ->orWhere('role', 'like', '%Orientadora%')
-                  ->orWhere('role', 'like', '%Acadêm%');
+                  ->orWhere('role', 'like', '%Orientadora%');
             })
+            ->where('role', 'not like', '%Secretaria%')
             ->where(function ($q) use ($director) {
                 if ($director) $q->where('id', '!=', $director->id);
             })
