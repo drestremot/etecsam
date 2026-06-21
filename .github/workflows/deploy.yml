@@ -104,9 +104,13 @@ jobs:
             # ║     PASSO 3: ATUALIZAR CODIGO DO GITHUB                 ║
             # ║   Banco fica fora da pasta - reset --hard nao o toca    ║
             # ╚══════════════════════════════════════════════════════════╝
+            echo "--- DIAG: public/storage/units ANTES do reset ---"
+            ls -la public/storage/units 2>&1 || echo "nao existe"
             git fetch origin main
             git reset --hard origin/main
             echo "✓ Codigo atualizado do GitHub"
+            echo "--- DIAG: public/storage/units DEPOIS do reset ---"
+            ls -la public/storage/units 2>&1 || echo "nao existe"
 
             # ╔══════════════════════════════════════════════════════════╗
             # ║     PASSO 4: DEPENDENCIAS E MIGRATIONS                  ║
