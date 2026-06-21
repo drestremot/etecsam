@@ -28,3 +28,4 @@ Thumbs.db
 /database/database.sqlite-wal
 /database/database.sqlite-shm
 /database/backups/
+/database/old-data-modificacao-database.sqlite

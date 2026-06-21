@@ -46,6 +46,10 @@ jobs:
             if [ -f "$DB_FILE" ] && [ -s "$DB_FILE" ]; then
               cp "$DB_FILE" "$BACKUP_FILE"
               cp "$DB_FILE" "$LATEST_FILE"
+              # Copia visivel no proprio projeto (sem precisar de SSH para achar) -
+              # o banco que estava no servidor antes deste deploy, preservado por nome,
+              # nunca apenas removido.
+              cp "$DB_FILE" "database/old-data-modificacao-database.sqlite"
               DB_SIZE=$(stat -c%s "$DB_FILE")
               echo "✓ Backup criado: database_$TIMESTAMP.sqlite ($DB_SIZE bytes)"
             else
@@ -115,38 +119,25 @@ jobs:
             # Garantir que o banco nao sera rastreado pelo git agora
             echo "database/database.sqlite" >> .git/info/exclude 2>/dev/null || true
 
-            echo "--- DIAG[1] pos-restore ---"; stat -c "%n %s bytes %a" "$DB_FILE" 2>&1
-
             # ╔══════════════════════════════════════════════════════════╗
             # ║     PASSO 6: DEPENDENCIAS E MIGRATIONS                  ║
             # ╚══════════════════════════════════════════════════════════╝
             composer install --no-dev --optimize-autoloader --no-interaction
             echo "✓ Composer instalado"
-            echo "--- DIAG[2] pos-composer ---"; stat -c "%n %s bytes %a" "$DB_FILE" 2>&1
 
             # Migrations com flag safe (nao apaga dados existentes)
             php artisan migrate --force
             echo "✓ Migrations executadas"
-            echo "--- DIAG[3] pos-migrate ---"; stat -c "%n %s bytes %a" "$DB_FILE" 2>&1
 
             # Garantir usuario admin (updateOrInsert - nao sobrescreve dados)
             php artisan db:seed --class=AdminSeeder --force
             echo "✓ AdminSeeder executado"
-            echo "--- DIAG[4] pos-seed ---"; stat -c "%n %s bytes %a" "$DB_FILE" 2>&1
 
             # ╔══════════════════════════════════════════════════════════╗
             # ║     PASSO 7: CACHE E STORAGE                            ║
             # ╚══════════════════════════════════════════════════════════╝
-            php artisan config:clear
-            echo "--- DIAG[5a] pos-config:clear ---"; stat -c "%n %s bytes %a" "$DB_FILE" 2>&1
-            php artisan route:clear
-            echo "--- DIAG[5b] pos-route:clear ---"; stat -c "%n %s bytes %a" "$DB_FILE" 2>&1
-            echo "--- DIAG[view.compiled antes do view:clear] ---"
-            php artisan tinker --execute="echo 'view.compiled='.var_export(config('view.compiled'), true).PHP_EOL; echo 'dir-existe='.(is_dir(storage_path('framework/views')) ? 'sim' : 'NAO').PHP_EOL;" 2>&1
-            php artisan view:clear
-            echo "--- DIAG[5c] pos-view:clear ---"; stat -c "%n %s bytes %a" "$DB_FILE" 2>&1
+            php artisan config:clear && php artisan route:clear && php artisan view:clear
             php artisan config:cache && php artisan route:cache
-            echo "--- DIAG[6] pos-config:cache/route:cache ---"; stat -c "%n %s bytes %a" "$DB_FILE" 2>&1
             echo "✓ Cache limpo e recriado"
 
             # Sincronizar storage/app/public -> public/storage
@@ -158,7 +149,17 @@ jobs:
             else
               echo "⚠ storage/app/public nao existe ainda - nada para sincronizar"
             fi
-            echo "--- DIAG[7] pos-storage-sync ---"; stat -c "%n %s bytes %a" "$DB_FILE" 2>&1
+
+            # ╔══════════════════════════════════════════════════════════╗
+            # ║     PASSO 8: REDE DE SEGURANCA FINAL                    ║
+            # ║   Se por qualquer motivo o banco desapareceu durante    ║
+            # ║   o deploy, restaura de novo antes de finalizar         ║
+            # ╚══════════════════════════════════════════════════════════╝
+            if [ ! -f "$DB_FILE" ] || [ ! -s "$DB_FILE" ]; then
+              echo "⚠ Banco ausente apos deploy - restaurando de emergencia do ultimo backup"
+              cp "$LATEST_FILE" "$DB_FILE" 2>/dev/null || cp "database/old-data-modificacao-database.sqlite" "$DB_FILE" 2>/dev/null || true
+              chmod 664 "$DB_FILE" 2>/dev/null || true
+            fi
 
             echo ""
             echo "╔══════════════════════════════════════════════════════════╗"
@@ -166,12 +167,4 @@ jobs:
             echo "║  Banco preservado: $(stat -c%s "$DB_FILE" 2>/dev/null || echo '?') bytes  ║"
             echo "║  Backups disponiveis: $(ls $BACKUP_DIR/database_*.sqlite 2>/dev/null | wc -l)  ║"
             echo "╚══════════════════════════════════════════════════════════╝"
-
-            echo "--- DIAG[8] espera 5s e rechecka ---"
-            sleep 5
-            stat -c "%n %s bytes %a" "$DB_FILE" 2>&1
-            echo "--- DIAG[9] quota de disco ---"
-            df -h . 2>&1 | head -5
-            du -sh ~ 2>&1
-            echo "--- DIAG[10] procurando database.sqlite em todo o home (possivel quarentena) ---"
-            find ~ -iname "database.sqlite*" 2>/dev/null
+            exit 0
