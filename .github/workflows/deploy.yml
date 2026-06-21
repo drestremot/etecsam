@@ -32,25 +32,62 @@ jobs:
             cd ~/domains/etecsam.com.br/public_html/etecsam
 
             # ╔══════════════════════════════════════════════════════════╗
-            # ║     PASSO 1: BACKUP OBRIGATORIO DO BANCO DE DADOS       ║
-            # ║   Executado SEMPRE, antes de qualquer outra operacao    ║
+            # ║     PASSO 1: GARANTIR BANCO FORA DO REPOSITORIO GIT     ║
+            # ║   O banco vive em ~/etecsam_data, longe de qualquer     ║
+            # ║   git reset/clean que rode dentro da pasta do projeto   ║
             # ╚══════════════════════════════════════════════════════════╝
+            DATA_DIR=~/etecsam_data
             BACKUP_DIR=~/db_backups
-            mkdir -p "$BACKUP_DIR"
-
-            DB_FILE="database/database.sqlite"
-            TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
-            BACKUP_FILE="$BACKUP_DIR/database_$TIMESTAMP.sqlite"
+            mkdir -p "$DATA_DIR" "$BACKUP_DIR"
+            EXTERNAL_DB="$DATA_DIR/database.sqlite"
+            IN_REPO_DB="database/database.sqlite"
             LATEST_FILE="$BACKUP_DIR/latest.sqlite"
 
-            if [ -f "$DB_FILE" ] && [ -s "$DB_FILE" ]; then
-              cp "$DB_FILE" "$BACKUP_FILE"
-              cp "$DB_FILE" "$LATEST_FILE"
-              # Copia visivel no proprio projeto (sem precisar de SSH para achar) -
-              # o banco que estava no servidor antes deste deploy, preservado por nome,
-              # nunca apenas removido.
-              cp "$DB_FILE" "database/old-data-modificacao-database.sqlite"
-              DB_SIZE=$(stat -c%s "$DB_FILE")
+            # Migracao automatica (so roda na primeira vez, depois EXTERNAL_DB ja existe)
+            if [ ! -f "$EXTERNAL_DB" ] || [ ! -s "$EXTERNAL_DB" ]; then
+              if [ -f "$IN_REPO_DB" ] && [ -s "$IN_REPO_DB" ]; then
+                cp "$IN_REPO_DB" "$EXTERNAL_DB"
+                echo "✓ Banco migrado de dentro do repo para $EXTERNAL_DB"
+              elif [ -f "$LATEST_FILE" ] && [ -s "$LATEST_FILE" ]; then
+                cp "$LATEST_FILE" "$EXTERNAL_DB"
+                echo "✓ Banco ausente no repo - restaurado do ultimo backup para $EXTERNAL_DB"
+              else
+                touch "$EXTERNAL_DB"
+                echo "⚠ Nenhuma fonte de dados disponivel - banco criado vazio (primeira instalacao)"
+              fi
+            fi
+            chmod 664 "$EXTERNAL_DB" 2>/dev/null || true
+
+            # Garante que o .env do servidor aponta para o banco externo
+            if [ -f .env ]; then
+              if grep -q "^DB_DATABASE=" .env; then
+                sed -i "s|^DB_DATABASE=.*|DB_DATABASE=$EXTERNAL_DB|" .env
+              else
+                echo "DB_DATABASE=$EXTERNAL_DB" >> .env
+              fi
+              if ! grep -q "^DB_CONNECTION=sqlite" .env; then
+                if grep -q "^DB_CONNECTION=" .env; then
+                  sed -i "s|^DB_CONNECTION=.*|DB_CONNECTION=sqlite|" .env
+                else
+                  echo "DB_CONNECTION=sqlite" >> .env
+                fi
+              fi
+              echo "✓ .env apontando para $EXTERNAL_DB"
+            else
+              echo "⚠ .env nao encontrado - verifique manualmente a configuracao do banco"
+            fi
+
+            # ╔══════════════════════════════════════════════════════════╗
+            # ║     PASSO 2: BACKUP DO BANCO (FORA DO REPO, SEMPRE)     ║
+            # ╚══════════════════════════════════════════════════════════╝
+            TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+
+            if [ -f "$EXTERNAL_DB" ] && [ -s "$EXTERNAL_DB" ]; then
+              cp "$EXTERNAL_DB" "$BACKUP_DIR/database_$TIMESTAMP.sqlite"
+              cp "$EXTERNAL_DB" "$LATEST_FILE"
+              # Copia visivel e nomeada do banco anterior, fora do repo tambem
+              cp "$EXTERNAL_DB" "$DATA_DIR/old-data-modificacao-database.sqlite"
+              DB_SIZE=$(stat -c%s "$EXTERNAL_DB")
               echo "✓ Backup criado: database_$TIMESTAMP.sqlite ($DB_SIZE bytes)"
             else
               echo "⚠ Banco nao encontrado ou vazio - sem backup desta vez"
@@ -64,63 +101,15 @@ jobs:
             fi
 
             # ╔══════════════════════════════════════════════════════════╗
-            # ║     PASSO 2: REMOVER BANCO DO RASTREAMENTO GIT          ║
-            # ║   Garante que git reset nao apague o banco              ║
-            # ╚══════════════════════════════════════════════════════════╝
-            git rm --cached "$DB_FILE" 2>/dev/null || true
-            git rm --cached "$DB_FILE-wal" 2>/dev/null || true
-            git rm --cached "$DB_FILE-shm" 2>/dev/null || true
-            echo "✓ Banco removido do rastreamento Git"
-
-            # ╔══════════════════════════════════════════════════════════╗
-            # ║     PASSO 3: SALVAR BANCO EM LOCAL TEMPORARIO           ║
-            # ║   Proteção extra antes do git reset                     ║
-            # ╚══════════════════════════════════════════════════════════╝
-            TEMP_DB="/tmp/etecsam_db_backup_$TIMESTAMP.sqlite"
-            if [ -f "$DB_FILE" ] && [ -s "$DB_FILE" ]; then
-              cp "$DB_FILE" "$TEMP_DB"
-              echo "✓ Copia temporaria salva em $TEMP_DB"
-            fi
-
-            # ╔══════════════════════════════════════════════════════════╗
-            # ║     PASSO 4: ATUALIZAR CODIGO DO GITHUB                 ║
+            # ║     PASSO 3: ATUALIZAR CODIGO DO GITHUB                 ║
+            # ║   Banco fica fora da pasta - reset --hard nao o toca    ║
             # ╚══════════════════════════════════════════════════════════╝
             git fetch origin main
             git reset --hard origin/main
             echo "✓ Codigo atualizado do GitHub"
 
             # ╔══════════════════════════════════════════════════════════╗
-            # ║     PASSO 5: RESTAURAR BANCO (SEMPRE)                   ║
-            # ║   O banco NUNCA deve ser sobrescrito pelo deploy        ║
-            # ╚══════════════════════════════════════════════════════════╝
-
-            # Tentar restaurar do backup temporario primeiro (mais recente)
-            if [ -f "$TEMP_DB" ] && [ -s "$TEMP_DB" ]; then
-              cp "$TEMP_DB" "$DB_FILE"
-              chmod 664 "$DB_FILE"
-              rm -f "$TEMP_DB"
-              RESTORED_SIZE=$(stat -c%s "$DB_FILE")
-              echo "✓ Banco restaurado do backup temporario ($RESTORED_SIZE bytes)"
-
-            # Se nao tem temporario, usar o latest do diretorio de backups
-            elif [ -f "$LATEST_FILE" ] && [ -s "$LATEST_FILE" ]; then
-              cp "$LATEST_FILE" "$DB_FILE"
-              chmod 664 "$DB_FILE"
-              RESTORED_SIZE=$(stat -c%s "$DB_FILE")
-              echo "✓ Banco restaurado do latest.sqlite ($RESTORED_SIZE bytes)"
-
-            # Se nao tem backup, criar banco vazio (primeira vez)
-            else
-              touch "$DB_FILE"
-              chmod 664 "$DB_FILE"
-              echo "⚠ Nenhum backup disponivel - banco criado vazio (primeira instalacao)"
-            fi
-
-            # Garantir que o banco nao sera rastreado pelo git agora
-            echo "database/database.sqlite" >> .git/info/exclude 2>/dev/null || true
-
-            # ╔══════════════════════════════════════════════════════════╗
-            # ║     PASSO 6: DEPENDENCIAS E MIGRATIONS                  ║
+            # ║     PASSO 4: DEPENDENCIAS E MIGRATIONS                  ║
             # ╚══════════════════════════════════════════════════════════╝
             composer install --no-dev --optimize-autoloader --no-interaction
             echo "✓ Composer instalado"
@@ -134,7 +123,7 @@ jobs:
             echo "✓ AdminSeeder executado"
 
             # ╔══════════════════════════════════════════════════════════╗
-            # ║     PASSO 7: CACHE E STORAGE                            ║
+            # ║     PASSO 5: CACHE E STORAGE                            ║
             # ╚══════════════════════════════════════════════════════════╝
             php artisan config:clear && php artisan route:clear && php artisan view:clear
             php artisan config:cache && php artisan route:cache
@@ -150,21 +139,11 @@ jobs:
               echo "⚠ storage/app/public nao existe ainda - nada para sincronizar"
             fi
 
-            # ╔══════════════════════════════════════════════════════════╗
-            # ║     PASSO 8: REDE DE SEGURANCA FINAL                    ║
-            # ║   Se por qualquer motivo o banco desapareceu durante    ║
-            # ║   o deploy, restaura de novo antes de finalizar         ║
-            # ╚══════════════════════════════════════════════════════════╝
-            if [ ! -f "$DB_FILE" ] || [ ! -s "$DB_FILE" ]; then
-              echo "⚠ Banco ausente apos deploy - restaurando de emergencia do ultimo backup"
-              cp "$LATEST_FILE" "$DB_FILE" 2>/dev/null || cp "database/old-data-modificacao-database.sqlite" "$DB_FILE" 2>/dev/null || true
-              chmod 664 "$DB_FILE" 2>/dev/null || true
-            fi
-
             echo ""
             echo "╔══════════════════════════════════════════════════════════╗"
             echo "║              DEPLOY CONCLUIDO COM SUCESSO!             ║"
-            echo "║  Banco preservado: $(stat -c%s "$DB_FILE" 2>/dev/null || echo '?') bytes  ║"
+            echo "║  Banco preservado: $(stat -c%s "$EXTERNAL_DB" 2>/dev/null || echo '?') bytes  ║"
+            echo "║  Local: $EXTERNAL_DB  ║"
             echo "║  Backups disponiveis: $(ls $BACKUP_DIR/database_*.sqlite 2>/dev/null | wc -l)  ║"
             echo "╚══════════════════════════════════════════════════════════╝"
             exit 0
