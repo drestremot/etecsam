@@ -34,7 +34,7 @@
             {{-- Foto --}}
             <div class="md:w-80 h-72 md:h-auto relative bg-etec-dark flex-shrink-0 overflow-hidden">
                 <img src="{{ photo_url($director->photo) }}"
-                     onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($director->name) }}&size=512&background=0c1f3f&color=fff&bold=true'"
+                     onerror="this.src='{{ avatar_url($director->name, '0c1f3f', 'fff', ['bold' => 'true', 'size' => 512]) }}'"
                      class="w-full h-full object-cover opacity-90 hover:opacity-100 transition duration-500">
                 <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-etec-dark/80 to-transparent"></div>
             </div>
@@ -142,7 +142,7 @@
             @foreach($staff as $member)
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex gap-4 hover:shadow-md transition">
                 <img src="{{ photo_url($member->photo) }}"
-                     onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($member->name) }}&background=dbeafe&color=1a3a6e'"
+                     onerror="this.src='{{ avatar_url($member->name, 'dbeafe', '1a3a6e') }}'"
                      class="w-14 h-14 rounded-full object-cover border-2 border-gray-100 flex-shrink-0">
                 <div class="min-w-0">
                     <h4 class="font-bold text-gray-800 leading-tight">{{ $member->name }}</h4>

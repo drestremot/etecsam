@@ -96,7 +96,7 @@
                 @if($action === 'edit' && $teacher->photo)
                     <div class="flex items-center gap-4 mb-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
                         <img src="{{ photo_url($teacher->photo) }}"
-                             onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($teacher->name) }}&background=1a3a6e&color=fff&bold=true&size=128'"
+                             onerror="this.src='{{ avatar_url($teacher->name, '1a3a6e', 'fff', ['bold' => 'true', 'size' => 128]) }}'"
                              class="w-16 h-16 rounded-full object-cover border-2 border-white shadow">
                         <div>
                             <p class="text-sm font-medium text-gray-700">Foto atual</p>
