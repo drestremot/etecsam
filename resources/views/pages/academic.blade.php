@@ -52,7 +52,7 @@
                 <div class="px-6 relative">
                     <div class="w-20 h-20 mx-auto -mt-10 bg-white rounded-full p-1 shadow-lg">
                         <img src="{{ photo_url($director->photo) }}"
-                             onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($director->name) }}&background=2d5a27&color=fff'"
+                             onerror="this.src='{{ avatar_url($director->name, '2d5a27', 'fff') }}'"
                              class="w-full h-full object-cover rounded-full">
                     </div>
                 </div>
@@ -84,7 +84,7 @@
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex gap-4 hover:shadow-md transition">
                     <div class="flex-shrink-0">
                         <img src="{{ photo_url($member->photo) }}"
-                             onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($member->name) }}&background=eee&color=333'"
+                             onerror="this.src='{{ avatar_url($member->name, 'eee', '333') }}'"
                              class="w-14 h-14 rounded-full object-cover border-2 border-gray-100">
                     </div>
                     <div class="min-w-0">

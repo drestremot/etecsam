@@ -66,3 +66,27 @@ if (!function_exists('photo_url')) {
         return \Illuminate\Support\Facades\Storage::disk('public')->url($trimmed);
     }
 }
+
+if (!function_exists('avatar_url')) {
+    /**
+     * Monta a URL do avatar de fallback (ui-avatars.com) para um nome.
+     *
+     * ui-avatars.com gera as iniciais usando a primeira letra da primeira
+     * palavra e a primeira letra da ULTIMA palavra. Nomes com sufixo entre
+     * parenteses (ex: "ETEC ... (SEDE)", "Maria Helena (Secretaria Academica)")
+     * fazem a ultima "palavra" comecar com "(", gerando iniciais como "E(".
+     * Por isso removemos qualquer trecho entre parenteses antes de gerar o avatar.
+     */
+    function avatar_url(?string $name, string $background = '1a3a6e', string $color = 'fff', array $extra = []): string
+    {
+        $clean = trim(preg_replace('/\s*\([^)]*\)/u', '', (string) $name));
+
+        if ($clean === '') {
+            $clean = (string) $name;
+        }
+
+        $params = array_merge(['name' => $clean, 'background' => $background, 'color' => $color], $extra);
+
+        return 'https://ui-avatars.com/api/?'.http_build_query($params);
+    }
+}

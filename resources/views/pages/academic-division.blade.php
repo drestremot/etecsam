@@ -33,7 +33,7 @@
                 <div class="px-6">
                     <div class="w-24 h-24 mx-auto -mt-12 bg-white rounded-full p-1 shadow-lg">
                         <img src="{{ photo_url($director->photo) }}"
-                             onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($director->name) }}&background=1a3a6e&color=fff&bold=true&size=256'"
+                             onerror="this.src='{{ avatar_url($director->name, '1a3a6e', 'fff', ['bold' => 'true', 'size' => 256]) }}'"
                              class="w-full h-full object-cover rounded-full">
                     </div>
                 </div>
@@ -82,7 +82,7 @@
                         @foreach($members as $member)
                         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex gap-4 hover:shadow-md transition items-start">
                             <img src="{{ photo_url($member->photo) }}"
-                                 onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($member->name) }}&background=dbeafe&color=1a3a6e'"
+                                 onerror="this.src='{{ avatar_url($member->name, 'dbeafe', '1a3a6e') }}'"
                                  class="w-14 h-14 rounded-full object-cover border-2 border-gray-100 flex-shrink-0">
                             <div class="min-w-0 flex-grow">
                                 <h4 class="font-bold text-gray-800 leading-tight">{{ $member->name }}</h4>
