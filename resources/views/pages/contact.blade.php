@@ -62,7 +62,7 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-gray-800 mb-0.5">E-mail Oficial</h3>
-                            <a href="mailto:e030acad@cps.sp.gov.br" class="text-sm text-etec-main hover:text-etec-dark transition">e030acad@cps.sp.gov.br</a>
+                            <a href="mailto:e028acad@cps.sp.gov.br" class="text-sm text-etec-main hover:text-etec-dark transition">e028acad@cps.sp.gov.br</a>
                         </div>
                     </div>
                 </div>
