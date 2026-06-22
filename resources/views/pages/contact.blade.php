@@ -35,8 +35,8 @@
                         <div>
                             <h3 class="font-bold text-gray-800 mb-0.5">Endereço</h3>
                             <p class="text-sm text-gray-600 leading-relaxed">
-                                Estrada Vicinal Sebastião Lourenço da Silva, Km 5<br>
-                                Andradina — SP, CEP 16900-000
+                                Estrada Vicinal Sebastião Lourenço da Silva, Km 11, Bairro: Planalto.<br>
+                                Andradina — SP, CEP 16900-530
                             </p>
                         </div>
                     </div>
