@@ -104,13 +104,9 @@ jobs:
             # ║     PASSO 3: ATUALIZAR CODIGO DO GITHUB                 ║
             # ║   Banco fica fora da pasta - reset --hard nao o toca    ║
             # ╚══════════════════════════════════════════════════════════╝
-            echo "--- DIAG: public/storage/units ANTES do reset ---"
-            ls -la public/storage/units 2>&1 || echo "nao existe"
             git fetch origin main
             git reset --hard origin/main
             echo "✓ Codigo atualizado do GitHub"
-            echo "--- DIAG: public/storage/units DEPOIS do reset ---"
-            ls -la public/storage/units 2>&1 || echo "nao existe"
 
             # ╔══════════════════════════════════════════════════════════╗
             # ║     PASSO 4: DEPENDENCIAS E MIGRATIONS                  ║
@@ -142,6 +138,21 @@ jobs:
             else
               echo "⚠ storage/app/public nao existe ainda - nada para sincronizar"
             fi
+
+            echo "--- DIAG: testando suporte a symlink no Hostinger ---"
+            rm -rf /tmp/symlink_test_target /tmp/symlink_test_link
+            mkdir -p /tmp/symlink_test_target
+            echo "conteudo-teste" > /tmp/symlink_test_target/arquivo.txt
+            if ln -s /tmp/symlink_test_target /tmp/symlink_test_link 2>/tmp/symlink_test_err; then
+              if [ "$(cat /tmp/symlink_test_link/arquivo.txt 2>&1)" = "conteudo-teste" ]; then
+                echo "✓ Symlink FUNCIONA neste servidor"
+              else
+                echo "⚠ ln -s nao deu erro mas a leitura pelo link falhou"
+              fi
+            else
+              echo "✗ Symlink NAO suportado: $(cat /tmp/symlink_test_err)"
+            fi
+            rm -rf /tmp/symlink_test_target /tmp/symlink_test_link /tmp/symlink_test_err
 
             echo ""
             echo "╔══════════════════════════════════════════════════════════╗"
