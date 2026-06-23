@@ -37,12 +37,12 @@
 <div class="container mx-auto px-4 py-16">
 
     @if($events->isEmpty())
-        <div class="text-center py-16 bg-white rounded-2xl border border-dashed border-gray-200 shadow-sm">
-            <div class="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        <div class="text-center py-16 bg-etec-main rounded-2xl border border-dashed border-etec-dark/30 dark:border-white/10 shadow-sm">
+            <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-blue-200/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
             </div>
-            <h3 class="text-lg font-bold text-gray-600 mb-1">Nenhum evento cadastrado para {{ date('Y') }}</h3>
-            <p class="text-gray-400 text-sm">Os eventos do calendário escolar {{ date('Y') }} serão publicados em breve.</p>
+            <h3 class="text-lg font-bold text-white mb-1">Nenhum evento cadastrado para {{ date('Y') }}</h3>
+            <p class="text-blue-200/70 text-sm">Os eventos do calendário escolar {{ date('Y') }} serão publicados em breve.</p>
         </div>
     @else
         <div class="max-w-4xl mx-auto">
@@ -57,13 +57,13 @@
                     <div class="bg-etec-accent text-etec-dark font-bold px-5 py-1.5 rounded-full uppercase tracking-widest text-xs shadow-sm whitespace-nowrap">
                         {{ ucfirst($monthName) }} / {{ $year }}
                     </div>
-                    <div class="h-px bg-gray-200 flex-grow"></div>
+                    <div class="h-px bg-gray-200 dark:bg-white/10 flex-grow"></div>
                 </div>
 
                 <div class="space-y-4">
                     @foreach($monthEvents as $event)
                     @php $hasPhotos = $event->photos->count() > 0; @endphp
-                    <div class="flex flex-col md:flex-row bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition group
+                    <div class="flex flex-col md:flex-row bg-etec-main rounded-xl shadow-sm border border-etec-dark/30 dark:border-white/10 overflow-hidden transition group
                                 {{ $hasPhotos ? 'cursor-pointer hover:shadow-lg hover:border-etec-accent/40' : 'hover:shadow-md' }}"
                          @if($hasPhotos)
                          onclick="openEventModal({{ json_encode([
@@ -79,23 +79,23 @@
                          ]) }})"
                          @endif>
 
-                        <div class="flex-shrink-0 md:w-28 flex flex-col items-center justify-center py-4 md:py-0 border-b md:border-b-0 md:border-r border-gray-100 text-center"
+                        <div class="flex-shrink-0 md:w-28 flex flex-col items-center justify-center py-4 md:py-0 border-b md:border-b-0 md:border-r border-white/10 text-center"
                              style="background-color: {{ $event->color ?? '#2d5a27' }}20; border-left: 4px solid {{ $event->color ?? '#2d5a27' }};">
-                            <span class="text-3xl font-bold text-gray-800">
+                            <span class="text-3xl font-bold text-white">
                                 {{ \Carbon\Carbon::parse($event->start_date)->format('d') }}
                             </span>
-                            <span class="text-xs uppercase font-bold text-gray-500">
+                            <span class="text-xs uppercase font-bold text-blue-200/70">
                                 {{ \Carbon\Carbon::parse($event->start_date)->locale('pt_BR')->dayName }}
                             </span>
                         </div>
 
                         <div class="p-5 flex-grow">
                             <div class="flex items-start justify-between gap-3">
-                                <h3 class="text-lg font-bold text-gray-800 mb-1.5 group-hover:text-etec-medium transition">
+                                <h3 class="text-lg font-bold text-white mb-1.5 group-hover:text-etec-accent transition">
                                     {{ $event->title }}
                                 </h3>
                                 @if($hasPhotos)
-                                <span class="flex-shrink-0 inline-flex items-center gap-1 text-xs text-etec-medium font-semibold bg-etec-light/30 px-2.5 py-1 rounded-full mt-0.5">
+                                <span class="flex-shrink-0 inline-flex items-center gap-1 text-xs text-etec-accent font-semibold bg-white/10 px-2.5 py-1 rounded-full mt-0.5">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                     </svg>
@@ -103,7 +103,7 @@
                                 </span>
                                 @endif
                             </div>
-                            <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500 mb-2">
+                            <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-blue-200/70 mb-2">
                                 @if($event->location)
                                 <span class="flex items-center gap-1">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
@@ -118,7 +118,7 @@
                                 @endif
                             </div>
                             @if($event->description)
-                            <div class="event-description text-gray-600 text-sm leading-relaxed">{!! $event->description !!}</div>
+                            <div class="event-description text-blue-100 text-sm leading-relaxed">{!! $event->description !!}</div>
                             @endif
                         </div>
                     </div>
@@ -228,12 +228,12 @@
     @endif
 
     {{-- Grade: todos os aniversariantes do mês --}}
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-3">
+    <div class="bg-etec-main rounded-2xl shadow-sm border border-etec-dark/30 dark:border-white/10 overflow-hidden">
+        <div class="px-6 py-4 border-b border-white/10 flex items-center gap-3">
             <div class="w-10 h-10 bg-yellow-100 rounded-xl flex items-center justify-center text-xl">🎂</div>
             <div>
-                <h2 class="text-lg font-bold text-gray-800">Aniversariantes de {{ \Carbon\Carbon::now()->translatedFormat('F') }}</h2>
-                <p class="text-sm text-gray-500">Professores e funcionários que fazem aniversário este mês</p>
+                <h2 class="text-lg font-bold text-white">Aniversariantes de {{ \Carbon\Carbon::now()->translatedFormat('F') }}</h2>
+                <p class="text-sm text-blue-100">Professores e funcionários que fazem aniversário este mês</p>
             </div>
         </div>
         <div class="p-6">
@@ -282,17 +282,17 @@
 
     {{-- Caixa do modal --}}
     <div class="relative z-10 flex items-center justify-center min-h-full p-4">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden">
+        <div class="bg-etec-main rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden">
 
             {{-- Cabeçalho --}}
-            <div id="modal-header" class="px-6 py-4 border-b border-gray-100 flex items-start justify-between gap-4">
+            <div id="modal-header" class="px-6 py-4 border-b border-white/10 flex items-start justify-between gap-4">
                 <div>
-                    <p id="modal-date" class="text-xs font-bold text-etec-medium uppercase tracking-widest mb-1"></p>
-                    <h2 id="modal-title" class="text-xl font-bold text-gray-900 leading-tight"></h2>
-                    <p id="modal-location" class="text-sm text-gray-500 mt-0.5 hidden"></p>
+                    <p id="modal-date" class="text-xs font-bold text-etec-accent uppercase tracking-widest mb-1"></p>
+                    <h2 id="modal-title" class="text-xl font-bold text-white leading-tight"></h2>
+                    <p id="modal-location" class="text-sm text-blue-100 mt-0.5 hidden"></p>
                 </div>
                 <button onclick="closeEventModal()"
-                        class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition text-lg">
+                        class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full text-blue-200/70 hover:bg-white/10 hover:text-white transition text-lg">
                     ✕
                 </button>
             </div>
@@ -331,13 +331,13 @@
 
             {{-- Descrição do evento --}}
             <div id="modal-description-wrap" class="px-6 py-5 hidden">
-                <p id="modal-description" class="text-gray-600 text-sm leading-relaxed"></p>
+                <p id="modal-description" class="text-blue-100 text-sm leading-relaxed"></p>
             </div>
 
             {{-- Footer --}}
-            <div class="px-6 py-4 border-t border-gray-100 flex justify-end">
+            <div class="px-6 py-4 border-t border-white/10 flex justify-end">
                 <button onclick="closeEventModal()"
-                        class="px-5 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold transition">
+                        class="px-5 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm font-semibold transition">
                     Fechar
                 </button>
             </div>

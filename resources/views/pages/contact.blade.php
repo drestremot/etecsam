@@ -20,21 +20,21 @@
 
         <div class="space-y-8">
             <div>
-                <h2 class="text-2xl font-bold text-etec-dark mb-6 border-l-4 border-etec-accent pl-4">
+                <h2 class="text-2xl font-bold text-etec-dark dark:text-white mb-6 border-l-4 border-etec-accent pl-4">
                     Canais de Atendimento
                 </h2>
-                <p class="text-gray-600 mb-8 leading-relaxed">
+                <p class="text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
                     A secretaria acadêmica atende presencialmente de segunda a sexta-feira, das 08h às 21h.
                 </p>
 
                 <div class="space-y-5">
                     <div class="flex items-start gap-4">
-                        <div class="w-11 h-11 bg-etec-light text-etec-dark rounded-xl flex items-center justify-center flex-shrink-0">
+                        <div class="w-11 h-11 bg-etec-light dark:bg-white/10 text-etec-dark dark:text-etec-accent rounded-xl flex items-center justify-center flex-shrink-0">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                         </div>
                         <div>
-                            <h3 class="font-bold text-gray-800 mb-0.5">Endereço</h3>
-                            <p class="text-sm text-gray-600 leading-relaxed">
+                            <h3 class="font-bold text-gray-800 dark:text-white mb-0.5">Endereço</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
                                 Estrada Vicinal Sebastião Lourenço da Silva, Km 11, Bairro: Planalto.<br>
                                 Andradina — SP, CEP 16900-530
                             </p>
@@ -42,33 +42,33 @@
                     </div>
 
                     <div class="flex items-start gap-4">
-                        <div class="w-11 h-11 bg-etec-light text-etec-dark rounded-xl flex items-center justify-center flex-shrink-0">
+                        <div class="w-11 h-11 bg-etec-light dark:bg-white/10 text-etec-dark dark:text-etec-accent rounded-xl flex items-center justify-center flex-shrink-0">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 7V5z"/></svg>
                         </div>
                         <div>
-                            <h3 class="font-bold text-gray-800 mb-0.5">Telefones</h3>
-                            <p class="text-sm text-gray-600 leading-loose">
-                                <a href="tel:1837026860" class="hover:text-etec-main transition">(18) 3702-6860</a> — Gelciane<br>
-                                <a href="tel:1837226861" class="hover:text-etec-main transition">(18) 3722-6861</a> — Héder<br>
-                                <a href="tel:1837226862" class="hover:text-etec-main transition">(18) 3722-6862</a> — Tereza<br>
-                                <a href="tel:1837226863" class="hover:text-etec-main transition">(18) 3722-6863</a> — Valeska
+                            <h3 class="font-bold text-gray-800 dark:text-white mb-0.5">Telefones</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 leading-loose">
+                                <a href="tel:1837026860" class="hover:text-etec-main dark:hover:text-etec-accent transition">(18) 3702-6860</a> — Gelciane<br>
+                                <a href="tel:1837226861" class="hover:text-etec-main dark:hover:text-etec-accent transition">(18) 3722-6861</a> — Héder<br>
+                                <a href="tel:1837226862" class="hover:text-etec-main dark:hover:text-etec-accent transition">(18) 3722-6862</a> — Tereza<br>
+                                <a href="tel:1837226863" class="hover:text-etec-main dark:hover:text-etec-accent transition">(18) 3722-6863</a> — Valeska
                             </p>
                         </div>
                     </div>
 
                     <div class="flex items-start gap-4">
-                        <div class="w-11 h-11 bg-etec-light text-etec-dark rounded-xl flex items-center justify-center flex-shrink-0">
+                        <div class="w-11 h-11 bg-etec-light dark:bg-white/10 text-etec-dark dark:text-etec-accent rounded-xl flex items-center justify-center flex-shrink-0">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                         </div>
                         <div>
-                            <h3 class="font-bold text-gray-800 mb-0.5">E-mail Oficial</h3>
-                            <a href="mailto:e028acad@cps.sp.gov.br" class="text-sm text-etec-main hover:text-etec-dark transition">e028acad@cps.sp.gov.br</a>
+                            <h3 class="font-bold text-gray-800 dark:text-white mb-0.5">E-mail Oficial</h3>
+                            <a href="mailto:e028acad@cps.sp.gov.br" class="text-sm text-etec-main dark:text-etec-light hover:text-etec-dark dark:hover:text-etec-accent transition">e028acad@cps.sp.gov.br</a>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm" style="height: 260px;">
+            <div class="rounded-xl overflow-hidden border border-gray-200 dark:border-white/10 shadow-sm" style="height: 260px;">
                 <iframe
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3720.896796684747!2d-51.36569662394622!3d-20.92723308070268!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94978bd2a6320593%3A0xf6573c79010260c8!2sETEC%20Sebastiana%20Augusta%20de%20Moraes!5e0!3m2!1spt-BR!2sbr!4v1709220000000!5m2!1spt-BR!2sbr"
                     width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy">
@@ -76,29 +76,29 @@
             </div>
         </div>
 
-        <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-            <h2 class="text-2xl font-bold text-etec-dark mb-2">Envie uma mensagem</h2>
-            <p class="text-gray-500 text-sm mb-6">Responderemos em até 2 dias úteis.</p>
+        <div class="bg-etec-main p-8 rounded-2xl shadow-sm border border-etec-dark/30 dark:border-white/10">
+            <h2 class="text-2xl font-bold text-white mb-2">Envie uma mensagem</h2>
+            <p class="text-blue-100 text-sm mb-6">Responderemos em até 2 dias úteis.</p>
 
             <form action="#" method="POST" class="space-y-5">
                 @csrf
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Seu Nome</label>
+                    <label class="block text-sm font-semibold text-blue-100 mb-1.5">Seu Nome</label>
                     <input type="text"
-                           class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-etec-medium focus:border-etec-medium block px-3.5 py-2.5 outline-none transition"
+                           class="w-full bg-white/90 border border-white/20 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-etec-accent focus:border-etec-accent block px-3.5 py-2.5 outline-none transition"
                            placeholder="Ex: João da Silva">
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Telefone / WhatsApp</label>
+                        <label class="block text-sm font-semibold text-blue-100 mb-1.5">Telefone / WhatsApp</label>
                         <input type="tel"
-                               class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-etec-medium focus:border-etec-medium block px-3.5 py-2.5 outline-none transition"
+                               class="w-full bg-white/90 border border-white/20 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-etec-accent focus:border-etec-accent block px-3.5 py-2.5 outline-none transition"
                                placeholder="(18) 99999-9999">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Assunto</label>
-                        <select class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-etec-medium focus:border-etec-medium block px-3.5 py-2.5 outline-none transition">
+                        <label class="block text-sm font-semibold text-blue-100 mb-1.5">Assunto</label>
+                        <select class="w-full bg-white/90 border border-white/20 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-etec-accent focus:border-etec-accent block px-3.5 py-2.5 outline-none transition">
                             <option>Secretaria / Documentos</option>
                             <option>Vestibulinho</option>
                             <option>Coordenação Pedagógica</option>
@@ -109,16 +109,16 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">E-mail para resposta</label>
+                    <label class="block text-sm font-semibold text-blue-100 mb-1.5">E-mail para resposta</label>
                     <input type="email"
-                           class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-etec-medium focus:border-etec-medium block px-3.5 py-2.5 outline-none transition"
+                           class="w-full bg-white/90 border border-white/20 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-etec-accent focus:border-etec-accent block px-3.5 py-2.5 outline-none transition"
                            placeholder="seu@email.com">
                 </div>
 
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Mensagem</label>
+                    <label class="block text-sm font-semibold text-blue-100 mb-1.5">Mensagem</label>
                     <textarea rows="5"
-                              class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-etec-medium focus:border-etec-medium block px-3.5 py-2.5 outline-none transition resize-none"
+                              class="w-full bg-white/90 border border-white/20 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-etec-accent focus:border-etec-accent block px-3.5 py-2.5 outline-none transition resize-none"
                               placeholder="Como podemos ajudar?"></textarea>
                 </div>
 

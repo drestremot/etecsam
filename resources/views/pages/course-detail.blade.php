@@ -61,19 +61,19 @@
             $hasDesc    = $allCoordinators->where('pivot.role', 'descentralizado')->count() > 0;
         @endphp
         @if($allCoordinators->count() > 0)
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 bg-gray-50 flex items-center gap-2">
-                <svg class="w-4 h-4 text-etec-medium" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                <h3 class="font-bold text-gray-800 text-sm">Coordenação do Curso</h3>
+        <div class="bg-etec-main rounded-2xl shadow-sm border border-etec-dark/30 dark:border-white/10 overflow-hidden">
+            <div class="px-6 py-4 border-b border-white/10 bg-white/5 flex items-center gap-2">
+                <svg class="w-4 h-4 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                <h3 class="font-bold text-white text-sm">Coordenação do Curso</h3>
             </div>
-            <div class="divide-y divide-gray-50">
+            <div class="divide-y divide-white/10">
                 @if($hasTecnico)
                     @if($hasDesc)
-                    <p class="px-4 pt-3 text-xs font-bold text-gray-400 uppercase tracking-wide">Técnico</p>
+                    <p class="px-4 pt-3 text-xs font-bold text-blue-200/70 uppercase tracking-wide">Técnico</p>
                     @endif
                     @foreach($allCoordinators->where('pivot.role', 'tecnico') as $coord)
                     <div class="px-5 py-4 flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full bg-gray-100 overflow-hidden flex-shrink-0 border-2 border-etec-light shadow-sm">
+                        <div class="w-12 h-12 rounded-full bg-white/10 overflow-hidden flex-shrink-0 border-2 border-etec-light shadow-sm">
                             @if($coord->photo)
                                 <img src="{{ photo_url($coord->photo) }}"
                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
@@ -84,9 +84,9 @@
                             @endif
                         </div>
                         <div class="min-w-0">
-                            <p class="font-bold text-etec-dark text-sm leading-snug">{{ $coord->name }}</p>
+                            <p class="font-bold text-white text-sm leading-snug">{{ $coord->name }}</p>
                             @if($coord->email)
-                            <a href="mailto:{{ $coord->email }}" class="text-xs text-etec-medium hover:underline mt-0.5 block">{{ $coord->email }}</a>
+                            <a href="mailto:{{ $coord->email }}" class="text-xs text-blue-100 hover:text-etec-accent hover:underline mt-0.5 block">{{ $coord->email }}</a>
                             @endif
                         </div>
                     </div>
@@ -94,10 +94,10 @@
                 @endif
 
                 @if($hasDesc)
-                    <p class="px-4 pt-3 text-xs font-bold text-gray-400 uppercase tracking-wide">Descentralizado</p>
+                    <p class="px-4 pt-3 text-xs font-bold text-blue-200/70 uppercase tracking-wide">Descentralizado</p>
                     @foreach($allCoordinators->where('pivot.role', 'descentralizado') as $coord)
                     <div class="px-5 py-4 flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full bg-gray-100 overflow-hidden flex-shrink-0 border-2 border-etec-light shadow-sm">
+                        <div class="w-12 h-12 rounded-full bg-white/10 overflow-hidden flex-shrink-0 border-2 border-etec-light shadow-sm">
                             @if($coord->photo)
                                 <img src="{{ photo_url($coord->photo) }}"
                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
@@ -108,9 +108,9 @@
                             @endif
                         </div>
                         <div class="min-w-0">
-                            <p class="font-bold text-etec-dark text-sm leading-snug">{{ $coord->name }}</p>
+                            <p class="font-bold text-white text-sm leading-snug">{{ $coord->name }}</p>
                             @if($coord->email)
-                            <a href="mailto:{{ $coord->email }}" class="text-xs text-etec-medium hover:underline mt-0.5 block">{{ $coord->email }}</a>
+                            <a href="mailto:{{ $coord->email }}" class="text-xs text-blue-100 hover:text-etec-accent hover:underline mt-0.5 block">{{ $coord->email }}</a>
                             @endif
                         </div>
                     </div>
@@ -119,12 +119,12 @@
             </div>
         </div>
         @else
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 bg-gray-50 flex items-center gap-2">
-                <svg class="w-4 h-4 text-etec-medium" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                <h3 class="font-bold text-gray-800 text-sm">Coordenação do Curso</h3>
+        <div class="bg-etec-main rounded-2xl shadow-sm border border-etec-dark/30 dark:border-white/10 overflow-hidden">
+            <div class="px-6 py-4 border-b border-white/10 bg-white/5 flex items-center gap-2">
+                <svg class="w-4 h-4 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                <h3 class="font-bold text-white text-sm">Coordenação do Curso</h3>
             </div>
-            <div class="p-6 text-center text-sm text-gray-400">A definir</div>
+            <div class="p-6 text-center text-sm text-blue-200/70">A definir</div>
         </div>
         @endif
 
@@ -148,37 +148,37 @@
 
     {{-- Grade curricular --}}
     <div class="lg:col-span-2">
-        <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2 border-l-4 border-etec-accent pl-3">
+        <h2 class="text-xl font-bold text-etec-dark dark:text-white mb-6 flex items-center gap-2 border-l-4 border-etec-accent pl-3">
             <svg class="w-5 h-5 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
             Grade Curricular e Docentes
         </h2>
 
         <div class="space-y-4">
             @forelse($course->subjects as $subject)
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition">
+            <div class="bg-etec-main rounded-xl shadow-sm border border-etec-dark/30 dark:border-white/10 p-5 hover:shadow-md hover:shadow-etec-dark/30 transition">
                 <div class="flex flex-col md:flex-row gap-6 items-start">
 
                     {{-- Docente --}}
-                    <div class="flex items-start gap-4 md:w-1/3 md:border-r border-gray-100 md:pr-6 flex-shrink-0">
-                        <div class="w-14 h-14 rounded-full bg-gray-100 overflow-hidden flex-shrink-0 border-2 border-gray-50">
+                    <div class="flex items-start gap-4 md:w-1/3 md:border-r border-white/10 md:pr-6 flex-shrink-0">
+                        <div class="w-14 h-14 rounded-full bg-white/10 overflow-hidden flex-shrink-0 border-2 border-white/10">
                             @if($subject->teacher && $subject->teacher->photo)
                                 <img src="{{ photo_url($subject->teacher->photo) }}"
                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
                                      class="w-full h-full object-cover">
-                                <div style="display:none" class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-500 text-xl font-bold">{{ substr($subject->teacher->name,0,1) }}</div>
+                                <div style="display:none" class="w-full h-full flex items-center justify-center bg-white/10 text-blue-100 text-xl font-bold">{{ substr($subject->teacher->name,0,1) }}</div>
                             @else
-                                <div class="w-full h-full flex items-center justify-center bg-gray-200 text-gray-500">
+                                <div class="w-full h-full flex items-center justify-center bg-white/10 text-blue-100">
                                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                                 </div>
                             @endif
                         </div>
                         <div class="min-w-0">
-                            <span class="text-xs text-gray-400 uppercase font-bold block mb-0.5">Docente</span>
-                            <div class="font-bold text-gray-800 text-sm leading-tight">
+                            <span class="text-xs text-blue-200/70 uppercase font-bold block mb-0.5">Docente</span>
+                            <div class="font-bold text-white text-sm leading-tight">
                                 {{ $subject->teacher->name ?? 'A atribuir' }}
                             </div>
                             @if($subject->teacher && $subject->teacher->specialty)
-                            <p class="text-xs text-gray-500 mt-1 line-clamp-2">
+                            <p class="text-xs text-blue-100 mt-1 line-clamp-2">
                                 {{ $subject->teacher->specialty }}
                             </p>
                             @endif
@@ -187,15 +187,15 @@
 
                     {{-- Disciplina --}}
                     <div class="flex-grow min-w-0">
-                        <h4 class="text-lg font-bold text-etec-dark mb-1.5 leading-snug">
+                        <h4 class="text-lg font-bold text-white mb-1.5 leading-snug">
                             {{ $subject->name }}
                         </h4>
-                        <div class="flex flex-wrap gap-3 text-xs text-gray-500 mb-4">
-                            <span class="inline-flex items-center gap-1.5 bg-gray-50 px-2.5 py-1 rounded-lg">
+                        <div class="flex flex-wrap gap-3 text-xs text-blue-100 mb-4">
+                            <span class="inline-flex items-center gap-1.5 bg-white/10 px-2.5 py-1 rounded-lg">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                 {{ $subject->workload }} horas
                             </span>
-                            <span class="inline-flex items-center gap-1.5 bg-gray-50 px-2.5 py-1 rounded-lg">
+                            <span class="inline-flex items-center gap-1.5 bg-white/10 px-2.5 py-1 rounded-lg">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                                 Semestral
                             </span>
@@ -208,7 +208,7 @@
                             Ver PTD (Plano de Trabalho)
                         </a>
                         @else
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 text-gray-400 text-xs font-semibold rounded-lg border border-gray-100 cursor-not-allowed">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/10 text-blue-200/70 text-xs font-semibold rounded-lg border border-white/10 cursor-not-allowed">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             PTD em análise
                         </span>
@@ -218,9 +218,9 @@
                 </div>
             </div>
             @empty
-            <div class="py-14 text-center bg-gray-50 rounded-xl border border-dashed border-gray-200">
-                <svg class="w-10 h-10 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-                <p class="text-gray-500">Nenhuma disciplina cadastrada para este curso ainda.</p>
+            <div class="py-14 text-center bg-white/50 dark:bg-white/5 rounded-xl border border-dashed border-gray-200 dark:border-white/10">
+                <svg class="w-10 h-10 text-gray-300 dark:text-gray-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                <p class="text-gray-500 dark:text-gray-400">Nenhuma disciplina cadastrada para este curso ainda.</p>
             </div>
             @endforelse
         </div>

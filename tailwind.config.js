@@ -9,6 +9,8 @@ export default {
         './resources/views/**/*.blade.php',
     ],
 
+    darkMode: 'class',
+
     theme: {
         extend: {
             fontFamily: {
@@ -20,6 +22,8 @@ export default {
                 'etec-medium': '#2563eb',
                 'etec-accent': '#f5a623',
                 'etec-light':  '#dbeafe',
+                'etec-bg':     '#cfe2fb',
+                'etec-night':  '#081326',
             },
         },
     },
