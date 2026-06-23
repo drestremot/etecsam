@@ -43,35 +43,35 @@
 </section>
 
 {{-- Stats bar --}}
-<div class="bg-white border-b border-gray-100 shadow-sm">
+<div class="bg-white dark:bg-etec-dark border-b border-gray-100 dark:border-white/10 shadow-sm transition-colors duration-300">
     <div class="container mx-auto px-4">
-        <div class="grid grid-cols-2 md:grid-cols-4 divide-x divide-gray-100">
+        <div class="grid grid-cols-2 md:grid-cols-4 divide-x divide-gray-100 dark:divide-white/10">
             <div class="py-5 px-6 text-center">
-                <div class="text-2xl font-bold text-etec-dark">+30</div>
-                <div class="text-xs text-gray-500 font-medium mt-0.5">Anos de história</div>
+                <div class="text-2xl font-bold text-etec-dark dark:text-white">+30</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400 font-medium mt-0.5">Anos de história</div>
             </div>
             <div class="py-5 px-6 text-center">
-                <div class="text-2xl font-bold text-etec-dark">4</div>
-                <div class="text-xs text-gray-500 font-medium mt-0.5">Unidades de ensino</div>
+                <div class="text-2xl font-bold text-etec-dark dark:text-white">4</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400 font-medium mt-0.5">Unidades de ensino</div>
             </div>
             <div class="py-5 px-6 text-center">
-                <div class="text-2xl font-bold text-etec-dark">12+</div>
-                <div class="text-xs text-gray-500 font-medium mt-0.5">Laboratórios ativos</div>
+                <div class="text-2xl font-bold text-etec-dark dark:text-white">12+</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400 font-medium mt-0.5">Laboratórios ativos</div>
             </div>
             <div class="py-5 px-6 text-center">
-                <div class="text-2xl font-bold text-etec-dark">100%</div>
-                <div class="text-xs text-gray-500 font-medium mt-0.5">Ensino público e gratuito</div>
+                <div class="text-2xl font-bold text-etec-dark dark:text-white">100%</div>
+                <div class="text-xs text-gray-500 dark:text-gray-400 font-medium mt-0.5">Ensino público e gratuito</div>
             </div>
         </div>
     </div>
 </div>
 
 {{-- Unidades --}}
-<section id="unidades" class="py-20 bg-gray-50">
+<section id="unidades" class="py-20">
     <div class="container mx-auto px-4">
         <div class="text-center mb-14">
-            <span class="text-etec-medium font-bold uppercase tracking-widest text-xs">Locais de Ensino</span>
-            <h2 class="text-3xl font-bold text-etec-dark mt-2">Nossas Unidades</h2>
+            <span class="text-etec-medium dark:text-etec-accent font-bold uppercase tracking-widest text-xs">Locais de Ensino</span>
+            <h2 class="text-3xl font-bold text-etec-dark dark:text-white mt-2">Nossas Unidades</h2>
             <div class="w-16 h-1 bg-etec-accent mx-auto mt-4"></div>
         </div>
 
@@ -79,7 +79,7 @@
             @if(isset($units))
                 @foreach($units as $unit)
                     <a href="{{ route('units.show', $unit->id) }}"
-                       class="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition duration-300 overflow-hidden border border-gray-100 flex flex-col">
+                       class="group bg-etec-main rounded-2xl shadow-sm hover:shadow-xl hover:shadow-etec-dark/30 transition duration-300 overflow-hidden border border-etec-dark/30 dark:border-white/10 flex flex-col">
 
                         <div class="h-44 bg-gradient-to-br from-etec-dark to-etec-main relative overflow-hidden flex items-center justify-center">
                             <div class="relative w-full h-full">
@@ -107,15 +107,15 @@
                         </div>
 
                         <div class="p-6 flex flex-col flex-grow">
-                            <h3 class="text-lg font-bold text-gray-800 mb-2 group-hover:text-etec-medium transition leading-tight">
+                            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-etec-accent transition leading-tight">
                                 {{ $unit->name }}
                             </h3>
-                            <div class="mt-auto pt-4 flex items-center justify-between border-t border-gray-100">
-                                <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-etec-dark bg-etec-light/40 px-3 py-1.5 rounded-full">
+                            <div class="mt-auto pt-4 flex items-center justify-between border-t border-white/10">
+                                <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-white bg-white/10 px-3 py-1.5 rounded-full">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/></svg>
                                     {{ $unit->courses_count }} Cursos
                                 </span>
-                                <span class="flex items-center gap-1 text-xs font-bold text-etec-medium group-hover:text-etec-accent transition">
+                                <span class="flex items-center gap-1 text-xs font-bold text-etec-light group-hover:text-etec-accent transition">
                                     Ver cursos
                                     <svg class="w-4 h-4 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                                 </span>

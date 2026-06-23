@@ -21,8 +21,8 @@
             </div>
 
             @if($unit->coordinator)
-            <div class="bg-white text-gray-800 p-5 rounded-2xl shadow-lg flex items-center gap-4 min-w-[300px]">
-                <div class="w-16 h-16 rounded-full bg-gray-200 overflow-hidden border-2 border-etec-light flex-shrink-0">
+            <div class="bg-etec-main text-white p-5 rounded-2xl shadow-lg border border-etec-dark/30 dark:border-white/10 flex items-center gap-4 min-w-[300px]">
+                <div class="w-16 h-16 rounded-full bg-white/10 overflow-hidden border-2 border-etec-light flex-shrink-0">
                     @php
                         $coordinatorInitials = strtoupper(substr($unit->coordinator->name, 0, 1));
                         if (preg_match('/\s+(\S)/u', $unit->coordinator->name, $matches)) {
@@ -41,10 +41,10 @@
                     @endif
                 </div>
                 <div class="min-w-0">
-                    <span class="text-xs font-bold text-etec-medium uppercase tracking-wide block mb-0.5">Coord. de Sala Descentralizada</span>
-                    <strong class="text-sm block leading-tight text-gray-800">{{ $unit->coordinator->name }}</strong>
+                    <span class="text-xs font-bold text-etec-light uppercase tracking-wide block mb-0.5">Coord. de Sala Descentralizada</span>
+                    <strong class="text-sm block leading-tight text-white">{{ $unit->coordinator->name }}</strong>
                     <a href="mailto:{{ $unit->coordinator->email }}"
-                       class="text-xs text-blue-600 hover:underline truncate block max-w-[200px] mt-1">
+                       class="text-xs text-blue-100 hover:text-etec-accent hover:underline truncate block max-w-[200px] mt-1">
                         {{ $unit->coordinator->email }}
                     </a>
                 </div>
@@ -55,7 +55,7 @@
 </div>
 
 <div class="container mx-auto px-4 py-12">
-    <h2 class="text-xl font-bold text-gray-800 mb-8 flex items-center gap-2 border-l-4 border-etec-medium pl-3">
+    <h2 class="text-xl font-bold text-etec-dark dark:text-white mb-8 flex items-center gap-2 border-l-4 border-etec-medium pl-3">
         <svg class="w-5 h-5 text-etec-medium" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
         Cursos oferecidos nesta unidade
     </h2>
@@ -63,39 +63,39 @@
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         @forelse($unit->courses as $course)
         <a href="{{ route('courses.show', $course->slug) }}"
-           class="block bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-xl hover:border-etec-accent transition duration-300 group">
+           class="block bg-etec-main rounded-xl shadow-sm border border-etec-dark/30 dark:border-white/10 p-6 hover:shadow-xl hover:shadow-etec-dark/30 hover:border-etec-accent transition duration-300 group">
             <div class="flex justify-between items-start mb-4">
-                <span class="bg-gray-100 text-gray-600 text-xs px-2.5 py-1 rounded-lg font-semibold group-hover:bg-etec-dark group-hover:text-white transition">
+                <span class="bg-white/10 text-blue-100 text-xs px-2.5 py-1 rounded-lg font-semibold group-hover:bg-etec-accent/30 group-hover:text-white transition">
                     {{ $course->type }}
                 </span>
-                <div class="w-8 h-8 bg-gray-50 rounded-lg flex items-center justify-center text-gray-400 group-hover:bg-etec-accent group-hover:text-etec-dark transition">
+                <div class="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center text-blue-200/70 group-hover:bg-etec-accent group-hover:text-etec-dark transition">
                     <svg class="w-4 h-4 group-hover:translate-x-0.5 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 </div>
             </div>
 
-            <h3 class="text-lg font-bold text-gray-800 mb-2 group-hover:text-etec-medium transition leading-snug">
+            <h3 class="text-lg font-bold text-white mb-2 group-hover:text-etec-accent transition leading-snug">
                 {{ $course->title }}
             </h3>
 
-            <p class="text-sm text-gray-500 line-clamp-2 mb-4 leading-relaxed">
+            <p class="text-sm text-blue-100 line-clamp-2 mb-4 leading-relaxed">
                 {{ $course->description }}
             </p>
 
-            <div class="flex items-center gap-1.5 text-sm font-bold text-etec-dark group-hover:text-etec-accent transition">
+            <div class="flex items-center gap-1.5 text-sm font-bold text-white group-hover:text-etec-accent transition">
                 Ver grade e professores
                 <svg class="w-4 h-4 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </div>
         </a>
         @empty
-        <div class="col-span-3 text-center py-14 bg-gray-50 rounded-xl border border-dashed border-gray-200">
-            <svg class="w-10 h-10 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14l9-5-9-5-9 5 9 5z"/></svg>
-            <p class="text-gray-500">Nenhum curso cadastrado nesta unidade ainda.</p>
+        <div class="col-span-3 text-center py-14 bg-white/50 dark:bg-white/5 rounded-xl border border-dashed border-gray-200 dark:border-white/10">
+            <svg class="w-10 h-10 text-gray-300 dark:text-gray-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14l9-5-9-5-9 5 9 5z"/></svg>
+            <p class="text-gray-500 dark:text-gray-400">Nenhum curso cadastrado nesta unidade ainda.</p>
         </div>
         @endforelse
     </div>
 
     <div class="mt-12">
-        <a href="{{ route('home') }}" class="inline-flex items-center gap-2 text-gray-500 hover:text-etec-dark font-semibold transition text-sm">
+        <a href="{{ route('home') }}" class="inline-flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-etec-dark dark:hover:text-white font-semibold transition text-sm">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
             Voltar para a Página Principal
         </a>

@@ -6,6 +6,16 @@
     <link rel="icon" type="image/png" href="{{ asset('imagens/logo/etec.png') }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Etec Sebastiana Augusta de Moraes - Andradina</title>
+
+    {{-- Aplica o modo escuro antes do primeiro paint, evitando flash de tela clara --}}
+    <script>
+        (function () {
+            var stored = localStorage.getItem('etec_dark_mode');
+            var dark = stored === '1' || (stored === null && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            if (dark) document.documentElement.classList.add('dark');
+        })();
+    </script>
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
 
@@ -100,7 +110,7 @@
     @endif
 </head>
 
-<body class="font-sans antialiased text-gray-700 bg-gray-50 flex flex-col min-h-screen">
+<body class="font-sans antialiased text-gray-700 dark:text-gray-200 bg-etec-bg dark:bg-etec-night flex flex-col min-h-screen transition-colors duration-300">
 
     {{-- Top bar --}}
     <div class="bg-etec-dark text-white text-xs py-2 border-b border-white/10">
@@ -119,7 +129,7 @@
         </div>
     </div>
 
-    <header class="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100" x-data="{ open: false }">
+    <header class="bg-white dark:bg-etec-dark shadow-sm sticky top-0 z-50 border-b border-gray-100 dark:border-white/10 transition-colors duration-300" x-data="{ open: false }">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <a href="{{ route('home') }}" class="flex items-center group">
                 <img src="{{ asset('imagens/logo/etec.png') }}" alt="Logo Etec Sebastiana Augusta de Moraes"
@@ -127,66 +137,73 @@
             </a>
 
             <nav class="hidden lg:flex items-center gap-0.5 text-sm font-medium">
-                <a href="{{ route('home') }}" class="px-4 py-2 text-etec-dark hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Início</a>
-                <a href="{{ route('institutional') }}" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">A Escola</a>
-                <a href="{{ route('library') }}" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Biblioteca</a>
-                <a href="{{ route('home') }}#unidades" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Cursos</a>
-                <a href="{{ route('home') }}#fazenda" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Escola Fazenda</a>
-                <a href="{{ route('academic') }}" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Secretaria</a>
+                <a href="{{ route('home') }}" class="px-4 py-2 text-etec-dark hover:text-etec-main hover:bg-gray-50 dark:text-white dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Início</a>
+                <a href="{{ route('institutional') }}" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">A Escola</a>
+                <a href="{{ route('library') }}" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Biblioteca</a>
+                <a href="{{ route('home') }}#unidades" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Cursos</a>
+                <a href="{{ route('home') }}#fazenda" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Escola Fazenda</a>
+                <a href="{{ route('academic') }}" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Secretaria</a>
 
                 {{-- Dropdown Gestão --}}
                 <div class="relative group">
-                    <button class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition flex items-center gap-1 select-none">
+                    <button class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition flex items-center gap-1 select-none">
                         Gestão
                         <svg class="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
                     <div class="absolute top-full left-0 pt-1 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-150 z-50">
-                        <div class="bg-white rounded-xl shadow-lg border border-gray-100 py-1.5 min-w-[220px] overflow-hidden">
+                        <div class="bg-white dark:bg-etec-dark rounded-xl shadow-lg border border-gray-100 dark:border-white/10 py-1.5 min-w-[220px] overflow-hidden">
                             <a href="{{ route('superintendence') }}"
-                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:text-etec-main hover:bg-gray-50 transition">
-                                <div class="w-7 h-7 bg-etec-light rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-3.5 h-3.5 text-etec-main" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 transition">
+                                <div class="w-7 h-7 bg-etec-light dark:bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-3.5 h-3.5 text-etec-main dark:text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                                     </svg>
                                 </div>
                                 <div>
-                                    <strong class="block font-semibold text-gray-800 text-xs">Superintendência</strong>
-                                    <span class="text-xs text-gray-400">Direção da Unidade</span>
+                                    <strong class="block font-semibold text-gray-800 dark:text-white text-xs">Superintendência</strong>
+                                    <span class="text-xs text-gray-400 dark:text-gray-400">Direção da Unidade</span>
                                 </div>
                             </a>
                             <a href="{{ route('academic-division') }}"
-                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:text-etec-main hover:bg-gray-50 transition">
-                                <div class="w-7 h-7 bg-etec-light rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-3.5 h-3.5 text-etec-main" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 transition">
+                                <div class="w-7 h-7 bg-etec-light dark:bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-3.5 h-3.5 text-etec-main dark:text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
                                     </svg>
                                 </div>
                                 <div>
-                                    <strong class="block font-semibold text-gray-800 text-xs">Gestão Pedagógica</strong>
-                                    <span class="text-xs text-gray-400">Coordenação e Orientação</span>
+                                    <strong class="block font-semibold text-gray-800 dark:text-white text-xs">Gestão Pedagógica</strong>
+                                    <span class="text-xs text-gray-400 dark:text-gray-400">Coordenação e Orientação</span>
                                 </div>
                             </a>
                             <a href="{{ route('administrative') }}"
-                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:text-etec-main hover:bg-gray-50 transition">
-                                <div class="w-7 h-7 bg-etec-light rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-3.5 h-3.5 text-etec-main" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 transition">
+                                <div class="w-7 h-7 bg-etec-light dark:bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-3.5 h-3.5 text-etec-main dark:text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                                     </svg>
                                 </div>
                                 <div>
-                                    <strong class="block font-semibold text-gray-800 text-xs">Diretoria de Serviços</strong>
-                                    <span class="text-xs text-gray-400">Administrativo e Financeiro</span>
+                                    <strong class="block font-semibold text-gray-800 dark:text-white text-xs">Diretoria de Serviços</strong>
+                                    <span class="text-xs text-gray-400 dark:text-gray-400">Administrativo e Financeiro</span>
                                 </div>
                             </a>
                         </div>
                     </div>
                 </div>
-                <a href="{{ route('contact') }}" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Contato</a>
-                <a href="{{ route('agenda') }}" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Agenda</a>
+                <a href="{{ route('contact') }}" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Contato</a>
+                <a href="{{ route('agenda') }}" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Agenda</a>
                 <a href="https://vestibulinho.etec.sp.gov.br/home/" class="ml-2 px-4 py-2 bg-etec-accent text-etec-dark rounded-lg hover:bg-yellow-400 transition font-semibold text-sm shadow-sm">Vestibulinho</a>
-                <div class="ml-4 pl-4 border-l border-gray-200">
+
+                <button onclick="etecToggleDarkMode()" title="Alternar modo escuro/claro" aria-label="Alternar modo escuro"
+                        class="ml-2 p-2 rounded-lg text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/10 transition">
+                    <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m8.485-8.485h1M3.515 12h1m13.435 6.364l-.707-.707M6.757 6.757l-.707-.707m11.314 0l-.707.707M6.757 17.243l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                    <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                </button>
+
+                <div class="ml-4 pl-4 border-l border-gray-200 dark:border-white/10">
                     <a href="https://www.cps.sp.gov.br/">
                         <img src="{{ asset('imagens/logo/logo-cps-2022.svg') }}" alt="Centro Paula Souza" class="h-10 w-auto opacity-80 hover:opacity-100 transition">
                     </a>
@@ -204,8 +221,15 @@
             ════════════════════════════════════════════════════════════════ --}}
             <div class="mobile-hamburger">
                 <img src="{{ asset('imagens/logo/logo-cps-2022.svg') }}" alt="Centro Paula Souza" class="h-8 w-auto opacity-70">
+
+                <button onclick="etecToggleDarkMode()" title="Alternar modo escuro/claro" aria-label="Alternar modo escuro"
+                        class="p-2 rounded-lg text-gray-600 hover:text-etec-main hover:bg-gray-100 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/10 transition">
+                    <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m8.485-8.485h1M3.515 12h1m13.435 6.364l-.707-.707M6.757 6.757l-.707-.707m11.314 0l-.707.707M6.757 17.243l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                    <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                </button>
+
                 <button @click="open = !open"
-                    class="p-2 rounded-lg text-gray-600 hover:text-etec-main hover:bg-gray-100 transition focus:outline-none"
+                    class="p-2 rounded-lg text-gray-600 hover:text-etec-main hover:bg-gray-100 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/10 transition focus:outline-none"
                     aria-label="Abrir menu">
                     <svg x-show="!open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
@@ -224,35 +248,35 @@
              Atualizar SEMPRE que adicionar itens ao menu desktop acima.
              Inclui todos os itens + subpáginas de Gestão expandidas.
         ════════════════════════════════════════════════════════════════ --}}
-        <div x-show="open" x-transition class="mobile-nav-menu border-t border-gray-100 bg-white shadow-lg" style="display:none">
+        <div x-show="open" x-transition class="mobile-nav-menu border-t border-gray-100 dark:border-white/10 bg-white dark:bg-etec-dark shadow-lg" style="display:none">
             <nav class="container mx-auto px-4 py-3 flex flex-col gap-0.5 text-sm font-medium">
-                <a href="{{ route('home') }}"         @click="open=false" class="px-4 py-3 text-etec-dark hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Início</a>
-                <a href="{{ route('institutional') }}" @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">A Escola</a>
-                <a href="{{ route('library') }}"       @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Biblioteca</a>
-                <a href="{{ route('home') }}#unidades" @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Cursos</a>
-                <a href="{{ route('home') }}#fazenda"  @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Escola Fazenda</a>
-                <a href="{{ route('academic') }}"      @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Secretaria</a>
+                <a href="{{ route('home') }}"         @click="open=false" class="px-4 py-3 text-etec-dark hover:text-etec-main hover:bg-gray-50 dark:text-white dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Início</a>
+                <a href="{{ route('institutional') }}" @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">A Escola</a>
+                <a href="{{ route('library') }}"       @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Biblioteca</a>
+                <a href="{{ route('home') }}#unidades" @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Cursos</a>
+                <a href="{{ route('home') }}#fazenda"  @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Escola Fazenda</a>
+                <a href="{{ route('academic') }}"      @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Secretaria</a>
 
                 {{-- Gestão (expandido no mobile) --}}
-                <div class="border-t border-gray-100 pt-1 mt-1">
+                <div class="border-t border-gray-100 dark:border-white/10 pt-1 mt-1">
                     <p class="px-4 py-1.5 text-xs font-bold text-gray-400 uppercase tracking-widest">Gestão</p>
-                    <a href="{{ route('superintendence') }}"   @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition flex items-center gap-2">
-                        <svg class="w-4 h-4 text-etec-medium" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                    <a href="{{ route('superintendence') }}"   @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition flex items-center gap-2">
+                        <svg class="w-4 h-4 text-etec-medium dark:text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                         Superintendência
                     </a>
-                    <a href="{{ route('academic-division') }}" @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition flex items-center gap-2">
-                        <svg class="w-4 h-4 text-etec-medium" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
+                    <a href="{{ route('academic-division') }}" @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition flex items-center gap-2">
+                        <svg class="w-4 h-4 text-etec-medium dark:text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
                         Gestão Pedagógica
                     </a>
-                    <a href="{{ route('administrative') }}"    @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition flex items-center gap-2">
-                        <svg class="w-4 h-4 text-etec-medium" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    <a href="{{ route('administrative') }}"    @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition flex items-center gap-2">
+                        <svg class="w-4 h-4 text-etec-medium dark:text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                         Diretoria de Serviços
                     </a>
                 </div>
 
-                <div class="border-t border-gray-100 pt-1 mt-1">
-                    <a href="{{ route('contact') }}" @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Contato</a>
-                    <a href="{{ route('agenda') }}"  @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 rounded-lg transition">Agenda</a>
+                <div class="border-t border-gray-100 dark:border-white/10 pt-1 mt-1">
+                    <a href="{{ route('contact') }}" @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Contato</a>
+                    <a href="{{ route('agenda') }}"  @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Agenda</a>
                 </div>
 
                 <div class="pt-2 pb-1">
@@ -466,6 +490,14 @@
     })();
     </script>
     @endif
+
+    {{-- Toggle de modo escuro/claro --}}
+    <script>
+        window.etecToggleDarkMode = function () {
+            var isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('etec_dark_mode', isDark ? '1' : '0');
+        };
+    </script>
 
 </body>
 </html>
