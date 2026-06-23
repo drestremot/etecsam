@@ -131,10 +131,24 @@ jobs:
 
             # Sincronizar storage/app/public -> public/storage
             # (Hostinger normalmente nao suporta symlink, por isso copiamos os arquivos)
+            # Se public/storage for um symlink (de uma tentativa antiga de storage:link),
+            # removemos o link primeiro - cp escrevendo atraves de um symlink quebrado
+            # falha silenciosamente e os arquivos nunca chegam onde o site os serve.
+            if [ -L "public/storage" ]; then
+              echo "⚠ public/storage e um symlink - removendo para usar diretorio real"
+              rm -f public/storage
+            fi
             mkdir -p public/storage
+
             if [ -d "storage/app/public" ]; then
               cp -rf storage/app/public/. public/storage/
-              echo "✓ Storage sincronizado (storage/app/public -> public/storage)"
+              SRC_COUNT=$(find storage/app/public -type f | wc -l)
+              DST_COUNT=$(find public/storage -type f | wc -l)
+              if [ "$DST_COUNT" -ge "$SRC_COUNT" ]; then
+                echo "✓ Storage sincronizado: $DST_COUNT arquivos em public/storage (fonte: $SRC_COUNT)"
+              else
+                echo "✗ FALHA ao sincronizar storage! fonte=$SRC_COUNT arquivos, destino=$DST_COUNT arquivos"
+              fi
             else
               echo "⚠ storage/app/public nao existe ainda - nada para sincronizar"
             fi
