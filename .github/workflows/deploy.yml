@@ -73,6 +73,14 @@ jobs:
                 fi
               fi
               echo "✓ .env apontando para $EXTERNAL_DB"
+
+              # Garante locale pt_BR (datas em portugues - Carbon::setLocale le isso)
+              if grep -q "^APP_LOCALE=" .env; then
+                sed -i "s|^APP_LOCALE=.*|APP_LOCALE=pt_BR|" .env
+              else
+                echo "APP_LOCALE=pt_BR" >> .env
+              fi
+              echo "✓ APP_LOCALE=pt_BR garantido no .env"
             else
               echo "⚠ .env nao encontrado - verifique manualmente a configuracao do banco"
             fi
