@@ -161,6 +161,10 @@ jobs:
               echo "⚠ storage/app/public nao existe ainda - nada para sincronizar"
             fi
 
+            echo "--- DIAG: locale ---"
+            grep "^APP_LOCALE" .env || echo "APP_LOCALE ausente no .env"
+            php artisan tinker --execute="echo 'config app.locale: '.config('app.locale').PHP_EOL; echo 'Carbon locale: '.\Carbon\Carbon::now()->locale().PHP_EOL; echo 'Carbon F: '.\Carbon\Carbon::now()->translatedFormat('F').PHP_EOL;"
+
             echo "--- DIAG: testando suporte a symlink no Hostinger ---"
             rm -rf /tmp/symlink_test_target /tmp/symlink_test_link
             mkdir -p /tmp/symlink_test_target
