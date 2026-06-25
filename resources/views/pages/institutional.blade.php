@@ -112,11 +112,11 @@
             @if ($direcaoGeral)
                 <div class="flex justify-center mb-16">
                     <div class="bg-etec-main p-8 rounded-2xl shadow-lg border border-etec-dark/30 dark:border-white/10 text-center max-w-sm w-full hover:-translate-y-1 transition duration-300">
-                        <div class="w-[129px] h-[129px] mx-auto bg-etec-dark text-white rounded-full flex items-center justify-center text-5xl mb-5 shadow-md overflow-hidden">
+                        <div class="relative hover:z-20 w-[129px] h-[129px] mx-auto bg-etec-dark text-white rounded-full flex items-center justify-center text-5xl mb-5 shadow-md">
                             @if ($direcaoGeral->photo)
                                 <img src="{{ photo_url($direcaoGeral->photo) }}"
                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
-                                     class="w-full h-full object-cover scale-[1.15] hover:scale-[1.4375] transition duration-700 ease-in-out">
+                                     class="w-full h-full object-cover rounded-full scale-[1.15] hover:scale-[1.4375] transition duration-700 ease-in-out">
                                 <div style="display:none" class="w-full h-full flex items-center justify-center bg-etec-dark text-white font-bold text-2xl">{{ substr($direcaoGeral->name,0,1) }}</div>
                             @else
                                 <svg class="w-14 h-14 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>

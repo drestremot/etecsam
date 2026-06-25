@@ -22,7 +22,7 @@
 
             @if($unit->coordinator)
             <div class="bg-etec-main text-white p-5 rounded-2xl shadow-lg border border-etec-dark/30 dark:border-white/10 flex items-center gap-4 min-w-[300px]">
-                <div class="w-[74px] h-[74px] rounded-full bg-white/10 overflow-hidden border-2 border-etec-light flex-shrink-0">
+                <div class="relative hover:z-20 w-[74px] h-[74px] rounded-full bg-white/10 border-2 border-etec-light flex-shrink-0">
                     @php
                         $coordinatorInitials = strtoupper(substr($unit->coordinator->name, 0, 1));
                         if (preg_match('/\s+(\S)/u', $unit->coordinator->name, $matches)) {
@@ -32,7 +32,7 @@
                     @if($unit->coordinator->photo)
                         <img src="{{ photo_url($unit->coordinator->photo) }}"
                              onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
-                             class="w-full h-full object-cover scale-[1.15] hover:scale-[1.4375] transition duration-700 ease-in-out">
+                             class="w-full h-full object-cover rounded-full scale-[1.15] hover:scale-[1.4375] transition duration-700 ease-in-out">
                         <div style="display:none" class="w-full h-full flex items-center justify-center bg-etec-dark text-white font-bold text-xl">{{ $coordinatorInitials }}</div>
                     @else
                         <div class="w-full h-full flex items-center justify-center bg-etec-dark text-white font-bold text-xl">
