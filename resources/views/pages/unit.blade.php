@@ -22,7 +22,7 @@
 
             @if($unit->coordinator)
             <div class="bg-etec-main text-white p-5 rounded-2xl shadow-lg border border-etec-dark/30 dark:border-white/10 flex items-center gap-4 min-w-[300px]">
-                <div class="w-16 h-16 rounded-full bg-white/10 overflow-hidden border-2 border-etec-light flex-shrink-0">
+                <div class="w-[74px] h-[74px] rounded-full bg-white/10 overflow-hidden border-2 border-etec-light flex-shrink-0">
                     @php
                         $coordinatorInitials = strtoupper(substr($unit->coordinator->name, 0, 1));
                         if (preg_match('/\s+(\S)/u', $unit->coordinator->name, $matches)) {

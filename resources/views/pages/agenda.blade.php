@@ -182,7 +182,7 @@
 
                     {{-- Foto grande centralizada --}}
                     <div class="relative">
-                        <div class="w-28 h-28 rounded-full overflow-hidden border-4 border-white shadow-xl ring-4 ring-amber-300/50">
+                        <div class="w-[129px] h-[129px] rounded-full overflow-hidden border-4 border-white shadow-xl ring-4 ring-amber-300/50">
                             @if($teacher->photo)
                                 <img src="{{ photo_url($teacher->photo) }}" alt="{{ $teacher->name }}"
                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
@@ -243,17 +243,17 @@
                 <div class="flex items-center gap-3 p-3 rounded-xl border transition
                             {{ $isToday ? 'bg-amber-50 border-amber-200 ring-1 ring-amber-300' : 'bg-yellow-50 border-yellow-100' }}">
                     @if($teacher->photo)
-                        <div class="w-12 h-12 rounded-full border-2 {{ $isToday ? 'border-amber-300' : 'border-yellow-200' }} flex-shrink-0 overflow-hidden">
+                        <div class="w-[55px] h-[55px] rounded-full border-2 {{ $isToday ? 'border-amber-300' : 'border-yellow-200' }} flex-shrink-0 overflow-hidden">
                             <img src="{{ photo_url($teacher->photo) }}" alt="{{ $teacher->name }}"
                                  onerror="this.parentElement.style.display='none';this.parentElement.nextElementSibling.style.display='flex'"
                                  class="w-full h-full object-cover scale-[1.15] hover:scale-[1.4375] transition duration-700 ease-in-out">
                         </div>
-                        <div style="display:none" class="w-12 h-12 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg
+                        <div style="display:none" class="w-[55px] h-[55px] rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg
                                     {{ $isToday ? 'bg-amber-300 text-amber-800' : 'bg-yellow-200 text-yellow-700' }}">
                             {{ strtoupper(substr($teacher->name, 0, 1)) }}
                         </div>
                     @else
-                        <div class="w-12 h-12 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg
+                        <div class="w-[55px] h-[55px] rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg
                                     {{ $isToday ? 'bg-amber-300 text-amber-800' : 'bg-yellow-200 text-yellow-700' }}">
                             {{ strtoupper(substr($teacher->name, 0, 1)) }}
                         </div>

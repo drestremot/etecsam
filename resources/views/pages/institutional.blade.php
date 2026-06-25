@@ -112,7 +112,7 @@
             @if ($direcaoGeral)
                 <div class="flex justify-center mb-16">
                     <div class="bg-etec-main p-8 rounded-2xl shadow-lg border border-etec-dark/30 dark:border-white/10 text-center max-w-sm w-full hover:-translate-y-1 transition duration-300">
-                        <div class="w-28 h-28 mx-auto bg-etec-dark text-white rounded-full flex items-center justify-center text-5xl mb-5 shadow-md overflow-hidden">
+                        <div class="w-[129px] h-[129px] mx-auto bg-etec-dark text-white rounded-full flex items-center justify-center text-5xl mb-5 shadow-md overflow-hidden">
                             @if ($direcaoGeral->photo)
                                 <img src="{{ photo_url($direcaoGeral->photo) }}"
                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
