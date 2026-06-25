@@ -133,30 +133,43 @@ jobs:
             # ║     PASSO 3: ATUALIZAR CODIGO DO GITHUB                 ║
             # ║   Banco fica fora da pasta - reset --hard nao o toca    ║
             # ╚══════════════════════════════════════════════════════════╝
+            echo "CHECKPOINT antes do git reset: $(find public/storage -type f 2>/dev/null | wc -l) arquivos em public/storage"
             git fetch origin main
             git reset --hard origin/main
             echo "✓ Codigo atualizado do GitHub"
+            echo "CHECKPOINT apos git reset: $(find public/storage -type f 2>/dev/null | wc -l) arquivos em public/storage"
 
             # ╔══════════════════════════════════════════════════════════╗
             # ║     PASSO 4: DEPENDENCIAS E MIGRATIONS                  ║
             # ╚══════════════════════════════════════════════════════════╝
             composer install --no-dev --optimize-autoloader --no-interaction
             echo "✓ Composer instalado"
+            echo "CHECKPOINT apos composer install: $(find public/storage -type f 2>/dev/null | wc -l) arquivos em public/storage"
 
             # Migrations com flag safe (nao apaga dados existentes)
             php artisan migrate --force
             echo "✓ Migrations executadas"
+            echo "CHECKPOINT apos migrate: $(find public/storage -type f 2>/dev/null | wc -l) arquivos em public/storage"
 
             # Garantir usuario admin (updateOrInsert - nao sobrescreve dados)
             php artisan db:seed --class=AdminSeeder --force
             echo "✓ AdminSeeder executado"
+            echo "CHECKPOINT apos db:seed: $(find public/storage -type f 2>/dev/null | wc -l) arquivos em public/storage"
 
             # ╔══════════════════════════════════════════════════════════╗
             # ║     PASSO 5: CACHE E STORAGE                            ║
             # ╚══════════════════════════════════════════════════════════╝
             php artisan config:clear && php artisan route:clear && php artisan view:clear
+            echo "CHECKPOINT apos config/route/view:clear: $(find public/storage -type f 2>/dev/null | wc -l) arquivos em public/storage"
             php artisan config:cache && php artisan route:cache
             echo "✓ Cache limpo e recriado"
+            echo "CHECKPOINT apos config/route:cache: $(find public/storage -type f 2>/dev/null | wc -l) arquivos em public/storage"
+
+            echo "--- DIAG: crontab e hooks do servidor ---"
+            crontab -l 2>&1 || echo "sem crontab ou sem permissao"
+            ls -la .git/hooks/ 2>&1 | grep -v sample
+            cat .git/hooks/post-checkout 2>/dev/null || echo "sem post-checkout hook"
+            cat .git/hooks/post-merge 2>/dev/null || echo "sem post-merge hook"
 
             # Sincronizar storage/app/public -> public/storage
             # (Hostinger normalmente nao suporta symlink, por isso copiamos os arquivos)
