@@ -32,7 +32,7 @@
                     @if($unit->coordinator->photo)
                         <img src="{{ photo_url($unit->coordinator->photo) }}"
                              onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
-                             class="w-full h-full object-cover">
+                             class="w-full h-full object-cover scale-[1.15] hover:scale-[1.4375] transition duration-700 ease-in-out">
                         <div style="display:none" class="w-full h-full flex items-center justify-center bg-etec-dark text-white font-bold text-xl">{{ $coordinatorInitials }}</div>
                     @else
                         <div class="w-full h-full flex items-center justify-center bg-etec-dark text-white font-bold text-xl">

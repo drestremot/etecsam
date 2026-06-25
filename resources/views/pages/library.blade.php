@@ -27,7 +27,7 @@
                 <div class="w-20 h-20 mx-auto -mt-10 bg-white rounded-full p-1 shadow-lg overflow-hidden border-2 border-etec-light">
                     <img src="{{ asset('imagens/equipe/estremote.jpg') }}"
                          onerror="this.src='https://ui-avatars.com/api/?name=Esther+Martins&background=2d5a27&color=fff'"
-                         class="w-full h-full object-cover rounded-full">
+                         class="w-full h-full object-cover rounded-full scale-[1.15] hover:scale-[1.4375] transition duration-700 ease-in-out">
                 </div>
                 <h3 class="text-lg font-bold text-white mt-3">Esther do Nascimento Martins</h3>
                 <span class="text-xs text-etec-light font-bold uppercase tracking-wider">Bibliotecária</span>

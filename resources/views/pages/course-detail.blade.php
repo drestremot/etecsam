@@ -77,7 +77,7 @@
                             @if($coord->photo)
                                 <img src="{{ photo_url($coord->photo) }}"
                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
-                                     class="w-full h-full object-cover">
+                                     class="w-full h-full object-cover scale-[1.15] hover:scale-[1.4375] transition duration-700 ease-in-out">
                                 <div style="display:none" class="w-full h-full flex items-center justify-center bg-etec-medium text-white font-bold text-lg">{{ substr($coord->name,0,1) }}</div>
                             @else
                                 <div class="w-full h-full flex items-center justify-center bg-etec-medium text-white font-bold text-lg">{{ substr($coord->name,0,1) }}</div>
@@ -101,7 +101,7 @@
                             @if($coord->photo)
                                 <img src="{{ photo_url($coord->photo) }}"
                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
-                                     class="w-full h-full object-cover">
+                                     class="w-full h-full object-cover scale-[1.15] hover:scale-[1.4375] transition duration-700 ease-in-out">
                                 <div style="display:none" class="w-full h-full flex items-center justify-center bg-etec-medium text-white font-bold text-lg">{{ substr($coord->name,0,1) }}</div>
                             @else
                                 <div class="w-full h-full flex items-center justify-center bg-etec-medium text-white font-bold text-lg">{{ substr($coord->name,0,1) }}</div>
@@ -164,7 +164,7 @@
                             @if($subject->teacher && $subject->teacher->photo)
                                 <img src="{{ photo_url($subject->teacher->photo) }}"
                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
-                                     class="w-full h-full object-cover">
+                                     class="w-full h-full object-cover scale-[1.15] hover:scale-[1.4375] transition duration-700 ease-in-out">
                                 <div style="display:none" class="w-full h-full flex items-center justify-center bg-white/10 text-blue-100 text-xl font-bold">{{ substr($subject->teacher->name,0,1) }}</div>
                             @else
                                 <div class="w-full h-full flex items-center justify-center bg-white/10 text-blue-100">
