@@ -133,43 +133,30 @@ jobs:
             # ║     PASSO 3: ATUALIZAR CODIGO DO GITHUB                 ║
             # ║   Banco fica fora da pasta - reset --hard nao o toca    ║
             # ╚══════════════════════════════════════════════════════════╝
-            echo "CHECKPOINT antes do git reset: $(find public/storage -type f 2>/dev/null | wc -l) arquivos em public/storage"
             git fetch origin main
             git reset --hard origin/main
             echo "✓ Codigo atualizado do GitHub"
-            echo "CHECKPOINT apos git reset: $(find public/storage -type f 2>/dev/null | wc -l) arquivos em public/storage"
 
             # ╔══════════════════════════════════════════════════════════╗
             # ║     PASSO 4: DEPENDENCIAS E MIGRATIONS                  ║
             # ╚══════════════════════════════════════════════════════════╝
             composer install --no-dev --optimize-autoloader --no-interaction
             echo "✓ Composer instalado"
-            echo "CHECKPOINT apos composer install: $(find public/storage -type f 2>/dev/null | wc -l) arquivos em public/storage"
 
             # Migrations com flag safe (nao apaga dados existentes)
             php artisan migrate --force
             echo "✓ Migrations executadas"
-            echo "CHECKPOINT apos migrate: $(find public/storage -type f 2>/dev/null | wc -l) arquivos em public/storage"
 
             # Garantir usuario admin (updateOrInsert - nao sobrescreve dados)
             php artisan db:seed --class=AdminSeeder --force
             echo "✓ AdminSeeder executado"
-            echo "CHECKPOINT apos db:seed: $(find public/storage -type f 2>/dev/null | wc -l) arquivos em public/storage"
 
             # ╔══════════════════════════════════════════════════════════╗
             # ║     PASSO 5: CACHE E STORAGE                            ║
             # ╚══════════════════════════════════════════════════════════╝
             php artisan config:clear && php artisan route:clear && php artisan view:clear
-            echo "CHECKPOINT apos config/route/view:clear: $(find public/storage -type f 2>/dev/null | wc -l) arquivos em public/storage"
             php artisan config:cache && php artisan route:cache
             echo "✓ Cache limpo e recriado"
-            echo "CHECKPOINT apos config/route:cache: $(find public/storage -type f 2>/dev/null | wc -l) arquivos em public/storage"
-
-            echo "--- DIAG: crontab e hooks do servidor ---"
-            crontab -l 2>&1 || echo "sem crontab ou sem permissao"
-            ls -la .git/hooks/ 2>&1 | grep -v sample
-            cat .git/hooks/post-checkout 2>/dev/null || echo "sem post-checkout hook"
-            cat .git/hooks/post-merge 2>/dev/null || echo "sem post-merge hook"
 
             # Sincronizar storage/app/public -> public/storage
             # (Hostinger normalmente nao suporta symlink, por isso copiamos os arquivos)
@@ -194,25 +181,6 @@ jobs:
             else
               echo "⚠ storage/app/public nao existe ainda - nada para sincronizar"
             fi
-
-            echo "--- DIAG: permissoes e escrita real no disco 'public' ---"
-            ls -la public/ | grep storage
-            ls -la public/storage | head -5
-            stat -c '%U:%G %a' public/storage 2>/dev/null || echo "stat falhou"
-            df -h . 2>/dev/null | tail -2
-            php artisan tinker --execute="
-                try {
-                    \$ok = \Illuminate\Support\Facades\Storage::disk('public')->put('diag-write-test.txt', 'teste-'.time());
-                    echo 'put() retornou: '.var_export(\$ok, true).PHP_EOL;
-                    \$exists = \Illuminate\Support\Facades\Storage::disk('public')->exists('diag-write-test.txt');
-                    echo 'arquivo existe apos put(): '.var_export(\$exists, true).PHP_EOL;
-                    echo 'disco public root: '.\Illuminate\Support\Facades\Storage::disk('public')->path('').PHP_EOL;
-                } catch (\Throwable \$e) {
-                    echo 'EXCEPTION: '.\$e->getMessage().PHP_EOL;
-                }
-            "
-            ls -la public/storage/diag-write-test.txt 2>&1
-            tail -20 storage/logs/laravel.log 2>/dev/null || echo "sem laravel.log"
 
             echo "--- DIAG: testando suporte a symlink no Hostinger ---"
             rm -rf /tmp/symlink_test_target /tmp/symlink_test_link
