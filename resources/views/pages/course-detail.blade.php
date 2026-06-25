@@ -73,11 +73,11 @@
                     @endif
                     @foreach($allCoordinators->where('pivot.role', 'tecnico') as $coord)
                     <div class="px-5 py-4 flex items-center gap-4">
-                        <div class="w-[55px] h-[55px] rounded-full bg-white/10 overflow-hidden flex-shrink-0 border-2 border-etec-light shadow-sm">
+                        <div class="relative hover:z-20 w-[55px] h-[55px] rounded-full bg-white/10 flex-shrink-0 border-2 border-etec-light shadow-sm">
                             @if($coord->photo)
                                 <img src="{{ photo_url($coord->photo) }}"
                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
-                                     class="w-full h-full object-cover scale-[1.15] hover:scale-[1.4375] transition duration-700 ease-in-out">
+                                     class="w-full h-full object-cover rounded-full scale-[1.15] hover:scale-[1.4375] transition duration-700 ease-in-out">
                                 <div style="display:none" class="w-full h-full flex items-center justify-center bg-etec-medium text-white font-bold text-lg">{{ substr($coord->name,0,1) }}</div>
                             @else
                                 <div class="w-full h-full flex items-center justify-center bg-etec-medium text-white font-bold text-lg">{{ substr($coord->name,0,1) }}</div>
@@ -97,11 +97,11 @@
                     <p class="px-4 pt-3 text-xs font-bold text-blue-200/70 uppercase tracking-wide">Descentralizado</p>
                     @foreach($allCoordinators->where('pivot.role', 'descentralizado') as $coord)
                     <div class="px-5 py-4 flex items-center gap-4">
-                        <div class="w-[55px] h-[55px] rounded-full bg-white/10 overflow-hidden flex-shrink-0 border-2 border-etec-light shadow-sm">
+                        <div class="relative hover:z-20 w-[55px] h-[55px] rounded-full bg-white/10 flex-shrink-0 border-2 border-etec-light shadow-sm">
                             @if($coord->photo)
                                 <img src="{{ photo_url($coord->photo) }}"
                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
-                                     class="w-full h-full object-cover scale-[1.15] hover:scale-[1.4375] transition duration-700 ease-in-out">
+                                     class="w-full h-full object-cover rounded-full scale-[1.15] hover:scale-[1.4375] transition duration-700 ease-in-out">
                                 <div style="display:none" class="w-full h-full flex items-center justify-center bg-etec-medium text-white font-bold text-lg">{{ substr($coord->name,0,1) }}</div>
                             @else
                                 <div class="w-full h-full flex items-center justify-center bg-etec-medium text-white font-bold text-lg">{{ substr($coord->name,0,1) }}</div>
@@ -160,11 +160,11 @@
 
                     {{-- Docente --}}
                     <div class="flex items-start gap-4 md:w-1/3 md:border-r border-white/10 md:pr-6 flex-shrink-0">
-                        <div class="w-[64px] h-[64px] rounded-full bg-white/10 overflow-hidden flex-shrink-0 border-2 border-white/10">
+                        <div class="relative hover:z-20 w-[64px] h-[64px] rounded-full bg-white/10 flex-shrink-0 border-2 border-white/10">
                             @if($subject->teacher && $subject->teacher->photo)
                                 <img src="{{ photo_url($subject->teacher->photo) }}"
                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
-                                     class="w-full h-full object-cover scale-[1.15] hover:scale-[1.4375] transition duration-700 ease-in-out">
+                                     class="w-full h-full object-cover rounded-full scale-[1.15] hover:scale-[1.4375] transition duration-700 ease-in-out">
                                 <div style="display:none" class="w-full h-full flex items-center justify-center bg-white/10 text-blue-100 text-xl font-bold">{{ substr($subject->teacher->name,0,1) }}</div>
                             @else
                                 <div class="w-full h-full flex items-center justify-center bg-white/10 text-blue-100">
