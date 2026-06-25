@@ -109,6 +109,27 @@ jobs:
             fi
 
             # ╔══════════════════════════════════════════════════════════╗
+            # ║     PASSO 2.5: BACKUP DAS FOTOS (FORA DO REPO, SEMPRE)  ║
+            # ║   public/storage e' gitignored - reset --hard nunca o  ║
+            # ║   toca, mas mantemos um backup extra por seguranca.    ║
+            # ╚══════════════════════════════════════════════════════════╝
+            PHOTOS_BACKUP_DIR=~/photos_backups
+            mkdir -p "$PHOTOS_BACKUP_DIR"
+            if [ -d "public/storage" ]; then
+              PHOTO_COUNT=$(find public/storage -type f | wc -l)
+              if [ "$PHOTO_COUNT" -gt 0 ]; then
+                tar -czf "$PHOTOS_BACKUP_DIR/storage_$TIMESTAMP.tar.gz" -C public storage
+                echo "✓ Backup das fotos criado: storage_$TIMESTAMP.tar.gz ($PHOTO_COUNT arquivos)"
+              else
+                echo "⚠ public/storage sem arquivos - sem backup de fotos desta vez"
+              fi
+            else
+              echo "⚠ public/storage nao existe ainda - sem backup de fotos desta vez"
+            fi
+            # Manter apenas os ultimos 5 backups de fotos (arquivo pode ser pesado)
+            ls -t "$PHOTOS_BACKUP_DIR"/storage_*.tar.gz 2>/dev/null | tail -n +6 | xargs -r rm -f
+
+            # ╔══════════════════════════════════════════════════════════╗
             # ║     PASSO 3: ATUALIZAR CODIGO DO GITHUB                 ║
             # ║   Banco fica fora da pasta - reset --hard nao o toca    ║
             # ╚══════════════════════════════════════════════════════════╝
@@ -182,5 +203,6 @@ jobs:
             echo "║  Banco preservado: $(stat -c%s "$EXTERNAL_DB" 2>/dev/null || echo '?') bytes  ║"
             echo "║  Local: $EXTERNAL_DB  ║"
             echo "║  Backups disponiveis: $(ls $BACKUP_DIR/database_*.sqlite 2>/dev/null | wc -l)  ║"
+            echo "║  Backups de fotos: $(ls $PHOTOS_BACKUP_DIR/storage_*.tar.gz 2>/dev/null | wc -l)  ║"
             echo "╚══════════════════════════════════════════════════════════╝"
             exit 0
