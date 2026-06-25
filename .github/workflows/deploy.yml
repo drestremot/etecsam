@@ -109,22 +109,37 @@ jobs:
             fi
 
             # ╔══════════════════════════════════════════════════════════╗
-            # ║     PASSO 2.5: BACKUP DAS FOTOS (FORA DO REPO, SEMPRE)  ║
+            # ║     PASSO 2.5: BACKUP E AUTO-RECUPERACAO DAS FOTOS      ║
             # ║   public/storage e' gitignored - reset --hard nunca o  ║
-            # ║   toca, mas mantemos um backup extra por seguranca.    ║
+            # ║   toca, mas as fotos ja desapareceram por causa ainda  ║
+            # ║   nao identificada (provavel infra da Hostinger). Se   ║
+            # ║   a contagem cair muito desde o ultimo deploy bem-     ║
+            # ║   sucedido, restaura automaticamente do backup mais    ║
+            # ║   recente antes do site ficar no ar com fotos quebradas║
             # ╚══════════════════════════════════════════════════════════╝
             PHOTOS_BACKUP_DIR=~/photos_backups
             mkdir -p "$PHOTOS_BACKUP_DIR"
-            if [ -d "public/storage" ]; then
-              PHOTO_COUNT=$(find public/storage -type f | wc -l)
-              if [ "$PHOTO_COUNT" -gt 0 ]; then
-                tar -czf "$PHOTOS_BACKUP_DIR/storage_$TIMESTAMP.tar.gz" -C public storage
-                echo "✓ Backup das fotos criado: storage_$TIMESTAMP.tar.gz ($PHOTO_COUNT arquivos)"
-              else
-                echo "⚠ public/storage sem arquivos - sem backup de fotos desta vez"
-              fi
+            LAST_COUNT_FILE="$PHOTOS_BACKUP_DIR/last_count.txt"
+            CURRENT_PHOTO_COUNT=$(find public/storage -type f 2>/dev/null | wc -l)
+            LAST_KNOWN_COUNT=$(cat "$LAST_COUNT_FILE" 2>/dev/null || echo 0)
+            LATEST_BACKUP=$(ls -t "$PHOTOS_BACKUP_DIR"/storage_*.tar.gz 2>/dev/null | head -1)
+
+            # Queda de mais de 50% em relacao ao ultimo deploy bem-sucedido = provavel perda real
+            if [ -n "$LATEST_BACKUP" ] && [ "$LAST_KNOWN_COUNT" -gt 0 ] && [ "$CURRENT_PHOTO_COUNT" -lt "$((LAST_KNOWN_COUNT / 2))" ]; then
+              echo "⚠ ALERTA: fotos cairam de $LAST_KNOWN_COUNT para $CURRENT_PHOTO_COUNT - restaurando automaticamente de $LATEST_BACKUP"
+              rm -rf public/storage
+              mkdir -p public
+              tar -xzf "$LATEST_BACKUP" -C public
+              CURRENT_PHOTO_COUNT=$(find public/storage -type f 2>/dev/null | wc -l)
+              echo "✓ Fotos restauradas automaticamente: $CURRENT_PHOTO_COUNT arquivos em public/storage"
+            fi
+
+            if [ "$CURRENT_PHOTO_COUNT" -gt 0 ]; then
+              tar -czf "$PHOTOS_BACKUP_DIR/storage_$TIMESTAMP.tar.gz" -C public storage
+              echo "$CURRENT_PHOTO_COUNT" > "$LAST_COUNT_FILE"
+              echo "✓ Backup das fotos criado: storage_$TIMESTAMP.tar.gz ($CURRENT_PHOTO_COUNT arquivos)"
             else
-              echo "⚠ public/storage nao existe ainda - sem backup de fotos desta vez"
+              echo "⚠ public/storage sem arquivos - sem backup de fotos desta vez"
             fi
             # Manter apenas os ultimos 5 backups de fotos (arquivo pode ser pesado)
             ls -t "$PHOTOS_BACKUP_DIR"/storage_*.tar.gz 2>/dev/null | tail -n +6 | xargs -r rm -f
