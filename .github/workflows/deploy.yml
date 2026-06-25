@@ -197,19 +197,6 @@ jobs:
               echo "⚠ storage/app/public nao existe ainda - nada para sincronizar"
             fi
 
-            echo "--- DIAG: comparar arquivos reais vs banco de dados (units) ---"
-            echo "Pastas dentro de public/storage:"
-            ls public/storage/ 2>&1
-            echo "Arquivos em public/storage/units/:"
-            ls public/storage/units/ 2>&1 | head -20
-            php artisan tinker --execute="
-                \App\Models\Unit::all(['id','name','image'])->each(function(\$u) {
-                    \$path = \$u->image ? public_path('storage/'.\$u->image) : null;
-                    \$exists = \$path ? file_exists(\$path) : false;
-                    echo \$u->id.' | '.\$u->name.' | image_db='.(\$u->image ?? 'NULL').' | existe_no_disco='.var_export(\$exists, true).PHP_EOL;
-                });
-            "
-
             echo "--- DIAG: testando suporte a symlink no Hostinger ---"
             rm -rf /tmp/symlink_test_target /tmp/symlink_test_link
             mkdir -p /tmp/symlink_test_target
