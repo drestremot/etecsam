@@ -58,7 +58,7 @@
                 <div class="flex overflow-x-auto snap-x snap-mandatory h-full w-full" style="scroll-behavior: smooth;">
                     @foreach($sector->images as $image)
                     <div class="snap-center flex-shrink-0 w-full h-full relative">
-                        <img src="{{ $image }}" class="w-full h-full object-cover">
+                        <img src="{{ $image }}" class="w-full h-full object-cover scale-[1.15] group-hover:scale-[1.4375] transition duration-700 ease-in-out">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
                     </div>
                     @endforeach

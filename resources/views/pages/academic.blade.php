@@ -50,10 +50,10 @@
             <div class="bg-etec-main rounded-2xl shadow-sm overflow-hidden border border-etec-dark/30 dark:border-white/10">
                 <div class="h-20 bg-gradient-to-r from-etec-dark to-etec-medium"></div>
                 <div class="px-6 relative">
-                    <div class="w-20 h-20 mx-auto -mt-10 bg-white rounded-full p-1 shadow-lg">
+                    <div class="w-20 h-20 mx-auto -mt-10 bg-white rounded-full p-1 shadow-lg overflow-hidden">
                         <img src="{{ photo_url($director->photo) }}"
                              onerror="this.src='{{ avatar_url($director->name, '2d5a27', 'fff') }}'"
-                             class="w-full h-full object-cover rounded-full">
+                             class="w-full h-full object-cover rounded-full scale-[1.15] hover:scale-[1.4375] transition duration-700 ease-in-out">
                     </div>
                 </div>
                 <div class="p-6 pt-3 text-center">
@@ -82,10 +82,10 @@
             <div class="grid md:grid-cols-2 gap-5">
                 @foreach($staff as $member)
                 <div class="bg-etec-main rounded-xl shadow-sm border border-etec-dark/30 dark:border-white/10 p-5 flex gap-4 hover:shadow-md hover:shadow-etec-dark/30 transition">
-                    <div class="flex-shrink-0">
+                    <div class="w-14 h-14 rounded-full border-2 border-white/10 flex-shrink-0 overflow-hidden">
                         <img src="{{ photo_url($member->photo) }}"
                              onerror="this.src='{{ avatar_url($member->name, 'eee', '333') }}'"
-                             class="w-14 h-14 rounded-full object-cover border-2 border-white/10">
+                             class="w-full h-full object-cover scale-[1.15] hover:scale-[1.4375] transition duration-700 ease-in-out">
                     </div>
                     <div class="min-w-0">
                         <h4 class="font-bold text-white leading-tight">{{ $member->name }}</h4>

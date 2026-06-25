@@ -41,7 +41,7 @@
             <div class="bg-white/10 p-4 rounded-xl border border-white/10 flex items-center gap-4 flex-shrink-0">
                 <div class="w-12 h-12 rounded-full bg-white/10 overflow-hidden flex-shrink-0 border-2 border-etec-light">
                     @if($unit->coordinator->photo)
-                        <img src="{{ photo_url($unit->coordinator->photo) }}" class="w-full h-full object-cover"
+                        <img src="{{ photo_url($unit->coordinator->photo) }}" class="w-full h-full object-cover scale-[1.15] hover:scale-[1.4375] transition duration-700 ease-in-out"
                              onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
                         <div class="w-full h-full hidden items-center justify-center bg-etec-medium text-white font-bold">{{ substr($unit->coordinator->name, 0, 1) }}</div>
                     @else
