@@ -73,7 +73,7 @@
                     @endif
                     @foreach($allCoordinators->where('pivot.role', 'tecnico') as $coord)
                     <div class="px-5 py-4 flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full bg-white/10 overflow-hidden flex-shrink-0 border-2 border-etec-light shadow-sm">
+                        <div class="w-[55px] h-[55px] rounded-full bg-white/10 overflow-hidden flex-shrink-0 border-2 border-etec-light shadow-sm">
                             @if($coord->photo)
                                 <img src="{{ photo_url($coord->photo) }}"
                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
@@ -97,7 +97,7 @@
                     <p class="px-4 pt-3 text-xs font-bold text-blue-200/70 uppercase tracking-wide">Descentralizado</p>
                     @foreach($allCoordinators->where('pivot.role', 'descentralizado') as $coord)
                     <div class="px-5 py-4 flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-full bg-white/10 overflow-hidden flex-shrink-0 border-2 border-etec-light shadow-sm">
+                        <div class="w-[55px] h-[55px] rounded-full bg-white/10 overflow-hidden flex-shrink-0 border-2 border-etec-light shadow-sm">
                             @if($coord->photo)
                                 <img src="{{ photo_url($coord->photo) }}"
                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
@@ -160,7 +160,7 @@
 
                     {{-- Docente --}}
                     <div class="flex items-start gap-4 md:w-1/3 md:border-r border-white/10 md:pr-6 flex-shrink-0">
-                        <div class="w-14 h-14 rounded-full bg-white/10 overflow-hidden flex-shrink-0 border-2 border-white/10">
+                        <div class="w-[64px] h-[64px] rounded-full bg-white/10 overflow-hidden flex-shrink-0 border-2 border-white/10">
                             @if($subject->teacher && $subject->teacher->photo)
                                 <img src="{{ photo_url($subject->teacher->photo) }}"
                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"

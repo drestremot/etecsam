@@ -24,7 +24,7 @@
         <div class="bg-etec-main rounded-2xl shadow-sm border border-etec-dark/30 dark:border-white/10 overflow-hidden text-center">
             <div class="h-16 bg-gradient-to-r from-etec-dark to-etec-medium"></div>
             <div class="px-6 pt-0 pb-6 relative">
-                <div class="w-20 h-20 mx-auto -mt-10 bg-white rounded-full p-1 shadow-lg overflow-hidden border-2 border-etec-light">
+                <div class="w-[92px] h-[92px] mx-auto -mt-[46px] bg-white rounded-full p-1 shadow-lg overflow-hidden border-2 border-etec-light">
                     <img src="{{ asset('imagens/equipe/estremote.jpg') }}"
                          onerror="this.src='https://ui-avatars.com/api/?name=Esther+Martins&background=2d5a27&color=fff'"
                          class="w-full h-full object-cover rounded-full scale-[1.15] hover:scale-[1.4375] transition duration-700 ease-in-out">
