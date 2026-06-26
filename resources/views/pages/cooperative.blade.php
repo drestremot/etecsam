@@ -35,7 +35,57 @@
     </div>
 </div>
 
-<div class="container mx-auto px-4 py-12 space-y-12">
+<div class="container mx-auto px-4 py-12">
+
+    <div class="grid lg:grid-cols-3 gap-10">
+
+    {{-- Responsável --}}
+    <div class="lg:col-span-1">
+        <h2 class="text-xl font-bold text-etec-dark dark:text-white mb-6 border-l-4 border-etec-accent pl-3">Responsável</h2>
+
+        @if($director)
+        <div class="bg-etec-main rounded-2xl shadow-sm overflow-hidden border border-etec-dark/30 dark:border-white/10 sticky top-24">
+            <div class="h-24 bg-gradient-to-r from-etec-dark to-etec-medium"></div>
+            <div class="px-6">
+                <div class="relative hover:z-20 w-[110px] h-[110px] mx-auto -mt-[55px] bg-white rounded-full p-1 shadow-lg">
+                    <img src="{{ photo_url($director->photo) }}"
+                         onerror="this.src='{{ avatar_url($director->name, '1a3a6e', 'fff', ['bold' => 'true', 'size' => 256]) }}'"
+                         class="w-full h-full object-cover rounded-full scale-[1.15] hover:scale-[1.4375] transition duration-700 ease-in-out">
+                </div>
+            </div>
+            <div class="p-6 text-center">
+                <h3 class="text-lg font-bold text-white">{{ $director->name }}</h3>
+                <span class="text-sm font-bold text-etec-light uppercase tracking-wide block mb-1">{{ $director->role }}</span>
+                @if($director->specialty)
+                <p class="text-xs text-blue-100 mb-4 leading-relaxed italic">"{{ $director->specialty }}"</p>
+                @endif
+                <div class="bg-white/10 rounded-xl p-4 text-left space-y-3">
+                    @if($director->phone)
+                    <div class="flex items-center gap-2.5 text-sm text-blue-100">
+                        <svg class="w-4 h-4 text-etec-accent flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 7V5z"/></svg>
+                        <a href="tel:{{ preg_replace('/\D/', '', $director->phone) }}" class="hover:text-etec-accent transition">{{ $director->phone }}</a>
+                    </div>
+                    @endif
+                    @if($director->email)
+                    <div class="flex items-center gap-2.5">
+                        <svg class="w-4 h-4 text-etec-accent flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        <a href="mailto:{{ $director->email }}" class="text-white hover:text-etec-accent hover:underline text-sm truncate">{{ $director->email }}</a>
+                    </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+        @else
+        <div class="bg-white/50 dark:bg-white/5 rounded-2xl p-8 text-center border border-dashed border-gray-300 dark:border-white/10">
+            <svg class="w-10 h-10 text-gray-300 dark:text-gray-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+            </svg>
+            <p class="text-gray-500 dark:text-gray-400 text-sm">Informações em atualização.</p>
+        </div>
+        @endif
+    </div>
+
+    <div class="lg:col-span-2 space-y-12">
 
     {{-- Gestores da Cooperativa --}}
     <div>
@@ -124,6 +174,9 @@
             Prestações de Contas
         </h2>
         @include('pages.partials.cooperative-document-list', ['documents' => $reports, 'emptyMessage' => 'Nenhuma prestação de contas publicada ainda.'])
+    </div>
+
+    </div>
     </div>
 
 </div>
