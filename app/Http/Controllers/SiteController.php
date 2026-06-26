@@ -91,6 +91,9 @@ class SiteController extends Controller
             ->orderByRaw("CASE WHEN role LIKE '%Diretor de Escola%' THEN 0 ELSE 1 END")
             ->first();
 
+        // Assessor III - responde pela unidade na ausência do Superintendente
+        $deputy = \App\Models\Teacher::where('role', 'like', '%Assessor III%')->first();
+
         // Equipe de apoio da Superintendência
         $staff = \App\Models\Teacher::where('role', 'like', '%Vice-Diretor%')
             ->orWhere('role', 'like', '%Assistente de Direção%')
@@ -98,7 +101,7 @@ class SiteController extends Controller
 
         $downloads = \App\Models\Document::where('category', 'Superintendência')->get();
 
-        return view('pages.superintendence', compact('director', 'staff', 'downloads'));
+        return view('pages.superintendence', compact('director', 'deputy', 'staff', 'downloads'));
     }
 
     public function academicDivision()

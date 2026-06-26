@@ -96,6 +96,44 @@
     </div>
     @endif
 
+    {{-- Assessor III - responde na ausência do Superintendente --}}
+    @if($deputy)
+    <div class="bg-etec-main rounded-2xl shadow-sm border border-etec-dark/30 dark:border-white/10 p-6 flex flex-col sm:flex-row items-center sm:items-start gap-5">
+        <div class="relative hover:z-20 w-20 h-20 rounded-full border-2 border-white/10 flex-shrink-0">
+            <img src="{{ photo_url($deputy->photo) }}"
+                 onerror="this.src='{{ avatar_url($deputy->name, 'dbeafe', '1a3a6e') }}'"
+                 class="w-full h-full object-cover rounded-full scale-[1.15] hover:scale-[1.4375] transition duration-700 ease-in-out">
+        </div>
+        <div class="flex-grow text-center sm:text-left">
+            <span class="inline-flex items-center gap-1.5 bg-etec-accent/20 text-etec-accent text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-2">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                Responde na ausência do Superintendente
+            </span>
+            <h3 class="text-lg font-bold text-white">{{ $deputy->name }}</h3>
+            <p class="text-etec-light font-semibold text-sm mb-2">{{ $deputy->role }}</p>
+            @if($deputy->specialty)
+            <p class="text-sm text-blue-100 mb-3 max-w-xl">{{ $deputy->specialty }}</p>
+            @endif
+            <div class="flex flex-wrap gap-3 justify-center sm:justify-start">
+                @if($deputy->email)
+                <a href="mailto:{{ $deputy->email }}"
+                   class="inline-flex items-center gap-1.5 px-3.5 py-1.5 border border-white/20 text-blue-100 rounded-lg text-xs font-semibold hover:border-etec-accent hover:text-white transition">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    {{ $deputy->email }}
+                </a>
+                @endif
+                @if($deputy->phone)
+                <a href="tel:{{ preg_replace('/\D/', '', $deputy->phone) }}"
+                   class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-white/10 text-white rounded-lg text-xs font-semibold hover:bg-etec-accent hover:text-etec-dark transition">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 7V5z"/></svg>
+                    {{ $deputy->phone }}
+                </a>
+                @endif
+            </div>
+        </div>
+    </div>
+    @endif
+
     {{-- Sobre a Gestão --}}
     <div class="grid md:grid-cols-3 gap-6">
         <div class="bg-etec-main rounded-xl border border-etec-dark/30 dark:border-white/10 shadow-sm p-6 flex gap-4">
