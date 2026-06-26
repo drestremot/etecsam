@@ -58,7 +58,10 @@
                 </div>
                 <div class="p-6 pt-3 text-center">
                     <h3 class="text-lg font-bold text-white">{{ $director->name }}</h3>
-                    <span class="text-xs font-bold text-etec-light uppercase tracking-wide block mb-4">{{ $director->role }}</span>
+                    <span class="text-xs font-bold text-etec-light uppercase tracking-wide block mb-1">{{ $director->role }}</span>
+                    @if($director->specialty)
+                    <p class="text-xs text-blue-100 mb-4 leading-relaxed italic">"{{ $director->specialty }}"</p>
+                    @endif
 
                     <div class="bg-white/10 rounded-xl p-4 text-sm text-left space-y-3">
                         <div class="flex items-center gap-2.5 text-blue-100">
