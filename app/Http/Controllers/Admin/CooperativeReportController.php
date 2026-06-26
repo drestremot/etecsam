@@ -11,7 +11,7 @@ class CooperativeReportController extends Controller
 {
     public function index()
     {
-        $cooperativeReports = CooperativeReport::orderByDesc('published_at')->paginate(20);
+        $cooperativeReports = CooperativeReport::orderBy('category')->orderByDesc('published_at')->paginate(20);
         return view('admin.cooperative-reports.index', compact('cooperativeReports'));
     }
 
@@ -24,6 +24,7 @@ class CooperativeReportController extends Controller
     {
         $data = $request->validate([
             'title'        => 'required|string|max:255',
+            'category'     => 'required|string|in:Estatuto,Ata de Reunião,Prestação de Contas',
             'period'       => 'nullable|string|max:100',
             'published_at' => 'nullable|date',
             'file'         => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
@@ -35,7 +36,7 @@ class CooperativeReportController extends Controller
         }
 
         CooperativeReport::create($data);
-        return redirect()->route('admin.cooperative-reports.index')->with('success', 'Prestação de contas cadastrada com sucesso!');
+        return redirect()->route('admin.cooperative-reports.index')->with('success', 'Documento cadastrado com sucesso!');
     }
 
     public function edit(CooperativeReport $cooperativeReport)
@@ -47,6 +48,7 @@ class CooperativeReportController extends Controller
     {
         $data = $request->validate([
             'title'        => 'required|string|max:255',
+            'category'     => 'required|string|in:Estatuto,Ata de Reunião,Prestação de Contas',
             'period'       => 'nullable|string|max:100',
             'published_at' => 'nullable|date',
             'file'         => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx|max:10240',
@@ -61,7 +63,7 @@ class CooperativeReportController extends Controller
         }
 
         $cooperativeReport->update($data);
-        return redirect()->route('admin.cooperative-reports.index')->with('success', 'Prestação de contas atualizada!');
+        return redirect()->route('admin.cooperative-reports.index')->with('success', 'Documento atualizado!');
     }
 
     public function destroy(CooperativeReport $cooperativeReport)
@@ -70,6 +72,6 @@ class CooperativeReportController extends Controller
             Storage::disk('public')->delete($cooperativeReport->file_path);
         }
         $cooperativeReport->delete();
-        return redirect()->route('admin.cooperative-reports.index')->with('success', 'Prestação de contas removida!');
+        return redirect()->route('admin.cooperative-reports.index')->with('success', 'Documento removido!');
     }
 }

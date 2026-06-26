@@ -8,6 +8,7 @@ class CooperativeReport extends Model
 {
     protected $fillable = [
         'title',
+        'category',
         'period',
         'file_path',
         'url',

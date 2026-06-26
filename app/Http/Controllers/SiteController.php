@@ -264,8 +264,11 @@ class SiteController extends Controller
     {
         $managers = \App\Models\CooperativeManager::where('is_active', true)->orderBy('name')->get();
         $members = \App\Models\CooperativeMember::where('is_active', true)->orderBy('name')->get();
-        $reports = \App\Models\CooperativeReport::orderByDesc('published_at')->get();
 
-        return view('pages.cooperative', compact('managers', 'members', 'reports'));
+        $statutes = \App\Models\CooperativeReport::where('category', 'Estatuto')->orderByDesc('published_at')->get();
+        $minutes = \App\Models\CooperativeReport::where('category', 'Ata de Reunião')->orderByDesc('published_at')->get();
+        $reports = \App\Models\CooperativeReport::where('category', 'Prestação de Contas')->orderByDesc('published_at')->get();
+
+        return view('pages.cooperative', compact('managers', 'members', 'statutes', 'minutes', 'reports'));
     }
 }
