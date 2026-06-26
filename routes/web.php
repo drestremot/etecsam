@@ -63,6 +63,20 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::resource('cooperative-reports', \App\Http\Controllers\Admin\CooperativeReportController::class)->except(['show']);
     Route::resource('cooperative-monthly-fees', \App\Http\Controllers\Admin\CooperativeMonthlyFeeController::class)->except(['show']);
 
+    // Financeiro da Cooperativa
+    Route::get('cooperative-dashboard', [\App\Http\Controllers\Admin\CooperativeDashboardController::class, 'index'])->name('cooperative-dashboard');
+    Route::resource('cooperative-expenses', \App\Http\Controllers\Admin\CooperativeExpenseController::class)->except(['show']);
+    Route::patch('cooperative-expenses/{cooperative_expense}/mark-paid', [\App\Http\Controllers\Admin\CooperativeExpenseController::class, 'markPaid'])->name('cooperative-expenses.mark-paid');
+    Route::resource('cooperative-sales', \App\Http\Controllers\Admin\CooperativeSaleController::class)->except(['show']);
+    Route::patch('cooperative-sales/{cooperative_sale}/mark-received', [\App\Http\Controllers\Admin\CooperativeSaleController::class, 'markReceived'])->name('cooperative-sales.mark-received');
+
+    // Moradia Estudantil
+    Route::resource('cooperative-housing-tenants', \App\Http\Controllers\Admin\CooperativeHousingTenantController::class)->except(['show']);
+    Route::patch('cooperative-housing-tenants/{cooperative_housing_tenant}/toggle', [\App\Http\Controllers\Admin\CooperativeHousingTenantController::class, 'toggle'])->name('cooperative-housing-tenants.toggle');
+    Route::get('cooperative-housing-tenants/{cooperative_housing_tenant}/dues', [\App\Http\Controllers\Admin\CooperativeHousingTenantController::class, 'dues'])->name('cooperative-housing-tenants.dues');
+    Route::patch('cooperative-housing-tenants/{cooperative_housing_tenant}/dues/{cooperative_housing_fee}/toggle', [\App\Http\Controllers\Admin\CooperativeHousingTenantController::class, 'toggleDue'])->name('cooperative-housing-tenants.dues.toggle');
+    Route::resource('cooperative-housing-fees', \App\Http\Controllers\Admin\CooperativeHousingFeeController::class)->except(['show']);
+
     // Rotas de toggle (ativar/desativar)
     Route::patch('courses/{course}/toggle',         [\App\Http\Controllers\Admin\CourseController::class,     'toggle'])->name('courses.toggle');
     Route::patch('departments/{department}/toggle', [\App\Http\Controllers\Admin\DepartmentController::class, 'toggle'])->name('departments.toggle');
