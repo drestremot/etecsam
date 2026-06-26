@@ -197,11 +197,11 @@ jobs:
               echo "⚠ storage/app/public nao existe ainda - nada para sincronizar"
             fi
 
-            echo "--- DIAG: upload recente (ultimos 15 minutos) ---"
-            find public/storage -newermt '-15 minutes' -type f 2>&1
-            echo "--- DIAG: registros mais recentes no banco ---"
-            php artisan tinker --execute="echo App\Models\Unit::orderBy('updated_at','desc')->first()->id.' '.App\Models\Unit::orderBy('updated_at','desc')->first()->name.' '.App\Models\Unit::orderBy('updated_at','desc')->first()->image.' '.App\Models\Unit::orderBy('updated_at','desc')->first()->updated_at;"
-            php artisan tinker --execute="echo App\Models\Teacher::orderBy('updated_at','desc')->first()->id.' '.App\Models\Teacher::orderBy('updated_at','desc')->first()->name.' '.App\Models\Teacher::orderBy('updated_at','desc')->first()->photo.' '.App\Models\Teacher::orderBy('updated_at','desc')->first()->updated_at;"
+            echo "--- DIAG: erro 500 em /cooperativa - tabelas e ultimas linhas do log ---"
+            php artisan tinker --execute="echo 'tabela cooperative_managers existe: '.var_export(Illuminate\Support\Facades\Schema::hasTable('cooperative_managers'), true);"
+            php artisan tinker --execute="echo 'tabela cooperative_members existe: '.var_export(Illuminate\Support\Facades\Schema::hasTable('cooperative_members'), true);"
+            php artisan tinker --execute="echo 'tabela cooperative_reports existe: '.var_export(Illuminate\Support\Facades\Schema::hasTable('cooperative_reports'), true);"
+            tail -40 storage/logs/laravel.log 2>&1 || echo "sem laravel.log"
 
             echo "--- DIAG: testando suporte a symlink no Hostinger ---"
             rm -rf /tmp/symlink_test_target /tmp/symlink_test_link
