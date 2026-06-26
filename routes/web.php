@@ -20,6 +20,7 @@ Route::get('/superintendencia',    [SiteController::class, 'superintendence'])->
 Route::get('/diretoria-academica', [SiteController::class, 'academicDivision'])->name('academic-division');
 Route::get('/diretoria-servicos',  [SiteController::class, 'administrative'])->name('administrative');
 Route::get('/biblioteca',          [SiteController::class, 'library'])->name('library');
+Route::get('/cooperativa',         [SiteController::class, 'cooperative'])->name('cooperative');
 Route::get('/unidade/{id}',        [SiteController::class, 'unit'])->name('units.show');
 Route::get('/unidade-didatica/{slug}', [SiteController::class, 'sector'])->name('sectors.show');
 
@@ -51,6 +52,13 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::resource('events',      \App\Http\Controllers\Admin\EventController::class)->except(['show']);
     Route::delete('event-photos/{photo}', [\App\Http\Controllers\Admin\EventController::class, 'destroyPhoto'])->name('event-photos.destroy');
     Route::resource('documents',   \App\Http\Controllers\Admin\DocumentController::class)->except(['show']);
+
+    // Cooperativa Escola
+    Route::resource('cooperative-managers', \App\Http\Controllers\Admin\CooperativeManagerController::class)->except(['show']);
+    Route::patch('cooperative-managers/{cooperative_manager}/toggle', [\App\Http\Controllers\Admin\CooperativeManagerController::class, 'toggle'])->name('cooperative-managers.toggle');
+    Route::resource('cooperative-members', \App\Http\Controllers\Admin\CooperativeMemberController::class)->except(['show']);
+    Route::patch('cooperative-members/{cooperative_member}/toggle', [\App\Http\Controllers\Admin\CooperativeMemberController::class, 'toggle'])->name('cooperative-members.toggle');
+    Route::resource('cooperative-reports', \App\Http\Controllers\Admin\CooperativeReportController::class)->except(['show']);
 
     // Rotas de toggle (ativar/desativar)
     Route::patch('courses/{course}/toggle',         [\App\Http\Controllers\Admin\CourseController::class,     'toggle'])->name('courses.toggle');

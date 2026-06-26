@@ -259,4 +259,13 @@ class SiteController extends Controller
 
         return view('pages.academic', compact('director', 'staff', 'links', 'downloads'));
     }
+
+    public function cooperative()
+    {
+        $managers = \App\Models\CooperativeManager::where('is_active', true)->orderBy('name')->get();
+        $members = \App\Models\CooperativeMember::where('is_active', true)->orderBy('name')->get();
+        $reports = \App\Models\CooperativeReport::orderByDesc('published_at')->get();
+
+        return view('pages.cooperative', compact('managers', 'members', 'reports'));
+    }
 }
