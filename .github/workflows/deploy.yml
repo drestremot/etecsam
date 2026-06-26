@@ -197,16 +197,6 @@ jobs:
               echo "⚠ storage/app/public nao existe ainda - nada para sincronizar"
             fi
 
-            echo "--- DIAG: erro 500 em /cooperativa - tabelas e ultimas linhas do log ---"
-            php artisan tinker --execute="echo App\Models\CooperativeManager::count();" 2>&1
-            php artisan tinker --execute="echo App\Models\CooperativeMember::count();" 2>&1
-            php artisan tinker --execute="echo App\Models\CooperativeReport::count();" 2>&1
-            echo "--- tabelas via sqlite direto ---"
-            sqlite3 ~/etecsam_data/database.sqlite ".tables" 2>&1 || echo "sqlite3 falhou"
-            echo "--- log files em storage/logs ---"
-            ls -la storage/logs/ 2>&1
-            find storage/logs -name "*.log" -exec tail -50 {} \; 2>&1
-
             echo "--- DIAG: testando suporte a symlink no Hostinger ---"
             rm -rf /tmp/symlink_test_target /tmp/symlink_test_link
             mkdir -p /tmp/symlink_test_target
