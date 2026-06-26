@@ -142,6 +142,7 @@
                 <a href="{{ route('library') }}" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Biblioteca</a>
                 <a href="{{ route('home') }}#unidades" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Cursos</a>
                 <a href="{{ route('home') }}#fazenda" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Escola Fazenda</a>
+                <a href="{{ route('cooperative') }}" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Cooperativa Escola</a>
                 {{-- Dropdown Gestão --}}
                 <div class="relative group">
                     <button class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition flex items-center gap-1 select-none">
@@ -152,18 +153,7 @@
                     </button>
                     <div class="absolute top-full left-0 pt-1 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-150 z-50">
                         <div class="bg-white dark:bg-etec-dark rounded-xl shadow-lg border border-gray-100 dark:border-white/10 py-1.5 min-w-[220px] overflow-hidden">
-                            <a href="{{ route('academic') }}"
-                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 transition">
-                                <div class="w-7 h-7 bg-etec-light dark:bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-3.5 h-3.5 text-etec-main dark:text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                    </svg>
-                                </div>
-                                <div>
-                                    <strong class="block font-semibold text-gray-800 dark:text-white text-xs">Secretaria</strong>
-                                    <span class="text-xs text-gray-400 dark:text-gray-400">Vida Escolar e Matrículas</span>
-                                </div>
-                            </a>
+
                             <a href="{{ route('superintendence') }}"
                                class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 transition">
                                 <div class="w-7 h-7 bg-etec-light dark:bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">
@@ -174,6 +164,18 @@
                                 <div>
                                     <strong class="block font-semibold text-gray-800 dark:text-white text-xs">Superintendência</strong>
                                     <span class="text-xs text-gray-400 dark:text-gray-400">Direção da Unidade</span>
+                                </div>
+                            </a>
+                            <a href="{{ route('academic') }}"
+                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 transition">
+                                <div class="w-7 h-7 bg-etec-light dark:bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-3.5 h-3.5 text-etec-main dark:text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <strong class="block font-semibold text-gray-800 dark:text-white text-xs">Secretaria Acadêmica</strong>
+                                    <span class="text-xs text-gray-400 dark:text-gray-400">Vida Escolar e Matrículas</span>
                                 </div>
                             </a>
                             <a href="{{ route('academic-division') }}"
@@ -266,6 +268,7 @@
                 <a href="{{ route('library') }}"       @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Biblioteca</a>
                 <a href="{{ route('home') }}#unidades" @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Cursos</a>
                 <a href="{{ route('home') }}#fazenda"  @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Escola Fazenda</a>
+                <a href="{{ route('cooperative') }}"   @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Cooperativa Escola</a>
                 {{-- Gestão (expandido no mobile) --}}
                 <div class="border-t border-gray-100 dark:border-white/10 pt-1 mt-1">
                     <p class="px-4 py-1.5 text-xs font-bold text-gray-400 uppercase tracking-widest">Gestão</p>
