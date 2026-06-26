@@ -262,6 +262,8 @@ class SiteController extends Controller
 
     public function cooperative()
     {
+        $director = \App\Models\Teacher::where('role', 'like', '%Cooperativa%')->first();
+
         $managers = \App\Models\CooperativeManager::where('is_active', true)->orderBy('name')->get();
         $members = \App\Models\CooperativeMember::where('is_active', true)->orderBy('name')->get();
 
@@ -269,7 +271,7 @@ class SiteController extends Controller
         $minutes = \App\Models\CooperativeReport::where('category', 'Ata de Reunião')->orderByDesc('published_at')->get();
         $reports = \App\Models\CooperativeReport::where('category', 'Prestação de Contas')->orderByDesc('published_at')->get();
 
-        return view('pages.cooperative', compact('managers', 'members', 'statutes', 'minutes', 'reports'));
+        return view('pages.cooperative', compact('director', 'managers', 'members', 'statutes', 'minutes', 'reports'));
     }
 
     public function cooperativeFinance()
