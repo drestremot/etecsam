@@ -11,11 +11,27 @@
                       d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
             </svg>
         </div>
-        <div>
+        <div class="flex-grow">
             <p class="text-etec-accent text-xs font-bold uppercase tracking-widest mb-1">Escola Fazenda</p>
             <h1 class="text-3xl font-bold mb-1">Cooperativa Escola</h1>
             <p class="text-gray-300 text-sm">Gestores, Cooperados e Prestações de Contas</p>
         </div>
+        <a href="{{ route('cooperative.finance') }}"
+           class="hidden sm:inline-flex items-center gap-2 bg-etec-accent text-etec-dark font-bold text-sm px-5 py-3 rounded-lg hover:bg-amber-400 transition flex-shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm6 0V9a2 2 0 00-2-2h-2a2 2 0 00-2 2v10a2 2 0 002 2h2a2 2 0 002-2zm6 0V5a2 2 0 00-2-2h-2a2 2 0 00-2 2v14a2 2 0 002 2h2a2 2 0 002-2z"/>
+            </svg>
+            Dashboard Financeiro
+        </a>
+    </div>
+    <div class="container mx-auto px-4 mt-4 sm:hidden">
+        <a href="{{ route('cooperative.finance') }}"
+           class="inline-flex items-center gap-2 bg-etec-accent text-etec-dark font-bold text-sm px-5 py-3 rounded-lg hover:bg-amber-400 transition w-full justify-center">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm6 0V9a2 2 0 00-2-2h-2a2 2 0 00-2 2v10a2 2 0 002 2h2a2 2 0 002-2zm6 0V5a2 2 0 00-2-2h-2a2 2 0 00-2 2v14a2 2 0 002 2h2a2 2 0 002-2z"/>
+            </svg>
+            Dashboard Financeiro
+        </a>
     </div>
 </div>
 

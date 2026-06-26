@@ -271,4 +271,9 @@ class SiteController extends Controller
 
         return view('pages.cooperative', compact('managers', 'members', 'statutes', 'minutes', 'reports'));
     }
+
+    public function cooperativeFinance()
+    {
+        return view('pages.cooperative-finance', \App\Support\CooperativeFinanceSummary::compute());
+    }
 }

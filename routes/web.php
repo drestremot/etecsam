@@ -21,6 +21,7 @@ Route::get('/diretoria-academica', [SiteController::class, 'academicDivision'])-
 Route::get('/diretoria-servicos',  [SiteController::class, 'administrative'])->name('administrative');
 Route::get('/biblioteca',          [SiteController::class, 'library'])->name('library');
 Route::get('/cooperativa',         [SiteController::class, 'cooperative'])->name('cooperative');
+Route::get('/cooperativa/financeiro', [SiteController::class, 'cooperativeFinance'])->name('cooperative.finance');
 Route::get('/unidade/{id}',        [SiteController::class, 'unit'])->name('units.show');
 Route::get('/unidade-didatica/{slug}', [SiteController::class, 'sector'])->name('sectors.show');
 
