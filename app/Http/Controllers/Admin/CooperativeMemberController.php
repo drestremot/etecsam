@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\CooperativeDue;
 use App\Models\CooperativeMember;
+use App\Models\CooperativeMonthlyFee;
 use Illuminate\Http\Request;
 
 class CooperativeMemberController extends Controller
@@ -56,5 +58,26 @@ class CooperativeMemberController extends Controller
     {
         $cooperativeMember->delete();
         return redirect()->route('admin.cooperative-members.index')->with('success', 'Cooperado removido!');
+    }
+
+    public function dues(CooperativeMember $cooperativeMember)
+    {
+        $monthlyFees = CooperativeMonthlyFee::orderBy('month')->get();
+        $dues = $cooperativeMember->dues()->pluck('paid', 'cooperative_monthly_fee_id');
+
+        return view('admin.cooperative-members.dues', compact('cooperativeMember', 'monthlyFees', 'dues'));
+    }
+
+    public function toggleDue(CooperativeMember $cooperativeMember, CooperativeMonthlyFee $cooperativeMonthlyFee)
+    {
+        $due = CooperativeDue::firstOrNew([
+            'cooperative_member_id' => $cooperativeMember->id,
+            'cooperative_monthly_fee_id' => $cooperativeMonthlyFee->id,
+        ]);
+        $due->paid = !$due->paid;
+        $due->paid_at = $due->paid ? now() : null;
+        $due->save();
+
+        return back()->with('success', 'Pagamento ' . ($due->paid ? 'marcado como pago' : 'marcado como pendente') . '.');
     }
 }

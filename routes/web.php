@@ -58,7 +58,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::patch('cooperative-managers/{cooperative_manager}/toggle', [\App\Http\Controllers\Admin\CooperativeManagerController::class, 'toggle'])->name('cooperative-managers.toggle');
     Route::resource('cooperative-members', \App\Http\Controllers\Admin\CooperativeMemberController::class)->except(['show']);
     Route::patch('cooperative-members/{cooperative_member}/toggle', [\App\Http\Controllers\Admin\CooperativeMemberController::class, 'toggle'])->name('cooperative-members.toggle');
+    Route::get('cooperative-members/{cooperative_member}/dues', [\App\Http\Controllers\Admin\CooperativeMemberController::class, 'dues'])->name('cooperative-members.dues');
+    Route::patch('cooperative-members/{cooperative_member}/dues/{cooperative_monthly_fee}/toggle', [\App\Http\Controllers\Admin\CooperativeMemberController::class, 'toggleDue'])->name('cooperative-members.dues.toggle');
     Route::resource('cooperative-reports', \App\Http\Controllers\Admin\CooperativeReportController::class)->except(['show']);
+    Route::resource('cooperative-monthly-fees', \App\Http\Controllers\Admin\CooperativeMonthlyFeeController::class)->except(['show']);
 
     // Rotas de toggle (ativar/desativar)
     Route::patch('courses/{course}/toggle',         [\App\Http\Controllers\Admin\CourseController::class,     'toggle'])->name('courses.toggle');

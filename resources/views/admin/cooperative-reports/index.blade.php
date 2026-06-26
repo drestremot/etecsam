@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('page-title', 'Prestações de Contas da Cooperativa')
+@section('page-title', 'Documentos da Cooperativa')
 
 @section('header-actions')
     <a href="{{ route('admin.cooperative-reports.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-lg">+ Novo</a>
@@ -11,6 +11,7 @@
         <thead class="bg-gray-50">
             <tr>
                 <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Título</th>
+                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Categoria</th>
                 <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Período</th>
                 <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Publicado em</th>
                 <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Arquivo</th>
@@ -21,6 +22,9 @@
             @forelse($cooperativeReports as $report)
             <tr class="hover:bg-gray-50">
                 <td class="px-4 py-3 font-medium text-gray-800">{{ $report->title }}</td>
+                <td class="px-4 py-3">
+                    <span class="px-2 py-1 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-700">{{ $report->category }}</span>
+                </td>
                 <td class="px-4 py-3 text-gray-600">{{ $report->period ?? '—' }}</td>
                 <td class="px-4 py-3 text-gray-500">{{ $report->published_at ? $report->published_at->format('d/m/Y') : '—' }}</td>
                 <td class="px-4 py-3 text-gray-500">
@@ -50,7 +54,7 @@
                 </td>
             </tr>
             @empty
-            <tr><td colspan="5" class="px-4 py-8 text-center text-gray-400">Nenhum registro encontrado.</td></tr>
+            <tr><td colspan="6" class="px-4 py-8 text-center text-gray-400">Nenhum registro encontrado.</td></tr>
             @endforelse
         </tbody>
     </table>
