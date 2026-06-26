@@ -39,7 +39,18 @@
                 data-nome="{{ strtolower($member->name) }}"
                 data-matricula="{{ strtolower($member->registration_number ?? '') }}"
                 data-status="{{ $member->is_active ? 'ativo' : 'inativo' }}">
-                <td class="px-4 py-3 font-medium text-gray-800">{{ $member->name }}</td>
+                <td class="px-4 py-3 font-medium text-gray-800">
+                    <div class="flex items-center gap-3">
+                        <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gray-200 text-gray-700 font-semibold text-xs overflow-hidden flex-shrink-0">
+                            @if($member->photo)
+                                <img src="{{ photo_url($member->photo) }}" alt="{{ $member->name }}" class="w-full h-full object-cover">
+                            @else
+                                {{ strtoupper(substr($member->name, 0, 1)) }}
+                            @endif
+                        </span>
+                        {{ $member->name }}
+                    </div>
+                </td>
                 <td class="px-4 py-3 text-gray-500">{{ $member->registration_number ?? '—' }}</td>
                 <td class="px-4 py-3">
                     <span class="px-2 py-1 rounded-full text-xs font-semibold {{ $member->is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500' }}">
@@ -47,9 +58,13 @@
                     </span>
                 </td>
                 <td class="px-4 py-3">
+                    @if(!$member->is_active)
+                    <span class="px-2 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-500">Sem cobrança</span>
+                    @else
                     <span class="px-2 py-1 rounded-full text-xs font-semibold {{ $member->isUpToDate() ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
                         {{ $member->isUpToDate() ? 'Em dia' : 'Pendente' }}
                     </span>
+                    @endif
                 </td>
                 <td class="px-4 py-3">
                     <div class="flex items-center justify-end gap-1">

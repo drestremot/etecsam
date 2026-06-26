@@ -7,6 +7,7 @@ use App\Models\CooperativeDue;
 use App\Models\CooperativeMember;
 use App\Models\CooperativeMonthlyFee;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CooperativeMemberController extends Controller
 {
@@ -32,7 +33,18 @@ class CooperativeMemberController extends Controller
         $data = $request->validate([
             'name'                 => 'required|string|max:255',
             'registration_number'  => 'nullable|string|max:100',
+            'phone'                => 'nullable|string|max:30',
+            'email'                => 'nullable|email|max:255',
+            'sex'                  => 'nullable|in:M,F',
+            'guardian_name'        => 'nullable|string|max:255',
+            'guardian_phone'       => 'nullable|string|max:30',
+            'joined_at'            => 'nullable|date',
+            'photo'                => 'nullable|image|max:4096',
         ]);
+
+        if ($request->hasFile('photo')) {
+            $data['photo'] = $request->file('photo')->store('cooperative-members', 'public');
+        }
 
         CooperativeMember::create($data);
         return redirect()->route('admin.cooperative-members.index')->with('success', 'Cooperado cadastrado com sucesso!');
@@ -48,7 +60,21 @@ class CooperativeMemberController extends Controller
         $data = $request->validate([
             'name'                 => 'required|string|max:255',
             'registration_number'  => 'nullable|string|max:100',
+            'phone'                => 'nullable|string|max:30',
+            'email'                => 'nullable|email|max:255',
+            'sex'                  => 'nullable|in:M,F',
+            'guardian_name'        => 'nullable|string|max:255',
+            'guardian_phone'       => 'nullable|string|max:30',
+            'joined_at'            => 'nullable|date',
+            'photo'                => 'nullable|image|max:4096',
         ]);
+
+        if ($request->hasFile('photo')) {
+            if ($cooperativeMember->photo) {
+                Storage::disk('public')->delete($cooperativeMember->photo);
+            }
+            $data['photo'] = $request->file('photo')->store('cooperative-members', 'public');
+        }
 
         $cooperativeMember->update($data);
         return redirect()->route('admin.cooperative-members.index')->with('success', 'Cooperado atualizado com sucesso!');
@@ -56,6 +82,9 @@ class CooperativeMemberController extends Controller
 
     public function destroy(CooperativeMember $cooperativeMember)
     {
+        if ($cooperativeMember->photo) {
+            Storage::disk('public')->delete($cooperativeMember->photo);
+        }
         $cooperativeMember->delete();
         return redirect()->route('admin.cooperative-members.index')->with('success', 'Cooperado removido!');
     }
@@ -70,6 +99,10 @@ class CooperativeMemberController extends Controller
 
     public function toggleDue(CooperativeMember $cooperativeMember, CooperativeMonthlyFee $cooperativeMonthlyFee)
     {
+        if (!$cooperativeMember->is_active) {
+            return back()->with('error', 'Cooperado inativo - mensalidades não são cobradas.');
+        }
+
         $due = CooperativeDue::firstOrNew([
             'cooperative_member_id' => $cooperativeMember->id,
             'cooperative_monthly_fee_id' => $cooperativeMonthlyFee->id,

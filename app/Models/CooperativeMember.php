@@ -9,10 +9,20 @@ class CooperativeMember extends Model
     protected $fillable = [
         'name',
         'registration_number',
+        'phone',
+        'email',
+        'sex',
+        'guardian_name',
+        'guardian_phone',
+        'photo',
+        'joined_at',
         'is_active',
     ];
 
-    protected $casts = ['is_active' => 'boolean'];
+    protected $casts = [
+        'is_active' => 'boolean',
+        'joined_at' => 'date',
+    ];
 
     public function dues()
     {
