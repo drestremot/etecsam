@@ -4,13 +4,13 @@
 
 {{-- Hero --}}
 @php
-    $heroSlides = $slides->isNotEmpty() ? $slides : collect([
-        new \App\Models\HomeSlide([
-            'title' => 'Etec Sebastiana Augusta de Moraes',
-            'description' => 'Ensino técnico de excelência, integrado à prática do campo. Formando profissionais para o agronegócio e a tecnologia.',
-            'image' => null,
-        ]),
+    // Slide padrao institucional: sempre o primeiro do carrossel, mesmo com slides cadastrados no admin.
+    $defaultSlide = new \App\Models\HomeSlide([
+        'title' => 'Etec Sebastiana Augusta de Moraes',
+        'description' => 'Ensino técnico de excelência, integrado à prática do campo. Formando profissionais para o agronegócio e a tecnologia.',
+        'image' => null,
     ]);
+    $heroSlides = collect([$defaultSlide])->merge($slides);
     $heroSlidesJs = $heroSlides->map(fn($s) => [
         'image' => $s->image ? photo_url($s->image) : 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1600&auto=format&fit=crop',
         'title' => $s->title,
