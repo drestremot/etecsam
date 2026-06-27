@@ -9,6 +9,9 @@
 <p class="text-sm text-gray-500 mb-4">
     Fotos exibidas em rotação no topo da página inicial (Portal Institucional). A ordem abaixo segue o campo "Ordem" de cada slide.
 </p>
+<div class="bg-amber-50 border border-amber-200 text-amber-800 text-sm rounded-lg px-4 py-3 mb-4">
+    A foto institucional padrão ("Etec Sebastiana Augusta de Moraes") sempre aparece em primeiro no carrossel do site, antes destes slides — ela não pode ser removida ou desativada por aqui.
+</div>
 
 <div class="bg-white rounded-xl shadow-sm overflow-hidden">
     <table class="min-w-full divide-y divide-gray-200 text-sm">
