@@ -24,35 +24,22 @@ jobs:
       - name: Instalar sshpass
         run: sudo apt-get update -qq && sudo apt-get install -y sshpass
 
-      - name: Verificar se a branch photos-backup existe
-        id: branch_check
+      - name: Checkout do repositorio
+        uses: actions/checkout@v4
+
+      - name: Garantir branch photos-backup (cria na 1a vez, troca para ela nas demais)
         run: |
           if git ls-remote --exit-code --heads origin photos-backup >/dev/null 2>&1; then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
+            git fetch origin photos-backup:photos-backup
+            git checkout photos-backup
           else
-            echo "exists=false" >> "$GITHUB_OUTPUT"
+            git checkout --orphan photos-backup
+            git rm -rf . >/dev/null 2>&1 || true
+            echo "0" > last_count.txt
+            git add last_count.txt
+            git -c user.name="backup-bot" -c user.email="backup-bot@users.noreply.github.com" commit -m "chore: inicializa branch de backup de fotos"
+            git push origin photos-backup
           fi
-
-      - name: Checkout da branch photos-backup (existente)
-        if: steps.branch_check.outputs.exists == 'true'
-        uses: actions/checkout@v4
-        with:
-          ref: photos-backup
-          fetch-depth: 1
-
-      - name: Checkout inicial e criacao da branch photos-backup (primeira vez)
-        if: steps.branch_check.outputs.exists == 'false'
-        uses: actions/checkout@v4
-
-      - name: Inicializar branch photos-backup (primeira vez)
-        if: steps.branch_check.outputs.exists == 'false'
-        run: |
-          git checkout --orphan photos-backup
-          git rm -rf . >/dev/null 2>&1 || true
-          echo "0" > last_count.txt
-          git add last_count.txt
-          git -c user.name="backup-bot" -c user.email="backup-bot@users.noreply.github.com" commit -m "chore: inicializa branch de backup de fotos"
-          git push origin photos-backup
 
       - name: Baixar estado atual de public/storage da producao
         uses: appleboy/ssh-action@v1.0.3
