@@ -1,0 +1,140 @@
+name: Backup e Auto-Restauracao de Fotos
+
+# Roda de hora em hora, independente de deploy, porque o problema de
+# perda de arquivos em public/storage (Hostinger) acontece em janelas
+# de poucos minutos e nao esta ligado a pushes/deploys. O backup fica
+# guardado na branch "photos-backup" deste repo (GitHub), fora da
+# conta da Hostinger, para nao depender da mesma infraestrutura que
+# esta perdendo os arquivos.
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  backup-or-restore:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Instalar sshpass
+        run: sudo apt-get update -qq && sudo apt-get install -y sshpass
+
+      - name: Verificar se a branch photos-backup existe
+        id: branch_check
+        run: |
+          if git ls-remote --exit-code --heads origin photos-backup >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout da branch photos-backup (existente)
+        if: steps.branch_check.outputs.exists == 'true'
+        uses: actions/checkout@v4
+        with:
+          ref: photos-backup
+          fetch-depth: 1
+
+      - name: Checkout inicial e criacao da branch photos-backup (primeira vez)
+        if: steps.branch_check.outputs.exists == 'false'
+        uses: actions/checkout@v4
+
+      - name: Inicializar branch photos-backup (primeira vez)
+        if: steps.branch_check.outputs.exists == 'false'
+        run: |
+          git checkout --orphan photos-backup
+          git rm -rf . >/dev/null 2>&1 || true
+          echo "0" > last_count.txt
+          git add last_count.txt
+          git -c user.name="backup-bot" -c user.email="backup-bot@users.noreply.github.com" commit -m "chore: inicializa branch de backup de fotos"
+          git push origin photos-backup
+
+      - name: Baixar estado atual de public/storage da producao
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.SSH_PORT || '65002' }}
+          timeout: 60s
+          script: |
+            cd ~/domains/etecsam.com.br/public_html/etecsam
+            mkdir -p public/storage
+            tar -czf /tmp/current_storage.tar.gz -C public storage
+
+      - name: Copiar tar.gz da producao para o runner
+        run: |
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" scp -P "${{ secrets.SSH_PORT || '65002' }}" \
+            -o StrictHostKeyChecking=no \
+            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/tmp/current_storage.tar.gz" \
+            ./current_storage.tar.gz
+
+      - name: Comparar contagem atual com o ultimo backup bom e decidir
+        id: decide
+        run: |
+          CURRENT=$(tar -tzf current_storage.tar.gz | grep -v '/$' | wc -l)
+          LAST=$(cat last_count.txt 2>/dev/null || echo 0)
+          echo "Contagem atual: $CURRENT | Ultimo backup bom: $LAST"
+          echo "current=$CURRENT" >> "$GITHUB_OUTPUT"
+          echo "last=$LAST" >> "$GITHUB_OUTPUT"
+          if [ "$LAST" -gt 0 ] && [ "$CURRENT" -lt "$((LAST / 2))" ]; then
+            echo "action=restore" >> "$GITHUB_OUTPUT"
+          else
+            echo "action=backup" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: "ALERTA: restaurar a partir do ultimo backup bom"
+        if: steps.decide.outputs.action == 'restore'
+        run: |
+          echo "::warning::Queda detectada em public/storage (de ${{ steps.decide.outputs.last }} para ${{ steps.decide.outputs.current }} arquivos). Restaurando automaticamente do ultimo backup bom guardado no GitHub."
+          if [ ! -f storage_backup.tar.gz ]; then
+            echo "::error::Nao ha storage_backup.tar.gz na branch photos-backup para restaurar. Abortando restauracao."
+            exit 1
+          fi
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" scp -P "${{ secrets.SSH_PORT || '65002' }}" \
+            -o StrictHostKeyChecking=no \
+            ./storage_backup.tar.gz \
+            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/tmp/restore_storage.tar.gz"
+
+      - name: Extrair backup restaurado na producao
+        if: steps.decide.outputs.action == 'restore'
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.SSH_PORT || '65002' }}
+          timeout: 60s
+          script: |
+            cd ~/domains/etecsam.com.br/public_html/etecsam
+            rm -rf public/storage
+            mkdir -p public
+            tar -xzf /tmp/restore_storage.tar.gz -C public
+            rm -f /tmp/restore_storage.tar.gz /tmp/current_storage.tar.gz
+            echo "Restauracao concluida: $(find public/storage -type f | wc -l) arquivos"
+
+      - name: Salvar novo backup bom (estado saudavel)
+        if: steps.decide.outputs.action == 'backup'
+        run: |
+          cp current_storage.tar.gz storage_backup.tar.gz
+          echo "${{ steps.decide.outputs.current }}" > last_count.txt
+          git add storage_backup.tar.gz last_count.txt
+          git -c user.name="backup-bot" -c user.email="backup-bot@users.noreply.github.com" \
+            commit -m "chore: backup automatico de fotos (${{ steps.decide.outputs.current }} arquivos)" --allow-empty
+          git push origin photos-backup
+
+      - name: Limpar tmp na producao
+        if: steps.decide.outputs.action == 'backup'
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.SSH_PORT || '65002' }}
+          timeout: 30s
+          script: rm -f /tmp/current_storage.tar.gz
