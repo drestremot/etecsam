@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Unit;
 use App\Models\Event;
+use App\Models\HomeSlide;
 use App\Models\Sector; // <--- Importante: Adicionamos o modelo de Setores
 
 class HomeController extends Controller
@@ -26,6 +27,8 @@ class HomeController extends Controller
                     ->take(3)
                     ->get();
 
-    return view('home', compact('units', 'sectors', 'nextEvents'));
+    $slides = HomeSlide::where('is_active', true)->orderBy('order')->get();
+
+    return view('home', compact('units', 'sectors', 'nextEvents', 'slides'));
 }
 }

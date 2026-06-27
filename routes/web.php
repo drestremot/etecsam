@@ -95,6 +95,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::resource('apm-incomes', \App\Http\Controllers\Admin\ApmIncomeController::class)->except(['show']);
     Route::patch('apm-incomes/{apm_income}/mark-received', [\App\Http\Controllers\Admin\ApmIncomeController::class, 'markReceived'])->name('apm-incomes.mark-received');
 
+    // Carrossel da Página Inicial
+    Route::resource('home-slides', \App\Http\Controllers\Admin\HomeSlideController::class)->except(['show']);
+    Route::patch('home-slides/{home_slide}/toggle', [\App\Http\Controllers\Admin\HomeSlideController::class, 'toggle'])->name('home-slides.toggle');
+
     // Rotas de toggle (ativar/desativar)
     Route::patch('courses/{course}/toggle',         [\App\Http\Controllers\Admin\CourseController::class,     'toggle'])->name('courses.toggle');
     Route::patch('departments/{department}/toggle', [\App\Http\Controllers\Admin\DepartmentController::class, 'toggle'])->name('departments.toggle');
