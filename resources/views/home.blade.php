@@ -3,12 +3,37 @@
 @section('content')
 
 {{-- Hero --}}
-<section class="relative bg-etec-dark min-h-[520px] flex items-center overflow-hidden">
-    <div class="absolute inset-0 z-0">
-        <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1600&auto=format&fit=crop"
-             alt="Paisagem agrícola" class="w-full h-full object-cover opacity-60">
-        <div class="absolute inset-0 bg-gradient-to-r from-etec-dark/80 via-etec-dark/50 to-transparent"></div>
-    </div>
+@php
+    $heroSlides = $slides->isNotEmpty() ? $slides : collect([
+        new \App\Models\HomeSlide([
+            'title' => 'Etec Sebastiana Augusta de Moraes',
+            'description' => 'Ensino técnico de excelência, integrado à prática do campo. Formando profissionais para o agronegócio e a tecnologia.',
+            'image' => null,
+        ]),
+    ]);
+    $heroSlidesJs = $heroSlides->map(fn($s) => [
+        'image' => $s->image ? photo_url($s->image) : 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1600&auto=format&fit=crop',
+        'title' => $s->title,
+        'description' => $s->description,
+    ]);
+@endphp
+<section class="relative bg-etec-dark min-h-[520px] flex items-center overflow-hidden"
+          x-data="{
+              current: 0,
+              slides: {{ \Illuminate\Support\Js::from($heroSlidesJs) }},
+              init() {
+                  if (this.slides.length > 1) {
+                      setInterval(() => { this.current = (this.current + 1) % this.slides.length }, 6000);
+                  }
+              }
+          }">
+
+    <template x-for="(slide, i) in slides" :key="i">
+        <div class="absolute inset-0 z-0 transition-opacity duration-1000" x-show="current === i" x-transition.opacity.duration.1000ms>
+            <img :src="slide.image" :alt="slide.title" class="w-full h-full object-cover opacity-60">
+            <div class="absolute inset-0 bg-gradient-to-r from-etec-dark/80 via-etec-dark/50 to-transparent"></div>
+        </div>
+    </template>
 
     <div class="container mx-auto px-4 relative z-10 py-20">
         <div class="max-w-2xl text-white space-y-6">
@@ -17,14 +42,10 @@
                 <span class="text-xs font-bold tracking-widest uppercase">Portal Institucional</span>
             </div>
 
-            <h1 class="text-4xl md:text-5xl font-bold leading-tight">
-                Etec <span class="text-etec-accent">Sebastiana Augusta</span><br>de Moraes
-            </h1>
+            <h1 class="text-4xl md:text-5xl font-bold leading-tight" x-text="slides[current].title">{{ $heroSlides->first()->title }}</h1>
 
-            <p class="text-lg text-gray-200 leading-relaxed border-l-4 border-etec-accent pl-4">
-                Ensino técnico de excelência, integrado à prática do campo.<br>
-                Formando profissionais para o agronegócio e a tecnologia.
-            </p>
+            <p class="text-lg text-gray-200 leading-relaxed border-l-4 border-etec-accent pl-4"
+               x-show="slides[current].description" x-text="slides[current].description">{{ $heroSlides->first()->description }}</p>
 
             <div class="flex flex-wrap gap-4 pt-2">
                 <a href="{{ route('home') }}#unidades"
@@ -39,6 +60,13 @@
                 </a>
             </div>
         </div>
+    </div>
+
+    <div class="absolute bottom-6 left-0 right-0 flex justify-center gap-2 z-10" x-show="slides.length > 1">
+        <template x-for="(slide, i) in slides" :key="i">
+            <button @click="current = i" :class="current === i ? 'bg-etec-accent w-8' : 'bg-white/40 w-2.5'"
+                    class="h-2.5 rounded-full transition-all duration-300" :aria-label="'Slide ' + (i + 1)"></button>
+        </template>
     </div>
 </section>
 
