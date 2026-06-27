@@ -24,6 +24,9 @@ Route::get('/cooperativa',         [SiteController::class, 'cooperative'])->name
 Route::get('/cooperativa/financeiro', [SiteController::class, 'cooperativeFinance'])->name('cooperative.finance');
 Route::get('/apm',                 [SiteController::class, 'apm'])->name('apm');
 Route::get('/apm/financeiro',      [SiteController::class, 'apmFinance'])->name('apm.finance');
+Route::get('/auxiliares-docentes', [SiteController::class, 'auxiliaryTeachers'])->name('auxiliary-teachers');
+Route::get('/colaboradores',       [SiteController::class, 'collaborators'])->name('collaborators');
+Route::get('/segurancas',          [SiteController::class, 'securityStaff'])->name('security-staff');
 Route::get('/unidade/{id}',        [SiteController::class, 'unit'])->name('units.show');
 Route::get('/unidade-didatica/{slug}', [SiteController::class, 'sector'])->name('sectors.show');
 

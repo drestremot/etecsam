@@ -142,8 +142,65 @@
                 <a href="{{ route('library') }}" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Biblioteca</a>
                 <a href="{{ route('home') }}#unidades" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Cursos</a>
                 <a href="{{ route('home') }}#fazenda" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Escola Fazenda</a>
-                <a href="{{ route('cooperative') }}" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Cooperativa Escola</a>
-                <a href="{{ route('apm') }}" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">APM</a>
+                {{-- Dropdown Apoio Institucional --}}
+                <div class="relative group">
+                    <button class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition flex items-center gap-1 select-none">
+                        Apoio Institucional
+                        <svg class="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div class="absolute top-full left-0 pt-1 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-150 z-50">
+                        <div class="bg-white dark:bg-etec-dark rounded-xl shadow-lg border border-gray-100 dark:border-white/10 py-1.5 min-w-[220px] overflow-hidden">
+
+                            <a href="{{ route('cooperative') }}"
+                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 transition">
+                                <div class="w-7 h-7 bg-etec-light dark:bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-3.5 h-3.5 text-etec-main dark:text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    </svg>
+                                </div>
+                                <strong class="font-semibold text-gray-800 dark:text-white text-xs">Cooperativa Escola</strong>
+                            </a>
+                            <a href="{{ route('apm') }}"
+                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 transition">
+                                <div class="w-7 h-7 bg-etec-light dark:bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-3.5 h-3.5 text-etec-main dark:text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                                    </svg>
+                                </div>
+                                <strong class="font-semibold text-gray-800 dark:text-white text-xs">APM</strong>
+                            </a>
+                            <a href="{{ route('auxiliary-teachers') }}"
+                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 transition">
+                                <div class="w-7 h-7 bg-etec-light dark:bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-3.5 h-3.5 text-etec-main dark:text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                                    </svg>
+                                </div>
+                                <strong class="font-semibold text-gray-800 dark:text-white text-xs">Auxiliares Docentes</strong>
+                            </a>
+                            <a href="{{ route('collaborators') }}"
+                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 transition">
+                                <div class="w-7 h-7 bg-etec-light dark:bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-3.5 h-3.5 text-etec-main dark:text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                    </svg>
+                                </div>
+                                <strong class="font-semibold text-gray-800 dark:text-white text-xs">Colaboradores</strong>
+                            </a>
+                            <a href="{{ route('security-staff') }}"
+                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 transition">
+                                <div class="w-7 h-7 bg-etec-light dark:bg-white/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-3.5 h-3.5 text-etec-main dark:text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                                    </svg>
+                                </div>
+                                <strong class="font-semibold text-gray-800 dark:text-white text-xs">Seguranças (Vigilantes)</strong>
+                            </a>
+                        </div>
+                    </div>
+                </div>
                 {{-- Dropdown Gestão --}}
                 <div class="relative group">
                     <button class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition flex items-center gap-1 select-none">
@@ -269,8 +326,31 @@
                 <a href="{{ route('library') }}"       @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Biblioteca</a>
                 <a href="{{ route('home') }}#unidades" @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Cursos</a>
                 <a href="{{ route('home') }}#fazenda"  @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Escola Fazenda</a>
-                <a href="{{ route('cooperative') }}"   @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Cooperativa Escola</a>
-                <a href="{{ route('apm') }}"           @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">APM</a>
+                {{-- Apoio Institucional (expandido no mobile) --}}
+                <div class="border-t border-gray-100 dark:border-white/10 pt-1 mt-1">
+                    <p class="px-4 py-1.5 text-xs font-bold text-gray-400 uppercase tracking-widest">Apoio Institucional</p>
+                    <a href="{{ route('cooperative') }}"       @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition flex items-center gap-2">
+                        <svg class="w-4 h-4 text-etec-medium dark:text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        Cooperativa Escola
+                    </a>
+                    <a href="{{ route('apm') }}"               @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition flex items-center gap-2">
+                        <svg class="w-4 h-4 text-etec-medium dark:text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                        APM
+                    </a>
+                    <a href="{{ route('auxiliary-teachers') }}" @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition flex items-center gap-2">
+                        <svg class="w-4 h-4 text-etec-medium dark:text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
+                        Auxiliares Docentes
+                    </a>
+                    <a href="{{ route('collaborators') }}"     @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition flex items-center gap-2">
+                        <svg class="w-4 h-4 text-etec-medium dark:text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        Colaboradores
+                    </a>
+                    <a href="{{ route('security-staff') }}"    @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition flex items-center gap-2">
+                        <svg class="w-4 h-4 text-etec-medium dark:text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                        Seguranças (Vigilantes)
+                    </a>
+                </div>
+
                 {{-- Gestão (expandido no mobile) --}}
                 <div class="border-t border-gray-100 dark:border-white/10 pt-1 mt-1">
                     <p class="px-4 py-1.5 text-xs font-bold text-gray-400 uppercase tracking-widest">Gestão</p>

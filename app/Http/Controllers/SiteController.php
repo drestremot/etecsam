@@ -299,4 +299,50 @@ class SiteController extends Controller
     {
         return view('pages.apm-finance', \App\Support\ApmFinanceSummary::compute());
     }
+
+    public function auxiliaryTeachers()
+    {
+        $staff = \App\Models\Teacher::where('role', 'like', '%Auxiliar Docente%')->orderBy('name')->get();
+
+        return view('pages.staff-group', [
+            'pageLabel'    => 'Apoio Institucional',
+            'pageTitle'    => 'Auxiliares Docentes',
+            'pageSubtitle' => 'Profissionais que apoiam o trabalho pedagógico em sala de aula',
+            'iconPath'     => 'M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z',
+            'staff'        => $staff,
+            'emptyMessage' => 'Nenhum auxiliar docente cadastrado ainda.',
+        ]);
+    }
+
+    public function collaborators()
+    {
+        $staff = \App\Models\Teacher::where('role', 'like', '%Colaborador%')->orderBy('name')->get();
+
+        return view('pages.staff-group', [
+            'pageLabel'    => 'Apoio Institucional',
+            'pageTitle'    => 'Colaboradores',
+            'pageSubtitle' => 'Equipe de apoio às atividades da unidade escolar',
+            'iconPath'     => 'M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
+            'staff'        => $staff,
+            'emptyMessage' => 'Nenhum colaborador cadastrado ainda.',
+        ]);
+    }
+
+    public function securityStaff()
+    {
+        $staff = \App\Models\Teacher::where(function ($q) {
+                $q->where('role', 'like', '%Vigilante%')
+                  ->orWhere('role', 'like', '%Segurança%');
+            })
+            ->orderBy('name')->get();
+
+        return view('pages.staff-group', [
+            'pageLabel'    => 'Apoio Institucional',
+            'pageTitle'    => 'Seguranças (Vigilantes)',
+            'pageSubtitle' => 'Equipe responsável pela segurança da unidade escolar',
+            'iconPath'     => 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z',
+            'staff'        => $staff,
+            'emptyMessage' => 'Nenhum vigilante cadastrado ainda.',
+        ]);
+    }
 }
