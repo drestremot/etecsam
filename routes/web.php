@@ -22,6 +22,8 @@ Route::get('/diretoria-servicos',  [SiteController::class, 'administrative'])->n
 Route::get('/biblioteca',          [SiteController::class, 'library'])->name('library');
 Route::get('/cooperativa',         [SiteController::class, 'cooperative'])->name('cooperative');
 Route::get('/cooperativa/financeiro', [SiteController::class, 'cooperativeFinance'])->name('cooperative.finance');
+Route::get('/apm',                 [SiteController::class, 'apm'])->name('apm');
+Route::get('/apm/financeiro',      [SiteController::class, 'apmFinance'])->name('apm.finance');
 Route::get('/unidade/{id}',        [SiteController::class, 'unit'])->name('units.show');
 Route::get('/unidade-didatica/{slug}', [SiteController::class, 'sector'])->name('sectors.show');
 
@@ -77,6 +79,18 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::get('cooperative-housing-tenants/{cooperative_housing_tenant}/dues', [\App\Http\Controllers\Admin\CooperativeHousingTenantController::class, 'dues'])->name('cooperative-housing-tenants.dues');
     Route::patch('cooperative-housing-tenants/{cooperative_housing_tenant}/dues/{cooperative_housing_fee}/toggle', [\App\Http\Controllers\Admin\CooperativeHousingTenantController::class, 'toggleDue'])->name('cooperative-housing-tenants.dues.toggle');
     Route::resource('cooperative-housing-fees', \App\Http\Controllers\Admin\CooperativeHousingFeeController::class)->except(['show']);
+
+    // APM (Associação de Pais e Mestres)
+    Route::resource('apm-managers', \App\Http\Controllers\Admin\ApmManagerController::class)->except(['show']);
+    Route::patch('apm-managers/{apm_manager}/toggle', [\App\Http\Controllers\Admin\ApmManagerController::class, 'toggle'])->name('apm-managers.toggle');
+    Route::resource('apm-reports', \App\Http\Controllers\Admin\ApmReportController::class)->except(['show']);
+
+    // Financeiro da APM
+    Route::get('apm-dashboard', [\App\Http\Controllers\Admin\ApmDashboardController::class, 'index'])->name('apm-dashboard');
+    Route::resource('apm-expenses', \App\Http\Controllers\Admin\ApmExpenseController::class)->except(['show']);
+    Route::patch('apm-expenses/{apm_expense}/mark-paid', [\App\Http\Controllers\Admin\ApmExpenseController::class, 'markPaid'])->name('apm-expenses.mark-paid');
+    Route::resource('apm-incomes', \App\Http\Controllers\Admin\ApmIncomeController::class)->except(['show']);
+    Route::patch('apm-incomes/{apm_income}/mark-received', [\App\Http\Controllers\Admin\ApmIncomeController::class, 'markReceived'])->name('apm-incomes.mark-received');
 
     // Rotas de toggle (ativar/desativar)
     Route::patch('courses/{course}/toggle',         [\App\Http\Controllers\Admin\CourseController::class,     'toggle'])->name('courses.toggle');
