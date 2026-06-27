@@ -143,6 +143,7 @@
                 <a href="{{ route('home') }}#unidades" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Cursos</a>
                 <a href="{{ route('home') }}#fazenda" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Escola Fazenda</a>
                 <a href="{{ route('cooperative') }}" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Cooperativa Escola</a>
+                <a href="{{ route('apm') }}" class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">APM</a>
                 {{-- Dropdown Gestão --}}
                 <div class="relative group">
                     <button class="px-4 py-2 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition flex items-center gap-1 select-none">
@@ -269,6 +270,7 @@
                 <a href="{{ route('home') }}#unidades" @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Cursos</a>
                 <a href="{{ route('home') }}#fazenda"  @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Escola Fazenda</a>
                 <a href="{{ route('cooperative') }}"   @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">Cooperativa Escola</a>
+                <a href="{{ route('apm') }}"           @click="open=false" class="px-4 py-3 text-gray-600 hover:text-etec-main hover:bg-gray-50 dark:text-gray-300 dark:hover:text-etec-accent dark:hover:bg-white/5 rounded-lg transition">APM</a>
                 {{-- Gestão (expandido no mobile) --}}
                 <div class="border-t border-gray-100 dark:border-white/10 pt-1 mt-1">
                     <p class="px-4 py-1.5 text-xs font-bold text-gray-400 uppercase tracking-widest">Gestão</p>

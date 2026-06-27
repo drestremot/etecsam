@@ -281,4 +281,22 @@ class SiteController extends Controller
     {
         return view('pages.cooperative-finance', \App\Support\CooperativeFinanceSummary::compute());
     }
+
+    public function apm()
+    {
+        $director = \App\Models\Teacher::where('role', 'like', '%APM%')->first();
+
+        $managers = \App\Models\ApmManager::where('is_active', true)->orderBy('name')->get();
+
+        $statutes = \App\Models\ApmReport::where('category', 'Estatuto')->orderByDesc('published_at')->get();
+        $minutes = \App\Models\ApmReport::where('category', 'Ata de Reunião')->orderByDesc('published_at')->get();
+        $reports = \App\Models\ApmReport::where('category', 'Prestação de Contas')->orderByDesc('published_at')->get();
+
+        return view('pages.apm', compact('director', 'managers', 'statutes', 'minutes', 'reports'));
+    }
+
+    public function apmFinance()
+    {
+        return view('pages.apm-finance', \App\Support\ApmFinanceSummary::compute());
+    }
 }
