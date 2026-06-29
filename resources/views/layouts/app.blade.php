@@ -401,6 +401,20 @@
                     <p class="text-sm text-gray-400 leading-relaxed">
                         Referência em ensino técnico agrícola, formando profissionais competentes para o agronegócio e a tecnologia desde 1994.
                     </p>
+                    <div class="flex items-center gap-3 mt-4">
+                        <a href="https://wa.me/551837026857" target="_blank" rel="noopener" title="WhatsApp"
+                           class="w-9 h-9 rounded-full bg-white/10 hover:bg-etec-accent hover:text-etec-dark flex items-center justify-center transition">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-1.746-.873-2.892-1.557-4.043-3.53-.305-.524.305-.486.872-1.617.097-.198.05-.371-.05-.52-.099-.149-.67-1.612-.92-2.207-.241-.579-.487-.5-.67-.51-.173-.01-.371-.012-.57-.012-.198 0-.52.074-.793.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.04 3.115 4.946 4.247 2.906 1.131 2.906.755 3.428.707.521-.05 1.758-.718 2.006-1.413.248-.694.248-1.288.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12.004 2C6.486 2 2 6.486 2 12.004c0 1.937.557 3.78 1.611 5.39L2 22l4.751-1.572A9.953 9.953 0 0012.004 22C17.522 22 22 17.522 22 12.004 22 6.486 17.522 2 12.004 2zm0 18.012a8 8 0 01-4.273-1.238l-.306-.187-2.823.934.95-2.755-.2-.32A8.002 8.002 0 1112.004 20.012z"/></svg>
+                        </a>
+                        <a href="https://www.instagram.com/etecsam" target="_blank" rel="noopener" title="Instagram"
+                           class="w-9 h-9 rounded-full bg-white/10 hover:bg-etec-accent hover:text-etec-dark flex items-center justify-center transition">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.332.014 7.052.072 2.695.272.273 2.69.073 7.052.014 8.332 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.332 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.668-.072-4.948-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                        </a>
+                        <a href="https://www.facebook.com/EtecSAM" target="_blank" rel="noopener" title="Facebook"
+                           class="w-9 h-9 rounded-full bg-white/10 hover:bg-etec-accent hover:text-etec-dark flex items-center justify-center transition">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M22 12.07C22 6.51 17.52 2 12 2S2 6.51 2 12.07c0 5.02 3.66 9.18 8.44 9.93v-7.03H7.9v-2.9h2.54V9.85c0-2.51 1.49-3.9 3.78-3.9 1.1 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.78-1.63 1.57v1.89h2.78l-.44 2.9h-2.34V22c4.78-.75 8.44-4.91 8.44-9.93z"/></svg>
+                        </a>
+                    </div>
                 </div>
                 <div>
                     <h3 class="text-sm font-bold uppercase tracking-widest text-gray-300 mb-4">Links Rápidos</h3>
