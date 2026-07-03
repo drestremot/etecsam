@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('content')
 
@@ -42,7 +42,7 @@
 
                 <div class="bg-etec-main border border-etec-dark/30 dark:border-white/10 rounded-xl p-5">
                     <h3 class="font-bold text-white mb-2">Raízes Fortes — Integração ao CPS</h3>
-                    <p class="text-sm text-blue-100">
+                    <p class="text-sm text-green-100">
                         Em 1994, a escola foi oficialmente integrada ao Centro Paula Souza (CPS), alinhando
                         a vocação agrícola regional com a excelência educacional de uma das maiores instituições
                         de ensino técnico da América Latina.
@@ -51,7 +51,7 @@
 
                 <div class="bg-etec-main border border-etec-dark/30 dark:border-white/10 rounded-xl p-5">
                     <h3 class="font-bold text-white mb-2">O Diferencial "Escola-Fazenda"</h3>
-                    <p class="text-sm text-blue-100">
+                    <p class="text-sm text-green-100">
                         Nossos alunos não apenas estudam o agronegócio — eles o vivenciam. Do manejo do solo
                         à colheita, passando pela pecuária e gestão, o estudante está imerso na rotina produtiva.
                         Somos referência em <strong class="text-white">Pedagogia da Alternância</strong> no estado de São Paulo.
@@ -128,7 +128,7 @@
                         <h3 class="text-xl font-bold text-white">{{ $direcaoGeral->name }}</h3>
                         <span class="text-sm text-etec-light font-medium block mt-1 mb-3">{{ $direcaoGeral->role }}</span>
                         @if($direcaoGeral->bio)
-                            <p class="text-blue-100 text-sm italic leading-relaxed">"{{ $direcaoGeral->bio }}"</p>
+                            <p class="text-green-100 text-sm italic leading-relaxed">"{{ $direcaoGeral->bio }}"</p>
                         @endif
                         <div class="mt-5 pt-5 border-t border-white/10">
                             <a href="mailto:{{ $direcaoGeral->email }}"
@@ -212,11 +212,11 @@
                                 </div>
                             </div>
                             <template x-if="dept.bio">
-                                <p class="text-sm text-blue-100 mb-4 line-clamp-2 leading-relaxed" x-text="dept.bio"></p>
+                                <p class="text-sm text-green-100 mb-4 line-clamp-2 leading-relaxed" x-text="dept.bio"></p>
                             </template>
                             <template x-if="dept.email">
                                 <a :href="'mailto:' + dept.email"
-                                   class="inline-flex items-center gap-1.5 text-xs text-blue-200/70 hover:text-etec-accent transition font-medium">
+                                   class="inline-flex items-center gap-1.5 text-xs text-green-200/70 hover:text-etec-accent transition font-medium">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                                     <span x-text="dept.email"></span>
                                 </a>

@@ -17,13 +17,13 @@ export default {
                 sans: ['"Segoe UI"', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Helvetica Neue"', 'Arial', 'sans-serif'],
             },
             colors: {
-                'etec-dark':   '#0c1f3f',
-                'etec-main':   '#1a3a6e',
-                'etec-medium': '#2563eb',
-                'etec-accent': '#f5a623',
-                'etec-light':  '#dbeafe',
-                'etec-bg':     '#cfe2fb',
-                'etec-night':  '#081326',
+                'etec-dark':   '#1a4d2e',  // verde floresta escuro
+                'etec-main':   '#2d6a4f',  // verde floresta medio
+                'etec-medium': '#3a8a60',  // verde medio (CTAs)
+                'etec-accent': '#f5a623',  // amarelo âmbar (inalterado)
+                'etec-light':  '#c8e6c9',  // verde claro (ícones/tags)
+                'etec-bg':     '#f5f0e8',  // creme/bege (fundo claro)
+                'etec-night':  '#0d2818',  // verde muito escuro (dark mode)
             },
         },
     },

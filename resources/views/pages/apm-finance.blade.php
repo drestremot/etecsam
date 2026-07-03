@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('content')
 
@@ -42,7 +42,7 @@
             <div class="bg-etec-main rounded-2xl shadow-sm border border-etec-dark/30 dark:border-white/10 p-6">
                 <p class="text-xs font-bold text-etec-light uppercase tracking-widest mb-2">Saldo</p>
                 <p class="text-2xl font-bold {{ $balance >= 0 ? 'text-etec-accent' : 'text-red-300' }}">R$ {{ number_format($balance, 2, ',', '.') }}</p>
-                <p class="text-xs text-blue-100 mt-3">Entradas − saídas pagas este mês</p>
+                <p class="text-xs text-green-100 mt-3">Entradas − saídas pagas este mês</p>
             </div>
         </div>
     </div>
@@ -53,11 +53,11 @@
         <div class="grid grid-cols-2 gap-5">
             <div class="bg-etec-main rounded-2xl shadow-sm border border-etec-dark/30 dark:border-white/10 p-5 text-center">
                 <p class="text-2xl font-bold text-white">{{ $overdueExpenses->count() }}</p>
-                <p class="text-xs text-blue-100 mt-1">Saídas atrasadas</p>
+                <p class="text-xs text-green-100 mt-1">Saídas atrasadas</p>
             </div>
             <div class="bg-etec-main rounded-2xl shadow-sm border border-etec-dark/30 dark:border-white/10 p-5 text-center">
                 <p class="text-2xl font-bold text-white">{{ $overdueIncomes->count() }}</p>
-                <p class="text-xs text-blue-100 mt-1">Entradas atrasadas</p>
+                <p class="text-xs text-green-100 mt-1">Entradas atrasadas</p>
             </div>
         </div>
     </div>

@@ -1,4 +1,4 @@
-@if($documents->isNotEmpty())
+﻿@if($documents->isNotEmpty())
 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
     @foreach($documents as $document)
     <div class="bg-etec-main p-4 rounded-xl shadow-sm border border-etec-dark/30 dark:border-white/10 flex items-start gap-4 hover:border-etec-accent transition group">
@@ -7,7 +7,7 @@
         </div>
         <div class="flex-grow min-w-0">
             <h4 class="font-bold text-white text-sm mb-1 leading-tight">{{ $document->title }}</h4>
-            <div class="flex items-center gap-2 text-xs text-blue-200/70 mb-2">
+            <div class="flex items-center gap-2 text-xs text-green-200/70 mb-2">
                 @if($document->period)
                 <span>{{ $document->period }}</span>
                 @endif

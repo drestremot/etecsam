@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('content')
 
@@ -69,7 +69,7 @@
             <div class="divide-y divide-white/10">
                 @if($hasTecnico)
                     @if($hasDesc)
-                    <p class="px-4 pt-3 text-xs font-bold text-blue-200/70 uppercase tracking-wide">Técnico</p>
+                    <p class="px-4 pt-3 text-xs font-bold text-green-200/70 uppercase tracking-wide">Técnico</p>
                     @endif
                     @foreach($allCoordinators->where('pivot.role', 'tecnico') as $coord)
                     <div class="px-5 py-4 flex items-center gap-4">
@@ -86,7 +86,7 @@
                         <div class="min-w-0">
                             <p class="font-bold text-white text-sm leading-snug">{{ $coord->name }}</p>
                             @if($coord->email)
-                            <a href="mailto:{{ $coord->email }}" class="text-xs text-blue-100 hover:text-etec-accent hover:underline mt-0.5 block">{{ $coord->email }}</a>
+                            <a href="mailto:{{ $coord->email }}" class="text-xs text-green-100 hover:text-etec-accent hover:underline mt-0.5 block">{{ $coord->email }}</a>
                             @endif
                         </div>
                     </div>
@@ -94,7 +94,7 @@
                 @endif
 
                 @if($hasDesc)
-                    <p class="px-4 pt-3 text-xs font-bold text-blue-200/70 uppercase tracking-wide">Descentralizado</p>
+                    <p class="px-4 pt-3 text-xs font-bold text-green-200/70 uppercase tracking-wide">Descentralizado</p>
                     @foreach($allCoordinators->where('pivot.role', 'descentralizado') as $coord)
                     <div class="px-5 py-4 flex items-center gap-4">
                         <div class="relative hover:z-20 w-[55px] h-[55px] rounded-full bg-white/10 flex-shrink-0 border-2 border-etec-light shadow-sm">
@@ -110,7 +110,7 @@
                         <div class="min-w-0">
                             <p class="font-bold text-white text-sm leading-snug">{{ $coord->name }}</p>
                             @if($coord->email)
-                            <a href="mailto:{{ $coord->email }}" class="text-xs text-blue-100 hover:text-etec-accent hover:underline mt-0.5 block">{{ $coord->email }}</a>
+                            <a href="mailto:{{ $coord->email }}" class="text-xs text-green-100 hover:text-etec-accent hover:underline mt-0.5 block">{{ $coord->email }}</a>
                             @endif
                         </div>
                     </div>
@@ -124,7 +124,7 @@
                 <svg class="w-4 h-4 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                 <h3 class="font-bold text-white text-sm">Coordenação do Curso</h3>
             </div>
-            <div class="p-6 text-center text-sm text-blue-200/70">A definir</div>
+            <div class="p-6 text-center text-sm text-green-200/70">A definir</div>
         </div>
         @endif
 
@@ -165,20 +165,20 @@
                                 <img src="{{ photo_url($subject->teacher->photo) }}"
                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
                                      class="w-full h-full object-cover rounded-full scale-[1.15] hover:scale-[1.4375] transition duration-700 ease-in-out">
-                                <div style="display:none" class="w-full h-full flex items-center justify-center bg-white/10 text-blue-100 text-xl font-bold">{{ substr($subject->teacher->name,0,1) }}</div>
+                                <div style="display:none" class="w-full h-full flex items-center justify-center bg-white/10 text-green-100 text-xl font-bold">{{ substr($subject->teacher->name,0,1) }}</div>
                             @else
-                                <div class="w-full h-full flex items-center justify-center bg-white/10 text-blue-100">
+                                <div class="w-full h-full flex items-center justify-center bg-white/10 text-green-100">
                                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                                 </div>
                             @endif
                         </div>
                         <div class="min-w-0">
-                            <span class="text-xs text-blue-200/70 uppercase font-bold block mb-0.5">Docente</span>
+                            <span class="text-xs text-green-200/70 uppercase font-bold block mb-0.5">Docente</span>
                             <div class="font-bold text-white text-sm leading-tight">
                                 {{ $subject->teacher->name ?? 'A atribuir' }}
                             </div>
                             @if($subject->teacher && $subject->teacher->specialty)
-                            <p class="text-xs text-blue-100 mt-1 line-clamp-2">
+                            <p class="text-xs text-green-100 mt-1 line-clamp-2">
                                 {{ $subject->teacher->specialty }}
                             </p>
                             @endif
@@ -190,7 +190,7 @@
                         <h4 class="text-lg font-bold text-white mb-1.5 leading-snug">
                             {{ $subject->name }}
                         </h4>
-                        <div class="flex flex-wrap gap-3 text-xs text-blue-100 mb-4">
+                        <div class="flex flex-wrap gap-3 text-xs text-green-100 mb-4">
                             <span class="inline-flex items-center gap-1.5 bg-white/10 px-2.5 py-1 rounded-lg">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                 {{ $subject->workload }} horas
@@ -208,7 +208,7 @@
                             Ver PTD (Plano de Trabalho)
                         </a>
                         @else
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/10 text-blue-200/70 text-xs font-semibold rounded-lg border border-white/10 cursor-not-allowed">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/10 text-green-200/70 text-xs font-semibold rounded-lg border border-white/10 cursor-not-allowed">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                             PTD em análise
                         </span>

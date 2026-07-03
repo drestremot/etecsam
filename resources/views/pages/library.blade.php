@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('content')
 
@@ -33,7 +33,7 @@
                 <span class="text-xs text-etec-light font-bold uppercase tracking-wider">Bibliotecária</span>
 
                 <div class="mt-5 text-left space-y-3 text-sm bg-white/10 p-4 rounded-xl">
-                    <div class="flex items-center gap-2.5 text-blue-100">
+                    <div class="flex items-center gap-2.5 text-green-100">
                         <svg class="w-4 h-4 text-etec-accent flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 7V5z"/></svg>
                         <span>(18) 3722-XXXX</span>
                     </div>
@@ -81,14 +81,14 @@
             <div class="grid md:grid-cols-2 gap-4">
                 <a href="https://www.periodicos.capes.gov.br/" target="_blank"
                    class="flex items-center gap-4 p-4 bg-white/50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl hover:shadow-md hover:border-blue-400 transition group">
-                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <div class="w-12 h-12 bg-green-100 text-green-700 rounded-xl flex items-center justify-center flex-shrink-0">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
                     </div>
                     <div>
-                        <strong class="block text-etec-dark dark:text-white group-hover:text-blue-700 dark:group-hover:text-blue-400 transition">Portal CAPES</strong>
+                        <strong class="block text-etec-dark dark:text-white group-hover:text-green-700 dark:group-hover:text-green-400 transition">Portal CAPES</strong>
                         <span class="text-xs text-gray-500 dark:text-gray-400">Periódicos científicos</span>
                     </div>
-                    <svg class="w-4 h-4 text-gray-300 dark:text-gray-500 ml-auto group-hover:text-blue-400 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    <svg class="w-4 h-4 text-gray-300 dark:text-gray-500 ml-auto group-hover:text-green-400 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                 </a>
 
                 <a href="https://scielo.org/" target="_blank"
@@ -105,14 +105,14 @@
 
                 <a href="https://scholar.google.com.br/" target="_blank"
                    class="flex items-center gap-4 p-4 bg-white/50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl hover:shadow-md hover:border-blue-300 transition group">
-                    <div class="w-12 h-12 bg-blue-50 text-blue-500 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-lg">
+                    <div class="w-12 h-12 bg-green-50 text-green-600 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-lg">
                         G
                     </div>
                     <div>
-                        <strong class="block text-etec-dark dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition">Google Acadêmico</strong>
+                        <strong class="block text-etec-dark dark:text-white group-hover:text-green-600 dark:group-hover:text-green-400 transition">Google Acadêmico</strong>
                         <span class="text-xs text-gray-500 dark:text-gray-400">Pesquisa ampla e gratuita</span>
                     </div>
-                    <svg class="w-4 h-4 text-gray-300 dark:text-gray-500 ml-auto group-hover:text-blue-400 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    <svg class="w-4 h-4 text-gray-300 dark:text-gray-500 ml-auto group-hover:text-green-400 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                 </a>
 
                 <a href="http://www.dominiopublico.gov.br/" target="_blank"
@@ -153,7 +153,7 @@
                         </div>
                         <div class="flex-grow min-w-0">
                             <h4 class="font-bold text-white text-sm leading-tight">{{ $doc->title }}</h4>
-                            <span class="text-xs text-blue-200/70">Atualizado em {{ \Carbon\Carbon::parse($doc->published_at)->format('d/m/Y') }}</span>
+                            <span class="text-xs text-green-200/70">Atualizado em {{ \Carbon\Carbon::parse($doc->published_at)->format('d/m/Y') }}</span>
                         </div>
                         <a href="{{ $doc->file_path }}"
                            class="flex-shrink-0 inline-flex items-center gap-1.5 bg-white/10 text-etec-accent px-4 py-2 rounded-lg text-xs font-bold hover:bg-etec-accent hover:text-etec-dark transition">

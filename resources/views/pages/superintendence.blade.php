@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('content')
 
@@ -52,13 +52,13 @@
                 <p class="text-etec-light font-semibold mb-4">{{ $director->role }}</p>
 
                 @if($director->specialty)
-                <p class="text-blue-100 leading-relaxed mb-6 max-w-xl">{{ $director->specialty }}</p>
+                <p class="text-green-100 leading-relaxed mb-6 max-w-xl">{{ $director->specialty }}</p>
                 @endif
 
                 <div class="flex flex-wrap gap-3">
                     @if($director->email)
                     <a href="mailto:{{ $director->email }}"
-                       class="inline-flex items-center gap-2 px-5 py-2.5 border border-white/20 text-blue-100 rounded-lg font-semibold text-sm hover:border-etec-accent hover:text-white transition">
+                       class="inline-flex items-center gap-2 px-5 py-2.5 border border-white/20 text-green-100 rounded-lg font-semibold text-sm hover:border-etec-accent hover:text-white transition">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                         </svg>
@@ -76,7 +76,7 @@
                     @endif
                     @if($director->lattes_url)
                     <a href="{{ $director->lattes_url }}" target="_blank"
-                       class="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 text-blue-100 rounded-lg font-semibold text-sm hover:bg-white/20 hover:text-white transition">
+                       class="inline-flex items-center gap-2 px-5 py-2.5 bg-white/10 text-green-100 rounded-lg font-semibold text-sm hover:bg-white/20 hover:text-white transition">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
                         </svg>
@@ -112,12 +112,12 @@
             <h3 class="text-lg font-bold text-white">{{ $deputy->name }}</h3>
             <p class="text-etec-light font-semibold text-sm mb-2">{{ $deputy->role }}</p>
             @if($deputy->specialty)
-            <p class="text-sm text-blue-100 mb-3 max-w-xl">{{ $deputy->specialty }}</p>
+            <p class="text-sm text-green-100 mb-3 max-w-xl">{{ $deputy->specialty }}</p>
             @endif
             <div class="flex flex-wrap gap-3 justify-center sm:justify-start">
                 @if($deputy->email)
                 <a href="mailto:{{ $deputy->email }}"
-                   class="inline-flex items-center gap-1.5 px-3.5 py-1.5 border border-white/20 text-blue-100 rounded-lg text-xs font-semibold hover:border-etec-accent hover:text-white transition">
+                   class="inline-flex items-center gap-1.5 px-3.5 py-1.5 border border-white/20 text-green-100 rounded-lg text-xs font-semibold hover:border-etec-accent hover:text-white transition">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                     {{ $deputy->email }}
                 </a>
@@ -144,7 +144,7 @@
             </div>
             <div>
                 <h3 class="font-bold text-white mb-1">Missão</h3>
-                <p class="text-sm text-blue-100 leading-relaxed">Garantir a excelência no ensino técnico e a formação integral dos estudantes.</p>
+                <p class="text-sm text-green-100 leading-relaxed">Garantir a excelência no ensino técnico e a formação integral dos estudantes.</p>
             </div>
         </div>
         <div class="bg-etec-main rounded-xl border border-etec-dark/30 dark:border-white/10 shadow-sm p-6 flex gap-4">
@@ -156,7 +156,7 @@
             </div>
             <div>
                 <h3 class="font-bold text-white mb-1">Visão</h3>
-                <p class="text-sm text-blue-100 leading-relaxed">Ser referência regional em educação técnica agrícola e profissional de qualidade.</p>
+                <p class="text-sm text-green-100 leading-relaxed">Ser referência regional em educação técnica agrícola e profissional de qualidade.</p>
             </div>
         </div>
         <div class="bg-etec-main rounded-xl border border-etec-dark/30 dark:border-white/10 shadow-sm p-6 flex gap-4">
@@ -167,7 +167,7 @@
             </div>
             <div>
                 <h3 class="font-bold text-white mb-1">Valores</h3>
-                <p class="text-sm text-blue-100 leading-relaxed">Ética, respeito, inovação e compromisso com a comunidade escolar.</p>
+                <p class="text-sm text-green-100 leading-relaxed">Ética, respeito, inovação e compromisso com a comunidade escolar.</p>
             </div>
         </div>
     </div>
@@ -188,7 +188,7 @@
                     <h4 class="font-bold text-white leading-tight">{{ $member->name }}</h4>
                     <span class="text-xs font-bold text-etec-light uppercase tracking-wide block mb-1.5">{{ $member->role }}</span>
                     @if($member->email)
-                    <a href="mailto:{{ $member->email }}" class="inline-flex items-center gap-1 text-xs text-blue-200/70 hover:text-etec-accent hover:underline">
+                    <a href="mailto:{{ $member->email }}" class="inline-flex items-center gap-1 text-xs text-green-200/70 hover:text-etec-accent hover:underline">
                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                         {{ $member->email }}
                     </a>
@@ -213,9 +213,9 @@
                 </div>
                 <div class="flex-grow">
                     <h3 class="font-bold text-white group-hover:text-etec-accent transition">Gestão Pedagógica</h3>
-                    <p class="text-sm text-blue-100">Coordenação, orientação e cursos técnicos</p>
+                    <p class="text-sm text-green-100">Coordenação, orientação e cursos técnicos</p>
                 </div>
-                <svg class="w-5 h-5 text-blue-200/70 group-hover:text-etec-accent transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 text-green-200/70 group-hover:text-etec-accent transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                 </svg>
             </a>
@@ -228,9 +228,9 @@
                 </div>
                 <div class="flex-grow">
                     <h3 class="font-bold text-white group-hover:text-etec-accent transition">Diretoria de Serviços</h3>
-                    <p class="text-sm text-blue-100">Gestão administrativa, financeira e de infraestrutura</p>
+                    <p class="text-sm text-green-100">Gestão administrativa, financeira e de infraestrutura</p>
                 </div>
-                <svg class="w-5 h-5 text-blue-200/70 group-hover:text-etec-accent transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-5 h-5 text-green-200/70 group-hover:text-etec-accent transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                 </svg>
             </a>
