@@ -137,9 +137,12 @@
             </h2>
 
             @if($documents->isEmpty())
-                <div class="py-10 text-center bg-white/50 dark:bg-white/5 rounded-xl border border-dashed border-gray-200 dark:border-white/10">
-                    <svg class="w-10 h-10 text-gray-300 dark:text-gray-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                    <p class="text-gray-500 dark:text-gray-400 text-sm">Nenhum documento disponível no momento.</p>
+                <div class="py-12 text-center bg-white/50 dark:bg-white/5 rounded-xl border border-dashed border-gray-200 dark:border-white/10 space-y-3">
+                    <svg class="w-12 h-12 text-gray-200 dark:text-gray-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">Nenhum documento publicado ainda.</p>
+                    <p class="text-gray-400 dark:text-gray-500 text-xs max-w-xs mx-auto leading-relaxed">
+                        Normas de TCC, manuais de pesquisa e regulamentos serão disponibilizados aqui em breve.
+                    </p>
                 </div>
             @else
                 <div class="bg-etec-main rounded-2xl shadow-sm border border-etec-dark/30 dark:border-white/10 divide-y divide-white/10">
