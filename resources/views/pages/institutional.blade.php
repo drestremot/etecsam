@@ -148,15 +148,16 @@
 
             @if($departamentos->count() > 0)
             @php
+                $isProf = fn($d) => str_contains(strtolower($d->role ?? ''), 'professor');
                 $categorias = $departamentos
-                    ->map(fn($d) => Str::contains(strtolower($d->role), 'professor') ? 'Professor' : 'Administrativo')
+                    ->map(fn($d) => $isProf($d) ? 'Professor' : 'Administrativo')
                     ->unique()->values()->sort()->prepend('Todos');
                 $deptJson = $departamentos->map(fn($d) => [
-                    'name'  => $d->name,
-                    'role'  => $d->role,
+                    'name'  => $d->name  ?? '',
+                    'role'  => $d->role  ?? '',
                     'email' => $d->email ?? '',
-                    'bio'   => $d->bio ?? '',
-                    'cat'   => Str::contains(strtolower($d->role), 'professor') ? 'Professor' : 'Administrativo',
+                    'bio'   => $d->bio   ?? '',
+                    'cat'   => $isProf($d) ? 'Professor' : 'Administrativo',
                 ]);
             @endphp
             <div x-data="{
