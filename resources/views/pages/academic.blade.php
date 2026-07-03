@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('content')
 
@@ -33,7 +33,7 @@
                 </div>
                 <div>
                     <strong class="block text-sm text-white group-hover:text-etec-accent transition leading-tight">{{ $link['name'] }}</strong>
-                    <span class="text-xs text-blue-100">{{ $link['desc'] }}</span>
+                    <span class="text-xs text-green-100">{{ $link['desc'] }}</span>
                 </div>
             </a>
             @endforeach
@@ -60,11 +60,11 @@
                     <h3 class="text-lg font-bold text-white">{{ $director->name }}</h3>
                     <span class="text-xs font-bold text-etec-light uppercase tracking-wide block mb-1">{{ $director->role }}</span>
                     @if($director->specialty)
-                    <p class="text-xs text-blue-100 mb-4 leading-relaxed italic">"{{ $director->specialty }}"</p>
+                    <p class="text-xs text-green-100 mb-4 leading-relaxed italic">"{{ $director->specialty }}"</p>
                     @endif
 
                     <div class="bg-white/10 rounded-xl p-4 text-sm text-left space-y-3">
-                        <div class="flex items-center gap-2.5 text-blue-100">
+                        <div class="flex items-center gap-2.5 text-green-100">
                             <svg class="w-4 h-4 text-etec-accent flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 7V5z"/></svg>
                             <span>{{ $director->phone }}</span>
                         </div>
@@ -92,9 +92,9 @@
                     </div>
                     <div class="min-w-0">
                         <h4 class="font-bold text-white leading-tight">{{ $member->name }}</h4>
-                        <span class="text-xs font-bold text-blue-200/70 uppercase tracking-wide block mb-1.5">{{ $member->role }}</span>
-                        <p class="text-xs text-blue-100 mb-2 leading-relaxed">{{ $member->specialty }}</p>
-                        <a href="mailto:{{ $member->email }}" class="inline-flex items-center gap-1 text-xs text-blue-200/70 hover:text-etec-accent hover:underline">
+                        <span class="text-xs font-bold text-green-200/70 uppercase tracking-wide block mb-1.5">{{ $member->role }}</span>
+                        <p class="text-xs text-green-100 mb-2 leading-relaxed">{{ $member->specialty }}</p>
+                        <a href="mailto:{{ $member->email }}" class="inline-flex items-center gap-1 text-xs text-green-200/70 hover:text-etec-accent hover:underline">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                             {{ $member->email }}
                         </a>
@@ -108,7 +108,7 @@
     {{-- Documentos --}}
     <div class="mt-12 bg-white/50 dark:bg-white/5 rounded-2xl p-8 border border-blue-100 dark:border-white/10">
         <h2 class="text-xl font-bold text-etec-dark dark:text-white mb-6 flex items-center gap-2.5">
-            <svg class="w-5 h-5 text-blue-600 dark:text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+            <svg class="w-5 h-5 text-green-600 dark:text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
             Requerimentos e Documentos
         </h2>
 

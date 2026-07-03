@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('content')
 
@@ -34,7 +34,7 @@
             <div class="bg-etec-main rounded-2xl shadow-sm border border-etec-dark/30 dark:border-white/10 p-6">
                 <p class="text-xs font-bold text-etec-light uppercase tracking-widest mb-2">Entradas</p>
                 <p class="text-2xl font-bold text-white">R$ {{ number_format($totalIncome, 2, ',', '.') }}</p>
-                <div class="mt-3 text-xs text-blue-100 space-y-0.5">
+                <div class="mt-3 text-xs text-green-100 space-y-0.5">
                     <p>Vendas: R$ {{ number_format($salesIncome, 2, ',', '.') }}</p>
                     <p>Mensalidades Cooperados: R$ {{ number_format($memberDuesIncome, 2, ',', '.') }}</p>
                     <p>Mensalidades Moradia: R$ {{ number_format($housingDuesIncome, 2, ',', '.') }}</p>
@@ -47,7 +47,7 @@
             <div class="bg-etec-main rounded-2xl shadow-sm border border-etec-dark/30 dark:border-white/10 p-6">
                 <p class="text-xs font-bold text-etec-light uppercase tracking-widest mb-2">Saldo</p>
                 <p class="text-2xl font-bold {{ $balance >= 0 ? 'text-etec-accent' : 'text-red-300' }}">R$ {{ number_format($balance, 2, ',', '.') }}</p>
-                <p class="text-xs text-blue-100 mt-3">Entradas − despesas pagas este mês</p>
+                <p class="text-xs text-green-100 mt-3">Entradas − despesas pagas este mês</p>
             </div>
         </div>
     </div>
@@ -58,19 +58,19 @@
         <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
             <div class="bg-etec-main rounded-2xl shadow-sm border border-etec-dark/30 dark:border-white/10 p-5 text-center">
                 <p class="text-2xl font-bold text-white">{{ $overdueExpenses->count() }}</p>
-                <p class="text-xs text-blue-100 mt-1">Despesas atrasadas</p>
+                <p class="text-xs text-green-100 mt-1">Despesas atrasadas</p>
             </div>
             <div class="bg-etec-main rounded-2xl shadow-sm border border-etec-dark/30 dark:border-white/10 p-5 text-center">
                 <p class="text-2xl font-bold text-white">{{ $overdueSales->count() }}</p>
-                <p class="text-xs text-blue-100 mt-1">Vendas a receber</p>
+                <p class="text-xs text-green-100 mt-1">Vendas a receber</p>
             </div>
             <div class="bg-etec-main rounded-2xl shadow-sm border border-etec-dark/30 dark:border-white/10 p-5 text-center">
                 <p class="text-2xl font-bold text-white">{{ $overdueMembers }}</p>
-                <p class="text-xs text-blue-100 mt-1">Cooperados com mensalidade pendente</p>
+                <p class="text-xs text-green-100 mt-1">Cooperados com mensalidade pendente</p>
             </div>
             <div class="bg-etec-main rounded-2xl shadow-sm border border-etec-dark/30 dark:border-white/10 p-5 text-center">
                 <p class="text-2xl font-bold text-white">{{ $overdueTenants }}</p>
-                <p class="text-xs text-blue-100 mt-1">Moradores com mensalidade pendente</p>
+                <p class="text-xs text-green-100 mt-1">Moradores com mensalidade pendente</p>
             </div>
         </div>
         <p class="text-xs text-gray-500 dark:text-gray-400 mt-3">Por privacidade, apenas a quantidade é exibida — nomes individuais ficam restritos à administração.</p>

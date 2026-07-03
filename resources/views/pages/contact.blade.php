@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('content')
 
@@ -78,12 +78,12 @@
 
         <div class="bg-etec-main p-8 rounded-2xl shadow-sm border border-etec-dark/30 dark:border-white/10">
             <h2 class="text-2xl font-bold text-white mb-2">Envie uma mensagem</h2>
-            <p class="text-blue-100 text-sm mb-6">Responderemos em até 2 dias úteis.</p>
+            <p class="text-green-100 text-sm mb-6">Responderemos em até 2 dias úteis.</p>
 
             <form action="#" method="POST" class="space-y-5">
                 @csrf
                 <div>
-                    <label class="block text-sm font-semibold text-blue-100 mb-1.5">Seu Nome</label>
+                    <label class="block text-sm font-semibold text-green-100 mb-1.5">Seu Nome</label>
                     <input type="text"
                            class="w-full bg-white/90 border border-white/20 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-etec-accent focus:border-etec-accent block px-3.5 py-2.5 outline-none transition"
                            placeholder="Ex: João da Silva">
@@ -91,13 +91,13 @@
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-semibold text-blue-100 mb-1.5">Telefone / WhatsApp</label>
+                        <label class="block text-sm font-semibold text-green-100 mb-1.5">Telefone / WhatsApp</label>
                         <input type="tel"
                                class="w-full bg-white/90 border border-white/20 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-etec-accent focus:border-etec-accent block px-3.5 py-2.5 outline-none transition"
                                placeholder="(18) 99999-9999">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-blue-100 mb-1.5">Assunto</label>
+                        <label class="block text-sm font-semibold text-green-100 mb-1.5">Assunto</label>
                         <select class="w-full bg-white/90 border border-white/20 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-etec-accent focus:border-etec-accent block px-3.5 py-2.5 outline-none transition">
                             <option>Secretaria / Documentos</option>
                             <option>Vestibulinho</option>
@@ -109,14 +109,14 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-semibold text-blue-100 mb-1.5">E-mail para resposta</label>
+                    <label class="block text-sm font-semibold text-green-100 mb-1.5">E-mail para resposta</label>
                     <input type="email"
                            class="w-full bg-white/90 border border-white/20 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-etec-accent focus:border-etec-accent block px-3.5 py-2.5 outline-none transition"
                            placeholder="seu@email.com">
                 </div>
 
                 <div>
-                    <label class="block text-sm font-semibold text-blue-100 mb-1.5">Mensagem</label>
+                    <label class="block text-sm font-semibold text-green-100 mb-1.5">Mensagem</label>
                     <textarea rows="5"
                               class="w-full bg-white/90 border border-white/20 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-etec-accent focus:border-etec-accent block px-3.5 py-2.5 outline-none transition resize-none"
                               placeholder="Como podemos ajudar?"></textarea>

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('content')
 
@@ -31,7 +31,7 @@
                    >
                     {{ $unit->name }}
                 </h2>
-                <p class="text-blue-100 text-sm flex items-center gap-1.5 justify-center md:justify-start">
+                <p class="text-green-100 text-sm flex items-center gap-1.5 justify-center md:justify-start">
                     <svg class="w-4 h-4 text-etec-accent flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/></svg>
                     {{ $unit->courses->count() }} {{ $unit->courses->count() === 1 ? 'curso disponível' : 'cursos disponíveis' }}
                 </p>
@@ -51,7 +51,7 @@
                     @endif
                 </div>
                 <div class="min-w-0">
-                    <span class="text-xs font-bold text-blue-200/70 uppercase tracking-wide block mb-0.5">Coord. de Sala</span>
+                    <span class="text-xs font-bold text-green-200/70 uppercase tracking-wide block mb-0.5">Coord. de Sala</span>
                     <strong class="text-sm text-white block leading-tight">{{ $unit->coordinator->name }}</strong>
                     <a href="mailto:{{ $unit->coordinator->email }}"
                        class="text-xs text-blue-200 hover:text-etec-accent hover:underline truncate block max-w-[180px]">
@@ -64,30 +64,30 @@
 
         {{-- Cursos --}}
         <div class="p-6 md:p-8">
-            <h3 class="font-bold text-blue-100 mb-6 flex items-center gap-2 text-sm uppercase tracking-wide">
+            <h3 class="font-bold text-green-100 mb-6 flex items-center gap-2 text-sm uppercase tracking-wide">
                 <svg class="w-4 h-4 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
                 Cursos Disponíveis
             </h3>
 
             @if($unit->courses->isEmpty())
-                <p class="text-blue-200/70 text-sm py-6 text-center">Nenhum curso cadastrado para esta unidade.</p>
+                <p class="text-green-200/70 text-sm py-6 text-center">Nenhum curso cadastrado para esta unidade.</p>
             @else
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
                 @foreach($unit->courses as $course)
                 <div class="border border-white/10 rounded-xl p-5 hover:border-etec-accent hover:shadow-md hover:shadow-etec-dark/30 transition group bg-white/5 hover:bg-white/10">
                     <div class="flex justify-between items-start mb-3">
-                        <span class="bg-white/10 text-blue-100 text-xs px-2.5 py-1 rounded-lg font-semibold">
+                        <span class="bg-white/10 text-green-100 text-xs px-2.5 py-1 rounded-lg font-semibold">
                             {{ $course->type }}
                         </span>
                         <a href="{{ route('courses.show', $course->slug) }}"
-                           class="w-7 h-7 bg-white/10 rounded-lg flex items-center justify-center text-blue-200/70 border border-white/10 hover:border-etec-accent hover:text-etec-accent transition">
+                           class="w-7 h-7 bg-white/10 rounded-lg flex items-center justify-center text-green-200/70 border border-white/10 hover:border-etec-accent hover:text-etec-accent transition">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                         </a>
                     </div>
                     <h4 class="text-base font-bold text-white mb-2 group-hover:text-etec-accent transition leading-snug">
                         <a href="{{ route('courses.show', $course->slug) }}">{{ $course->title }}</a>
                     </h4>
-                    <p class="text-sm text-blue-100 line-clamp-2 mb-4 leading-relaxed">
+                    <p class="text-sm text-green-100 line-clamp-2 mb-4 leading-relaxed">
                         {{ $course->description }}
                     </p>
                     <a href="{{ route('courses.show', $course->slug) }}"

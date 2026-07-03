@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('content')
 
@@ -44,7 +44,7 @@
                     <span class="text-xs font-bold text-etec-light uppercase tracking-wide block mb-0.5">Coord. de Sala Descentralizada</span>
                     <strong class="text-sm block leading-tight text-white">{{ $unit->coordinator->name }}</strong>
                     <a href="mailto:{{ $unit->coordinator->email }}"
-                       class="text-xs text-blue-100 hover:text-etec-accent hover:underline truncate block max-w-[200px] mt-1">
+                       class="text-xs text-green-100 hover:text-etec-accent hover:underline truncate block max-w-[200px] mt-1">
                         {{ $unit->coordinator->email }}
                     </a>
                 </div>
@@ -65,10 +65,10 @@
         <a href="{{ route('courses.show', $course->slug) }}"
            class="block bg-etec-main rounded-xl shadow-sm border border-etec-dark/30 dark:border-white/10 p-6 hover:shadow-xl hover:shadow-etec-dark/30 hover:border-etec-accent transition duration-300 group">
             <div class="flex justify-between items-start mb-4">
-                <span class="bg-white/10 text-blue-100 text-xs px-2.5 py-1 rounded-lg font-semibold group-hover:bg-etec-accent/30 group-hover:text-white transition">
+                <span class="bg-white/10 text-green-100 text-xs px-2.5 py-1 rounded-lg font-semibold group-hover:bg-etec-accent/30 group-hover:text-white transition">
                     {{ $course->type }}
                 </span>
-                <div class="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center text-blue-200/70 group-hover:bg-etec-accent group-hover:text-etec-dark transition">
+                <div class="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center text-green-200/70 group-hover:bg-etec-accent group-hover:text-etec-dark transition">
                     <svg class="w-4 h-4 group-hover:translate-x-0.5 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 </div>
             </div>
@@ -77,7 +77,7 @@
                 {{ $course->title }}
             </h3>
 
-            <p class="text-sm text-blue-100 line-clamp-2 mb-4 leading-relaxed">
+            <p class="text-sm text-green-100 line-clamp-2 mb-4 leading-relaxed">
                 {{ $course->description }}
             </p>
 
