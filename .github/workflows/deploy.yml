@@ -158,6 +158,11 @@ jobs:
             composer install --no-dev --optimize-autoloader --no-interaction
             echo "✓ Composer instalado"
 
+            # Regenera bootstrap/cache/packages.php e services.php sem pacotes dev
+            # (evita "BreezeServiceProvider not found" quando cache antigo persiste no servidor)
+            php artisan package:discover --ansi
+            echo "✓ Package discovery concluido"
+
             # Migrations com flag safe (nao apaga dados existentes)
             php artisan migrate --force
             echo "✓ Migrations executadas"
