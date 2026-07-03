@@ -92,7 +92,7 @@
                 {{-- Mapa com zoom maior (z=17 foca direto na escola) --}}
                 <div style="height: 300px;">
                     <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d460!2d-51.36491539635787!3d-20.92723308070268!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94978bd2a6320593%3A0xf6573c79010260c8!2sETEC%20Sebastiana%20Augusta%20de%20Moraes!5e0!3m2!1spt-BR!2sbr!4v1709220000000!5m2!1spt-BR!2sbr"
+                        src="https://maps.google.com/maps?q=-20.9738224,-51.3207176&z=17&output=embed&hl=pt-BR"
                         width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
                         title="Localização da Etec Sebastiana Augusta de Moraes">
                     </iframe>
