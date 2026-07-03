@@ -80,46 +80,64 @@
             <h2 class="text-2xl font-bold text-white mb-2">Envie uma mensagem</h2>
             <p class="text-green-100 text-sm mb-6">Responderemos em até 2 dias úteis.</p>
 
-            <form action="#" method="POST" class="space-y-5">
+            {{-- Feedback de sucesso/erro --}}
+            @if(session('success'))
+                <div class="flex items-center gap-3 bg-green-600/30 border border-green-400/40 text-white text-sm rounded-xl px-4 py-3 mb-5">
+                    <svg class="w-5 h-5 text-green-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    {{ session('success') }}
+                </div>
+            @endif
+            @if(session('error'))
+                <div class="flex items-center gap-3 bg-red-600/30 border border-red-400/40 text-white text-sm rounded-xl px-4 py-3 mb-5">
+                    <svg class="w-5 h-5 text-red-300 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    {{ session('error') }}
+                </div>
+            @endif
+
+            <form action="{{ route('contact.send') }}" method="POST" class="space-y-5">
                 @csrf
                 <div>
-                    <label class="block text-sm font-semibold text-green-100 mb-1.5">Seu Nome</label>
-                    <input type="text"
-                           class="w-full bg-white/90 border border-white/20 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-etec-accent focus:border-etec-accent block px-3.5 py-2.5 outline-none transition"
+                    <label class="block text-sm font-semibold text-green-100 mb-1.5">Seu Nome *</label>
+                    <input type="text" name="nome" value="{{ old('nome') }}"
+                           class="w-full bg-white/90 border @error('nome') border-red-400 @else border-white/20 @enderror text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-etec-accent focus:border-etec-accent block px-3.5 py-2.5 outline-none transition"
                            placeholder="Ex: João da Silva">
+                    @error('nome')<p class="text-red-300 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-semibold text-green-100 mb-1.5">Telefone / WhatsApp</label>
-                        <input type="tel"
+                        <input type="tel" name="telefone" value="{{ old('telefone') }}"
                                class="w-full bg-white/90 border border-white/20 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-etec-accent focus:border-etec-accent block px-3.5 py-2.5 outline-none transition"
                                placeholder="(18) 99999-9999">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-green-100 mb-1.5">Assunto</label>
-                        <select class="w-full bg-white/90 border border-white/20 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-etec-accent focus:border-etec-accent block px-3.5 py-2.5 outline-none transition">
-                            <option>Secretaria / Documentos</option>
-                            <option>Vestibulinho</option>
-                            <option>Coordenação Pedagógica</option>
-                            <option>Parcerias / Cooperativa</option>
-                            <option>Outros</option>
+                        <label class="block text-sm font-semibold text-green-100 mb-1.5">Assunto *</label>
+                        <select name="assunto" class="w-full bg-white/90 border @error('assunto') border-red-400 @else border-white/20 @enderror text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-etec-accent focus:border-etec-accent block px-3.5 py-2.5 outline-none transition">
+                            <option value="Secretaria / Documentos"  {{ old('assunto') === 'Secretaria / Documentos'  ? 'selected' : '' }}>Secretaria / Documentos</option>
+                            <option value="Vestibulinho"             {{ old('assunto') === 'Vestibulinho'             ? 'selected' : '' }}>Vestibulinho</option>
+                            <option value="Coordenação Pedagógica"   {{ old('assunto') === 'Coordenação Pedagógica'   ? 'selected' : '' }}>Coordenação Pedagógica</option>
+                            <option value="Parcerias / Cooperativa"  {{ old('assunto') === 'Parcerias / Cooperativa'  ? 'selected' : '' }}>Parcerias / Cooperativa</option>
+                            <option value="Diretoria de Serviços"    {{ old('assunto') === 'Diretoria de Serviços'    ? 'selected' : '' }}>Diretoria de Serviços</option>
+                            <option value="Outros"                   {{ old('assunto') === 'Outros'                   ? 'selected' : '' }}>Outros</option>
                         </select>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-semibold text-green-100 mb-1.5">E-mail para resposta</label>
-                    <input type="email"
-                           class="w-full bg-white/90 border border-white/20 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-etec-accent focus:border-etec-accent block px-3.5 py-2.5 outline-none transition"
+                    <label class="block text-sm font-semibold text-green-100 mb-1.5">E-mail para resposta *</label>
+                    <input type="email" name="email" value="{{ old('email') }}"
+                           class="w-full bg-white/90 border @error('email') border-red-400 @else border-white/20 @enderror text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-etec-accent focus:border-etec-accent block px-3.5 py-2.5 outline-none transition"
                            placeholder="seu@email.com">
+                    @error('email')<p class="text-red-300 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <div>
-                    <label class="block text-sm font-semibold text-green-100 mb-1.5">Mensagem</label>
-                    <textarea rows="5"
-                              class="w-full bg-white/90 border border-white/20 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-etec-accent focus:border-etec-accent block px-3.5 py-2.5 outline-none transition resize-none"
-                              placeholder="Como podemos ajudar?"></textarea>
+                    <label class="block text-sm font-semibold text-green-100 mb-1.5">Mensagem *</label>
+                    <textarea rows="5" name="mensagem"
+                              class="w-full bg-white/90 border @error('mensagem') border-red-400 @else border-white/20 @enderror text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-etec-accent focus:border-etec-accent block px-3.5 py-2.5 outline-none transition resize-none"
+                              placeholder="Como podemos ajudar?">{{ old('mensagem') }}</textarea>
+                    @error('mensagem')<p class="text-red-300 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
 
                 <button type="submit"

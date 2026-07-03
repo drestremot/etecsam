@@ -14,6 +14,7 @@ Route::get('/escola',              [SiteController::class, 'institutional'])->na
 Route::get('/curso/{slug}',        [SiteController::class, 'show'])->name('courses.show');
 Route::get('/secretaria',          [SiteController::class, 'academic'])->name('academic');
 Route::get('/contato',             [SiteController::class, 'contact'])->name('contact');
+Route::post('/contato',            [SiteController::class, 'sendContact'])->name('contact.send');
 Route::get('/fale-conosco',        [SiteController::class, 'contact']);
 Route::get('/agenda',              [SiteController::class, 'agenda'])->name('agenda');
 Route::get('/superintendencia',    [SiteController::class, 'superintendence'])->name('superintendence');
