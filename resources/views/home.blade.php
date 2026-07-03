@@ -93,15 +93,15 @@
     <div class="container mx-auto px-4">
         <div class="grid grid-cols-2 md:grid-cols-4 divide-x divide-gray-100 dark:divide-white/10">
             <div class="py-5 px-6 text-center">
-                <div class="text-2xl font-bold text-etec-dark dark:text-white">+30</div>
+                <div class="text-2xl font-bold text-etec-dark dark:text-white">+{{ date('Y') - 1991 }}</div>
                 <div class="text-xs text-gray-500 dark:text-gray-400 font-medium mt-0.5">Anos de história</div>
             </div>
             <div class="py-5 px-6 text-center">
-                <div class="text-2xl font-bold text-etec-dark dark:text-white">4</div>
+                <div class="text-2xl font-bold text-etec-dark dark:text-white">{{ $units->count() }}</div>
                 <div class="text-xs text-gray-500 dark:text-gray-400 font-medium mt-0.5">Unidades de ensino</div>
             </div>
             <div class="py-5 px-6 text-center">
-                <div class="text-2xl font-bold text-etec-dark dark:text-white">12+</div>
+                <div class="text-2xl font-bold text-etec-dark dark:text-white">{{ $sectors->count() }}+</div>
                 <div class="text-xs text-gray-500 dark:text-gray-400 font-medium mt-0.5">Laboratórios ativos</div>
             </div>
             <div class="py-5 px-6 text-center">
