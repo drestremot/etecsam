@@ -68,11 +68,35 @@
                 </div>
             </div>
 
-            <div class="rounded-xl overflow-hidden border border-gray-200 dark:border-white/10 shadow-sm" style="height: 260px;">
-                <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3720.896796684747!2d-51.36569662394622!3d-20.92723308070268!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94978bd2a6320593%3A0xf6573c79010260c8!2sETEC%20Sebastiana%20Augusta%20de%20Moraes!5e0!3m2!1spt-BR!2sbr!4v1709220000000!5m2!1spt-BR!2sbr"
-                    width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy">
-                </iframe>
+            <div class="rounded-xl overflow-hidden border-2 border-etec-dark dark:border-etec-medium shadow-md">
+                {{-- Barra de destaque do mapa --}}
+                <div class="bg-etec-dark flex items-center justify-between px-4 py-2.5 gap-3">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <div class="w-7 h-7 bg-etec-accent rounded-full flex items-center justify-center flex-shrink-0">
+                            <svg class="w-3.5 h-3.5 text-etec-dark" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/>
+                            </svg>
+                        </div>
+                        <div class="min-w-0">
+                            <p class="text-white text-xs font-bold leading-tight truncate">Etec Sebastiana Augusta de Moraes</p>
+                            <p class="text-white/60 text-xs leading-tight truncate">Est. Vicinal S. Lourenço da Silva, Km 11 — Andradina/SP</p>
+                        </div>
+                    </div>
+                    <a href="https://maps.google.com/?q=ETEC+Sebastiana+Augusta+de+Moraes,+Andradina+SP"
+                       target="_blank" rel="noopener"
+                       class="flex-shrink-0 inline-flex items-center gap-1.5 bg-etec-accent text-etec-dark text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-yellow-400 transition whitespace-nowrap">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        Abrir no Maps
+                    </a>
+                </div>
+                {{-- Mapa com zoom maior (z=17 foca direto na escola) --}}
+                <div style="height: 300px;">
+                    <iframe
+                        src="https://maps.google.com/maps?q=ETEC+Sebastiana+Augusta+de+Moraes,+Andradina+SP&z=17&output=embed&hl=pt-BR"
+                        width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
+                        title="Localização da Etec Sebastiana Augusta de Moraes">
+                    </iframe>
+                </div>
             </div>
         </div>
 
