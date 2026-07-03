@@ -4,18 +4,36 @@
 
 {{-- Hero --}}
 @php
-    // Slide padrao institucional: sempre o primeiro do carrossel, mesmo com slides cadastrados no admin.
-    $defaultSlide = new \App\Models\HomeSlide([
-        'title' => 'Etec Sebastiana Augusta de Moraes',
-        'description' => 'Ensino técnico de excelência, integrado à prática do campo. Formando profissionais para o agronegócio e a tecnologia.',
-        'image' => null,
-    ]);
-    $heroSlides = collect([$defaultSlide])->merge($slides);
-    $heroSlidesJs = $heroSlides->map(fn($s) => [
-        'image' => $s->image ? photo_url($s->image) : 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1600&auto=format&fit=crop',
-        'title' => $s->title,
-        'description' => $s->description,
-    ]);
+    $defaultSlidesJs = [
+        [
+            'image'       => 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1600&auto=format&fit=crop',
+            'title'       => 'Etec Sebastiana Augusta de Moraes',
+            'description' => 'Ensino técnico de excelência, integrado à prática do campo. Formando profissionais para o agronegócio e a tecnologia.',
+        ],
+        [
+            'image'       => 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?q=80&w=1600&auto=format&fit=crop',
+            'title'       => 'Escola Fazenda — Aprender Fazendo',
+            'description' => 'Nossos alunos vivenciam o agronegócio na prática: da lavoura à pecuária, da colheita ao processamento.',
+        ],
+        [
+            'image'       => 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1600&auto=format&fit=crop',
+            'title'       => 'Educação Técnica Pública e Gratuita',
+            'description' => 'Centro Paula Souza — formando profissionais competentes para o mercado de trabalho desde 1994.',
+        ],
+    ];
+
+    // Se o admin cadastrou slides, usa o slide principal + os do admin.
+    // Se não, exibe os 3 slides padrão para sempre ter carrossel.
+    if ($slides->isEmpty()) {
+        $heroSlidesJs = collect($defaultSlidesJs);
+    } else {
+        $adminSlidesJs = $slides->map(fn($s) => [
+            'image'       => $s->image ? photo_url($s->image) : $defaultSlidesJs[0]['image'],
+            'title'       => $s->title,
+            'description' => $s->description,
+        ]);
+        $heroSlidesJs = collect([$defaultSlidesJs[0]])->merge($adminSlidesJs);
+    }
 @endphp
 <section class="relative bg-etec-dark min-h-[520px] flex items-center overflow-hidden"
           x-data="{
@@ -42,10 +60,10 @@
                 <span class="text-xs font-bold tracking-widest uppercase">Portal Institucional</span>
             </div>
 
-            <h1 class="text-4xl md:text-5xl font-bold leading-tight" x-text="slides[current].title">{{ $heroSlides->first()->title }}</h1>
+            <h1 class="text-4xl md:text-5xl font-bold leading-tight" x-text="slides[current].title">{{ $defaultSlidesJs[0]['title'] }}</h1>
 
             <p class="text-lg text-gray-200 leading-relaxed border-l-4 border-etec-accent pl-4"
-               x-show="slides[current].description" x-text="slides[current].description">{{ $heroSlides->first()->description }}</p>
+               x-show="slides[current].description" x-text="slides[current].description">{{ $defaultSlidesJs[0]['description'] }}</p>
 
             <div class="flex flex-wrap gap-4 pt-2">
                 <a href="{{ route('home') }}#unidades"
@@ -120,10 +138,11 @@
                                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent"></div>
                                 @endif
 
-                                <div class="unit-card-fallback @if($unit->image) hidden @endif relative z-10 bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/20 group-hover:bg-white/20 transition">
-                                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div class="unit-card-fallback @if($unit->image) hidden @endif absolute inset-0 flex flex-col items-center justify-center gap-3 bg-gradient-to-br from-etec-dark via-etec-main to-etec-medium p-6 text-center">
+                                    <svg class="w-10 h-10 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                                     </svg>
+                                    <span class="text-white/70 text-xs font-bold uppercase tracking-widest">{{ $unit->city }}</span>
                                 </div>
                             </div>
                             <div class="absolute bottom-3 left-4 z-10">
@@ -231,6 +250,58 @@
         </div>
     </div>
 </section>
+
+{{-- Próximos Eventos --}}
+@if($nextEvents->count() > 0)
+<section class="py-16 bg-gray-50 dark:bg-etec-night/50 transition-colors duration-300">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-10 gap-4">
+            <div>
+                <span class="text-etec-medium dark:text-etec-accent font-bold uppercase tracking-widest text-xs">Calendário</span>
+                <h2 class="text-3xl font-bold text-etec-dark dark:text-white mt-2">Próximos Eventos</h2>
+                <div class="w-16 h-1 bg-etec-accent mt-4"></div>
+            </div>
+            <a href="{{ route('agenda') }}" class="flex-shrink-0 inline-flex items-center gap-2 text-etec-main dark:text-etec-accent text-sm font-semibold hover:underline transition">
+                Ver agenda completa
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </a>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+            @foreach($nextEvents as $evento)
+            @php
+                $data = \Carbon\Carbon::parse($evento->start_date);
+            @endphp
+            <a href="{{ route('agenda') }}"
+               class="group flex gap-5 bg-white dark:bg-etec-dark rounded-2xl p-5 shadow-sm hover:shadow-lg transition border border-gray-100 dark:border-white/10">
+                <div class="flex-shrink-0 w-16 text-center">
+                    <div class="bg-etec-dark dark:bg-etec-accent text-white dark:text-etec-dark rounded-xl py-2 px-1">
+                        <span class="block text-2xl font-bold leading-none">{{ $data->format('d') }}</span>
+                        <span class="block text-xs font-bold uppercase tracking-wide mt-0.5">{{ $data->translatedFormat('M') }}</span>
+                    </div>
+                </div>
+                <div class="min-w-0">
+                    <h3 class="font-bold text-etec-dark dark:text-white text-sm leading-snug group-hover:text-etec-main dark:group-hover:text-etec-accent transition line-clamp-2">
+                        {{ $evento->title }}
+                    </h3>
+                    @if($evento->location ?? null)
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        {{ $evento->location }}
+                    </p>
+                    @endif
+                    @if($evento->category ?? null)
+                    <span class="inline-block mt-2 text-xs bg-etec-light dark:bg-white/10 text-etec-main dark:text-etec-accent px-2 py-0.5 rounded-full font-semibold">
+                        {{ $evento->category }}
+                    </span>
+                    @endif
+                </div>
+            </a>
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
 
 {{-- CTA Banner --}}
 <section class="bg-etec-medium py-16">

@@ -147,38 +147,86 @@
             @endif
 
             @if($departamentos->count() > 0)
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-                @foreach ($departamentos as $dept)
-                    <div class="bg-etec-main p-6 rounded-xl shadow-sm hover:shadow-md hover:shadow-etec-dark/30 transition border border-etec-dark/30 dark:border-white/10 group">
-                        <div class="flex items-center gap-4 mb-4">
-                            <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center group-hover:bg-etec-accent/30 transition">
-                                @if (Str::contains($dept->role, 'Administrativo'))
-                                    <svg class="w-6 h-6 text-etec-accent group-hover:text-white transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                                @elseif(Str::contains($dept->role, 'Acadêmico') || Str::contains($dept->role, 'Secretaria'))
-                                    <svg class="w-6 h-6 text-etec-accent group-hover:text-white transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                                @elseif(Str::contains($dept->role, 'Pedagógico'))
-                                    <svg class="w-6 h-6 text-etec-accent group-hover:text-white transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
-                                @else
-                                    <svg class="w-6 h-6 text-etec-accent group-hover:text-white transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                                @endif
-                            </div>
-                            <div>
-                                <h4 class="font-bold text-white leading-tight">{{ $dept->role }}</h4>
-                                <span class="text-sm text-etec-light font-medium">{{ $dept->name }}</span>
-                            </div>
-                        </div>
-                        @if($dept->bio)
-                            <p class="text-sm text-blue-100 mb-4 line-clamp-2 leading-relaxed">{{ $dept->bio }}</p>
-                        @endif
-                        @if($dept->email)
-                            <a href="mailto:{{ $dept->email }}"
-                               class="inline-flex items-center gap-1.5 text-xs text-blue-200/70 hover:text-etec-accent transition font-medium">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                                {{ $dept->email }}
-                            </a>
-                        @endif
+            @php
+                $categorias = $departamentos
+                    ->map(fn($d) => Str::contains(strtolower($d->role), 'professor') ? 'Professor' : 'Administrativo')
+                    ->unique()->values()->sort()->prepend('Todos');
+                $deptJson = $departamentos->map(fn($d) => [
+                    'name'  => $d->name,
+                    'role'  => $d->role,
+                    'email' => $d->email ?? '',
+                    'bio'   => $d->bio ?? '',
+                    'cat'   => Str::contains(strtolower($d->role), 'professor') ? 'Professor' : 'Administrativo',
+                ]);
+            @endphp
+            <div x-data="{
+                    busca: '',
+                    filtro: 'Todos',
+                    equipe: {{ \Illuminate\Support\Js::from($deptJson) }},
+                    get lista() {
+                        return this.equipe.filter(p => {
+                            const ok_cat = this.filtro === 'Todos' || p.cat === this.filtro;
+                            const ok_busca = this.busca === '' ||
+                                p.name.toLowerCase().includes(this.busca.toLowerCase()) ||
+                                p.role.toLowerCase().includes(this.busca.toLowerCase());
+                            return ok_cat && ok_busca;
+                        });
+                    }
+                }">
+
+                {{-- Barra de filtros --}}
+                <div class="flex flex-col sm:flex-row gap-3 items-center justify-between mb-8 max-w-5xl mx-auto">
+                    <div class="flex gap-2 flex-wrap">
+                        @foreach($categorias as $cat)
+                        <button @click="filtro = '{{ $cat }}'"
+                                :class="filtro === '{{ $cat }}' ? 'bg-etec-accent text-etec-dark' : 'bg-white/10 text-white hover:bg-white/20'"
+                                class="px-4 py-1.5 rounded-full text-xs font-bold transition">
+                            {{ $cat }}
+                        </button>
+                        @endforeach
                     </div>
-                @endforeach
+                    <div class="relative w-full sm:w-64">
+                        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        <input x-model="busca" type="search" placeholder="Buscar por nome ou cargo…"
+                               class="w-full bg-white/10 border border-white/20 text-white placeholder-gray-400 text-sm rounded-lg pl-9 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-etec-accent">
+                    </div>
+                </div>
+
+                {{-- Grid de cards --}}
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                    <template x-for="dept in lista" :key="dept.name + dept.role">
+                        <div class="bg-etec-main p-6 rounded-xl shadow-sm hover:shadow-md hover:shadow-etec-dark/30 transition border border-etec-dark/30 dark:border-white/10 group">
+                            <div class="flex items-center gap-4 mb-4">
+                                <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center group-hover:bg-etec-accent/30 transition flex-shrink-0">
+                                    <template x-if="dept.cat === 'Professor'">
+                                        <svg class="w-6 h-6 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
+                                    </template>
+                                    <template x-if="dept.cat !== 'Professor'">
+                                        <svg class="w-6 h-6 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                    </template>
+                                </div>
+                                <div class="min-w-0">
+                                    <h4 class="font-bold text-white leading-tight truncate" x-text="dept.role"></h4>
+                                    <span class="text-sm text-etec-light font-medium truncate block" x-text="dept.name"></span>
+                                </div>
+                            </div>
+                            <template x-if="dept.bio">
+                                <p class="text-sm text-blue-100 mb-4 line-clamp-2 leading-relaxed" x-text="dept.bio"></p>
+                            </template>
+                            <template x-if="dept.email">
+                                <a :href="'mailto:' + dept.email"
+                                   class="inline-flex items-center gap-1.5 text-xs text-blue-200/70 hover:text-etec-accent transition font-medium">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                    <span x-text="dept.email"></span>
+                                </a>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+
+                <p x-show="lista.length === 0" class="text-center text-gray-400 py-12 text-sm">
+                    Nenhum resultado para "<span x-text="busca"></span>".
+                </p>
             </div>
             @endif
         </div>
