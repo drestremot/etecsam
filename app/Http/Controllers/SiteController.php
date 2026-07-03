@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use App\Models\Course;
 use App\Models\Sector;
-use App\Models\Event; // Importante: garante que o Model de Eventos seja reconhecido
+use App\Models\Event;
 use App\Models\Document;
 use App\Models\Teacher;
 use App\Models\Partner;
@@ -80,6 +81,50 @@ class SiteController extends Controller
     public function contact()
     {
         return view('pages.contact');
+    }
+
+    public function sendContact(Request $request)
+    {
+        $data = $request->validate([
+            'nome'      => 'required|string|max:100',
+            'telefone'  => 'nullable|string|max:20',
+            'assunto'   => 'required|string|max:100',
+            'email'     => 'required|email|max:150',
+            'mensagem'  => 'required|string|min:10|max:3000',
+        ], [
+            'nome.required'     => 'Por favor, informe seu nome.',
+            'email.required'    => 'Por favor, informe seu e-mail.',
+            'email.email'       => 'Informe um e-mail válido.',
+            'mensagem.required' => 'Por favor, escreva sua mensagem.',
+            'mensagem.min'      => 'A mensagem deve ter pelo menos 10 caracteres.',
+        ]);
+
+        $destinatario = $this->emailPorAssunto($data['assunto']);
+
+        try {
+            Mail::send('emails.contact', $data, function ($m) use ($data, $destinatario) {
+                $m->to($destinatario)
+                  ->replyTo($data['email'], $data['nome'])
+                  ->subject('Contato via site — ' . $data['assunto']);
+            });
+
+            return redirect()->route('contact')
+                ->with('success', 'Mensagem enviada com sucesso! Responderemos em até 2 dias úteis.');
+        } catch (\Exception $e) {
+            return redirect()->route('contact')
+                ->withInput()
+                ->with('error', 'Não foi possível enviar a mensagem. Tente novamente ou entre em contato por telefone.');
+        }
+    }
+
+    private function emailPorAssunto(string $assunto): string
+    {
+        return match(true) {
+            str_contains($assunto, 'Secretaria') || str_contains($assunto, 'Documentos') || str_contains($assunto, 'Vestibulinho') => 'e028acad@cps.sp.gov.br',
+            str_contains($assunto, 'Pedagógica') || str_contains($assunto, 'Coordenação')                                          => 'e028pedagogica@cps.sp.gov.br',
+            str_contains($assunto, 'Parcerias')  || str_contains($assunto, 'Cooperativa') || str_contains($assunto, 'Serviços')    => 'e028adm@cps.sp.gov.br',
+            default                                                                                                                 => 'e028dir@cps.sp.gov.br',
+        };
     }
 
 
