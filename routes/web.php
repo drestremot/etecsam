@@ -149,8 +149,9 @@ Route::prefix('laboratorio')->name('lab.')->middleware(['auth'])->group(function
         Route::get('/mapa/calendario',                 fn() => view('lab.reservations.calendar'))->name('calendar');
     });
 
-    // API calendário
+    // API calendário e disponibilidade
     Route::get('/api/calendario', [LabReservationController::class, 'calendarEvents'])->name('api.calendar');
+    Route::get('/api/disponibilidade/{space}', [LabReservationController::class, 'availability'])->name('api.availability');
 
     // Coordenador + Admin: aprovar, recusar, validar
     Route::middleware(['auth'])->group(function () {

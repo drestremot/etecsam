@@ -267,6 +267,24 @@ class LabReservationController extends Controller
         return $pdf->stream("checklist-reserva-{$reservation->id}.pdf");
     }
 
+    public function availability(Space $space)
+    {
+        $reservations = LabReservation::where('space_id', $space->id)
+            ->whereNotIn('status', ['recusada', 'validada'])
+            ->where('reservation_date', '>=', now()->startOfMonth())
+            ->where('reservation_date', '<=', now()->addMonths(3)->endOfMonth())
+            ->get(['id', 'reservation_date', 'start_time', 'end_time', 'status'])
+            ->map(fn($r) => [
+                'date'       => $r->reservation_date->format('Y-m-d'),
+                'start'      => substr($r->start_time, 0, 5),
+                'end'        => $r->end_time ? substr($r->end_time, 0, 5) : null,
+                'status'     => $r->status,
+                'occupied'   => true,
+            ]);
+
+        return response()->json($reservations);
+    }
+
     public function calendarEvents()
     {
         $reservations = LabReservation::with('space')

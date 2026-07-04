@@ -290,6 +290,8 @@
                     <span>Reservas</span>
                 </a>
 
+                {{-- Links exclusivos para Admin / Coordenador --}}
+                @if(auth()->user()->is_admin || auth()->user()->hasRole('Coordenador'))
                 <a href="{{ route('lab.spaces.index') }}"
                    class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition {{ request()->routeIs('lab.spaces.*') ? 'bg-etec-dark text-white' : 'text-gray-600 hover:bg-gray-100 hover:text-etec-dark' }}">
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -305,7 +307,9 @@
                     </svg>
                     <span>Materiais</span>
                 </a>
+                @endif
 
+                @if(auth()->user()->is_admin)
                 <a href="{{ route('lab.users.index') }}"
                    class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition {{ request()->routeIs('lab.users.*') ? 'bg-etec-dark text-white' : 'text-gray-600 hover:bg-gray-100 hover:text-etec-dark' }}">
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -313,6 +317,26 @@
                     </svg>
                     <span>Usuários</span>
                 </a>
+                @endif
+
+                {{-- Nova reserva — para Professor e Auxiliar --}}
+                @if(!auth()->user()->is_admin && !auth()->user()->hasRole('Coordenador'))
+                <a href="{{ route('lab.reservations.create') }}"
+                   class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition {{ request()->routeIs('lab.reservations.create') ? 'bg-etec-dark text-white' : 'text-gray-600 hover:bg-gray-100 hover:text-etec-dark' }}">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    <span>Nova Reserva</span>
+                </a>
+
+                <a href="{{ route('lab.profile.edit') }}"
+                   class="flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition {{ request()->routeIs('lab.profile.*') ? 'bg-etec-dark text-white' : 'text-gray-600 hover:bg-gray-100 hover:text-etec-dark' }}">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                    <span>Meu Perfil</span>
+                </a>
+                @endif
         </nav>
 
         <div class="px-4 py-4 border-t border-gray-800 bg-gray-950/40">
