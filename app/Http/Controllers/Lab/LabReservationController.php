@@ -15,20 +15,42 @@ class LabReservationController extends Controller
 {
     public function dashboard()
     {
-        $user = auth()->user();
+        $user    = auth()->user();
+        $teacher = \App\Models\Teacher::where('email', $user->email)->first();
 
-        $stats = [
-            'spaces'    => Space::count(),
-            'materials' => Material::count(),
-            'pending'   => LabReservation::where('status', 'pre_alocada')->count(),
-            'active'    => LabReservation::whereIn('status', ['aprovada', 'em_execucao'])->count(),
-        ];
+        // Stats adaptados por papel
+        if ($user->is_admin) {
+            $stats = [
+                'spaces'    => Space::count(),
+                'materials' => Material::count(),
+                'pending'   => LabReservation::where('status', 'pre_alocada')->count(),
+                'active'    => LabReservation::whereIn('status', ['aprovada', 'em_execucao'])->count(),
+            ];
+            $recent = LabReservation::with(['user', 'space'])->latest()->take(5)->get();
+        } elseif ($user->hasRole('Auxiliar')) {
+            $stats = [
+                'aguardando' => LabReservation::where('status', 'aguardando_conferencia')->count(),
+                'ativas'     => LabReservation::whereIn('status', ['aprovada', 'em_execucao'])->count(),
+                'concluidas' => LabReservation::whereIn('status', ['concluida', 'finalizada'])->count(),
+                'total'      => LabReservation::count(),
+            ];
+            $recent = LabReservation::with(['user', 'space'])
+                ->whereIn('status', ['aguardando_conferencia', 'aprovada', 'em_execucao'])
+                ->latest()->take(5)->get();
+        } else {
+            // Professor
+            $stats = [
+                'minhas'    => LabReservation::where('user_id', $user->id)->count(),
+                'pendentes' => LabReservation::where('user_id', $user->id)->where('status', 'pre_alocada')->count(),
+                'ativas'    => LabReservation::where('user_id', $user->id)->whereIn('status', ['aprovada', 'em_execucao'])->count(),
+                'concluidas'=> LabReservation::where('user_id', $user->id)->whereIn('status', ['concluida', 'finalizada'])->count(),
+            ];
+            $recent = LabReservation::with(['space'])
+                ->where('user_id', $user->id)
+                ->latest()->take(5)->get();
+        }
 
-        $recent = $user->hasRole('admin')
-            ? LabReservation::with(['user', 'space'])->latest()->take(5)->get()
-            : LabReservation::with(['space'])->where('user_id', $user->id)->latest()->take(5)->get();
-
-        return view('lab.dashboard', compact('stats', 'recent'));
+        return view('lab.dashboard', compact('stats', 'recent', 'teacher', 'user'));
     }
 
     public function index()
