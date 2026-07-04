@@ -201,13 +201,13 @@
             <div class="flex gap-3">
                 <form action="{{ route('lab.reservations.approve', $reservation) }}" method="POST">
                     @csrf @method('PATCH')
-                    <button class="inline-flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-lg hover:bg-blue-700 transition text-sm font-semibold">
+                    <button class="inline-flex items-center gap-2 bg-etec-dark text-white px-5 py-2.5 rounded-lg hover:bg-etec-main transition text-sm font-semibold">
                         ✓ Aprovar e encaminhar ao Auxiliar
                     </button>
                 </form>
                 <form action="{{ route('lab.reservations.reject', $reservation) }}" method="POST">
                     @csrf @method('PATCH')
-                    <button class="inline-flex items-center gap-2 bg-red-500 text-white px-5 py-2.5 rounded-lg hover:bg-red-600 transition text-sm font-semibold">
+                    <button class="inline-flex items-center gap-2 bg-red-600 text-white px-5 py-2.5 rounded-lg hover:bg-red-700 transition text-sm font-semibold">
                         ✗ Recusar
                     </button>
                 </form>
@@ -227,7 +227,7 @@
             </p>
             <form action="{{ route('lab.reservations.start', $reservation) }}" method="POST">
                 @csrf
-                <button class="inline-flex items-center gap-2 bg-yellow-500 text-white px-5 py-2.5 rounded-lg hover:bg-yellow-600 transition text-sm font-semibold">
+                <button class="inline-flex items-center gap-2 bg-etec-accent text-etec-dark px-5 py-2.5 rounded-lg hover:bg-yellow-400 transition text-sm font-semibold">
                     ✓ Materiais entregues — Professor assina checklist e inicia aula
                 </button>
             </form>
@@ -300,7 +300,7 @@
                 @endif
 
                 <button type="submit"
-                        class="inline-flex items-center gap-2 bg-purple-600 text-white px-5 py-2.5 rounded-lg hover:bg-purple-700 transition text-sm font-semibold">
+                        class="inline-flex items-center gap-2 bg-etec-main text-white px-5 py-2.5 rounded-lg hover:bg-etec-dark transition text-sm font-semibold">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     Confirmar Conferência
                 </button>
@@ -354,7 +354,7 @@
                               class="w-full border border-green-200 dark:border-green-700 rounded-lg px-3.5 py-2.5 text-sm dark:bg-gray-700 dark:text-white resize-none focus:ring-2 focus:ring-green-500 outline-none">{{ old('coordenador_obs') }}</textarea>
                 </div>
                 <div class="flex items-center gap-3">
-                    <button class="inline-flex items-center gap-2 bg-green-600 text-white px-5 py-2.5 rounded-lg hover:bg-green-700 transition text-sm font-semibold">
+                    <button class="inline-flex items-center gap-2 bg-etec-dark text-white px-5 py-2.5 rounded-lg hover:bg-etec-main transition text-sm font-semibold">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         Validar, arquivar e notificar
                     </button>
