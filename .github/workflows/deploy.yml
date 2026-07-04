@@ -175,15 +175,21 @@ jobs:
             echo "✓ Codigo atualizado do GitHub"
 
             # ╔══════════════════════════════════════════════════════════╗
+            # ║     PASSO 3.5: LIMPAR CACHE DE PROVIDERS (ESSENCIAL)    ║
+            # ║   bootstrap/cache/packages.php e services.php podem     ║
+            # ║   conter providers de pacotes dev (Breeze, Pail, etc.)  ║
+            # ║   que nao sao instalados com --no-dev. Se existirem,    ║
+            # ║   qualquer artisan command falha em loop — solucao:     ║
+            # ║   deletar ANTES do composer install.                    ║
+            # ╚══════════════════════════════════════════════════════════╝
+            rm -f bootstrap/cache/packages.php bootstrap/cache/services.php
+            echo "✓ Cache de providers removido (sera regenerado pelo composer)"
+
+            # ╔══════════════════════════════════════════════════════════╗
             # ║     PASSO 4: DEPENDENCIAS E MIGRATIONS                  ║
             # ╚══════════════════════════════════════════════════════════╝
             composer install --no-dev --optimize-autoloader --no-interaction
-            echo "✓ Composer instalado"
-
-            # Regenera bootstrap/cache/packages.php e services.php sem pacotes dev
-            # (evita "BreezeServiceProvider not found" quando cache antigo persiste no servidor)
-            php artisan package:discover --ansi
-            echo "✓ Package discovery concluido"
+            echo "✓ Composer instalado (package:discover roda automaticamente)"
 
             # Migrations com flag safe (nao apaga dados existentes)
             php artisan migrate --force
