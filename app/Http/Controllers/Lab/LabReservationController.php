@@ -229,7 +229,7 @@ class LabReservationController extends Controller
     }
 
     // ── Coordenador / Admin: validar e arquivar ──
-    public function validate(LabReservation $reservation)
+    public function validateActivity(LabReservation $reservation)
     {
         $reservation->update([
             'status'       => 'validada',
