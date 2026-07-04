@@ -1,4 +1,4 @@
-﻿@extends('admin.layouts.app')
+@extends('admin.layouts.app')
 @section('title', 'Usuários do Laboratório')
 @section('content')
 <div class="space-y-6">
