@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+﻿@extends('admin.layouts.app')
 
 @section('title', 'Detalhes da Reserva #' . $reservation->id)
 
@@ -76,7 +76,7 @@
     {{-- Ações por papel e status --}}
     <div class="flex flex-wrap gap-3">
         {{-- Admin: aprovar/recusar --}}
-        @role('admin')
+        @if(auth()->user()?->is_admin)
         @if($reservation->status === 'pre_alocada')
         <form action="{{ route('lab.reservations.approve', $reservation) }}" method="POST">
             @csrf @method('PATCH')
@@ -91,7 +91,7 @@
             </button>
         </form>
         @endif
-        @endrole
+        @endif
 
         {{-- Professor: iniciar aula --}}
         @if($reservation->status === 'aprovada' && $reservation->user_id === auth()->id())
@@ -118,14 +118,14 @@
 
         {{-- Auxiliar: conferência --}}
         @if($reservation->status === 'aguardando_conferencia')
-        @role('Auxiliar|admin')
+        @if(auth()->user()?->is_admin || auth()->user()?->hasRole('Auxiliar'))
         <form action="{{ route('lab.reservations.auxiliar-finalize', $reservation) }}" method="POST">
             @csrf
             <button class="inline-flex items-center gap-2 bg-purple-600 text-white px-4 py-2.5 rounded-lg hover:bg-purple-700 transition text-sm font-semibold">
                 ✓ Conferir e Finalizar
             </button>
         </form>
-        @endrole
+        @endif
         @endif
 
         {{-- PDF --}}

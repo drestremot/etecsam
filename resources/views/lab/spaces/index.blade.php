@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+﻿@extends('admin.layouts.app')
 @section('title', 'Espaços Didáticos')
 @section('content')
 <div class="space-y-6">

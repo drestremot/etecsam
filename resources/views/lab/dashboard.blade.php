@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+﻿@extends('admin.layouts.app')
 
 @section('title', 'Laboratórios')
 
@@ -77,7 +77,7 @@
     </div>
 
     {{-- Navegação rápida (admin) --}}
-    @role('admin')
+    @if(auth()->user()?->is_admin)
     <div class="grid sm:grid-cols-3 gap-4">
         @foreach([
             ['label' => 'Espaços didáticos', 'route' => 'lab.spaces.index', 'icon' => 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16'],
@@ -95,7 +95,7 @@
         </a>
         @endforeach
     </div>
-    @endrole
+    @endif
 
 </div>
 @endsection
