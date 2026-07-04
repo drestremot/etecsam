@@ -152,12 +152,16 @@ Route::prefix('laboratorio')->name('lab.')->middleware(['auth'])->group(function
     // API calendário
     Route::get('/api/calendario', [LabReservationController::class, 'calendarEvents'])->name('api.calendar');
 
+    // Coordenador + Admin: aprovar, recusar, validar
+    Route::middleware(['auth'])->group(function () {
+        Route::patch('reservas/{reservation}/aprovar',  [LabReservationController::class, 'approve'])->name('reservations.approve')->middleware('can-coordinate');
+        Route::patch('reservas/{reservation}/recusar',  [LabReservationController::class, 'reject'])->name('reservations.reject')->middleware('can-coordinate');
+        Route::patch('reservas/{reservation}/validar',  [LabReservationController::class, 'validate'])->name('reservations.validate')->middleware('can-coordinate');
+        Route::post('reservas/{reservation}/documento', [LabReservationController::class, 'uploadScannedDoc'])->name('reservations.upload-doc')->middleware('can-coordinate');
+    });
+
     // Área administrativa — somente admin
     Route::middleware(['admin'])->group(function () {
-        // Aprovação
-        Route::patch('reservas/{reservation}/aprovar',  [LabReservationController::class, 'approve'])->name('reservations.approve');
-        Route::patch('reservas/{reservation}/recusar',  [LabReservationController::class, 'reject'])->name('reservations.reject');
-        Route::post('reservas/{reservation}/documento', [LabReservationController::class, 'uploadScannedDoc'])->name('reservations.upload-doc');
 
         // Espaços
         Route::resource('espacos', SpaceController::class)->names([

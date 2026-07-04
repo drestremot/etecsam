@@ -9,18 +9,24 @@ class LabReservation extends Model
     protected $table = 'lab_reservations';
 
     protected $fillable = [
-        'user_id', 'space_id', 'auxiliar_id',
+        'user_id', 'space_id', 'auxiliar_id', 'coordenador_id',
         'reservation_date', 'start_time', 'end_time',
         'description', 'obs', 'auxiliar_obs', 'status',
         'checklist_file', 'scanned_doc',
         'delivery_photo', 'return_photo',
         'confirmed_by_auxiliar_at', 'finalized_at',
+        'professor_released_at', 'auxiliar_released_at',
+        'validated_at', 'professor_signed_at',
     ];
 
     protected $casts = [
-        'reservation_date'        => 'date',
+        'reservation_date'         => 'date',
         'confirmed_by_auxiliar_at' => 'datetime',
-        'finalized_at'            => 'datetime',
+        'finalized_at'             => 'datetime',
+        'professor_released_at'    => 'datetime',
+        'auxiliar_released_at'     => 'datetime',
+        'validated_at'             => 'datetime',
+        'professor_signed_at'      => 'datetime',
     ];
 
     public function user()
@@ -38,6 +44,16 @@ class LabReservation extends Model
         return $this->belongsTo(User::class, 'auxiliar_id');
     }
 
+    public function coordenador()
+    {
+        return $this->belongsTo(User::class, 'coordenador_id');
+    }
+
+    public function ambosLiberaram(): bool
+    {
+        return $this->professor_released_at !== null && $this->auxiliar_released_at !== null;
+    }
+
     public function materials()
     {
         return $this->belongsToMany(Material::class, 'lab_material_reservation')
@@ -53,11 +69,12 @@ class LabReservation extends Model
     public function getStatusLabelAttribute(): string
     {
         return match($this->status) {
-            'pre_alocada'            => 'Pré-alocada',
-            'aprovada'               => 'Aprovada',
+            'pre_alocada'            => 'Aguardando aprovação',
+            'aprovada'               => 'Aprovada — preparar lab',
             'em_execucao'            => 'Em execução',
             'aguardando_conferencia' => 'Aguardando conferência',
-            'conferida'              => 'Conferida',
+            'aguardando_validacao'   => 'Aguardando validação do coordenador',
+            'validada'               => 'Validada e arquivada',
             'concluida'              => 'Concluída',
             'finalizada'             => 'Finalizada',
             'recusada'               => 'Recusada',

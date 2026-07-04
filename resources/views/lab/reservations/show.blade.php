@@ -172,51 +172,70 @@
     {{-- ── Ações ── --}}
     <div class="space-y-4">
 
-        {{-- Admin: aprovar / recusar --}}
-        @if(auth()->user()->is_admin && $reservation->status === 'pre_alocada')
-        <div class="flex gap-3">
-            <form action="{{ route('lab.reservations.approve', $reservation) }}" method="POST">
-                @csrf @method('PATCH')
-                <button class="inline-flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-lg hover:bg-blue-700 transition text-sm font-semibold">
-                    ✓ Aprovar Reserva
-                </button>
-            </form>
-            <form action="{{ route('lab.reservations.reject', $reservation) }}" method="POST">
-                @csrf @method('PATCH')
-                <button class="inline-flex items-center gap-2 bg-red-600 text-white px-5 py-2.5 rounded-lg hover:bg-red-700 transition text-sm font-semibold">
-                    ✗ Recusar
+        {{-- COORDENADOR / ADMIN: aprovar ou recusar --}}
+        @if(in_array($reservation->status, ['pre_alocada']) && (auth()->user()->is_admin || auth()->user()->hasRole('Coordenador')))
+        <div class="bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800 p-5">
+            <h3 class="font-bold text-blue-900 dark:text-blue-300 mb-1">Ação do Coordenador</h3>
+            <p class="text-sm text-blue-700 dark:text-blue-400 mb-4">Analise a solicitação e aprove ou recuse. Ao aprovar, o auxiliar será notificado para preparar o laboratório.</p>
+            <div class="flex gap-3">
+                <form action="{{ route('lab.reservations.approve', $reservation) }}" method="POST">
+                    @csrf @method('PATCH')
+                    <button class="inline-flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-lg hover:bg-blue-700 transition text-sm font-semibold">
+                        ✓ Aprovar e encaminhar ao Auxiliar
+                    </button>
+                </form>
+                <form action="{{ route('lab.reservations.reject', $reservation) }}" method="POST">
+                    @csrf @method('PATCH')
+                    <button class="inline-flex items-center gap-2 bg-red-500 text-white px-5 py-2.5 rounded-lg hover:bg-red-600 transition text-sm font-semibold">
+                        ✗ Recusar
+                    </button>
+                </form>
+            </div>
+        </div>
+        @endif
+
+        {{-- AUXILIAR: entregar materiais + Professor assina --}}
+        @if($reservation->status === 'aprovada' && (auth()->user()->is_admin || auth()->user()->hasRole('Auxiliar') || $reservation->user_id === auth()->id()))
+        <div class="bg-yellow-50 dark:bg-yellow-900/20 rounded-xl border border-yellow-200 dark:border-yellow-800 p-5">
+            <h3 class="font-bold text-yellow-900 dark:text-yellow-300 mb-1 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10"/></svg>
+                Entrega de Materiais e Assinatura do Checklist
+            </h3>
+            <p class="text-sm text-yellow-700 dark:text-yellow-400 mb-4">
+                O auxiliar entrega os materiais ao professor e ambos confirmam que o laboratório está em boas condições de uso. O professor assina o checklist ao clicar em confirmar.
+            </p>
+            <form action="{{ route('lab.reservations.start', $reservation) }}" method="POST">
+                @csrf
+                <button class="inline-flex items-center gap-2 bg-yellow-500 text-white px-5 py-2.5 rounded-lg hover:bg-yellow-600 transition text-sm font-semibold">
+                    ✓ Materiais entregues — Professor assina checklist e inicia aula
                 </button>
             </form>
         </div>
         @endif
 
-        {{-- Professor: iniciar aula --}}
-        @if($reservation->status === 'aprovada' && $reservation->user_id === auth()->id())
-        <form action="{{ route('lab.reservations.start', $reservation) }}" method="POST">
-            @csrf
-            <button class="inline-flex items-center gap-2 bg-yellow-500 text-white px-5 py-2.5 rounded-lg hover:bg-yellow-600 transition text-sm font-semibold">
-                ▶ Iniciar Aula
-            </button>
-        </form>
-        @endif
-
-        {{-- Professor: observações e encerramento --}}
-        @if($reservation->status === 'em_execucao' && $reservation->user_id === auth()->id())
+        {{-- PROFESSOR: observações e liberação --}}
+        @if($reservation->status === 'em_execucao' && $reservation->user_id === auth()->id() && !$reservation->professor_released_at)
         <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm p-5">
-            <h3 class="font-bold text-gray-900 dark:text-white mb-3 text-sm">Registrar observações e encerrar aula</h3>
+            <h3 class="font-bold text-gray-900 dark:text-white mb-1 text-sm">Registrar observações e liberar para o auxiliar</h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">Descreva como foi a atividade. Após o auxiliar também liberar, a reserva será enviada ao coordenador para validação.</p>
             <form action="{{ route('lab.reservations.professor-obs', $reservation) }}" method="POST" class="space-y-3">
                 @csrf
-                <textarea name="obs" rows="3" required placeholder="Descreva como foi a aula, intercorrências, uso dos materiais..."
+                <textarea name="obs" rows="3" required placeholder="Como foi a aula? Houve intercorrências? Os materiais foram suficientes?"
                           class="w-full border border-gray-200 dark:border-gray-600 rounded-lg px-3.5 py-2.5 text-sm dark:bg-gray-700 dark:text-white resize-none focus:ring-2 focus:ring-etec-dark outline-none"></textarea>
                 <button class="px-5 py-2.5 bg-etec-dark text-white rounded-lg text-sm font-semibold hover:bg-etec-main transition">
-                    Encerrar e enviar para conferência
+                    Salvar observações e liberar
                 </button>
             </form>
         </div>
+        @elseif($reservation->professor_released_at && $reservation->user_id === auth()->id())
+        <div class="flex items-center gap-2 text-sm text-green-600 bg-green-50 rounded-lg px-4 py-2.5 border border-green-200">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"/></svg>
+            Suas observações foram registradas em {{ $reservation->professor_released_at->format('d/m H:i') }}.
+        </div>
         @endif
 
-        {{-- AUXILIAR: formulário de conferência --}}
-        @if($reservation->status === 'aguardando_conferencia' && (auth()->user()->is_admin || auth()->user()->hasRole('Auxiliar')))
+        {{-- AUXILIAR: conferência e liberação --}}
+        @if(in_array($reservation->status, ['em_execucao','aguardando_conferencia']) && (auth()->user()->is_admin || auth()->user()->hasRole('Auxiliar')) && !$reservation->auxiliar_released_at)
         <div class="bg-purple-50 dark:bg-purple-900/20 rounded-xl border-2 border-purple-200 dark:border-purple-800 p-5">
             <h3 class="font-bold text-purple-900 dark:text-purple-300 mb-1 flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
@@ -265,6 +284,59 @@
                     Confirmar Conferência
                 </button>
             </form>
+        </div>
+        @endif
+
+        @elseif($reservation->auxiliar_released_at && (auth()->user()->is_admin || auth()->user()->hasRole('Auxiliar')))
+        <div class="flex items-center gap-2 text-sm text-purple-600 bg-purple-50 rounded-lg px-4 py-2.5 border border-purple-200">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"/></svg>
+            Conferência registrada em {{ $reservation->auxiliar_released_at->format('d/m H:i') }}.
+        </div>
+        @endif
+
+        {{-- COORDENADOR / ADMIN: validar e arquivar --}}
+        @if($reservation->status === 'aguardando_validacao' && (auth()->user()->is_admin || auth()->user()->hasRole('Coordenador')))
+        <div class="bg-green-50 dark:bg-green-900/20 rounded-xl border-2 border-green-200 dark:border-green-800 p-5">
+            <h3 class="font-bold text-green-900 dark:text-green-300 mb-1 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                Validação do Coordenador
+            </h3>
+            <p class="text-sm text-green-700 dark:text-green-400 mb-4">
+                Professor e auxiliar já registraram suas observações. Analise e valide a atividade para arquivá-la.
+            </p>
+            <div class="grid sm:grid-cols-2 gap-4 mb-4 text-sm">
+                @if($reservation->obs)
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-3 border border-green-100">
+                    <p class="text-xs font-bold text-gray-400 uppercase mb-1">Obs. do Professor</p>
+                    <p class="text-gray-700 dark:text-gray-300">{{ $reservation->obs }}</p>
+                </div>
+                @endif
+                @if($reservation->auxiliar_obs)
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-3 border border-green-100">
+                    <p class="text-xs font-bold text-gray-400 uppercase mb-1">Obs. do Auxiliar</p>
+                    <p class="text-gray-700 dark:text-gray-300">{{ $reservation->auxiliar_obs }}</p>
+                </div>
+                @endif
+            </div>
+            <form action="{{ route('lab.reservations.validate', $reservation) }}" method="POST">
+                @csrf @method('PATCH')
+                <button class="inline-flex items-center gap-2 bg-green-600 text-white px-5 py-2.5 rounded-lg hover:bg-green-700 transition text-sm font-semibold">
+                    ✓ Validar e Arquivar atividade
+                </button>
+            </form>
+        </div>
+        @endif
+
+        {{-- Validada: exibir info de arquivamento --}}
+        @if($reservation->status === 'validada')
+        <div class="flex items-center gap-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl px-5 py-4">
+            <svg class="w-6 h-6 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            <div>
+                <p class="font-semibold text-green-800 dark:text-green-300 text-sm">Atividade validada e arquivada</p>
+                @if($reservation->coordenador)
+                <p class="text-xs text-green-600 mt-0.5">Validada por {{ $reservation->coordenador->name }} em {{ $reservation->validated_at?->format('d/m/Y H:i') }}</p>
+                @endif
+            </div>
         </div>
         @endif
 

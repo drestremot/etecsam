@@ -27,15 +27,25 @@ class LabReservationController extends Controller
                 'active'    => LabReservation::whereIn('status', ['aprovada', 'em_execucao'])->count(),
             ];
             $recent = LabReservation::with(['user', 'space'])->latest()->take(5)->get();
+        } elseif ($user->hasRole('Coordenador')) {
+            $stats = [
+                'aguardando_aprovacao' => LabReservation::where('status', 'pre_alocada')->count(),
+                'aguardando_validacao' => LabReservation::where('status', 'aguardando_validacao')->count(),
+                'ativas'               => LabReservation::whereIn('status', ['aprovada', 'em_execucao', 'aguardando_conferencia'])->count(),
+                'validadas'            => LabReservation::where('status', 'validada')->count(),
+            ];
+            $recent = LabReservation::with(['user', 'space'])
+                ->whereIn('status', ['pre_alocada', 'aguardando_validacao'])
+                ->latest()->take(5)->get();
         } elseif ($user->hasRole('Auxiliar')) {
             $stats = [
-                'aguardando' => LabReservation::where('status', 'aguardando_conferencia')->count(),
+                'aguardando' => LabReservation::whereIn('status', ['aprovada', 'aguardando_conferencia'])->count(),
                 'ativas'     => LabReservation::whereIn('status', ['aprovada', 'em_execucao'])->count(),
-                'concluidas' => LabReservation::whereIn('status', ['concluida', 'finalizada'])->count(),
+                'concluidas' => LabReservation::whereIn('status', ['validada', 'concluida', 'finalizada'])->count(),
                 'total'      => LabReservation::count(),
             ];
             $recent = LabReservation::with(['user', 'space'])
-                ->whereIn('status', ['aguardando_conferencia', 'aprovada', 'em_execucao'])
+                ->whereIn('status', ['aprovada', 'aguardando_conferencia', 'em_execucao'])
                 ->latest()->take(5)->get();
         } else {
             // Professor
@@ -57,16 +67,18 @@ class LabReservationController extends Controller
     {
         $user = auth()->user();
 
-        if ($user->is_admin) {
-            $reservations = LabReservation::with(['user', 'space'])->latest()->paginate(20);
-            $pendentes    = null;
-        } elseif ($user->hasRole('Auxiliar')) {
-            // Auxiliar: fila de conferência primeiro, depois demais ativas
+        if ($user->is_admin || $user->hasRole('Coordenador')) {
             $pendentes    = LabReservation::with(['user', 'space'])
-                ->where('status', 'aguardando_conferencia')
+                ->whereIn('status', ['pre_alocada', 'aguardando_validacao'])
+                ->orderByRaw("CASE status WHEN 'aguardando_validacao' THEN 0 ELSE 1 END")
+                ->latest()->get();
+            $reservations = LabReservation::with(['user', 'space'])->latest()->paginate(20);
+        } elseif ($user->hasRole('Auxiliar')) {
+            $pendentes    = LabReservation::with(['user', 'space'])
+                ->whereIn('status', ['aprovada', 'aguardando_conferencia'])
                 ->latest()->get();
             $reservations = LabReservation::with(['user', 'space'])
-                ->whereNotIn('status', ['concluida', 'finalizada', 'recusada'])
+                ->whereNotIn('status', ['validada', 'recusada'])
                 ->latest()->paginate(20);
         } else {
             $pendentes    = null;
@@ -86,15 +98,19 @@ class LabReservationController extends Controller
 
     public function store(Request $request)
     {
+        $minDate = now()->addDays(2)->format('Y-m-d');
+
         $validated = $request->validate([
             'space_id'         => 'required|exists:spaces,id',
-            'reservation_date' => 'required|date|after_or_equal:today',
+            'reservation_date' => "required|date|after_or_equal:{$minDate}",
             'start_time'       => 'required',
             'end_time'         => 'nullable',
             'description'      => 'nullable|string',
             'materials'        => 'nullable|array',
             'materials.*.id'   => 'exists:materials,id',
             'materials.*.qty'  => 'integer|min:1',
+        ], [
+            'reservation_date.after_or_equal' => 'A reserva deve ser feita com pelo menos 2 dias de antecedência.',
         ]);
 
         $reservation = LabReservation::create([
@@ -116,60 +132,110 @@ class LabReservationController extends Controller
         }
 
         return redirect()->route('lab.reservations.show', $reservation)
-            ->with('success', 'Reserva criada! Aguarde aprovação do coordenador.');
+            ->with('success', 'Reserva criada! Aguarde aprovação do coordenador (mínimo 2 dias de antecedência respeitado).');
     }
 
     public function show(LabReservation $reservation)
     {
-        $reservation->load(['user', 'space', 'auxiliar', 'materials', 'images']);
+        $reservation->load(['user', 'space', 'auxiliar', 'coordenador', 'materials', 'images']);
         return view('lab.reservations.show', compact('reservation'));
     }
 
+    // ── Coordenador / Admin: aprovar e encaminhar ao auxiliar ──
     public function approve(LabReservation $reservation)
     {
-        $reservation->update(['status' => 'aprovada']);
-        return back()->with('success', 'Reserva aprovada!');
+        $reservation->update([
+            'status'         => 'aprovada',
+            'coordenador_id' => auth()->id(),
+        ]);
+        return back()->with('success', 'Reserva aprovada! O auxiliar foi notificado para preparar o laboratório.');
     }
 
     public function reject(LabReservation $reservation)
     {
-        $reservation->update(['status' => 'recusada']);
+        $reservation->update([
+            'status'         => 'recusada',
+            'coordenador_id' => auth()->id(),
+        ]);
         return back()->with('success', 'Reserva recusada.');
     }
 
+    // ── Auxiliar: entregar materiais + professor assina ──
     public function startClass(LabReservation $reservation)
     {
-        $reservation->update(['status' => 'em_execucao']);
-        return back()->with('success', 'Aula iniciada!');
+        $reservation->update([
+            'status'               => 'em_execucao',
+            'professor_signed_at'  => now(),
+        ]);
+        return back()->with('success', 'Materiais entregues e checklist assinado. Boa aula!');
     }
 
+    // ── Professor: observações e liberação ──
     public function submitProfessorObs(Request $request, LabReservation $reservation)
     {
-        $request->validate(['obs' => 'required|string']);
-        $reservation->update([
-            'obs'    => $request->obs,
-            'status' => 'aguardando_conferencia',
+        $request->validate(['obs' => 'required|string|min:5'], [
+            'obs.required' => 'Informe suas observações sobre a aula.',
         ]);
-        return back()->with('success', 'Observações registradas. Aguardando conferência.');
+
+        $data = [
+            'obs'                   => $request->obs,
+            'professor_released_at' => now(),
+        ];
+
+        // Se auxiliar já liberou, vai para aguardando_validacao
+        if ($reservation->auxiliar_released_at) {
+            $data['status'] = 'aguardando_validacao';
+        }
+
+        $reservation->update($data);
+
+        $msg = $reservation->fresh()->status === 'aguardando_validacao'
+            ? 'Observações registradas. Reserva enviada ao coordenador para validação!'
+            : 'Observações registradas. Aguardando o auxiliar liberar também.';
+
+        return back()->with('success', $msg);
     }
 
+    // ── Auxiliar: conferência e liberação ──
     public function auxiliarFinalize(Request $request, LabReservation $reservation)
     {
         $request->validate([
             'auxiliar_obs' => 'required|string|min:5',
         ], [
             'auxiliar_obs.required' => 'Informe as observações da conferência.',
-            'auxiliar_obs.min'      => 'A observação deve ter pelo menos 5 caracteres.',
         ]);
 
-        $reservation->update([
+        $data = [
             'auxiliar_obs'            => $request->auxiliar_obs,
             'auxiliar_id'             => auth()->id(),
-            'status'                  => 'conferida',
+            'auxiliar_released_at'    => now(),
             'confirmed_by_auxiliar_at' => now(),
-        ]);
+        ];
 
-        return back()->with('success', 'Conferência registrada com sucesso!');
+        // Se professor já liberou, vai para aguardando_validacao
+        if ($reservation->professor_released_at) {
+            $data['status'] = 'aguardando_validacao';
+        } else {
+            $data['status'] = 'aguardando_conferencia';
+        }
+
+        $reservation->update($data);
+
+        $msg = $data['status'] === 'aguardando_validacao'
+            ? 'Conferência registrada. Reserva enviada ao coordenador para validação!'
+            : 'Conferência registrada. Aguardando o professor registrar as observações.';
+
+        return back()->with('success', $msg);
+    }
+
+    // ── Coordenador / Admin: validar e arquivar ──
+    public function validate(LabReservation $reservation)
+    {
+        $reservation->update([
+            'status'       => 'validada',
+            'validated_at' => now(),
+        ]);
+        return back()->with('success', 'Atividade validada e arquivada com sucesso!');
     }
 
     public function uploadScannedDoc(Request $request, LabReservation $reservation)
