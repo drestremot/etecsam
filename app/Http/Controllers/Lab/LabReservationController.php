@@ -105,12 +105,15 @@ class LabReservationController extends Controller
             'reservation_date' => "required|date|after_or_equal:{$minDate}",
             'start_time'       => 'required',
             'end_time'         => 'nullable',
-            'description'      => 'nullable|string',
-            'materials'        => 'nullable|array',
-            'materials.*.id'   => 'exists:materials,id',
-            'materials.*.qty'  => 'integer|min:1',
+            'description'      => 'required|string|min:10',
+            'mat_ids'          => 'nullable|array',
+            'mat_ids.*'        => 'exists:materials,id',
+            'mat_qty'          => 'nullable|array',
+            'mat_qty.*'        => 'integer|min:1',
         ], [
             'reservation_date.after_or_equal' => 'A reserva deve ser feita com pelo menos 2 dias de antecedência.',
+            'description.required'            => 'Descreva o plano de aula.',
+            'description.min'                 => 'Descreva o plano de aula com pelo menos 10 caracteres.',
         ]);
 
         $reservation = LabReservation::create([
@@ -119,16 +122,19 @@ class LabReservationController extends Controller
             'reservation_date' => $validated['reservation_date'],
             'start_time'       => $validated['start_time'],
             'end_time'         => $validated['end_time'] ?? null,
-            'description'      => $validated['description'] ?? null,
+            'description'      => $validated['description'],
             'status'           => 'pre_alocada',
         ]);
 
-        if (!empty($validated['materials'])) {
-            foreach ($validated['materials'] as $mat) {
-                $reservation->materials()->attach($mat['id'], [
-                    'quantity_requested' => $mat['qty'] ?? 1,
-                ]);
-            }
+        // Vincula materiais selecionados com suas quantidades
+        $matIds = $request->input('mat_ids', []);
+        $matQty = $request->input('mat_qty', []);
+
+        foreach ($matIds as $matId) {
+            $qty = max(1, (int) ($matQty[$matId] ?? 1));
+            $reservation->materials()->attach($matId, [
+                'quantity_requested' => $qty,
+            ]);
         }
 
         return redirect()->route('lab.reservations.show', $reservation)

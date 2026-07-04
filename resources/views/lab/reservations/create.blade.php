@@ -26,7 +26,11 @@
          })(),
 
          minDate: '{{ now()->addDays(2)->format('Y-m-d') }}',
-         hours: Array.from({length: 15}, (_, i) => `${String(i + 7).padStart(2,'0')}:00`),
+         // Slots de 30 em 30 minutos: 07:00 → 22:30
+         hours: Array.from({length: 32}, (_, i) => {
+             const t = 7*60 + i*30;
+             return `${String(Math.floor(t/60)).padStart(2,'0')}:${String(t%60).padStart(2,'0')}`;
+         }),
 
          get weekDays() {
              const days = [];
@@ -115,8 +119,10 @@
          },
 
          addHour(h) {
+             // Avança 30 minutos (um slot)
              const [hh, mm] = h.split(':').map(Number);
-             return `${String(hh+1).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;
+             const t = hh*60 + mm + 30;
+             return `${String(Math.floor(t/60)).padStart(2,'0')}:${String(t%60).padStart(2,'0')}`;
          },
 
          async loadAvailability() {
@@ -210,29 +216,48 @@
 
                 {{-- Materiais --}}
                 @if($materials->count())
-                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm p-5">
-                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-3">Materiais Necessários</label>
-                    <div class="space-y-2 max-h-72 overflow-y-auto">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm p-5"
+                     x-data="{ sel: {} }">
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Materiais Necessários</label>
+                    <p class="text-xs text-gray-400 mb-3">Marque o material e defina a quantidade</p>
+                    <div class="space-y-1.5 max-h-72 overflow-y-auto pr-1">
                         @foreach($materials as $m)
-                        <div class="flex items-center gap-3 p-2 rounded-lg border border-transparent hover:border-etec-light hover:bg-etec-light/30 transition"
-                             x-data="{ checked: false }">
-                            <input type="checkbox" id="m{{ $m->id }}"
-                                   name="materials[{{ $m->id }}][id]" value="{{ $m->id }}"
-                                   x-model="checked"
-                                   class="rounded border-gray-300 text-etec-dark focus:ring-etec-dark flex-shrink-0 w-4 h-4">
-                            <label for="m{{ $m->id }}" class="flex-1 min-w-0 cursor-pointer">
-                                <span class="text-sm font-medium text-gray-800 dark:text-white block truncate">{{ $m->name }}</span>
+                        <div class="flex items-center gap-3 p-2.5 rounded-lg border transition cursor-pointer"
+                             :class="sel[{{ $m->id }}] ? 'border-etec-main bg-etec-light/40 dark:bg-etec-dark/30' : 'border-gray-100 dark:border-gray-700 hover:border-etec-light hover:bg-gray-50 dark:hover:bg-gray-700/50'"
+                             @click.stop="">
+                            <input type="checkbox"
+                                   id="mat_{{ $m->id }}"
+                                   name="mat_ids[]"
+                                   value="{{ $m->id }}"
+                                   @change="sel[{{ $m->id }}] = $event.target.checked"
+                                   class="rounded border-gray-300 text-etec-dark focus:ring-etec-dark flex-shrink-0 w-4 h-4 cursor-pointer">
+                            <label for="mat_{{ $m->id }}" class="flex-1 min-w-0 cursor-pointer select-none">
+                                <span class="text-sm font-medium text-gray-800 dark:text-white block">{{ $m->name }}</span>
                                 <span class="text-xs text-gray-400">
-                                    @if($m->patrimony_number) #{{ $m->patrimony_number }} · @endif
-                                    {{ $m->stock_quantity }} {{ $m->unit ?? 'unid.' }} em estoque
+                                    @if($m->patrimony_number)Patrim. {{ $m->patrimony_number }} · @endif
+                                    Estoque: <strong class="{{ $m->stock_quantity > 0 ? 'text-green-600' : 'text-red-500' }}">{{ $m->stock_quantity }}</strong> {{ $m->unit ?? 'unid.' }}
                                 </span>
                             </label>
-                            <input type="number" name="materials[{{ $m->id }}][qty]"
-                                   :disabled="!checked"
-                                   value="1" min="1" max="{{ $m->stock_quantity }}"
-                                   class="w-16 border border-gray-200 dark:border-gray-600 rounded-lg px-2 py-1.5 text-xs text-center dark:bg-gray-700 dark:text-white disabled:opacity-30 focus:ring-2 focus:ring-etec-dark outline-none">
+                            <div class="flex items-center gap-1.5 flex-shrink-0">
+                                <label class="text-xs text-gray-500">Qtd:</label>
+                                <input type="number"
+                                       name="mat_qty[{{ $m->id }}]"
+                                       value="1" min="1" max="{{ $m->stock_quantity }}"
+                                       :disabled="!sel[{{ $m->id }}]"
+                                       @click.stop=""
+                                       class="w-16 border rounded-lg px-2 py-1 text-xs text-center focus:ring-2 focus:ring-etec-dark outline-none transition"
+                                       :class="sel[{{ $m->id }}]
+                                           ? 'border-etec-main bg-white dark:bg-gray-700 dark:text-white'
+                                           : 'border-gray-200 bg-gray-50 text-gray-300 dark:bg-gray-700/50 cursor-not-allowed'">
+                            </div>
                         </div>
                         @endforeach
+                    </div>
+                    {{-- Resumo selecionados --}}
+                    <div x-show="Object.values(sel).some(v=>v)" class="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
+                        <p class="text-xs font-bold text-etec-main dark:text-etec-accent">
+                            <span x-text="Object.values(sel).filter(v=>v).length"></span> material(is) selecionado(s)
+                        </p>
                     </div>
                 </div>
                 @endif
@@ -304,7 +329,7 @@
 
                                 {{-- Células por dia --}}
                                 <template x-for="day in weekDays" :key="day">
-                                    <div class="h-12 border-r border-gray-50 dark:border-gray-700/50 last:border-r-0 relative cursor-pointer transition-all"
+                                    <div class="h-7 border-r border-gray-50 dark:border-gray-700/50 last:border-r-0 relative cursor-pointer transition-all"
                                          :title="isPast(day) ? 'Data indisponível (mín. 48h)' : isOccupied(day, hour) ? getOccupiedInfo(day, hour) : 'Clique para selecionar'"
                                          :class="{
                                              'bg-gray-50 dark:bg-gray-700/20 cursor-not-allowed': isPast(day),
