@@ -237,7 +237,7 @@
             </div>
         </div>
         <div class="p-6">
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                 @foreach($birthdays as $teacher)
                 @php $isToday = \Carbon\Carbon::parse($teacher->birth_date)->day === now()->day; @endphp
                 <div class="flex items-center gap-2.5 p-2.5 rounded-xl border transition
