@@ -156,7 +156,7 @@ Route::prefix('laboratorio')->name('lab.')->middleware(['auth'])->group(function
     Route::middleware(['auth'])->group(function () {
         Route::patch('reservas/{reservation}/aprovar',  [LabReservationController::class, 'approve'])->name('reservations.approve')->middleware('can-coordinate');
         Route::patch('reservas/{reservation}/recusar',  [LabReservationController::class, 'reject'])->name('reservations.reject')->middleware('can-coordinate');
-        Route::patch('reservas/{reservation}/validar',  [LabReservationController::class, 'validate'])->name('reservations.validate')->middleware('can-coordinate');
+        Route::patch('reservas/{reservation}/validar',  [LabReservationController::class, 'validateActivity'])->name('reservations.validate')->middleware('can-coordinate');
         Route::post('reservas/{reservation}/documento', [LabReservationController::class, 'uploadScannedDoc'])->name('reservations.upload-doc')->middleware('can-coordinate');
     });
 
