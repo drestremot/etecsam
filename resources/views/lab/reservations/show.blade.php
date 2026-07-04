@@ -285,8 +285,6 @@
                 </button>
             </form>
         </div>
-        @endif
-
         @elseif($reservation->auxiliar_released_at && (auth()->user()->is_admin || auth()->user()->hasRole('Auxiliar')))
         <div class="flex items-center gap-2 text-sm text-purple-600 bg-purple-50 rounded-lg px-4 py-2.5 border border-purple-200">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"/></svg>
