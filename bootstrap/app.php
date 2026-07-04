@@ -20,5 +20,11 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        // Redireciona 403 de /admin para /laboratorio se o usuário está logado mas não é admin
+        $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\HttpException $e, $request) {
+            if ($e->getStatusCode() === 403 && auth()->check() && !auth()->user()->is_admin) {
+                return redirect()->route('lab.dashboard')
+                    ->with('info', 'Você foi redirecionado para o módulo de laboratórios.');
+            }
+        });
     })->create();
