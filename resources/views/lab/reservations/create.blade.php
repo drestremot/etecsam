@@ -169,10 +169,11 @@
         <input type="hidden" name="start_time"       :value="selectedStart">
         <input type="hidden" name="end_time"         :value="selectedEnd">
 
-        <div class="grid lg:grid-cols-3 gap-6">
+        <div class="grid lg:grid-cols-3 gap-6 items-start">
 
-            {{-- ── Painel lateral (laboratório + info seleção + materiais + plano) ── --}}
-            <div class="space-y-5">
+            {{-- ── Painel lateral: flex column, mesma altura do calendário ── --}}
+            <div class="flex flex-col gap-5 lg:sticky lg:top-4"
+                 style="min-height: 0">
 
                 {{-- Laboratório --}}
                 <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm p-5">
@@ -227,37 +228,56 @@
                               class="w-full border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2.5 text-sm dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-etec-dark outline-none resize-none">{{ old('description') }}</textarea>
                 </div>
 
-                {{-- Materiais --}}
-                {{-- Materiais (sempre visível) --}}
-                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm p-5"
-                     x-data="{ sel: {} }">
-                    <div class="flex items-center justify-between mb-1">
-                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide">Materiais / Recursos Necessários</label>
-                        @if(auth()->user()->is_admin)
-                        <a href="{{ route('lab.materials.create') }}" target="_blank"
-                           class="text-xs text-etec-main hover:underline font-semibold">+ Cadastrar material</a>
+                {{-- Materiais: flex-1 para preencher o espaço restante da coluna --}}
+                <div class="flex-1 flex flex-col bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden min-h-0"
+                     x-data="{ sel: {}, search: '' }">
+
+                    {{-- Cabeçalho fixo do card --}}
+                    <div class="p-4 border-b border-gray-100 dark:border-gray-700 flex-shrink-0">
+                        <div class="flex items-center justify-between mb-2">
+                            <label class="text-xs font-bold text-gray-500 uppercase tracking-wide">Materiais / Recursos</label>
+                            @if(auth()->user()->is_admin)
+                            <a href="{{ route('lab.materials.create') }}" target="_blank"
+                               class="text-xs text-etec-main hover:underline font-semibold">+ Novo</a>
+                            @endif
+                        </div>
+
+                        @if(!$materials->isEmpty())
+                        {{-- Campo de pesquisa --}}
+                        <div class="relative">
+                            <svg class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                            <input x-model="search" type="search"
+                                   placeholder="Buscar material..."
+                                   class="w-full pl-8 pr-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-sm dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-etec-dark outline-none">
+                        </div>
                         @endif
                     </div>
 
                     @if($materials->isEmpty())
-                        <div class="rounded-lg bg-yellow-50 border border-yellow-200 p-4 text-sm text-yellow-800 mt-2">
-                            <p class="font-semibold mb-1">⚠ Nenhum material cadastrado ainda.</p>
-                            @if(auth()->user()->is_admin)
-                                <p class="text-xs mb-2">Cadastre os equipamentos e materiais do laboratório para que os professores possam solicitá-los nas reservas.</p>
-                                <a href="{{ route('lab.materials.create') }}"
-                                   class="inline-flex items-center gap-1.5 bg-yellow-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-yellow-700 transition">
-                                    Cadastrar materiais agora →
-                                </a>
-                            @else
-                                <p class="text-xs">Solicite ao administrador que cadastre os materiais disponíveis. A atividade pode prosseguir sem materiais, se necessário.</p>
-                            @endif
+                        <div class="p-4 flex-1">
+                            <div class="rounded-lg bg-yellow-50 border border-yellow-200 p-4 text-sm text-yellow-800">
+                                <p class="font-semibold mb-1">⚠ Nenhum material cadastrado.</p>
+                                @if(auth()->user()->is_admin)
+                                    <a href="{{ route('lab.materials.create') }}"
+                                       class="inline-flex items-center gap-1 text-xs bg-yellow-600 text-white font-bold px-3 py-1.5 rounded-lg hover:bg-yellow-700 transition mt-1">
+                                        Cadastrar materiais →
+                                    </a>
+                                @else
+                                    <p class="text-xs mt-1">Solicite ao administrador que cadastre os materiais disponíveis.</p>
+                                @endif
+                            </div>
                         </div>
                     @else
-                        <p class="text-xs text-gray-400 mb-3">Marque os itens necessários e informe a quantidade. Apenas itens com estoque disponível podem ser solicitados.</p>
-                        <div class="space-y-1.5 max-h-72 overflow-y-auto pr-1">
+                        {{-- Lista com scroll preenchendo todo o espaço restante --}}
+                        <div class="flex-1 overflow-y-auto p-3 space-y-1.5 min-h-0">
                             @foreach($materials as $m)
                             <div class="flex items-center gap-3 p-2.5 rounded-lg border transition"
-                                 :class="sel[{{ $m->id }}] ? 'border-etec-main bg-etec-light/40 dark:bg-etec-dark/30' : 'border-gray-100 dark:border-gray-700 hover:border-etec-light hover:bg-gray-50 dark:hover:bg-gray-700/50'">
+                                 x-show="search === '' || '{{ strtolower($m->name.' '.($m->patrimony_number ?? '')) }}'.includes(search.toLowerCase())"
+                                 :class="sel[{{ $m->id }}]
+                                     ? 'border-etec-main bg-etec-light/40 dark:bg-etec-dark/30'
+                                     : 'border-gray-100 dark:border-gray-700 hover:border-etec-light hover:bg-gray-50 dark:hover:bg-gray-700/40'">
 
                                 <input type="checkbox"
                                        id="mat_{{ $m->id }}"
@@ -268,58 +288,63 @@
                                        class="rounded border-gray-300 text-etec-dark focus:ring-etec-dark flex-shrink-0 w-4 h-4 cursor-pointer disabled:opacity-40">
 
                                 <label for="mat_{{ $m->id }}" class="flex-1 min-w-0 cursor-pointer select-none">
-                                    <span class="text-sm font-medium text-gray-800 dark:text-white block leading-tight">
+                                    <span class="text-sm font-medium text-gray-800 dark:text-white block leading-tight truncate">
                                         {{ $m->name }}
                                         @if($m->stock_quantity == 0)
-                                            <span class="text-xs font-normal text-red-400 ml-1">(sem estoque)</span>
+                                            <span class="text-xs font-normal text-red-400">(sem estoque)</span>
                                         @endif
                                     </span>
-                                    <span class="text-xs text-gray-400 flex items-center gap-1.5 mt-0.5">
+                                    <span class="text-xs text-gray-400 flex flex-wrap items-center gap-1 mt-0.5">
                                         @if($m->patrimony_number)
-                                            <span>Patrim. {{ $m->patrimony_number }}</span>
-                                            <span class="text-gray-200">·</span>
+                                            <span class="font-mono">{{ $m->patrimony_number }}</span>
+                                            <span>·</span>
                                         @endif
-                                        Estoque disponível:
+                                        Estoque:
                                         <strong class="{{ $m->stock_quantity > 5 ? 'text-green-600' : ($m->stock_quantity > 0 ? 'text-yellow-600' : 'text-red-500') }}">
                                             {{ $m->stock_quantity }} {{ $m->unit ?? 'unid.' }}
                                         </strong>
                                     </span>
                                 </label>
 
-                                <div class="flex items-center gap-1.5 flex-shrink-0">
-                                    <span class="text-xs text-gray-500">Qtd:</span>
+                                <div class="flex items-center gap-1 flex-shrink-0">
+                                    <span class="text-xs text-gray-400">Qtd</span>
                                     <input type="number"
                                            name="mat_qty[{{ $m->id }}]"
-                                           value="1"
-                                           min="1"
-                                           max="{{ $m->stock_quantity }}"
+                                           value="1" min="1" max="{{ $m->stock_quantity }}"
                                            :disabled="!sel[{{ $m->id }}]"
                                            @click.stop=""
-                                           class="w-16 border rounded-lg px-2 py-1 text-sm text-center font-bold focus:ring-2 focus:ring-etec-dark outline-none transition"
+                                           class="w-14 border rounded-lg px-2 py-1 text-sm text-center font-bold focus:ring-2 focus:ring-etec-dark outline-none transition"
                                            :class="sel[{{ $m->id }}]
-                                               ? 'border-etec-main bg-white dark:bg-gray-700 dark:text-white text-etec-dark'
+                                               ? 'border-etec-main bg-white dark:bg-gray-700 dark:text-white'
                                                : 'border-gray-200 bg-gray-50 text-gray-300 cursor-not-allowed'">
                                 </div>
                             </div>
                             @endforeach
+
+                            {{-- Nenhum resultado da pesquisa --}}
+                            <p x-show="search && !{{ collect($materials)->map(fn($m) => "'{{ strtolower($m->name.' '.($m->patrimony_number ?? '')) }}'.includes(search.toLowerCase())")->join(' || ') }}"
+                               class="text-center text-xs text-gray-400 py-4">
+                                Nenhum material encontrado para "<span x-text="search"></span>"
+                            </p>
                         </div>
 
-                        {{-- Resumo --}}
-                        <div class="mt-3 pt-3 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between">
-                            <p class="text-xs text-gray-400">
-                                <span x-text="Object.values(sel).filter(Boolean).length"></span> de {{ $materials->count() }} material(is) selecionado(s)
+                        {{-- Rodapé fixo com resumo e botão --}}
+                        <div class="p-3 border-t border-gray-100 dark:border-gray-700 flex-shrink-0 flex items-center justify-between bg-gray-50 dark:bg-gray-700/50">
+                            <p class="text-xs text-gray-500">
+                                <strong x-text="Object.values(sel).filter(Boolean).length" class="text-etec-dark dark:text-etec-accent"></strong>
+                                / {{ $materials->count() }} selecionado(s)
                             </p>
                             <button type="button" @click="sel = {}"
                                     x-show="Object.values(sel).some(Boolean)"
-                                    class="text-xs text-red-400 hover:text-red-600">
-                                Limpar seleção
+                                    class="text-xs text-red-400 hover:text-red-600 font-semibold">
+                                Limpar
                             </button>
                         </div>
                     @endif
                 </div>
 
                 <button type="submit" :disabled="!hasSelection || !spaceId"
-                        class="w-full py-3 px-6 bg-etec-dark text-white font-bold rounded-xl hover:bg-etec-main transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm">
+                        class="w-full py-3 px-6 bg-etec-dark text-white font-bold rounded-xl hover:bg-etec-main transition disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm flex-shrink-0">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                     Solicitar Reserva ao Coordenador
                 </button>
