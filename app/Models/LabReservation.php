@@ -11,7 +11,7 @@ class LabReservation extends Model
     protected $fillable = [
         'user_id', 'space_id', 'auxiliar_id',
         'reservation_date', 'start_time', 'end_time',
-        'description', 'obs', 'status',
+        'description', 'obs', 'auxiliar_obs', 'status',
         'checklist_file', 'scanned_doc',
         'delivery_photo', 'return_photo',
         'confirmed_by_auxiliar_at', 'finalized_at',

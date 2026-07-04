@@ -57,11 +57,24 @@ class LabReservationController extends Controller
     {
         $user = auth()->user();
 
-        $reservations = $user->hasRole('admin') || $user->hasRole('Auxiliar')
-            ? LabReservation::with(['user', 'space'])->latest()->paginate(20)
-            : LabReservation::with(['space'])->where('user_id', $user->id)->latest()->paginate(20);
+        if ($user->is_admin) {
+            $reservations = LabReservation::with(['user', 'space'])->latest()->paginate(20);
+            $pendentes    = null;
+        } elseif ($user->hasRole('Auxiliar')) {
+            // Auxiliar: fila de conferência primeiro, depois demais ativas
+            $pendentes    = LabReservation::with(['user', 'space'])
+                ->where('status', 'aguardando_conferencia')
+                ->latest()->get();
+            $reservations = LabReservation::with(['user', 'space'])
+                ->whereNotIn('status', ['concluida', 'finalizada', 'recusada'])
+                ->latest()->paginate(20);
+        } else {
+            $pendentes    = null;
+            $reservations = LabReservation::with(['space'])
+                ->where('user_id', $user->id)->latest()->paginate(20);
+        }
 
-        return view('lab.reservations.index', compact('reservations'));
+        return view('lab.reservations.index', compact('reservations', 'pendentes', 'user'));
     }
 
     public function create()
@@ -142,11 +155,21 @@ class LabReservationController extends Controller
 
     public function auxiliarFinalize(Request $request, LabReservation $reservation)
     {
+        $request->validate([
+            'auxiliar_obs' => 'required|string|min:5',
+        ], [
+            'auxiliar_obs.required' => 'Informe as observações da conferência.',
+            'auxiliar_obs.min'      => 'A observação deve ter pelo menos 5 caracteres.',
+        ]);
+
         $reservation->update([
+            'auxiliar_obs'            => $request->auxiliar_obs,
+            'auxiliar_id'             => auth()->id(),
             'status'                  => 'conferida',
             'confirmed_by_auxiliar_at' => now(),
         ]);
-        return back()->with('success', 'Conferência registrada!');
+
+        return back()->with('success', 'Conferência registrada com sucesso!');
     }
 
     public function uploadScannedDoc(Request $request, LabReservation $reservation)

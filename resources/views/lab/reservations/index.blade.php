@@ -17,6 +17,37 @@
         <div class="bg-green-50 border border-green-200 text-green-700 rounded-lg px-4 py-3 text-sm">{{ session('success') }}</div>
     @endif
 
+    {{-- Fila do Auxiliar: aguardando conferência --}}
+    @if(isset($pendentes) && $pendentes?->count())
+    <div class="bg-orange-50 dark:bg-orange-900/20 rounded-xl border-2 border-orange-200 dark:border-orange-800 overflow-hidden">
+        <div class="px-6 py-4 border-b border-orange-200 dark:border-orange-800 flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-orange-500 animate-pulse"></span>
+            <h2 class="font-bold text-orange-900 dark:text-orange-300 text-sm">
+                {{ $pendentes->count() }} reserva(s) aguardando sua conferência
+            </h2>
+        </div>
+        <div class="divide-y divide-orange-100 dark:divide-orange-800">
+            @foreach($pendentes as $r)
+            <a href="{{ route('lab.reservations.show', $r) }}"
+               class="flex items-center gap-4 px-6 py-4 hover:bg-orange-100 dark:hover:bg-orange-900/40 transition">
+                <div class="flex-1 min-w-0">
+                    <p class="font-semibold text-gray-900 dark:text-white text-sm">{{ $r->space->name ?? '—' }}</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                        {{ $r->reservation_date->format('d/m/Y') }}
+                        {{ $r->start_time ? '• '.substr($r->start_time,0,5) : '' }}
+                        • Prof. {{ $r->user->name ?? '—' }}
+                    </p>
+                </div>
+                <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-orange-100 text-orange-700 flex-shrink-0">
+                    Aguardando conferência
+                </span>
+                <svg class="w-4 h-4 text-orange-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </a>
+            @endforeach
+        </div>
+    </div>
+    @endif
+
     <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm overflow-hidden">
         <table class="w-full text-sm">
             <thead class="bg-gray-50 dark:bg-gray-700 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
