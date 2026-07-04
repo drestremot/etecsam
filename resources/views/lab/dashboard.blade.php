@@ -72,6 +72,21 @@
         @endforeach
     </div>
 
+    @elseif($user->hasRole('Coordenador'))
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        @foreach([
+            ['label' => 'Aguardando aprovação', 'value' => $stats['aguardando_aprovacao']],
+            ['label' => 'Aguardando validação', 'value' => $stats['aguardando_validacao']],
+            ['label' => 'Ativas', 'value' => $stats['ativas']],
+            ['label' => 'Validadas', 'value' => $stats['validadas']],
+        ] as $s)
+        <div class="bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-100 dark:border-gray-700 shadow-sm">
+            <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">{{ $s['label'] }}</p>
+            <p class="text-3xl font-bold text-gray-900 dark:text-white mt-1">{{ $s['value'] }}</p>
+        </div>
+        @endforeach
+    </div>
+
     @elseif($user->hasRole('Auxiliar'))
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
         @foreach([
