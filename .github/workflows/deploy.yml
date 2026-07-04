@@ -203,6 +203,10 @@ jobs:
             php artisan db:seed --class=LabRolesSeeder --force
             echo "✓ LabRolesSeeder executado"
 
+            # Limpar cache de permissoes do Spatie (evita 403 por cache desatualizado)
+            php artisan permission:cache-reset
+            echo "✓ Cache de permissoes limpo"
+
             # ╔══════════════════════════════════════════════════════════╗
             # ║     PASSO 5: CACHE E STORAGE                            ║
             # ╚══════════════════════════════════════════════════════════╝
