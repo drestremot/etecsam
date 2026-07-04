@@ -10,8 +10,14 @@ class AdminMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (!auth()->check() || !auth()->user()->is_admin) {
-            abort(403, 'Acesso restrito ao administrador.');
+        if (!auth()->check()) {
+            return redirect()->route('login');
+        }
+
+        if (!auth()->user()->is_admin) {
+            // Usuário logado mas sem is_admin → redireciona para o módulo de laboratórios
+            return redirect()->route('lab.dashboard')
+                ->with('info', 'Acesse o módulo de laboratórios para gerenciar suas reservas.');
         }
 
         return $next($request);
