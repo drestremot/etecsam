@@ -199,6 +199,10 @@ jobs:
             php artisan db:seed --class=AdminSeeder --force
             echo "✓ AdminSeeder executado"
 
+            # Garantir papeis do modulo de laboratorios (firstOrCreate - idempotente)
+            php artisan db:seed --class=LabRolesSeeder --force
+            echo "✓ LabRolesSeeder executado"
+
             # ╔══════════════════════════════════════════════════════════╗
             # ║     PASSO 5: CACHE E STORAGE                            ║
             # ╚══════════════════════════════════════════════════════════╝
