@@ -237,29 +237,30 @@
             </div>
         </div>
         <div class="p-6">
-            <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                 @foreach($birthdays as $teacher)
                 @php $isToday = \Carbon\Carbon::parse($teacher->birth_date)->day === now()->day; @endphp
-                <div class="flex items-center gap-3 p-3 rounded-xl border transition
+                <div class="flex items-center gap-2.5 p-2.5 rounded-xl border transition
                             {{ $isToday ? 'bg-amber-50 border-amber-200 ring-1 ring-amber-300' : 'bg-yellow-50 border-yellow-100' }}">
                     @if($teacher->photo)
-                        <div class="relative hover:z-20 w-[55px] h-[55px] rounded-full border-2 {{ $isToday ? 'border-amber-300' : 'border-yellow-200' }} flex-shrink-0">
+                        <div class="w-10 h-10 rounded-full overflow-hidden border-2 flex-shrink-0
+                                    {{ $isToday ? 'border-amber-300' : 'border-yellow-200' }}">
                             <img src="{{ photo_url($teacher->photo) }}" alt="{{ $teacher->name }}"
-                                 onerror="this.parentElement.style.display='none';this.parentElement.nextElementSibling.style.display='flex'"
-                                 class="w-full h-full object-cover rounded-full scale-[1.15] hover:scale-[1.4375] transition duration-700 ease-in-out">
-                        </div>
-                        <div style="display:none" class="w-[55px] h-[55px] rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg
-                                    {{ $isToday ? 'bg-amber-300 text-amber-800' : 'bg-yellow-200 text-yellow-700' }}">
-                            {{ strtoupper(substr($teacher->name, 0, 1)) }}
+                                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+                                 class="w-full h-full object-cover">
+                            <div style="display:none" class="w-full h-full flex items-center justify-center font-bold text-sm
+                                        {{ $isToday ? 'bg-amber-300 text-amber-800' : 'bg-yellow-200 text-yellow-700' }}">
+                                {{ strtoupper(substr($teacher->name, 0, 1)) }}
+                            </div>
                         </div>
                     @else
-                        <div class="w-[55px] h-[55px] rounded-full flex-shrink-0 flex items-center justify-center font-bold text-lg
+                        <div class="w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center font-bold text-sm
                                     {{ $isToday ? 'bg-amber-300 text-amber-800' : 'bg-yellow-200 text-yellow-700' }}">
                             {{ strtoupper(substr($teacher->name, 0, 1)) }}
                         </div>
                     @endif
                     <div class="min-w-0">
-                        <p class="font-semibold text-gray-800 text-sm leading-tight truncate">{{ $teacher->name }}</p>
+                        <p class="font-semibold text-gray-800 text-xs leading-tight truncate">{{ $teacher->name }}</p>
                         <p class="text-xs font-medium mt-0.5 {{ $isToday ? 'text-amber-600' : 'text-yellow-600' }}">
                             {{ $isToday ? '🎂 Hoje!' : '🎉 Dia ' . \Carbon\Carbon::parse($teacher->birth_date)->format('d') }}
                         </p>
