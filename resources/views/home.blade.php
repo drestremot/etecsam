@@ -101,7 +101,7 @@
                 <div class="text-xs text-gray-500 dark:text-gray-400 font-medium mt-0.5">Unidades de ensino</div>
             </div>
             <div class="py-5 px-6 text-center">
-                <div class="text-2xl font-bold text-etec-dark dark:text-white">{{ $sectors->count() }}+</div>
+                <div class="text-2xl font-bold text-etec-dark dark:text-white">{{ ($sectors ?? collect())->count() }}+</div>
                 <div class="text-xs text-gray-500 dark:text-gray-400 font-medium mt-0.5">Laboratórios ativos</div>
             </div>
             <div class="py-5 px-6 text-center">
