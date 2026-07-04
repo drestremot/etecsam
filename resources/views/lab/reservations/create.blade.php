@@ -322,8 +322,8 @@
                             @endforeach
 
                             {{-- Nenhum resultado da pesquisa --}}
-                            <p x-show="search && !{{ collect($materials)->map(fn($m) => "'{{ strtolower($m->name.' '.($m->patrimony_number ?? '')) }}'.includes(search.toLowerCase())")->join(' || ') }}"
-                               class="text-center text-xs text-gray-400 py-4">
+                            <p x-show="search !== '' && $el.parentElement.querySelectorAll('[x-show]').length > 0 && Array.from($el.parentElement.querySelectorAll('[x-show]')).every(el => el.style.display === 'none')"
+                               class="text-center text-xs text-gray-400 py-4 italic">
                                 Nenhum material encontrado para "<span x-text="search"></span>"
                             </p>
                         </div>
