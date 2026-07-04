@@ -1,4 +1,4 @@
-﻿@extends('admin.layouts.app')
+@extends('admin.layouts.app')
 @section('title', 'Meu Perfil')
 @section('content')
 <div class="max-w-2xl mx-auto space-y-6">
