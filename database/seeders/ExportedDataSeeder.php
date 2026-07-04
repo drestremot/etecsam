@@ -1,7 +1,7 @@
 <?php
 
 /**
- * ExportedDataSeeder — gerado automaticamente em 2026-07-04 17:35:04
+ * ExportedDataSeeder — gerado automaticamente em 2026-07-04 18:28:26
  * Comando: php artisan db:export-seeders
  *
  * Para restaurar: php artisan db:seed --class=ExportedDataSeeder
@@ -50,6 +50,8 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:45',
                 'updated_at' => '2026-05-23 18:44:45',
                 'is_admin' => 1,
+                'registration_number' => null,
+                'is_active' => 1,
             ],
             [
                 'id' => 2,
@@ -61,6 +63,8 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => null,
                 'updated_at' => '2026-06-15 18:52:10',
                 'is_admin' => 1,
+                'registration_number' => null,
+                'is_active' => 1,
             ]
         ]);
 
