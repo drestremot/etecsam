@@ -22,6 +22,16 @@
                       class="w-full border border-gray-200 dark:border-gray-600 rounded-lg px-3.5 py-2.5 text-sm dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-etec-dark outline-none resize-none">{{ old('description') }}</textarea>
         </div>
         <div>
+            <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Laboratório vinculado</label>
+            <select name="laboratory_id" class="w-full border border-gray-200 dark:border-gray-600 rounded-lg px-3.5 py-2.5 text-sm dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-etec-dark outline-none">
+                <option value="">Nenhum</option>
+                @foreach($laboratories as $lab)
+                <option value="{{ $lab->id }}" {{ old('laboratory_id') == $lab->id ? 'selected' : '' }}>{{ $lab->name }}</option>
+                @endforeach
+            </select>
+            <p class="text-xs text-gray-400 mt-1">Vincula este espaço a um laboratório do catálogo do site</p>
+        </div>
+        <div>
             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Auxiliar responsável</label>
             <select name="auxiliar_id" class="w-full border border-gray-200 dark:border-gray-600 rounded-lg px-3.5 py-2.5 text-sm dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-etec-dark outline-none">
                 <option value="">Nenhum</option>

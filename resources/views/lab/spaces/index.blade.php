@@ -14,8 +14,8 @@
         <table class="w-full text-sm">
             <thead class="bg-gray-50 dark:bg-gray-700 text-xs font-bold text-gray-500 uppercase tracking-wide">
                 <tr>
-                    <th class="px-6 py-3 text-left">Nome</th>
-                    <th class="px-6 py-3 text-left">Descrição</th>
+                    <th class="px-6 py-3 text-left">Espaço</th>
+                    <th class="px-6 py-3 text-left">Laboratório vinculado</th>
                     <th class="px-6 py-3 text-left">Auxiliar</th>
                     <th class="px-6 py-3 text-right">Ações</th>
                 </tr>
@@ -23,8 +23,19 @@
             <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
                 @forelse($spaces as $s)
                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/40 transition">
-                    <td class="px-6 py-3 font-medium text-gray-900 dark:text-white">{{ $s->name }}</td>
-                    <td class="px-6 py-3 text-gray-500 dark:text-gray-400 max-w-xs truncate">{{ $s->description ?? '—' }}</td>
+                    <td class="px-6 py-3">
+                        <p class="font-medium text-gray-900 dark:text-white">{{ $s->name }}</p>
+                        @if($s->description)<p class="text-xs text-gray-400 truncate max-w-xs">{{ $s->description }}</p>@endif
+                    </td>
+                    <td class="px-6 py-3">
+                        @if($s->laboratory)
+                            <span class="inline-flex items-center gap-1 text-xs font-semibold text-etec-dark bg-etec-light px-2.5 py-1 rounded-full">
+                                ✓ {{ $s->laboratory->name }}
+                            </span>
+                        @else
+                            <span class="text-gray-400 text-xs italic">Não vinculado</span>
+                        @endif
+                    </td>
                     <td class="px-6 py-3 text-gray-600 dark:text-gray-300">{{ $s->auxiliar->name ?? '—' }}</td>
                     <td class="px-6 py-3 text-right flex justify-end gap-3">
                         <a href="{{ route('lab.spaces.edit', $s) }}" class="text-etec-main dark:text-etec-accent hover:underline text-xs font-semibold">Editar</a>
