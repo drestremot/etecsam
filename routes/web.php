@@ -124,11 +124,16 @@ use App\Http\Controllers\Lab\LabReservationController;
 use App\Http\Controllers\Lab\SpaceController;
 use App\Http\Controllers\Lab\MaterialController;
 use App\Http\Controllers\Lab\LabUserController;
+use App\Http\Controllers\Lab\LabProfileController;
 
 Route::prefix('laboratorio')->name('lab.')->middleware(['auth'])->group(function () {
 
     // Dashboard do módulo
     Route::get('/', [LabReservationController::class, 'dashboard'])->name('dashboard');
+
+    // Perfil do usuário (acessível por todos)
+    Route::get('/perfil',  [LabProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/perfil',  [LabProfileController::class, 'update'])->name('profile.update');
 
     // Reservas — acessível por todos os usuários autenticados
     Route::prefix('reservas')->name('reservations.')->group(function () {
