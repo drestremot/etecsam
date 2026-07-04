@@ -153,7 +153,7 @@ Route::prefix('laboratorio')->name('lab.')->middleware(['auth'])->group(function
     Route::get('/api/calendario', [LabReservationController::class, 'calendarEvents'])->name('api.calendar');
 
     // Área administrativa — somente admin
-    Route::middleware(['role:admin'])->group(function () {
+    Route::middleware(['admin'])->group(function () {
         // Aprovação
         Route::patch('reservas/{reservation}/aprovar',  [LabReservationController::class, 'approve'])->name('reservations.approve');
         Route::patch('reservas/{reservation}/recusar',  [LabReservationController::class, 'reject'])->name('reservations.reject');

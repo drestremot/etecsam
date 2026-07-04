@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+﻿@extends('admin.layouts.app')
 
 @section('title', 'Reservas de Laboratório')
 
@@ -24,7 +24,7 @@
                     <th class="px-6 py-3 text-left">Espaço</th>
                     <th class="px-6 py-3 text-left">Data</th>
                     <th class="px-6 py-3 text-left">Horário</th>
-                    @role('admin')<th class="px-6 py-3 text-left">Professor</th>@endrole
+                    @if(auth()->user()?->is_admin)<th class="px-6 py-3 text-left">Professor</th>@endif
                     <th class="px-6 py-3 text-left">Status</th>
                     <th class="px-6 py-3 text-right">Ações</th>
                 </tr>
@@ -35,7 +35,7 @@
                     <td class="px-6 py-3 font-medium text-gray-900 dark:text-white">{{ $r->space->name ?? '—' }}</td>
                     <td class="px-6 py-3 text-gray-600 dark:text-gray-300">{{ $r->reservation_date->format('d/m/Y') }}</td>
                     <td class="px-6 py-3 text-gray-600 dark:text-gray-300">{{ substr($r->start_time,0,5) }}{{ $r->end_time ? ' – '.substr($r->end_time,0,5) : '' }}</td>
-                    @role('admin')<td class="px-6 py-3 text-gray-600 dark:text-gray-300">{{ $r->user->name ?? '—' }}</td>@endrole
+                    @if(auth()->user()?->is_admin)<td class="px-6 py-3 text-gray-600 dark:text-gray-300">{{ $r->user->name ?? '—' }}</td>@endif
                     <td class="px-6 py-3">
                         <span class="px-2.5 py-1 rounded-full text-xs font-bold
                             {{ match($r->status) {
