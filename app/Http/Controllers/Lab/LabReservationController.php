@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Lab;
 
 use App\Http\Controllers\Controller;
+use App\Mail\LabReservationFinalized;
 use App\Models\LabReservation;
 use App\Models\Material;
 use App\Models\Space;
 use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class LabReservationController extends Controller
@@ -138,7 +140,8 @@ class LabReservationController extends Controller
         }
 
         return redirect()->route('lab.reservations.show', $reservation)
-            ->with('success', 'Reserva criada! Aguarde aprovação do coordenador (mínimo 2 dias de antecedência respeitado).');
+            ->with('success', 'Reserva criada com sucesso! Aguarde aprovação do coordenador.')
+            ->with('print_pdf', true);
     }
 
     public function show(LabReservation $reservation)
@@ -235,13 +238,39 @@ class LabReservationController extends Controller
     }
 
     // ── Coordenador / Admin: validar e arquivar ──
-    public function validateActivity(LabReservation $reservation)
+    public function validateActivity(Request $request, LabReservation $reservation)
     {
-        $reservation->update([
-            'status'       => 'validada',
-            'validated_at' => now(),
+        $request->validate([
+            'coordenador_obs' => 'nullable|string|max:2000',
         ]);
-        return back()->with('success', 'Atividade validada e arquivada com sucesso!');
+
+        $reservation->update([
+            'status'          => 'validada',
+            'validated_at'    => now(),
+            'coordenador_obs' => $request->coordenador_obs,
+            'coordenador_id'  => auth()->id(),
+        ]);
+
+        $reservation->load(['user', 'space', 'auxiliar', 'coordenador', 'materials']);
+
+        // Envia e-mail ao professor
+        try {
+            if ($reservation->user?->email) {
+                Mail::to($reservation->user->email)
+                    ->send(new LabReservationFinalized($reservation, 'professor'));
+            }
+            // Envia e-mail ao auxiliar
+            if ($reservation->auxiliar?->email) {
+                Mail::to($reservation->auxiliar->email)
+                    ->send(new LabReservationFinalized($reservation, 'auxiliar'));
+            }
+        } catch (\Exception $e) {
+            // Ignora falha de e-mail — validação já foi salva
+        }
+
+        return redirect()->route('lab.reservations.show', $reservation)
+            ->with('success', 'Atividade validada e arquivada! Notificações enviadas ao professor e auxiliar.')
+            ->with('print_pdf', true);
     }
 
     public function uploadScannedDoc(Request $request, LabReservation $reservation)

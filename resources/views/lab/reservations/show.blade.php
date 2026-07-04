@@ -30,8 +30,29 @@
         </a>
     </div>
 
-    @if(session('success'))<div class="bg-green-50 border border-green-200 text-green-700 rounded-lg px-4 py-3 text-sm">{{ session('success') }}</div>@endif
+    @if(session('success'))
+    <div class="bg-green-50 border border-green-200 text-green-700 rounded-lg px-4 py-3 text-sm flex items-center gap-3">
+        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span class="flex-1">{{ session('success') }}</span>
+        @if(session('print_pdf'))
+        <a href="{{ route('lab.reservations.pdf', $reservation) }}" target="_blank"
+           class="flex-shrink-0 inline-flex items-center gap-1.5 bg-etec-dark text-white text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-etec-main transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+            Imprimir / PDF
+        </a>
+        @endif
+    </div>
+    @endif
     @if(session('error'))<div class="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm">{{ session('error') }}</div>@endif
+
+    {{-- Botão de impressão sempre visível --}}
+    <div class="flex justify-end">
+        <a href="{{ route('lab.reservations.pdf', $reservation) }}" target="_blank"
+           class="inline-flex items-center gap-2 border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 px-4 py-2 rounded-lg hover:bg-etec-dark hover:text-white hover:border-etec-dark transition text-sm font-semibold">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+            Imprimir / Gerar PDF
+        </a>
+    </div>
 
     {{-- ── Informações principais ── --}}
     <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm p-6">
@@ -300,27 +321,48 @@
                 Validação do Coordenador
             </h3>
             <p class="text-sm text-green-700 dark:text-green-400 mb-4">
-                Professor e auxiliar já registraram suas observações. Analise e valide a atividade para arquivá-la.
+                Analise as observações, adicione suas considerações e valide a atividade. Uma notificação com o documento será enviada ao professor e auxiliar.
             </p>
-            <div class="grid sm:grid-cols-2 gap-4 mb-4 text-sm">
+
+            {{-- Observações do professor e auxiliar --}}
+            @if($reservation->obs || $reservation->auxiliar_obs)
+            <div class="grid sm:grid-cols-2 gap-3 mb-4">
                 @if($reservation->obs)
-                <div class="bg-white dark:bg-gray-800 rounded-lg p-3 border border-green-100">
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-3 border border-green-100 dark:border-green-900">
                     <p class="text-xs font-bold text-gray-400 uppercase mb-1">Obs. do Professor</p>
-                    <p class="text-gray-700 dark:text-gray-300">{{ $reservation->obs }}</p>
+                    <p class="text-sm text-gray-700 dark:text-gray-300">{{ $reservation->obs }}</p>
                 </div>
                 @endif
                 @if($reservation->auxiliar_obs)
-                <div class="bg-white dark:bg-gray-800 rounded-lg p-3 border border-green-100">
+                <div class="bg-white dark:bg-gray-800 rounded-lg p-3 border border-green-100 dark:border-green-900">
                     <p class="text-xs font-bold text-gray-400 uppercase mb-1">Obs. do Auxiliar</p>
-                    <p class="text-gray-700 dark:text-gray-300">{{ $reservation->auxiliar_obs }}</p>
+                    <p class="text-sm text-gray-700 dark:text-gray-300">{{ $reservation->auxiliar_obs }}</p>
                 </div>
                 @endif
             </div>
-            <form action="{{ route('lab.reservations.validate', $reservation) }}" method="POST">
+            @endif
+
+            <form action="{{ route('lab.reservations.validate', $reservation) }}" method="POST" class="space-y-3">
                 @csrf @method('PATCH')
-                <button class="inline-flex items-center gap-2 bg-green-600 text-white px-5 py-2.5 rounded-lg hover:bg-green-700 transition text-sm font-semibold">
-                    ✓ Validar e Arquivar atividade
-                </button>
+                <div>
+                    <label class="block text-sm font-semibold text-green-800 dark:text-green-300 mb-1.5">
+                        Considerações do Coordenador
+                        <span class="font-normal text-green-600">(opcional — será enviado ao professor e auxiliar)</span>
+                    </label>
+                    <textarea name="coordenador_obs" rows="3"
+                              placeholder="Observações gerais sobre a atividade, recomendações ou elogios..."
+                              class="w-full border border-green-200 dark:border-green-700 rounded-lg px-3.5 py-2.5 text-sm dark:bg-gray-700 dark:text-white resize-none focus:ring-2 focus:ring-green-500 outline-none">{{ old('coordenador_obs') }}</textarea>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button class="inline-flex items-center gap-2 bg-green-600 text-white px-5 py-2.5 rounded-lg hover:bg-green-700 transition text-sm font-semibold">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        Validar, arquivar e notificar
+                    </button>
+                    <span class="text-xs text-green-600 dark:text-green-400 flex items-center gap-1">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8"/></svg>
+                        E-mail enviado automaticamente ao professor e auxiliar
+                    </span>
+                </div>
             </form>
         </div>
         @endif
