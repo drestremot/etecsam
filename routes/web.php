@@ -118,3 +118,69 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('themes/deactivate', [\App\Http\Controllers\Admin\ThemeController::class, 'deactivate'])->name('themes.deactivate');
 
 });
+
+// ─── Módulo Laboratório ───────────────────────────────────────────────────────
+use App\Http\Controllers\Lab\LabReservationController;
+use App\Http\Controllers\Lab\SpaceController;
+use App\Http\Controllers\Lab\MaterialController;
+use App\Http\Controllers\Lab\LabUserController;
+
+Route::prefix('laboratorio')->name('lab.')->middleware(['auth'])->group(function () {
+
+    // Dashboard do módulo
+    Route::get('/', [LabReservationController::class, 'dashboard'])->name('dashboard');
+
+    // Reservas — acessível por todos os usuários autenticados
+    Route::prefix('reservas')->name('reservations.')->group(function () {
+        Route::get('/',                                [LabReservationController::class, 'index'])->name('index');
+        Route::get('/nova',                            [LabReservationController::class, 'create'])->name('create');
+        Route::post('/',                               [LabReservationController::class, 'store'])->name('store');
+        Route::get('/{reservation}',                   [LabReservationController::class, 'show'])->name('show');
+        Route::get('/{reservation}/pdf',               [LabReservationController::class, 'generatePDF'])->name('pdf');
+        Route::post('/{reservation}/iniciar',          [LabReservationController::class, 'startClass'])->name('start');
+        Route::post('/{reservation}/obs-professor',    [LabReservationController::class, 'submitProfessorObs'])->name('professor-obs');
+        Route::post('/{reservation}/conferencia',      [LabReservationController::class, 'auxiliarFinalize'])->name('auxiliar-finalize');
+        Route::get('/historico/concluidas',            [LabReservationController::class, 'history'])->name('history');
+        Route::get('/mapa/calendario',                 fn() => view('lab.reservations.calendar'))->name('calendar');
+    });
+
+    // API calendário
+    Route::get('/api/calendario', [LabReservationController::class, 'calendarEvents'])->name('api.calendar');
+
+    // Área administrativa — somente admin
+    Route::middleware(['role:admin'])->group(function () {
+        // Aprovação
+        Route::patch('reservas/{reservation}/aprovar',  [LabReservationController::class, 'approve'])->name('reservations.approve');
+        Route::patch('reservas/{reservation}/recusar',  [LabReservationController::class, 'reject'])->name('reservations.reject');
+        Route::post('reservas/{reservation}/documento', [LabReservationController::class, 'uploadScannedDoc'])->name('reservations.upload-doc');
+
+        // Espaços
+        Route::resource('espacos', SpaceController::class)->names([
+            'index'   => 'spaces.index',
+            'create'  => 'spaces.create',
+            'store'   => 'spaces.store',
+            'edit'    => 'spaces.edit',
+            'update'  => 'spaces.update',
+            'destroy' => 'spaces.destroy',
+        ]);
+
+        // Materiais
+        Route::resource('materiais', MaterialController::class)->names([
+            'index'   => 'materials.index',
+            'create'  => 'materials.create',
+            'store'   => 'materials.store',
+            'edit'    => 'materials.edit',
+            'update'  => 'materials.update',
+            'destroy' => 'materials.destroy',
+        ]);
+
+        // Usuários do lab
+        Route::prefix('usuarios')->name('users.')->group(function () {
+            Route::get('/',                      [LabUserController::class, 'index'])->name('index');
+            Route::post('/',                     [LabUserController::class, 'store'])->name('store');
+            Route::patch('/{user}/papel',        [LabUserController::class, 'updateRole'])->name('role');
+            Route::patch('/{user}/status',       [LabUserController::class, 'toggleStatus'])->name('status');
+            Route::delete('/{user}',             [LabUserController::class, 'destroy'])->name('destroy');
+        });
+    });
+});
