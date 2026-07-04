@@ -10,8 +10,9 @@ class LabRolesSeeder extends Seeder
 {
     public function run(): void
     {
-        // Cria os 3 papéis
+        // Cria os 4 papéis
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
+        Role::firstOrCreate(['name' => 'Coordenador']);
         Role::firstOrCreate(['name' => 'Professor']);
         Role::firstOrCreate(['name' => 'Auxiliar']);
 
