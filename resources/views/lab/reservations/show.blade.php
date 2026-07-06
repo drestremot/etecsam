@@ -235,28 +235,46 @@
         @endif
 
         {{-- PROFESSOR: observações e liberação --}}
-        @if($reservation->status === 'em_execucao' && $reservation->user_id === auth()->id() && !$reservation->professor_released_at)
-        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm p-5">
-            <h3 class="font-bold text-gray-900 dark:text-white mb-1 text-sm">Registrar observações e liberar para o auxiliar</h3>
-            <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">Descreva como foi a atividade. Após o auxiliar também liberar, a reserva será enviada ao coordenador para validação.</p>
+        @php
+            $professorCanRelease = $reservation->user_id === auth()->id()
+                && !$reservation->professor_released_at
+                && in_array($reservation->status, ['aprovada','em_execucao','aguardando_conferencia']);
+        @endphp
+
+        @if($professorCanRelease)
+        <div class="bg-white dark:bg-gray-800 rounded-xl border-2 border-etec-light dark:border-etec-dark shadow-sm p-5">
+            <h3 class="font-bold text-gray-900 dark:text-white mb-1 text-sm flex items-center gap-2">
+                <svg class="w-4 h-4 text-etec-main" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                Registrar observações da atividade
+            </h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">
+                Descreva como foi a aula, o uso dos materiais e qualquer intercorrência.
+                Após enviar, o coordenador será notificado para validação.
+            </p>
             <form action="{{ route('lab.reservations.professor-obs', $reservation) }}" method="POST" class="space-y-3">
                 @csrf
-                <textarea name="obs" rows="3" required placeholder="Como foi a aula? Houve intercorrências? Os materiais foram suficientes?"
-                          class="w-full border border-gray-200 dark:border-gray-600 rounded-lg px-3.5 py-2.5 text-sm dark:bg-gray-700 dark:text-white resize-none focus:ring-2 focus:ring-etec-dark outline-none"></textarea>
-                <button class="px-5 py-2.5 bg-etec-dark text-white rounded-lg text-sm font-semibold hover:bg-etec-main transition">
-                    Salvar observações e liberar
+                <textarea name="obs" rows="4" required
+                          placeholder="Como foi a aula? Os materiais foram suficientes? Houve alguma intercorrência?"
+                          class="w-full border @error('obs') border-red-400 @else border-gray-200 dark:border-gray-600 @enderror rounded-lg px-3.5 py-2.5 text-sm dark:bg-gray-700 dark:text-white resize-none focus:ring-2 focus:ring-etec-dark outline-none">{{ old('obs') }}</textarea>
+                @error('obs')
+                <p class="text-red-500 text-xs">{{ $message }}</p>
+                @enderror
+                <button type="submit" class="inline-flex items-center gap-2 px-5 py-2.5 bg-etec-dark text-white rounded-lg text-sm font-semibold hover:bg-etec-main transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                    Enviar observações e liberar
                 </button>
             </form>
         </div>
+
         @elseif($reservation->professor_released_at && $reservation->user_id === auth()->id())
-        <div class="flex items-center gap-2 text-sm text-green-600 bg-green-50 rounded-lg px-4 py-2.5 border border-green-200">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"/></svg>
-            Suas observações foram registradas em {{ $reservation->professor_released_at->format('d/m H:i') }}.
+        <div class="flex items-center gap-2 text-sm text-green-700 bg-green-50 rounded-lg px-4 py-3 border border-green-200">
+            <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"/></svg>
+            <span>Suas observações foram registradas em <strong>{{ $reservation->professor_released_at->format('d/m/Y H:i') }}</strong>.</span>
         </div>
         @endif
 
         {{-- AUXILIAR: conferência e liberação --}}
-        @if(in_array($reservation->status, ['em_execucao','aguardando_conferencia']) && (auth()->user()->is_admin || auth()->user()->hasRole('Auxiliar')) && !$reservation->auxiliar_released_at)
+        @if(in_array($reservation->status, ['em_execucao','aguardando_conferencia','aguardando_validacao']) && (auth()->user()->is_admin || auth()->user()->hasRole('Auxiliar')) && !$reservation->auxiliar_released_at)
         <div class="bg-purple-50 dark:bg-purple-900/20 rounded-xl border-2 border-purple-200 dark:border-purple-800 p-5">
             <h3 class="font-bold text-purple-900 dark:text-purple-300 mb-1 flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>

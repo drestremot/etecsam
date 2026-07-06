@@ -182,8 +182,11 @@ class LabReservationController extends Controller
     // ── Professor: observações e liberação ──
     public function submitProfessorObs(Request $request, LabReservation $reservation)
     {
-        $request->validate(['obs' => 'required|string|min:5'], [
+        $request->validate([
+            'obs' => 'required|string|min:10',
+        ], [
             'obs.required' => 'Informe suas observações sobre a aula.',
+            'obs.min'      => 'A observação deve ter pelo menos 10 caracteres.',
         ]);
 
         $data = [
@@ -191,16 +194,19 @@ class LabReservationController extends Controller
             'professor_released_at' => now(),
         ];
 
-        // Se auxiliar já liberou, vai para aguardando_validacao
+        // Se auxiliar já liberou → ambos liberaram → aguardando coordenador
         if ($reservation->auxiliar_released_at) {
             $data['status'] = 'aguardando_validacao';
         }
+        // Senão: só atualiza obs e professor_released_at, status permanece
+        // O auxiliar poderá liberar depois e mudará para aguardando_validacao
 
         $reservation->update($data);
 
-        $msg = $reservation->fresh()->status === 'aguardando_validacao'
-            ? 'Observações registradas. Reserva enviada ao coordenador para validação!'
-            : 'Observações registradas. Aguardando o auxiliar liberar também.';
+        $fresh = $reservation->fresh();
+        $msg = $fresh->status === 'aguardando_validacao'
+            ? 'Observações registradas e atividade enviada ao coordenador para validação!'
+            : 'Observações registradas! Aguardando o auxiliar liberar para enviar ao coordenador.';
 
         return back()->with('success', $msg);
     }
@@ -221,11 +227,13 @@ class LabReservationController extends Controller
             'confirmed_by_auxiliar_at' => now(),
         ];
 
-        // Se professor já liberou, vai para aguardando_validacao
+        // Se professor já liberou → aguardando_validacao
+        // Senão → permanece em_execucao mas marca auxiliar_released_at
+        // O professor ainda poderá liberar e o status mudará para aguardando_validacao
         if ($reservation->professor_released_at) {
             $data['status'] = 'aguardando_validacao';
         } else {
-            $data['status'] = 'aguardando_conferencia';
+            $data['status'] = 'em_execucao'; // mantém para o professor ainda poder liberar
         }
 
         $reservation->update($data);
