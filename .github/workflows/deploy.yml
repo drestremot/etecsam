@@ -182,14 +182,24 @@ jobs:
             # ║   qualquer artisan command falha em loop — solucao:     ║
             # ║   deletar ANTES do composer install.                    ║
             # ╚══════════════════════════════════════════════════════════╝
+            # Deleta ANTES do composer para evitar loop circular
             rm -f bootstrap/cache/packages.php bootstrap/cache/services.php
-            echo "✓ Cache de providers removido (sera regenerado pelo composer)"
+            echo "✓ Cache de providers removido"
 
             # ╔══════════════════════════════════════════════════════════╗
             # ║     PASSO 4: DEPENDENCIAS E MIGRATIONS                  ║
             # ╚══════════════════════════════════════════════════════════╝
-            composer install --no-dev --optimize-autoloader --no-interaction
-            echo "✓ Composer instalado (package:discover roda automaticamente)"
+            # --no-scripts: impede o composer de rodar php artisan package:discover
+            # durante o install (evita o loop circular com packages.php corrompido)
+            composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
+            echo "✓ Composer instalado (sem scripts)"
+
+            # Deleta novamente: --no-scripts pode deixar packages.php obsoleto
+            rm -f bootstrap/cache/packages.php bootstrap/cache/services.php
+
+            # Agora o artisan consegue rodar sem packages.php corrompido
+            php artisan package:discover --ansi
+            echo "✓ Package discovery regenerado sem pacotes dev"
 
             # Migrations com flag safe (nao apaga dados existentes)
             php artisan migrate --force
