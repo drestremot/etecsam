@@ -210,8 +210,11 @@ jobs:
             # ╔══════════════════════════════════════════════════════════╗
             # ║     PASSO 5: CACHE E STORAGE                            ║
             # ╚══════════════════════════════════════════════════════════╝
-            php artisan config:clear && php artisan route:clear && php artisan view:clear
-            php artisan config:cache && php artisan route:cache
+            php artisan config:clear
+            php artisan route:clear
+            php artisan view:clear
+            php artisan config:cache
+            php artisan route:cache
             echo "✓ Cache limpo e recriado"
 
             # Sincronizar storage/app/public -> public/storage
