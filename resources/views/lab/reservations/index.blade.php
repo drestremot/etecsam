@@ -17,6 +17,81 @@
         <div class="bg-green-50 border border-green-200 text-green-700 rounded-lg px-4 py-3 text-sm">{{ session('success') }}</div>
     @endif
 
+    {{-- ── Filtros de busca ── --}}
+    <form method="GET" action="{{ route('lab.reservations.index') }}"
+          class="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
+
+            {{-- Busca por texto --}}
+            <div class="sm:col-span-2 lg:col-span-1">
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Buscar</label>
+                <div class="relative">
+                    <svg class="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <input type="text" name="busca" value="{{ $filters['busca'] ?? '' }}"
+                           placeholder="Espaço, professor ou descrição..."
+                           class="w-full pl-8 pr-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-sm dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-etec-dark outline-none">
+                </div>
+            </div>
+
+            {{-- Status --}}
+            <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Status</label>
+                <select name="status" class="w-full border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-etec-dark outline-none">
+                    <option value="">Todos</option>
+                    @foreach($statuses as $val => $label)
+                    <option value="{{ $val }}" {{ ($filters['status'] ?? '') === $val ? 'selected' : '' }}>{{ $label }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            {{-- Espaço --}}
+            <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Espaço / Lab</label>
+                <select name="space_id" class="w-full border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2 text-sm dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-etec-dark outline-none">
+                    <option value="">Todos</option>
+                    @foreach($spaces as $s)
+                    <option value="{{ $s->id }}" {{ ($filters['space_id'] ?? '') == $s->id ? 'selected' : '' }}>{{ $s->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            {{-- Período --}}
+            <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1.5">Período</label>
+                <div class="flex gap-1.5 items-center">
+                    <input type="date" name="data_inicio" value="{{ $filters['data_inicio'] ?? '' }}"
+                           class="flex-1 border border-gray-200 dark:border-gray-600 rounded-lg px-2 py-2 text-xs dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-etec-dark outline-none">
+                    <span class="text-gray-400 text-xs flex-shrink-0">até</span>
+                    <input type="date" name="data_fim" value="{{ $filters['data_fim'] ?? '' }}"
+                           class="flex-1 border border-gray-200 dark:border-gray-600 rounded-lg px-2 py-2 text-xs dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-etec-dark outline-none">
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <button type="submit"
+                    class="inline-flex items-center gap-2 bg-etec-dark text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-etec-main transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                Filtrar
+            </button>
+            @if(array_filter($filters ?? []))
+            <a href="{{ route('lab.reservations.index') }}"
+               class="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-red-500 transition font-semibold">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                Limpar filtros
+            </a>
+            @endif
+
+            {{-- Contagem de resultados --}}
+            <span class="ml-auto text-xs text-gray-400">
+                {{ $reservations->total() }} reserva(s) encontrada(s)
+            </span>
+        </div>
+    </form>
+
     {{-- Fila de ações pendentes (Coordenador / Auxiliar) --}}
     @if(isset($pendentes) && $pendentes?->count())
     @php
