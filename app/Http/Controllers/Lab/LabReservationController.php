@@ -65,30 +65,76 @@ class LabReservationController extends Controller
         return view('lab.dashboard', compact('stats', 'recent', 'teacher', 'user'));
     }
 
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
         $user = auth()->user();
+
+        // ── Filtros via GET ──
+        $filters = $request->only(['status', 'space_id', 'data_inicio', 'data_fim', 'busca']);
+
+        $applyFilters = function ($query) use ($filters, $user) {
+            if (!empty($filters['status'])) {
+                $query->where('status', $filters['status']);
+            }
+            if (!empty($filters['space_id'])) {
+                $query->where('space_id', $filters['space_id']);
+            }
+            if (!empty($filters['data_inicio'])) {
+                $query->whereDate('reservation_date', '>=', $filters['data_inicio']);
+            }
+            if (!empty($filters['data_fim'])) {
+                $query->whereDate('reservation_date', '<=', $filters['data_fim']);
+            }
+            if (!empty($filters['busca'])) {
+                $q = $filters['busca'];
+                $query->where(function ($sub) use ($q) {
+                    $sub->whereHas('space', fn($s) => $s->where('name', 'like', "%{$q}%"))
+                        ->orWhereHas('user',  fn($s) => $s->where('name', 'like', "%{$q}%"))
+                        ->orWhere('description', 'like', "%{$q}%");
+                });
+            }
+        };
 
         if ($user->is_admin || $user->hasRole('Coordenador')) {
             $pendentes    = LabReservation::with(['user', 'space'])
                 ->whereIn('status', ['pre_alocada', 'aguardando_validacao'])
                 ->orderByRaw("CASE status WHEN 'aguardando_validacao' THEN 0 ELSE 1 END")
                 ->latest()->get();
-            $reservations = LabReservation::with(['user', 'space'])->latest()->paginate(20);
+
+            $reservations = LabReservation::with(['user', 'space'])
+                ->tap($applyFilters)
+                ->latest()->paginate(20)->withQueryString();
+
         } elseif ($user->hasRole('Auxiliar')) {
             $pendentes    = LabReservation::with(['user', 'space'])
                 ->whereIn('status', ['aprovada', 'aguardando_conferencia'])
                 ->latest()->get();
+
             $reservations = LabReservation::with(['user', 'space'])
                 ->whereNotIn('status', ['validada', 'recusada'])
-                ->latest()->paginate(20);
+                ->tap($applyFilters)
+                ->latest()->paginate(20)->withQueryString();
+
         } else {
             $pendentes    = null;
             $reservations = LabReservation::with(['space'])
-                ->where('user_id', $user->id)->latest()->paginate(20);
+                ->where('user_id', $user->id)
+                ->tap($applyFilters)
+                ->latest()->paginate(20)->withQueryString();
         }
 
-        return view('lab.reservations.index', compact('reservations', 'pendentes', 'user'));
+        $spaces   = Space::orderBy('name')->get(['id', 'name']);
+        $statuses = [
+            'pre_alocada'            => 'Aguardando aprovação',
+            'aprovada'               => 'Aprovada',
+            'em_execucao'            => 'Em execução',
+            'aguardando_conferencia' => 'Aguardando conferência',
+            'aguardando_validacao'   => 'Aguardando validação',
+            'validada'               => 'Validada',
+            'recusada'               => 'Recusada',
+        ];
+
+        return view('lab.reservations.index', compact('reservations', 'pendentes', 'user', 'filters', 'spaces', 'statuses'));
     }
 
     public function create()
