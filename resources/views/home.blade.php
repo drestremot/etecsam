@@ -48,7 +48,7 @@
 
     <template x-for="(slide, i) in slides" :key="i">
         <div class="absolute inset-0 z-0 transition-opacity duration-1000" x-show="current === i" x-transition.opacity.duration.1000ms>
-            <img :src="slide.image" :alt="slide.title" class="w-full h-full object-cover opacity-60">
+            <img :src="slide.image" :alt="slide.title" class="w-full h-full object-cover opacity-60 photo-tone">
             <div class="absolute inset-0 bg-gradient-to-r from-etec-dark/80 via-etec-dark/50 to-transparent"></div>
         </div>
     </template>
@@ -77,6 +77,22 @@
                     Nossa História
                 </a>
             </div>
+
+            {{-- Atalhos por perfil de visitante --}}
+            <div class="flex flex-wrap gap-x-6 gap-y-2 pt-4 border-t border-white/10 text-sm">
+                <a href="https://vestibulinho.etec.sp.gov.br/home/" class="inline-flex items-center gap-1.5 text-white/80 hover:text-etec-accent transition">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.5l9 5-9 5-9-5 9-5zm0 9.5l-9-5m9 5l9-5m-9 9v-4"/></svg>
+                    Quero estudar aqui
+                </a>
+                <a href="https://nsaetec.com.br/" class="inline-flex items-center gap-1.5 text-white/80 hover:text-etec-accent transition">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
+                    Sou aluno — Portal do Aluno
+                </a>
+                <a href="{{ route('contact') }}" class="inline-flex items-center gap-1.5 text-white/80 hover:text-etec-accent transition">
+                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    Sou empresa parceira
+                </a>
+            </div>
         </div>
     </div>
 
@@ -93,18 +109,22 @@
     <div class="container mx-auto px-4">
         <div class="grid grid-cols-2 md:grid-cols-4 divide-x divide-gray-100 dark:divide-white/10">
             <div class="py-5 px-6 text-center">
+                <svg class="w-5 h-5 mx-auto mb-1.5 text-etec-medium dark:text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 <div class="text-2xl font-bold text-etec-dark dark:text-white">+{{ date('Y') - 1991 }}</div>
                 <div class="text-xs text-gray-500 dark:text-gray-400 font-medium mt-0.5">Anos de história</div>
             </div>
             <div class="py-5 px-6 text-center">
+                <svg class="w-5 h-5 mx-auto mb-1.5 text-etec-medium dark:text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                 <div class="text-2xl font-bold text-etec-dark dark:text-white">{{ $units->count() }}</div>
                 <div class="text-xs text-gray-500 dark:text-gray-400 font-medium mt-0.5">Unidades de ensino</div>
             </div>
             <div class="py-5 px-6 text-center">
+                <svg class="w-5 h-5 mx-auto mb-1.5 text-etec-medium dark:text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
                 <div class="text-2xl font-bold text-etec-dark dark:text-white">{{ ($sectors ?? collect())->count() }}+</div>
                 <div class="text-xs text-gray-500 dark:text-gray-400 font-medium mt-0.5">Laboratórios ativos</div>
             </div>
             <div class="py-5 px-6 text-center">
+                <svg class="w-5 h-5 mx-auto mb-1.5 text-etec-medium dark:text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                 <div class="text-2xl font-bold text-etec-dark dark:text-white">100%</div>
                 <div class="text-xs text-gray-500 dark:text-gray-400 font-medium mt-0.5">Ensino público e gratuito</div>
             </div>
@@ -125,7 +145,7 @@
             @if(isset($units))
                 @foreach($units as $unit)
                     <a href="{{ route('units.show', $unit->id) }}"
-                       class="group bg-etec-main rounded-2xl shadow-sm hover:shadow-xl hover:shadow-etec-dark/30 transition duration-300 overflow-hidden border border-etec-dark/30 dark:border-white/10 flex flex-col">
+                       class="group card-hover bg-etec-main rounded-2xl shadow-sm hover:shadow-xl hover:shadow-etec-dark/30 transition duration-300 overflow-hidden border border-etec-dark/30 dark:border-white/10 flex flex-col">
 
                         <div class="h-44 bg-gradient-to-br from-etec-dark to-etec-main relative overflow-hidden flex items-center justify-center">
                             <div class="relative w-full h-full">
@@ -201,7 +221,7 @@
             @if(isset($sectors))
                 @foreach($sectors as $sector)
                 <a href="{{ route('sectors.show', $sector->slug) }}"
-                   class="block bg-white/5 backdrop-blur p-6 rounded-xl hover:bg-white/10 transition border border-white/10 group">
+                   class="block card-hover bg-white/5 backdrop-blur p-6 rounded-xl hover:bg-white/10 transition border border-white/10 group">
                     <div class="w-12 h-12 bg-etec-accent/20 rounded-lg flex items-center justify-center mb-4 group-hover:bg-etec-accent/30 transition">
                         @switch($sector->icon)
                             @case('cow')

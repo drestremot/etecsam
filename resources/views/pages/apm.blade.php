@@ -3,19 +3,14 @@
 @section('content')
 
 {{-- Hero --}}
-<div class="bg-etec-dark text-white py-14 border-b-4 border-etec-accent">
-    <div class="container mx-auto px-4 flex items-center gap-6">
-        <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0">
-            <svg class="w-8 h-8 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
-            </svg>
-        </div>
-        <div class="flex-grow">
-            <p class="text-etec-accent text-xs font-bold uppercase tracking-widest mb-1">Comunidade Escolar</p>
-            <h1 class="text-3xl font-bold mb-1">APM</h1>
-            <p class="text-gray-300 text-sm">Associação de Pais e Mestres</p>
-        </div>
+<x-page-header label="Comunidade Escolar" title="APM" subtitle="Associação de Pais e Mestres">
+    <x-slot:icon>
+        <svg class="w-8 h-8 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+    </x-slot:icon>
+    <x-slot:actions>
         <a href="{{ route('apm.finance') }}"
            class="hidden sm:inline-flex items-center gap-2 bg-etec-accent text-etec-dark font-bold text-sm px-5 py-3 rounded-lg hover:bg-amber-400 transition flex-shrink-0">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -23,8 +18,8 @@
             </svg>
             Dashboard Financeiro
         </a>
-    </div>
-    <div class="container mx-auto px-4 mt-4 sm:hidden">
+    </x-slot:actions>
+    <x-slot:mobileActions>
         <a href="{{ route('apm.finance') }}"
            class="inline-flex items-center gap-2 bg-etec-accent text-etec-dark font-bold text-sm px-5 py-3 rounded-lg hover:bg-amber-400 transition w-full justify-center">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -32,8 +27,8 @@
             </svg>
             Dashboard Financeiro
         </a>
-    </div>
-</div>
+    </x-slot:mobileActions>
+</x-page-header>
 
 <div class="container mx-auto px-4 py-12">
 

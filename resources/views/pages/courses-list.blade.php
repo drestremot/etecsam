@@ -2,19 +2,13 @@
 
 @section('content')
 
-<div class="bg-etec-dark text-white py-12 border-b-4 border-etec-accent">
-    <div class="container mx-auto px-4 flex items-center gap-6">
-        <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0">
-            <svg class="w-8 h-8 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-            </svg>
-        </div>
-        <div>
-            <h1 class="text-3xl font-bold mb-1">Nossas Unidades e Cursos</h1>
-            <p class="text-gray-300">Salas descentralizadas e sede da Etec Sebastiana Augusta de Moraes.</p>
-        </div>
-    </div>
-</div>
+<x-page-header compact title="Nossas Unidades e Cursos" subtitle="Salas descentralizadas e sede da Etec Sebastiana Augusta de Moraes.">
+    <x-slot:icon>
+        <svg class="w-8 h-8 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+        </svg>
+    </x-slot:icon>
+</x-page-header>
 
 <div class="container mx-auto px-4 py-12 space-y-14">
 
@@ -39,17 +33,7 @@
 
             @if($unit->coordinator)
             <div class="bg-white/10 p-4 rounded-xl border border-white/10 flex items-center gap-4 flex-shrink-0">
-                <div class="relative hover:z-20 w-[55px] h-[55px] rounded-full bg-white/10 flex-shrink-0 border-2 border-etec-light">
-                    @if($unit->coordinator->photo)
-                        <img src="{{ photo_url($unit->coordinator->photo) }}" class="w-full h-full object-cover rounded-full scale-[1.15] hover:scale-[1.4375] transition duration-700 ease-in-out"
-                             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                        <div class="w-full h-full hidden items-center justify-center bg-etec-medium text-white font-bold">{{ substr($unit->coordinator->name, 0, 1) }}</div>
-                    @else
-                        <div class="w-full h-full flex items-center justify-center bg-etec-medium text-white font-bold">
-                            {{ substr($unit->coordinator->name, 0, 1) }}
-                        </div>
-                    @endif
-                </div>
+                <x-avatar :name="$unit->coordinator->name" :photo="$unit->coordinator->photo" :size="55" bg="bg-etec-medium" text-size="text-base" class="hover:z-20 border-2 border-etec-light" />
                 <div class="min-w-0">
                     <span class="text-xs font-bold text-green-200/70 uppercase tracking-wide block mb-0.5">Coord. de Sala</span>
                     <strong class="text-sm text-white block leading-tight">{{ $unit->coordinator->name }}</strong>

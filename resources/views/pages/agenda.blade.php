@@ -20,19 +20,13 @@
 
 @section('content')
 
-<div class="bg-etec-dark text-white py-12 border-b-4 border-etec-accent">
-    <div class="container mx-auto px-4 flex items-center gap-6">
-        <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0">
-            <svg class="w-8 h-8 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-            </svg>
-        </div>
-        <div>
-            <h1 class="text-3xl font-bold mb-1">Agenda Escolar {{ date('Y') }}</h1>
-            <p class="text-gray-300">Datas de provas, eventos e atividades letivas.</p>
-        </div>
-    </div>
-</div>
+<x-page-header compact :title="'Agenda Escolar ' . date('Y')" subtitle="Datas de provas, eventos e atividades letivas.">
+    <x-slot:icon>
+        <svg class="w-8 h-8 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        </svg>
+    </x-slot:icon>
+</x-page-header>
 
 <div class="container mx-auto px-4 py-16">
 
