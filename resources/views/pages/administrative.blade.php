@@ -3,21 +3,14 @@
 @section('content')
 
 {{-- Hero --}}
-<div class="bg-etec-dark text-white py-14 border-b-4 border-etec-accent">
-    <div class="container mx-auto px-4 flex items-center gap-6">
-        <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0">
-            <svg class="w-8 h-8 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                      d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-            </svg>
-        </div>
-        <div>
-            <p class="text-etec-accent text-xs font-bold uppercase tracking-widest mb-1">Gestão Escolar</p>
-            <h1 class="text-3xl font-bold mb-1">Diretoria de Serviços</h1>
-            <p class="text-gray-300 text-sm">Gestão Administrativa, Financeira e de Infraestrutura</p>
-        </div>
-    </div>
-</div>
+<x-page-header label="Gestão Escolar" title="Diretoria de Serviços" subtitle="Gestão Administrativa, Financeira e de Infraestrutura">
+    <x-slot:icon>
+        <svg class="w-8 h-8 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                  d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+        </svg>
+    </x-slot:icon>
+</x-page-header>
 
 <div class="container mx-auto px-4 py-12">
 

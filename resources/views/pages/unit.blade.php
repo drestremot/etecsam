@@ -22,24 +22,7 @@
 
             @if($unit->coordinator)
             <div class="bg-etec-main text-white p-5 rounded-2xl shadow-lg border border-etec-dark/30 dark:border-white/10 flex items-center gap-4 min-w-[300px]">
-                <div class="relative hover:z-20 w-[74px] h-[74px] rounded-full bg-white/10 border-2 border-etec-light flex-shrink-0">
-                    @php
-                        $coordinatorInitials = strtoupper(substr($unit->coordinator->name, 0, 1));
-                        if (preg_match('/\s+(\S)/u', $unit->coordinator->name, $matches)) {
-                            $coordinatorInitials .= strtoupper($matches[1]);
-                        }
-                    @endphp
-                    @if($unit->coordinator->photo)
-                        <img src="{{ photo_url($unit->coordinator->photo) }}"
-                             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
-                             class="w-full h-full object-cover rounded-full scale-[1.15] hover:scale-[1.4375] transition duration-700 ease-in-out">
-                        <div style="display:none" class="w-full h-full flex items-center justify-center bg-etec-dark text-white font-bold text-xl">{{ $coordinatorInitials }}</div>
-                    @else
-                        <div class="w-full h-full flex items-center justify-center bg-etec-dark text-white font-bold text-xl">
-                            {{ $coordinatorInitials }}
-                        </div>
-                    @endif
-                </div>
+                <x-avatar :name="$unit->coordinator->name" :photo="$unit->coordinator->photo" :size="74" class="hover:z-20 border-2 border-etec-light" />
                 <div class="min-w-0">
                     <span class="text-xs font-bold text-etec-light uppercase tracking-wide block mb-0.5">Coord. de Sala Descentralizada</span>
                     <strong class="text-sm block leading-tight text-white">{{ $unit->coordinator->name }}</strong>

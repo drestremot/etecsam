@@ -3,17 +3,8 @@
 @section('content')
 
 {{-- Page header --}}
-<div class="border-b border-gray-200 dark:border-white/10">
-    <div class="container mx-auto px-4 py-16 text-center">
-        <span class="text-etec-medium dark:text-etec-accent font-bold uppercase tracking-widest text-xs">Institucional</span>
-        <h1 class="text-4xl font-bold text-etec-dark dark:text-white mt-2 mb-4">Nossa História</h1>
-        <div class="w-16 h-1 bg-etec-accent mx-auto"></div>
-        <p class="mt-6 text-gray-600 dark:text-gray-300 max-w-2xl mx-auto leading-relaxed">
-            Conheça a trajetória da Etec Sebastiana Augusta de Moraes e nosso compromisso com o
-            ensino agrícola de qualidade em Andradina e região.
-        </p>
-    </div>
-</div>
+<x-page-header variant="plain" label="Institucional" title="Nossa História"
+    subtitle="Conheça a trajetória da Etec Sebastiana Augusta de Moraes e nosso compromisso com o ensino agrícola de qualidade em Andradina e região." />
 
 <div class="pb-16">
     <div class="container mx-auto px-4">
@@ -22,7 +13,7 @@
         <div class="grid md:grid-cols-2 gap-12 items-center mb-24">
             <div class="relative">
                 <img src="https://images.unsplash.com/photo-1560493676-04071c5f467b?q=80&w=1000&auto=format&fit=crop"
-                     alt="Fachada da Escola" class="rounded-2xl shadow-xl w-full object-cover">
+                     alt="Fachada da Escola" class="rounded-2xl shadow-xl w-full object-cover photo-tone">
                 <div class="absolute -bottom-4 -right-4 bg-etec-accent text-etec-dark font-bold text-sm px-5 py-3 rounded-xl shadow-lg">
                     Desde 1994
                 </div>
@@ -112,16 +103,11 @@
             @if ($direcaoGeral)
                 <div class="flex justify-center mb-16">
                     <div class="bg-etec-main p-8 rounded-2xl shadow-lg border border-etec-dark/30 dark:border-white/10 text-center max-w-sm w-full hover:-translate-y-1 transition duration-300">
-                        <div class="relative hover:z-20 w-[129px] h-[129px] mx-auto bg-etec-dark text-white rounded-full flex items-center justify-center text-5xl mb-5 shadow-md">
-                            @if ($direcaoGeral->photo)
-                                <img src="{{ photo_url($direcaoGeral->photo) }}"
-                                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
-                                     class="w-full h-full object-cover rounded-full scale-[1.15] hover:scale-[1.4375] transition duration-700 ease-in-out">
-                                <div style="display:none" class="w-full h-full flex items-center justify-center bg-etec-dark text-white font-bold text-2xl">{{ substr($direcaoGeral->name,0,1) }}</div>
-                            @else
+                        <x-avatar :name="$direcaoGeral->name" :photo="$direcaoGeral->photo" :size="129" text-size="text-4xl" class="hover:z-20 mx-auto mb-5 shadow-md">
+                            <x-slot:fallbackIcon>
                                 <svg class="w-14 h-14 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                            @endif
-                        </div>
+                            </x-slot:fallbackIcon>
+                        </x-avatar>
                         <div class="inline-block bg-etec-accent/20 text-etec-accent text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide mb-3">
                             Direção Geral
                         </div>

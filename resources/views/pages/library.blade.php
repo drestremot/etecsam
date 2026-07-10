@@ -2,19 +2,13 @@
 
 @section('content')
 
-<div class="bg-etec-dark text-white py-12 border-b-4 border-etec-accent">
-    <div class="container mx-auto px-4 flex items-center gap-6">
-        <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0">
-            <svg class="w-8 h-8 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-            </svg>
-        </div>
-        <div>
-            <h1 class="text-3xl font-bold mb-1">Biblioteca Ativa</h1>
-            <p class="text-gray-300">Centro de Memória e Pesquisa — Etec Sebastiana Augusta de Moraes</p>
-        </div>
-    </div>
-</div>
+<x-page-header compact title="Biblioteca Ativa" subtitle="Centro de Memória e Pesquisa — Etec Sebastiana Augusta de Moraes">
+    <x-slot:icon>
+        <svg class="w-8 h-8 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+        </svg>
+    </x-slot:icon>
+</x-page-header>
 
 <div class="container mx-auto px-4 py-12 grid lg:grid-cols-3 gap-10">
 

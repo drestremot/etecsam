@@ -2,18 +2,12 @@
 
 @section('content')
 
-<div class="relative bg-etec-dark h-56 flex items-center justify-center overflow-hidden">
-    <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1600&auto=format&fit=crop"
-         class="absolute inset-0 w-full h-full object-cover opacity-30 grayscale">
-    <div class="absolute inset-0 bg-gradient-to-b from-etec-dark/60 to-etec-dark/90"></div>
-    <div class="relative z-10 text-center text-white px-4">
-        <div class="inline-flex items-center justify-center w-12 h-12 bg-white/10 rounded-xl mb-4 mx-auto">
-            <svg class="w-6 h-6 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-        </div>
-        <h1 class="text-4xl font-bold mb-2">Fale Conosco</h1>
-        <p class="text-gray-300">Estamos prontos para atender você.</p>
-    </div>
-</div>
+<x-page-header variant="photo" image="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1600&auto=format&fit=crop"
+    title="Fale Conosco" subtitle="Estamos prontos para atender você.">
+    <x-slot:icon>
+        <svg class="w-6 h-6 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+    </x-slot:icon>
+</x-page-header>
 
 <div class="container mx-auto px-4 py-16">
     <div class="grid md:grid-cols-2 gap-12">

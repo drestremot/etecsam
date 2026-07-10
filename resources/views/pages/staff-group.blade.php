@@ -3,20 +3,13 @@
 @section('content')
 
 {{-- Hero --}}
-<div class="bg-etec-dark text-white py-14 border-b-4 border-etec-accent">
-    <div class="container mx-auto px-4 flex items-center gap-6">
-        <div class="w-16 h-16 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0">
-            <svg class="w-8 h-8 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="{{ $iconPath }}"/>
-            </svg>
-        </div>
-        <div>
-            <p class="text-etec-accent text-xs font-bold uppercase tracking-widest mb-1">{{ $pageLabel }}</p>
-            <h1 class="text-3xl font-bold mb-1">{{ $pageTitle }}</h1>
-            <p class="text-gray-300 text-sm">{{ $pageSubtitle }}</p>
-        </div>
-    </div>
-</div>
+<x-page-header :label="$pageLabel" :title="$pageTitle" :subtitle="$pageSubtitle">
+    <x-slot:icon>
+        <svg class="w-8 h-8 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="{{ $iconPath }}"/>
+        </svg>
+    </x-slot:icon>
+</x-page-header>
 
 <div class="container mx-auto px-4 py-12">
 
