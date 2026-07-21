@@ -16,6 +16,7 @@ class UserResource extends JsonResource
             'registration_number'  => $this->registration_number,
             'is_admin'             => $this->is_admin,
             'roles'                => $this->getRoleNames(),
+            'photo_url'            => photo_url($this->teacher?->photo),
         ];
     }
 }

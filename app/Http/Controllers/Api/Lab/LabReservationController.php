@@ -16,7 +16,9 @@ use Illuminate\Support\Facades\Mail;
 
 class LabReservationController extends Controller
 {
-    private const RESOURCE_RELATIONS = ['user', 'space', 'auxiliar', 'coordenador', 'materials', 'images'];
+    private const RESOURCE_RELATIONS = [
+        'user.teacher', 'space.auxiliar.teacher', 'auxiliar.teacher', 'coordenador.teacher', 'materials', 'images',
+    ];
 
     public function dashboard(Request $request)
     {

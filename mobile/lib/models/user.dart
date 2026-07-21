@@ -5,6 +5,7 @@ class AppUser {
   final String? registrationNumber;
   final bool isAdmin;
   final List<String> roles;
+  final String? photoUrl;
 
   AppUser({
     required this.id,
@@ -13,6 +14,7 @@ class AppUser {
     this.registrationNumber,
     required this.isAdmin,
     required this.roles,
+    this.photoUrl,
   });
 
   factory AppUser.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class AppUser {
       registrationNumber: json['registration_number'] as String?,
       isAdmin: json['is_admin'] as bool? ?? false,
       roles: (json['roles'] as List<dynamic>? ?? []).map((r) => r.toString()).toList(),
+      photoUrl: json['photo_url'] as String?,
     );
   }
 

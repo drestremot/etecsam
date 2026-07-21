@@ -13,13 +13,13 @@ class SpaceController extends Controller
 {
     public function index()
     {
-        return SpaceResource::collection(Space::with('auxiliar')->orderBy('name')->get());
+        return SpaceResource::collection(Space::with('auxiliar.teacher')->orderBy('name')->get());
     }
 
     public function auxiliares()
     {
         return UserResource::collection(
-            User::role('Auxiliar')->where('is_active', true)->orderBy('name')->get()
+            User::role('Auxiliar')->where('is_active', true)->with('teacher')->orderBy('name')->get()
         );
     }
 
@@ -32,7 +32,7 @@ class SpaceController extends Controller
         ]);
 
         $space = Space::create($validated);
-        $space->load('auxiliar');
+        $space->load('auxiliar.teacher');
 
         return (new SpaceResource($space))
             ->additional(['message' => 'Espaço didático cadastrado com sucesso!'])
@@ -48,7 +48,7 @@ class SpaceController extends Controller
         ]);
 
         $space->update($validated);
-        $space->load('auxiliar');
+        $space->load('auxiliar.teacher');
 
         return (new SpaceResource($space))
             ->additional(['message' => 'Espaço atualizado com sucesso!']);

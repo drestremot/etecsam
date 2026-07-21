@@ -7,6 +7,7 @@ import '../dashboard/dashboard_screen.dart';
 import '../reservations/history_screen.dart';
 import '../reservations/reservation_filter_sheet.dart';
 import '../reservations/reservations_list_screen.dart';
+import 'user_avatar.dart';
 
 class HomeShell extends ConsumerStatefulWidget {
   const HomeShell({super.key});
@@ -60,7 +61,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
               const PopupMenuDivider(),
               const PopupMenuItem(value: 'logout', child: Text('Sair')),
             ],
-            icon: const CircleAvatar(child: Icon(Icons.person)),
+            icon: UserAvatar(user: user, radius: 16),
           ),
           const SizedBox(width: 8),
         ],
