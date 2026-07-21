@@ -20,6 +20,7 @@ class ReservationStepNotification extends Mailable
         public string $title,
         public string $bodyText,
         public User $actingUser,
+        public ?User $recipientUser = null,
     ) {}
 
     public function envelope(): Envelope
@@ -37,10 +38,11 @@ class ReservationStepNotification extends Mailable
         return new Content(
             view: 'emails.reservation-step-notification',
             with: [
-                'reservation' => $this->reservation,
-                'title'       => $this->title,
-                'bodyText'    => $this->bodyText,
-                'actingUser'  => $this->actingUser,
+                'reservation'   => $this->reservation,
+                'title'         => $this->title,
+                'bodyText'      => $this->bodyText,
+                'actingUser'    => $this->actingUser,
+                'recipientName' => $this->recipientUser?->name,
             ],
         );
     }

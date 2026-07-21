@@ -32,7 +32,15 @@
 
   <div class="body">
     <p style="font-size:15px;color:#111827;margin-bottom:20px;">
-      Olá, <strong>{{ $recipient === 'professor' ? ($reservation->user->name ?? 'Professor') : ($reservation->auxiliar->name ?? 'Auxiliar') }}</strong>!<br>
+      @php
+        $recipientName = match($recipient) {
+            'professor'   => $reservation->user->name ?? 'Professor',
+            'auxiliar'    => $reservation->auxiliar->name ?? 'Auxiliar',
+            'coordenador' => $reservation->coordenador->name ?? 'Coordenador',
+            default       => 'Participante',
+        };
+      @endphp
+      Olá, <strong>{{ $recipientName }}</strong>!<br>
       A atividade no laboratório foi <strong>validada e arquivada</strong> pelo coordenador.
     </p>
 

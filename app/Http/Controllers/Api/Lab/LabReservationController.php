@@ -189,6 +189,10 @@ class LabReservationController extends Controller
 
         $reservation->load(self::RESOURCE_RELATIONS);
 
+        $title = 'Nova reserva aguardando aprovação';
+        $body  = "{$reservation->user?->name} solicitou a reserva de {$reservation->space?->name} para {$reservation->reservation_date->format('d/m/Y')}.";
+        $this->notifier()->notify(User::coordenadores()->get(), $reservation, $title, $body, $request->user());
+
         return (new LabReservationResource($reservation))
             ->additional(['message' => 'Reserva criada com sucesso! Aguarde aprovação do coordenador.'])
             ->response()->setStatusCode(201);
@@ -207,6 +211,11 @@ class LabReservationController extends Controller
             'status'         => 'aprovada',
             'coordenador_id' => $request->user()->id,
         ]);
+        $reservation->loadMissing(['user', 'space.auxiliar']);
+
+        $title = 'Reserva aprovada';
+        $body  = "A reserva de {$reservation->space?->name} para {$reservation->reservation_date->format('d/m/Y')} foi aprovada pelo coordenador.";
+        $this->notifier()->notify([$reservation->user, $reservation->space?->auxiliar], $reservation, $title, $body, $request->user());
 
         return $this->respond($reservation, 'Reserva aprovada! O auxiliar foi notificado para preparar o laboratório.');
     }
@@ -221,12 +230,18 @@ class LabReservationController extends Controller
         return $this->respond($reservation, 'Reserva recusada.');
     }
 
-    public function startClass(LabReservation $reservation)
+    public function startClass(Request $request, LabReservation $reservation)
     {
         $reservation->update([
             'status'              => 'em_execucao',
             'professor_signed_at' => now(),
         ]);
+        $reservation->loadMissing(['user', 'space']);
+
+        $title = 'Materiais entregues, aula iniciada';
+        $body  = "Os materiais da reserva em {$reservation->space?->name} foram entregues e a aula foi iniciada.";
+        $recipients = [$reservation->user, ...User::coordenadores()->get()];
+        $this->notifier()->notify($recipients, $reservation, $title, $body, $request->user());
 
         return $this->respond($reservation, 'Materiais entregues e checklist assinado. Boa aula!');
     }
@@ -324,6 +339,10 @@ class LabReservationController extends Controller
             if ($reservation->auxiliar?->email) {
                 Mail::to($reservation->auxiliar->email)
                     ->send(new LabReservationFinalized($reservation, 'auxiliar'));
+            }
+            if ($reservation->coordenador?->email) {
+                Mail::to($reservation->coordenador->email)
+                    ->send(new LabReservationFinalized($reservation, 'coordenador'));
             }
         } catch (\Exception $e) {
             // Ignora falha de e-mail — validação já foi salva
