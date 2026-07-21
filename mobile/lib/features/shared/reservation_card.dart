@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../models/reservation.dart';
 import 'formatters.dart';
 import 'status_badge.dart';
+import 'user_avatar.dart';
 
 class ReservationCard extends StatelessWidget {
   final Reservation reservation;
@@ -50,8 +51,8 @@ class ReservationCard extends StatelessWidget {
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    Icon(Icons.person_outline, size: 14, color: Colors.grey[600]),
-                    const SizedBox(width: 4),
+                    UserAvatar(user: reservation.user, radius: 9),
+                    const SizedBox(width: 6),
                     Text(reservation.user!.name, style: TextStyle(color: Colors.grey[700])),
                   ],
                 ),

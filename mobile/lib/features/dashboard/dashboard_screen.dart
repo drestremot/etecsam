@@ -65,7 +65,7 @@ class DashboardScreen extends ConsumerWidget {
                   physics: const NeverScrollableScrollPhysics(),
                   crossAxisSpacing: 12,
                   mainAxisSpacing: 12,
-                  childAspectRatio: 1.6,
+                  childAspectRatio: 1.25,
                   children: stats.entries
                       .map((e) => _StatTile(
                             label: _statLabels[e.key] ?? e.key,
@@ -117,20 +117,26 @@ class _StatTile extends StatelessWidget {
           Container(width: 6, color: color),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     '$value',
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: color,
                         ),
                   ),
-                  const SizedBox(height: 4),
-                  Text(label, style: TextStyle(color: Colors.grey[700])),
+                  const SizedBox(height: 2),
+                  Text(
+                    label,
+                    style: TextStyle(color: Colors.grey[700], fontSize: 12.5, height: 1.15),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ],
               ),
             ),
