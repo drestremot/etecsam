@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "311926029650",
+    "project_id": "reserva-44498",
+    "storage_bucket": "reserva-44498.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:311926029650:android:4440c8d968e2b9c9580e8b",
+        "android_client_info": {
+          "package_name": "br.sp.cps.etecsam.etecsam_lab"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDymCeZA0KlM64gdGCG21iFeNoW2NsmGrY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
