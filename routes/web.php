@@ -30,6 +30,7 @@ Route::get('/colaboradores',       [SiteController::class, 'collaborators'])->na
 Route::get('/segurancas',          [SiteController::class, 'securityStaff'])->name('security-staff');
 Route::get('/unidade/{id}',        [SiteController::class, 'unit'])->name('units.show');
 Route::get('/unidade-didatica/{slug}', [SiteController::class, 'sector'])->name('sectors.show');
+Route::get('/politica-de-privacidade', fn () => view('pages.privacy-policy'))->name('privacy-policy');
 
 // ─── Autenticação (Breeze) ────────────────────────────────────────────────────
 
