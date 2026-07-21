@@ -61,10 +61,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Icon(Icons.science_outlined, size: 64, color: Theme.of(context).colorScheme.primary),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(28),
+                      child: Image.asset('assets/logo/icon.png', width: 96, height: 96),
+                    ),
                     const SizedBox(height: 16),
                     Text(
-                      'Reserva de Laboratórios',
+                      'EtecSam Reserva Labs',
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
                     ),
