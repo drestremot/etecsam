@@ -45,4 +45,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(LabReservation::class, 'user_id');
     }
+
+    public function deviceTokens()
+    {
+        return $this->hasMany(DeviceToken::class);
+    }
 }

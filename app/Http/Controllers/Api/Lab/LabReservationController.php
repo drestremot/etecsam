@@ -8,6 +8,8 @@ use App\Mail\LabReservationFinalized;
 use App\Models\LabReservation;
 use App\Models\Material;
 use App\Models\Space;
+use App\Models\User;
+use App\Services\PushNotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
@@ -101,6 +103,7 @@ class LabReservationController extends Controller
                 ->latest()->get();
 
             $reservations = LabReservation::with(self::RESOURCE_RELATIONS)
+                ->whereNotIn('status', ['validada'])
                 ->tap($applyFilters)
                 ->latest()->paginate(20)->withQueryString();
         } elseif ($user->hasRole('Auxiliar')) {
@@ -116,6 +119,7 @@ class LabReservationController extends Controller
             $pendentes = [];
             $reservations = LabReservation::with(self::RESOURCE_RELATIONS)
                 ->where('user_id', $user->id)
+                ->whereNotIn('status', ['validada'])
                 ->tap($applyFilters)
                 ->latest()->paginate(20)->withQueryString();
         }
@@ -249,6 +253,12 @@ class LabReservationController extends Controller
             ? 'Observações registradas e atividade enviada ao coordenador para validação!'
             : 'Observações registradas! Aguardando o auxiliar liberar para enviar ao coordenador.';
 
+        $fresh->loadMissing(['space.auxiliar', 'user']);
+        $title = 'Observações da aula registradas';
+        $body  = "{$fresh->user?->name} registrou as observações da reserva em {$fresh->space?->name}.";
+        $this->pushService()->sendToUsers([$fresh->space?->auxiliar], $title, $body, $this->pushData($fresh));
+        $this->pushService()->sendToUsers($this->coordenadores(), $title, $body, $this->pushData($fresh));
+
         return $this->respond($fresh, $msg);
     }
 
@@ -274,10 +284,16 @@ class LabReservationController extends Controller
         }
 
         $reservation->update($data);
+        $reservation->loadMissing(['auxiliar', 'user', 'space']);
 
         $msg = $data['status'] === 'aguardando_validacao'
             ? 'Conferência registrada. Reserva enviada ao coordenador para validação!'
             : 'Conferência registrada. Aguardando o professor registrar as observações.';
+
+        $title = 'Conferência do auxiliar registrada';
+        $body  = "{$reservation->auxiliar?->name} concluiu a conferência da reserva em {$reservation->space?->name}.";
+        $this->pushService()->sendToUsers([$reservation->user], $title, $body, $this->pushData($reservation));
+        $this->pushService()->sendToUsers($this->coordenadores(), $title, $body, $this->pushData($reservation));
 
         return $this->respond($reservation, $msg);
     }
@@ -309,6 +325,10 @@ class LabReservationController extends Controller
         } catch (\Exception $e) {
             // Ignora falha de e-mail — validação já foi salva
         }
+
+        $title = 'Atividade validada e arquivada';
+        $body  = "A reserva em {$reservation->space?->name} foi validada pelo coordenador.";
+        $this->pushService()->sendToUsers([$reservation->user, $reservation->auxiliar], $title, $body, $this->pushData($reservation));
 
         return $this->respond($reservation, 'Atividade validada e arquivada! Notificações enviadas ao professor e auxiliar.');
     }
@@ -351,8 +371,8 @@ class LabReservationController extends Controller
     public function history()
     {
         $reservations = LabReservation::with(self::RESOURCE_RELATIONS)
-            ->whereIn('status', ['concluida', 'finalizada'])
-            ->latest('finalized_at')
+            ->whereIn('status', ['validada', 'concluida', 'finalizada'])
+            ->orderByRaw('COALESCE(finalized_at, validated_at) DESC')
             ->paginate(20);
 
         return LabReservationResource::collection($reservations);
@@ -405,5 +425,24 @@ class LabReservationController extends Controller
 
         return (new LabReservationResource($reservation))
             ->additional(['message' => $message]);
+    }
+
+    private function pushService(): PushNotificationService
+    {
+        return app(PushNotificationService::class);
+    }
+
+    private function pushData(LabReservation $reservation): array
+    {
+        return [
+            'type'            => 'reservation_update',
+            'reservation_id'  => (string) $reservation->id,
+        ];
+    }
+
+    /** @return \Illuminate\Support\Collection<int, User> */
+    private function coordenadores()
+    {
+        return User::role('Coordenador')->orWhere('is_admin', true)->get();
     }
 }
