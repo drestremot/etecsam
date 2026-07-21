@@ -1,7 +1,7 @@
 <?php
 
 /**
- * ExportedDataSeeder — gerado automaticamente em 2026-07-21 18:11:19
+ * ExportedDataSeeder — gerado automaticamente em 2026-07-21 19:58:16
  * Comando: php artisan db:export-seeders
  *
  * Para restaurar: php artisan db:seed --class=ExportedDataSeeder
@@ -63,6 +63,45 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => null,
                 'updated_at' => '2026-06-15 18:52:10',
                 'is_admin' => 1,
+                'registration_number' => null,
+                'is_active' => 1,
+            ],
+            [
+                'id' => 11,
+                'name' => 'Professor Flutter',
+                'email' => 'flutter.professor@etecsam.test',
+                'email_verified_at' => null,
+                'password' => '$2y$12$4JRIS7.ZWU.vKDhjHaSCrO6J18aAIws5mMW/7CcBpmy3UytbqVSPO',
+                'remember_token' => null,
+                'created_at' => '2026-07-21 18:31:56',
+                'updated_at' => '2026-07-21 18:31:56',
+                'is_admin' => 0,
+                'registration_number' => null,
+                'is_active' => 1,
+            ],
+            [
+                'id' => 12,
+                'name' => 'Coordenador Flutter',
+                'email' => 'flutter.coordenador@etecsam.test',
+                'email_verified_at' => null,
+                'password' => '$2y$12$FW6HjhrU6JhV.hZHEwwdz.mxFVOdFHj4E4H3dQBUsRy01bG/QUhyS',
+                'remember_token' => null,
+                'created_at' => '2026-07-21 18:31:57',
+                'updated_at' => '2026-07-21 18:31:57',
+                'is_admin' => 0,
+                'registration_number' => null,
+                'is_active' => 1,
+            ],
+            [
+                'id' => 13,
+                'name' => 'Auxiliar Flutter',
+                'email' => 'flutter.auxiliar@etecsam.test',
+                'email_verified_at' => null,
+                'password' => '$2y$12$B7sdBhiK.PdTcOM/ppjEe.pHzbAVsIRSc4J.rTvBbR9Lh33WLgZFy',
+                'remember_token' => null,
+                'created_at' => '2026-07-21 18:31:57',
+                'updated_at' => '2026-07-21 18:31:57',
+                'is_admin' => 0,
                 'registration_number' => null,
                 'is_active' => 1,
             ]
