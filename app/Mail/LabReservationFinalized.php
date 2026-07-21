@@ -5,6 +5,7 @@ namespace App\Mail;
 use App\Models\LabReservation;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
@@ -20,8 +21,11 @@ class LabReservationFinalized extends Mailable
 
     public function envelope(): Envelope
     {
+        $coordenador = $this->reservation->coordenador;
+
         return new Envelope(
             subject: "Atividade validada — Reserva #{$this->reservation->id} | Etec SAM",
+            replyTo: $coordenador?->email ? [new Address($coordenador->email, $coordenador->name)] : [],
         );
     }
 

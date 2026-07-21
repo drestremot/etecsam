@@ -22,6 +22,17 @@ const Map<String, String> _statLabels = {
   'pendentes': 'Pendentes',
 };
 
+/// Verde para reservas em andamento, vermelho para concluídas/validadas,
+/// amarelo para o que está aguardando alguma ação, azul para o restante.
+Color _statTileColor(String key) {
+  if (key.contains('conclu') || key.contains('valida')) return const Color(0xFFE53E3E);
+  if (key.contains('ativ') || key == 'minhas' || key == 'active' || key == 'spaces') {
+    return const Color(0xFF2D6A4F);
+  }
+  if (key.contains('aguard') || key.contains('pend')) return const Color(0xFFF5A623);
+  return const Color(0xFF3182CE);
+}
+
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
 
@@ -55,7 +66,13 @@ class DashboardScreen extends ConsumerWidget {
                   crossAxisSpacing: 12,
                   mainAxisSpacing: 12,
                   childAspectRatio: 1.6,
-                  children: stats.entries.map((e) => _StatTile(label: _statLabels[e.key] ?? e.key, value: e.value)).toList(),
+                  children: stats.entries
+                      .map((e) => _StatTile(
+                            label: _statLabels[e.key] ?? e.key,
+                            value: e.value,
+                            color: _statTileColor(e.key),
+                          ))
+                      .toList(),
                 ),
               ),
               Padding(
@@ -86,29 +103,39 @@ class DashboardScreen extends ConsumerWidget {
 class _StatTile extends StatelessWidget {
   final String label;
   final dynamic value;
+  final Color color;
 
-  const _StatTile({required this.label, required this.value});
+  const _StatTile({required this.label, required this.value, required this.color});
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '$value',
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
+      clipBehavior: Clip.antiAlias,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(width: 6, color: color),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '$value',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: color,
+                        ),
                   ),
+                  const SizedBox(height: 4),
+                  Text(label, style: TextStyle(color: Colors.grey[700])),
+                ],
+              ),
             ),
-            const SizedBox(height: 4),
-            Text(label, style: TextStyle(color: Colors.grey[700])),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

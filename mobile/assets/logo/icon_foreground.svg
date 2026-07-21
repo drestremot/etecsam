@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="liquidGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FBC55C"/>
+      <stop offset="100%" stop-color="#E8961A"/>
+    </linearGradient>
+    <clipPath id="flaskClip">
+      <path d="M223,118 L289,118 L289,206 L380,368 Q384,392 358,392 L154,392 Q128,392 132,368 L223,206 Z"/>
+    </clipPath>
+  </defs>
+
+  <g transform="translate(256,256) scale(0.72) translate(-256,-256)">
+    <g opacity="0.16">
+      <rect x="120" y="70" width="272" height="220" rx="24" fill="none" stroke="#F5F0E8" stroke-width="10"/>
+      <line x1="120" y1="118" x2="392" y2="118" stroke="#F5F0E8" stroke-width="10"/>
+      <line x1="176" y1="52" x2="176" y2="88" stroke="#F5F0E8" stroke-width="12" stroke-linecap="round"/>
+      <line x1="336" y1="52" x2="336" y2="88" stroke="#F5F0E8" stroke-width="12" stroke-linecap="round"/>
+    </g>
+
+    <g clip-path="url(#flaskClip)">
+      <path d="M118,286 Q192,258 256,276 Q320,294 394,270 L394,412 L118,412 Z" fill="url(#liquidGrad)"/>
+      <circle cx="238" cy="336" r="9" fill="#FDE8B8" opacity="0.85"/>
+      <circle cx="272" cy="312" r="6" fill="#FDE8B8" opacity="0.7"/>
+      <circle cx="206" cy="356" r="5.5" fill="#FDE8B8" opacity="0.7"/>
+    </g>
+
+    <path d="M223,118 L289,118 L289,206 L380,368 Q384,392 358,392 L154,392 Q128,392 132,368 L223,206 Z"
+          fill="none" stroke="#F5F0E8" stroke-width="16" stroke-linejoin="round" stroke-linecap="round"/>
+    <rect x="213" y="104" width="86" height="24" rx="10" fill="#F5F0E8"/>
+
+    <circle cx="390" cy="150" r="58" fill="#F5A623" stroke="#F5F0E8" stroke-width="10"/>
+    <path d="M363,150 L382,169 L419,128" fill="none" stroke="#153F27" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

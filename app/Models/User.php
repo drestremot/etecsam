@@ -50,4 +50,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(DeviceToken::class);
     }
+
+    public function scopeCoordenadores($query)
+    {
+        return $query->role('Coordenador')->orWhere('is_admin', true);
+    }
 }

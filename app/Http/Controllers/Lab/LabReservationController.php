@@ -9,6 +9,7 @@ use App\Models\Material;
 use App\Models\Space;
 use App\Models\User;
 use App\Services\PushNotificationService;
+use App\Services\ReservationNotifier;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -259,8 +260,8 @@ class LabReservationController extends Controller
         $fresh->loadMissing(['space.auxiliar', 'user']);
         $title = 'Observações da aula registradas';
         $body  = "{$fresh->user?->name} registrou as observações da reserva em {$fresh->space?->name}.";
-        $this->pushService()->sendToUsers([$fresh->space?->auxiliar], $title, $body, $this->pushData($fresh));
-        $this->pushService()->sendToUsers($this->coordenadores(), $title, $body, $this->pushData($fresh));
+        $recipients = [$fresh->space?->auxiliar, ...User::coordenadores()->get()];
+        $this->notifier()->notify($recipients, $fresh, $title, $body, auth()->user());
 
         return back()->with('success', $msg);
     }
@@ -299,8 +300,8 @@ class LabReservationController extends Controller
 
         $title = 'Conferência do auxiliar registrada';
         $body  = "{$reservation->auxiliar?->name} concluiu a conferência da reserva em {$reservation->space?->name}.";
-        $this->pushService()->sendToUsers([$reservation->user], $title, $body, $this->pushData($reservation));
-        $this->pushService()->sendToUsers($this->coordenadores(), $title, $body, $this->pushData($reservation));
+        $recipients = [$reservation->user, ...User::coordenadores()->get()];
+        $this->notifier()->notify($recipients, $reservation, $title, $body, auth()->user());
 
         return back()->with('success', $msg);
     }
@@ -429,9 +430,8 @@ class LabReservationController extends Controller
         ];
     }
 
-    /** @return \Illuminate\Support\Collection<int, User> */
-    private function coordenadores()
+    private function notifier(): ReservationNotifier
     {
-        return User::role('Coordenador')->orWhere('is_admin', true)->get();
+        return app(ReservationNotifier::class);
     }
 }
