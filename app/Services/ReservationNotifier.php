@@ -36,7 +36,7 @@ class ReservationNotifier
 
             try {
                 Mail::to($user->email)
-                    ->send(new ReservationStepNotification($reservation, $title, $message, $actingUser));
+                    ->send(new ReservationStepNotification($reservation, $title, $message, $actingUser, $user));
             } catch (\Throwable $e) {
                 Log::warning('Falha ao enviar e-mail de notificação de reserva', [
                     'user_id' => $user->id,

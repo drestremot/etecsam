@@ -29,7 +29,10 @@
   </div>
 
   <div class="body">
-    <p style="font-size:15px;color:#111827;margin-bottom:20px;">{{ $bodyText }}</p>
+    <p style="font-size:15px;color:#111827;margin-bottom:20px;">
+      @if($recipientName)Olá, <strong>{{ $recipientName }}</strong>!<br>@endif
+      {{ $bodyText }}
+    </p>
 
     <div class="section">
       <div class="section-title">Detalhes da Reserva</div>

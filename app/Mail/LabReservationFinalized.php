@@ -3,9 +3,11 @@
 namespace App\Mail;
 
 use App\Models\LabReservation;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Address;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
@@ -42,6 +44,11 @@ class LabReservationFinalized extends Mailable
 
     public function attachments(): array
     {
-        return [];
+        return [
+            Attachment::fromData(
+                fn () => Pdf::loadView('lab.reservations.pdf', ['reservation' => $this->reservation])->output(),
+                "checklist-reserva-{$this->reservation->id}.pdf",
+            )->withMime('application/pdf'),
+        ];
     }
 }
