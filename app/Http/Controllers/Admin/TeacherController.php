@@ -32,13 +32,17 @@ class TeacherController extends Controller
             'name'       => 'required|string|max:255',
             'role'       => 'required|string|max:255',
             'specialty'  => 'nullable|string|max:255',
-            'bio'        => 'nullable|string|max:5000',
+            'bio'        => 'nullable|string|max:20000',
             'email'      => 'nullable|email|max:255',
             'phone'      => 'nullable|string|max:30',
             'lattes_url' => 'nullable|url|max:500',
             'birth_date' => 'nullable|date',
             'photo'      => 'nullable|image|max:4096',
         ]);
+
+        if (!empty($data['bio'])) {
+            $data['bio'] = clean($data['bio']);
+        }
 
         if ($request->hasFile('photo')) {
             $data['photo'] = $request->file('photo')->store('teachers', 'public');
@@ -59,13 +63,17 @@ class TeacherController extends Controller
             'name'       => 'required|string|max:255',
             'role'       => 'required|string|max:255',
             'specialty'  => 'nullable|string|max:255',
-            'bio'        => 'nullable|string|max:5000',
+            'bio'        => 'nullable|string|max:20000',
             'email'      => 'nullable|email|max:255',
             'phone'      => 'nullable|string|max:30',
             'lattes_url' => 'nullable|url|max:500',
             'birth_date' => 'nullable|date',
             'photo'      => 'nullable|image|max:4096',
         ]);
+
+        if (!empty($data['bio'])) {
+            $data['bio'] = clean($data['bio']);
+        }
 
         if ($request->hasFile('photo')) {
             if ($teacher->photo) {

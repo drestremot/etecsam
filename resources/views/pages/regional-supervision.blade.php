@@ -33,11 +33,12 @@
     <div class="bg-etec-main rounded-2xl shadow-sm overflow-hidden border border-etec-dark/30 dark:border-white/10">
         <div class="flex flex-col md:flex-row">
             {{-- Foto --}}
-            <div class="md:w-80 h-72 md:h-[420px] relative bg-etec-dark flex-shrink-0 overflow-hidden">
-                <img src="{{ photo_url($director->photo) }}"
-                     onerror="this.src='{{ avatar_url($director->name, '0c1f3f', 'fff', ['bold' => 'true', 'size' => 512]) }}'"
-                     class="w-full h-full object-cover opacity-90 hover:opacity-100 scale-[1.15] hover:scale-[1.4375] transition duration-700 ease-in-out">
-                <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-etec-dark/80 to-transparent"></div>
+            <div class="md:w-80 flex-shrink-0 bg-etec-dark flex items-center justify-center p-8 md:p-10">
+                <div class="relative hover:z-20 w-48 h-48 md:w-56 md:h-56 rounded-full border-4 border-white/10 shadow-xl flex-shrink-0">
+                    <img src="{{ photo_url($director->photo) }}"
+                         onerror="this.src='{{ avatar_url($director->name, '0c1f3f', 'fff', ['bold' => 'true', 'size' => 512]) }}'"
+                         class="w-full h-full object-cover rounded-full scale-[1.15] hover:scale-[1.4375] transition duration-700 ease-in-out">
+                </div>
             </div>
             {{-- Conteúdo --}}
             <div class="p-8 md:p-12 flex flex-col justify-center">
@@ -89,7 +90,7 @@
                 @if($director->bio)
                 <div class="bg-white/10 rounded-xl p-4 text-left max-w-xl">
                     <p class="text-xs font-bold text-etec-accent uppercase tracking-wide mb-1.5">Mini-currículo</p>
-                    <p class="text-sm text-green-100 leading-relaxed">{{ $director->bio }}</p>
+                    <div class="text-sm text-green-100 leading-relaxed [&_p]:mb-2 [&_p:last-child]:mb-0 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_a]:underline [&_a]:text-etec-accent">{!! $director->bio !!}</div>
                 </div>
                 @endif
             </div>
@@ -130,7 +131,7 @@
                         <button type="button" @click="open = !open" class="text-xs text-etec-accent hover:underline">
                             <span x-text="open ? 'Ocultar mini-currículo' : 'Ver mini-currículo'"></span>
                         </button>
-                        <p x-show="open" x-cloak class="text-xs text-green-100 leading-relaxed mt-1.5">{{ $member->bio }}</p>
+                        <div x-show="open" x-cloak class="bg-white/10 rounded-lg p-3 mt-1.5 text-xs text-green-100 leading-relaxed [&_p]:mb-2 [&_p:last-child]:mb-0 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_a]:underline [&_a]:text-etec-accent">{!! $member->bio !!}</div>
                     </div>
                     @endif
                 </div>

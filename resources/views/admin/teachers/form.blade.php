@@ -1,6 +1,10 @@
 @extends('admin.layouts.app')
 @section('page-title', $action === 'create' ? 'Novo Funcionário' : 'Editar: ' . $teacher->name)
 
+@push('head')
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+@endpush
+
 @section('content')
 <div class="max-w-2xl">
 
@@ -94,10 +98,9 @@
             </div>
             <div class="p-6">
                 <label class="block text-sm font-semibold text-gray-700 mb-1.5">Sobre esta pessoa</label>
-                <textarea name="bio" rows="5"
-                          class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition resize-none"
-                          placeholder="Formação, trajetória profissional, experiência na unidade...">{{ old('bio', $teacher->bio) }}</textarea>
-                <p class="mt-2 text-xs text-gray-400">Exibido no perfil público desta pessoa nas páginas do site.</p>
+                <div id="bio-editor" class="bg-white" style="min-height: 150px;"></div>
+                <input type="hidden" name="bio" id="bio-hidden">
+                <p class="mt-2 text-xs text-gray-400">Exibido no perfil público desta pessoa nas páginas do site. Use negrito, cor e tamanho de fonte para destacar trechos.</p>
                 @error('bio') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
         </div>
@@ -140,4 +143,41 @@
 
     </form>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+<script>
+    (function () {
+        var quill = new Quill('#bio-editor', {
+            theme: 'snow',
+            placeholder: 'Formação, trajetória profissional, experiência na unidade...',
+            modules: {
+                toolbar: [
+                    [{ header: [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ size: ['small', false, 'large', 'huge'] }],
+                    [{ color: [] }, { background: [] }],
+                    [{ list: 'ordered' }, { list: 'bullet' }],
+                    ['link'],
+                    ['clean'],
+                ],
+            },
+        });
+
+        var initialBio = @json(old('bio', $teacher->bio) ?? '');
+        if (initialBio) {
+            quill.root.innerHTML = initialBio;
+        }
+
+        var hiddenInput = document.getElementById('bio-hidden');
+        hiddenInput.value = initialBio;
+
+        quill.on('text-change', function () {
+            hiddenInput.value = quill.root.innerHTML;
+        });
+
+        document.querySelector('form').addEventListener('submit', function () {
+            hiddenInput.value = quill.root.innerHTML;
+        });
+    })();
+</script>
 @endsection

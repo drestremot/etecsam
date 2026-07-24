@@ -44,7 +44,7 @@
                     <button type="button" @click="open = !open" class="text-xs text-etec-accent hover:underline">
                         <span x-text="open ? 'Ocultar mini-currículo' : 'Ver mini-currículo'"></span>
                     </button>
-                    <p x-show="open" x-cloak class="text-xs text-green-100 leading-relaxed mt-1.5">{{ $member->bio }}</p>
+                    <div x-show="open" x-cloak class="bg-white/10 rounded-lg p-3 mt-1.5 text-xs text-green-100 leading-relaxed [&_p]:mb-2 [&_p:last-child]:mb-0 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_a]:underline [&_a]:text-etec-accent">{!! $member->bio !!}</div>
                 </div>
                 @endif
             </div>
