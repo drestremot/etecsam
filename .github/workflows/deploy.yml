@@ -191,7 +191,16 @@ jobs:
             # ╚══════════════════════════════════════════════════════════╝
             # --no-scripts: impede o composer de rodar php artisan package:discover
             # durante o install (evita o loop circular com packages.php corrompido)
-            composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
+            # --ignore-platform-req=ext-sodium: lcobucci/jwt (dependencia do Firebase)
+            #   pede ext-sodium, que nao esta habilitada no PHP do Hostinger. Nao usamos
+            #   os algoritmos que precisam dela (Firebase usa RS256 via service account).
+            # --ignore-platform-req=ext-redis: symfony/cache pede ext-redis >=6.1, o
+            #   Hostinger tem 5.3.7. A aplicacao usa CACHE_STORE=database, nunca redis.
+            # Se o composer install falhar mesmo assim, aborta o deploy em vez de seguir
+            # com um vendor/ desatualizado e reportar sucesso falso.
+            composer install --no-dev --optimize-autoloader --no-interaction --no-scripts \
+              --ignore-platform-req=ext-sodium --ignore-platform-req=ext-redis \
+              || { echo "✗ FALHA no composer install - abortando deploy"; exit 1; }
             echo "✓ Composer instalado (sem scripts)"
 
             # Deleta novamente: --no-scripts pode deixar packages.php obsoleto
