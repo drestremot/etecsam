@@ -1,7 +1,7 @@
 <?php
 
 /**
- * ExportedDataSeeder — gerado automaticamente em 2026-07-24 03:52:10
+ * ExportedDataSeeder — gerado automaticamente em 2026-07-24 19:14:54
  * Comando: php artisan db:export-seeders
  *
  * Para restaurar: php artisan db:seed --class=ExportedDataSeeder
@@ -398,6 +398,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:45',
                 'updated_at' => '2026-05-23 18:44:45',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 2,
@@ -412,6 +413,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:45',
                 'updated_at' => '2026-05-23 18:44:45',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 3,
@@ -426,6 +428,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:45',
                 'updated_at' => '2026-05-23 18:44:45',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 4,
@@ -440,6 +443,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:45',
                 'updated_at' => '2026-05-23 18:44:45',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 5,
@@ -454,6 +458,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:45',
                 'updated_at' => '2026-05-23 18:44:45',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 6,
@@ -468,6 +473,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:45',
                 'updated_at' => '2026-05-23 18:44:45',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 7,
@@ -482,6 +488,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:45',
                 'updated_at' => '2026-05-23 18:44:45',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 8,
@@ -496,6 +503,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:45',
                 'updated_at' => '2026-05-23 18:44:45',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 9,
@@ -510,6 +518,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:45',
                 'updated_at' => '2026-05-23 18:44:45',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 10,
@@ -524,6 +533,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:45',
                 'updated_at' => '2026-05-23 18:44:45',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 11,
@@ -538,6 +548,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:45',
                 'updated_at' => '2026-05-23 18:44:45',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 12,
@@ -552,6 +563,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:45',
                 'updated_at' => '2026-05-23 18:44:45',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 13,
@@ -566,6 +578,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:45',
                 'updated_at' => '2026-05-23 18:44:45',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 14,
@@ -580,6 +593,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:45',
                 'updated_at' => '2026-05-23 18:44:45',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 15,
@@ -594,6 +608,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:45',
                 'updated_at' => '2026-05-23 18:44:45',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 16,
@@ -608,6 +623,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:45',
                 'updated_at' => '2026-05-23 18:44:45',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 17,
@@ -622,6 +638,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:45',
                 'updated_at' => '2026-05-23 18:44:45',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 18,
@@ -636,6 +653,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:45',
                 'updated_at' => '2026-05-23 18:44:45',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 19,
@@ -650,6 +668,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:46',
                 'updated_at' => '2026-05-23 18:44:46',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 20,
@@ -664,6 +683,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:46',
                 'updated_at' => '2026-05-23 18:44:46',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 21,
@@ -678,6 +698,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:46',
                 'updated_at' => '2026-05-23 18:44:46',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 22,
@@ -692,6 +713,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:46',
                 'updated_at' => '2026-05-23 18:44:46',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 23,
@@ -706,6 +728,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:46',
                 'updated_at' => '2026-05-23 18:44:46',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 24,
@@ -720,6 +743,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:46',
                 'updated_at' => '2026-05-23 18:44:46',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 25,
@@ -734,6 +758,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:46',
                 'updated_at' => '2026-05-23 18:44:46',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 26,
@@ -748,6 +773,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:46',
                 'updated_at' => '2026-05-23 18:44:46',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 27,
@@ -762,6 +788,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:46',
                 'updated_at' => '2026-05-23 18:44:46',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 28,
@@ -776,6 +803,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:46',
                 'updated_at' => '2026-05-23 18:44:46',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 29,
@@ -790,6 +818,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:46',
                 'updated_at' => '2026-05-23 18:44:46',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 30,
@@ -804,6 +833,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:46',
                 'updated_at' => '2026-05-23 18:44:46',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 31,
@@ -818,6 +848,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:46',
                 'updated_at' => '2026-05-23 18:44:46',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 32,
@@ -832,6 +863,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:46',
                 'updated_at' => '2026-05-23 18:44:46',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 33,
@@ -846,6 +878,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:46',
                 'updated_at' => '2026-05-23 18:44:46',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 34,
@@ -860,6 +893,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:46',
                 'updated_at' => '2026-05-23 18:44:46',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 35,
@@ -874,6 +908,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:46',
                 'updated_at' => '2026-05-23 18:44:46',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 36,
@@ -888,6 +923,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:46',
                 'updated_at' => '2026-05-23 18:44:46',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 37,
@@ -902,6 +938,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:46',
                 'updated_at' => '2026-05-23 18:44:46',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 38,
@@ -916,6 +953,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:46',
                 'updated_at' => '2026-05-23 18:44:46',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 39,
@@ -930,6 +968,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:46',
                 'updated_at' => '2026-05-23 18:44:46',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 40,
@@ -944,6 +983,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:46',
                 'updated_at' => '2026-06-13 17:20:13',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 41,
@@ -958,6 +998,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:46',
                 'updated_at' => '2026-05-23 18:44:46',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 42,
@@ -972,6 +1013,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:46',
                 'updated_at' => '2026-05-23 18:44:46',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 43,
@@ -986,6 +1028,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:47',
                 'updated_at' => '2026-05-23 18:44:47',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 44,
@@ -1000,6 +1043,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:47',
                 'updated_at' => '2026-05-23 18:44:47',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 45,
@@ -1014,6 +1058,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:47',
                 'updated_at' => '2026-05-23 18:44:47',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 46,
@@ -1028,6 +1073,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:47',
                 'updated_at' => '2026-05-23 18:44:47',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 47,
@@ -1042,6 +1088,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:47',
                 'updated_at' => '2026-05-23 18:44:47',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 48,
@@ -1056,6 +1103,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:47',
                 'updated_at' => '2026-05-23 18:44:47',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 49,
@@ -1070,6 +1118,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:47',
                 'updated_at' => '2026-05-23 18:44:47',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 50,
@@ -1084,6 +1133,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:47',
                 'updated_at' => '2026-05-23 18:44:47',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 51,
@@ -1098,6 +1148,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:47',
                 'updated_at' => '2026-05-23 18:44:47',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 52,
@@ -1112,6 +1163,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-23 18:44:47',
                 'updated_at' => '2026-06-13 17:20:13',
                 'is_active' => 1,
+                'bio' => null,
             ],
             [
                 'id' => 53,
@@ -1126,6 +1178,7 @@ class ExportedDataSeeder extends Seeder
                 'created_at' => '2026-05-26 12:27:49',
                 'updated_at' => '2026-05-26 12:27:49',
                 'is_active' => 1,
+                'bio' => null,
             ]
         ]);
 
