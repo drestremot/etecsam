@@ -133,7 +133,7 @@
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
             <a href="{{ route('home') }}" class="flex items-center group flex-shrink-0">
                 <img src="{{ asset('imagens/logo/etec.png') }}" alt="Logo Etec Sebastiana Augusta de Moraes"
-                    class="h-14 w-auto flex-shrink-0">
+                    class="h-16 w-auto flex-shrink-0">
             </a>
 
             <nav class="hidden xl:flex items-center gap-0.5 text-sm font-medium whitespace-nowrap">
@@ -302,7 +302,7 @@
 
                 <div class="ml-4 pl-4 border-l border-white/10">
                     <a href="https://www.cps.sp.gov.br/">
-                        <img src="{{ asset('imagens/logo/logo-cps-2022.svg') }}" alt="Centro Paula Souza" class="h-11 w-auto flex-shrink-0 opacity-95 hover:opacity-100 transition">
+                        <img src="{{ asset('imagens/logo/logo-cps-2022.svg') }}" alt="Centro Paula Souza" class="h-14 w-auto flex-shrink-0 opacity-95 hover:opacity-100 transition">
                     </a>
 
                 </div>
@@ -322,7 +322,7 @@
                  NÃO mover este bloco para dentro da <nav class="hidden xl:flex">.
             ════════════════════════════════════════════════════════════════ --}}
             <div class="mobile-hamburger">
-                <img src="{{ asset('imagens/logo/logo-cps-2022.svg') }}" alt="Centro Paula Souza" class="h-8 w-auto opacity-70">
+                <img src="{{ asset('imagens/logo/logo-cps-2022.svg') }}" alt="Centro Paula Souza" class="h-11 w-auto opacity-95">
 
                 <button onclick="etecToggleDarkMode()" title="Alternar modo escuro/claro" aria-label="Alternar modo escuro"
                         class="p-2 rounded-lg text-white/75 hover:text-white hover:bg-white/10 transition">
