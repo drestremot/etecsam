@@ -23,7 +23,7 @@
     <style>
         .mobile-hamburger { display: flex; align-items: center; gap: 0.75rem; }
         .mobile-nav-menu  { display: block; }
-        @media (min-width: 1024px) {
+        @media (min-width: 1280px) {
             .mobile-hamburger { display: none !important; }
             .mobile-nav-menu  { display: none !important; }
         }
@@ -131,12 +131,12 @@
 
     <header class="bg-etec-dark shadow-sm sticky top-0 z-50 border-b border-white/10" x-data="{ open: false }">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <a href="{{ route('home') }}" class="flex items-center group">
+            <a href="{{ route('home') }}" class="flex items-center group flex-shrink-0">
                 <img src="{{ asset('imagens/logo/etec.png') }}" alt="Logo Etec Sebastiana Augusta de Moraes"
-                    class="h-14 w-auto">
+                    class="h-14 w-auto flex-shrink-0">
             </a>
 
-            <nav class="hidden lg:flex items-center gap-0.5 text-sm font-medium">
+            <nav class="hidden xl:flex items-center gap-0.5 text-sm font-medium whitespace-nowrap">
                 <a href="{{ route('home') }}" class="px-4 py-2 text-white hover:text-etec-accent hover:bg-white/10 rounded-lg transition">Início</a>
                 <a href="{{ route('institutional') }}" class="px-4 py-2 text-white/75 hover:text-white hover:bg-white/10 rounded-lg transition">A Escola</a>
                 <a href="{{ route('library') }}" class="px-4 py-2 text-white/75 hover:text-white hover:bg-white/10 rounded-lg transition">Biblioteca</a>
@@ -302,19 +302,24 @@
 
                 <div class="ml-4 pl-4 border-l border-white/10">
                     <a href="https://www.cps.sp.gov.br/">
-                        <img src="{{ asset('imagens/logo/logo-cps-2022.svg') }}" alt="Centro Paula Souza" class="h-10 w-auto opacity-80 hover:opacity-100 transition">
+                        <img src="{{ asset('imagens/logo/logo-cps-2022.svg') }}" alt="Centro Paula Souza" class="h-11 w-auto flex-shrink-0 opacity-95 hover:opacity-100 transition">
                     </a>
 
                 </div>
             </nav>
-            {{-- ↑ FIM DO MENU DESKTOP (hidden lg:flex) — NÃO REMOVER esta tag </nav> --}}
+            {{-- ↑ FIM DO MENU DESKTOP (hidden xl:flex) — NÃO REMOVER esta tag </nav> --}}
 
             {{-- ═══════════════════════════════════════════════════════════════
-                 HAMBÚRGUER — visível APENAS em mobile (< 1024px)
+                 HAMBÚRGUER — visível ATÉ 1280px (breakpoint xl)
+                 Usamos xl em vez de lg porque com todos os itens do menu (Início,
+                 A Escola, Biblioteca, Cursos, Escola Fazenda, Apoio Institucional,
+                 Gestão, Contato, Agenda, Vestibulinho + logos) não cabe confortavelmente
+                 em telas menores que 1280px sem quebrar linha ou ficar apertado —
+                 isso causava desalinhamento visível ao dar zoom no navegador.
                  ATENÇÃO: este bloco deve ficar FORA da <nav> acima e DENTRO
                  do <div class="container ... flex justify-between">.
                  O CSS .mobile-hamburger esconde-o em desktop via media query.
-                 NÃO mover este bloco para dentro da <nav class="hidden lg:flex">.
+                 NÃO mover este bloco para dentro da <nav class="hidden xl:flex">.
             ════════════════════════════════════════════════════════════════ --}}
             <div class="mobile-hamburger">
                 <img src="{{ asset('imagens/logo/logo-cps-2022.svg') }}" alt="Centro Paula Souza" class="h-8 w-auto opacity-70">
