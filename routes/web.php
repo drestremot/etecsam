@@ -18,6 +18,7 @@ Route::post('/contato',            [SiteController::class, 'sendContact'])->name
 Route::get('/fale-conosco',        [SiteController::class, 'contact']);
 Route::get('/agenda',              [SiteController::class, 'agenda'])->name('agenda');
 Route::get('/superintendencia',    [SiteController::class, 'superintendence'])->name('superintendence');
+Route::get('/supervisao-regional', [SiteController::class, 'regionalSupervision'])->name('regional-supervision');
 Route::get('/diretoria-academica', [SiteController::class, 'academicDivision'])->name('academic-division');
 Route::get('/diretoria-servicos',  [SiteController::class, 'administrative'])->name('administrative');
 Route::get('/biblioteca',          [SiteController::class, 'library'])->name('library');

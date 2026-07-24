@@ -128,6 +128,22 @@ class SiteController extends Controller
     }
 
 
+    public function regionalSupervision()
+    {
+        // Supervisora de Ensino responsável
+        $director = \App\Models\Teacher::where('role', 'like', '%Supervisor%')->first();
+
+        // Colaboradores da Supervisão Regional
+        $staff = \App\Models\Teacher::where('role', 'like', '%Supervisão%')
+            ->when($director, fn($q) => $q->where('id', '!=', $director->id))
+            ->orderBy('name')
+            ->get();
+
+        $downloads = \App\Models\Document::where('category', 'Supervisão Regional')->get();
+
+        return view('pages.regional-supervision', compact('director', 'staff', 'downloads'));
+    }
+
     public function superintendence()
     {
         // Diretor da Unidade (Marcos Antonio Estremote)

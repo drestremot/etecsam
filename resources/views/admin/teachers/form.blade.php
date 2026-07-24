@@ -87,6 +87,21 @@
             </div>
         </div>
 
+        {{-- Mini-currículo --}}
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-100 bg-gray-50">
+                <h2 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Mini-currículo</h2>
+            </div>
+            <div class="p-6">
+                <label class="block text-sm font-semibold text-gray-700 mb-1.5">Sobre esta pessoa</label>
+                <textarea name="bio" rows="5"
+                          class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition resize-none"
+                          placeholder="Formação, trajetória profissional, experiência na unidade...">{{ old('bio', $teacher->bio) }}</textarea>
+                <p class="mt-2 text-xs text-gray-400">Exibido no perfil público desta pessoa nas páginas do site.</p>
+                @error('bio') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+            </div>
+        </div>
+
         {{-- Foto --}}
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             <div class="px-6 py-4 border-b border-gray-100 bg-gray-50">

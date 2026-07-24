@@ -10,6 +10,7 @@ class Teacher extends Model
         'name',
         'role',
         'specialty',
+        'bio',
         'email',
         'phone',
         'photo',

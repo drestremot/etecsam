@@ -50,6 +50,12 @@
                         </div>
                         @endif
                     </div>
+                    @if($director->bio)
+                    <div class="mt-3 text-left">
+                        <p class="text-xs font-bold text-etec-accent uppercase tracking-wide mb-1">Mini-currículo</p>
+                        <p class="text-xs text-green-100 leading-relaxed">{{ $director->bio }}</p>
+                    </div>
+                    @endif
                 </div>
             </div>
             @else
@@ -98,6 +104,14 @@
                                     </a>
                                     @endif
                                 </div>
+                                @if($member->bio)
+                                <div x-data="{ open: false }" class="mt-1.5">
+                                    <button type="button" @click="open = !open" class="text-xs text-etec-accent hover:underline">
+                                        <span x-text="open ? 'Ocultar mini-currículo' : 'Ver mini-currículo'"></span>
+                                    </button>
+                                    <p x-show="open" x-cloak class="text-xs text-green-100 leading-relaxed mt-1.5">{{ $member->bio }}</p>
+                                </div>
+                                @endif
                             </div>
                         </div>
                         @endforeach

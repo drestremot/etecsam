@@ -39,6 +39,14 @@
                     </a>
                     @endif
                 </div>
+                @if($member->bio)
+                <div x-data="{ open: false }" class="mt-1.5">
+                    <button type="button" @click="open = !open" class="text-xs text-etec-accent hover:underline">
+                        <span x-text="open ? 'Ocultar mini-currículo' : 'Ver mini-currículo'"></span>
+                    </button>
+                    <p x-show="open" x-cloak class="text-xs text-green-100 leading-relaxed mt-1.5">{{ $member->bio }}</p>
+                </div>
+                @endif
             </div>
         </div>
         @endforeach
