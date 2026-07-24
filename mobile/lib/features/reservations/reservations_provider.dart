@@ -15,6 +15,14 @@ final auxiliaresProvider = FutureProvider.autoDispose((ref) {
   return ref.watch(labRepositoryProvider).auxiliares();
 });
 
+final coordenadoresProvider = FutureProvider.autoDispose((ref) {
+  return ref.watch(labRepositoryProvider).coordenadores();
+});
+
+final auxiliaresParaAprovacaoProvider = FutureProvider.autoDispose((ref) {
+  return ref.watch(labRepositoryProvider).auxiliaresParaAprovacao();
+});
+
 final reservationDetailProvider = FutureProvider.autoDispose.family<Reservation, int>((ref, id) {
   return ref.watch(labRepositoryProvider).show(id);
 });

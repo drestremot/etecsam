@@ -14,7 +14,7 @@ class LabUserController extends Controller
 {
     public function index()
     {
-        $users = User::with('roles')->orderBy('name')->paginate(20);
+        $users = User::with(['roles', 'coordenadoresVinculados'])->orderBy('name')->paginate(20);
         $roles = Role::orderBy('name')->get();
 
         // Professores/funcionários que ainda não têm conta de usuário
@@ -24,7 +24,9 @@ class LabUserController extends Controller
             ->orderBy('name')
             ->get(['id', 'name', 'email', 'registration_number', 'role']);
 
-        return view('lab.users.index', compact('users', 'roles', 'teachers'));
+        $coordenadoresList = User::role('Coordenador')->where('is_active', true)->orderBy('name')->get();
+
+        return view('lab.users.index', compact('users', 'roles', 'teachers', 'coordenadoresList'));
     }
 
     public function store(Request $request)
@@ -66,6 +68,24 @@ class LabUserController extends Controller
         $request->validate(['role' => 'required|exists:roles,name']);
         $user->syncRoles($request->role);
         return back()->with('success', "Papel de {$user->name} atualizado para {$request->role}.");
+    }
+
+    public function updateVinculos(Request $request, User $user)
+    {
+        abort_unless($user->hasRole('Auxiliar'), 422);
+
+        $request->validate([
+            'coordenador_ids'   => 'nullable|array',
+            'coordenador_ids.*' => ['exists:users,id', function ($attr, $val, $fail) {
+                if (! User::find($val)?->hasRole('Coordenador')) {
+                    $fail('Um dos usuários selecionados não é Coordenador.');
+                }
+            }],
+        ]);
+
+        $user->coordenadoresVinculados()->sync($request->coordenador_ids ?? []);
+
+        return back()->with('success', "Vínculos de {$user->name} atualizados.");
     }
 
     public function toggleStatus(User $user)

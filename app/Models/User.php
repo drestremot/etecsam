@@ -55,4 +55,22 @@ class User extends Authenticatable
     {
         return $query->role('Coordenador')->orWhere('is_admin', true);
     }
+
+    public function auxiliaresVinculados()
+    {
+        return $this->belongsToMany(User::class, 'auxiliar_coordenador', 'coordenador_id', 'auxiliar_id')->orderBy('name');
+    }
+
+    public function coordenadoresVinculados()
+    {
+        return $this->belongsToMany(User::class, 'auxiliar_coordenador', 'auxiliar_id', 'coordenador_id')->orderBy('name');
+    }
+
+    public function auxiliaresParaAprovacao()
+    {
+        if ($this->is_admin) {
+            return User::role('Auxiliar')->where('is_active', true)->orderBy('name')->get();
+        }
+        return $this->auxiliaresVinculados()->where('is_active', true)->get();
+    }
 }

@@ -204,6 +204,29 @@
                     @endif
                 </div>
 
+                {{-- Coordenador responsável --}}
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm p-5">
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Coordenador responsável *</label>
+                    @if($coordenadores->isEmpty())
+                        <div class="rounded-lg bg-yellow-50 border border-yellow-200 p-3 text-sm text-yellow-800">
+                            ⚠ Nenhum coordenador cadastrado ainda.
+                            @if(auth()->user()->is_admin)
+                                <a href="{{ route('lab.users.index') }}" class="font-bold underline ml-1">Cadastrar agora →</a>
+                            @else
+                                Solicite ao administrador que cadastre um coordenador.
+                            @endif
+                        </div>
+                    @else
+                        <select name="coordenador_id" required
+                                class="w-full border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2.5 text-sm dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-etec-dark outline-none">
+                            <option value="">Selecione o coordenador...</option>
+                            @foreach($coordenadores as $c)
+                            <option value="{{ $c->id }}" {{ old('coordenador_id') == $c->id ? 'selected' : '' }}>{{ $c->name }}</option>
+                            @endforeach
+                        </select>
+                    @endif
+                </div>
+
                 {{-- Seleção atual --}}
                 <div class="rounded-xl border-2 p-4 transition"
                      :class="hasSelection ? 'border-etec-dark bg-etec-light/50' : 'border-dashed border-gray-200 dark:border-gray-600'">

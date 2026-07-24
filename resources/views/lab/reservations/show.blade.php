@@ -197,21 +197,33 @@
         @if(in_array($reservation->status, ['pre_alocada']) && (auth()->user()->is_admin || auth()->user()->hasRole('Coordenador')))
         <div class="bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-200 dark:border-blue-800 p-5">
             <h3 class="font-bold text-blue-900 dark:text-blue-300 mb-1">Ação do Coordenador</h3>
-            <p class="text-sm text-blue-700 dark:text-blue-400 mb-4">Analise a solicitação e aprove ou recuse. Ao aprovar, o auxiliar será notificado para preparar o laboratório.</p>
-            <div class="flex gap-3">
-                <form action="{{ route('lab.reservations.approve', $reservation) }}" method="POST">
-                    @csrf @method('PATCH')
-                    <button class="inline-flex items-center gap-2 bg-etec-dark text-white px-5 py-2.5 rounded-lg hover:bg-etec-main transition text-sm font-semibold">
-                        ✓ Aprovar e encaminhar ao Auxiliar
-                    </button>
-                </form>
-                <form action="{{ route('lab.reservations.reject', $reservation) }}" method="POST">
-                    @csrf @method('PATCH')
-                    <button class="inline-flex items-center gap-2 bg-red-600 text-white px-5 py-2.5 rounded-lg hover:bg-red-700 transition text-sm font-semibold">
-                        ✗ Recusar
-                    </button>
-                </form>
-            </div>
+            <p class="text-sm text-blue-700 dark:text-blue-400 mb-4">Analise a solicitação e aprove ou recuse. Ao aprovar, escolha o auxiliar responsável — ele será notificado para preparar o laboratório.</p>
+
+            <form action="{{ route('lab.reservations.approve', $reservation) }}" method="POST" class="mb-3">
+                @csrf @method('PATCH')
+                <div class="mb-3">
+                    <label class="block text-sm font-semibold text-blue-800 dark:text-blue-300 mb-1.5">Auxiliar responsável *</label>
+                    <select name="auxiliar_id" required
+                            class="w-full border border-blue-200 dark:border-blue-700 rounded-lg px-3.5 py-2.5 text-sm dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none">
+                        <option value="">Selecione o auxiliar...</option>
+                        @foreach($auxiliaresDisponiveis as $a)
+                        <option value="{{ $a->id }}" {{ (old('auxiliar_id') ?? $reservation->space->auxiliar_id) == $a->id ? 'selected' : '' }}>{{ $a->name }}</option>
+                        @endforeach
+                    </select>
+                    @if($auxiliaresDisponiveis->isEmpty())
+                        <p class="text-xs text-red-500 mt-1">Você não possui auxiliares vinculados. Peça ao administrador para vincular um auxiliar à sua conta antes de aprovar.</p>
+                    @endif
+                </div>
+                <button class="inline-flex items-center gap-2 bg-etec-dark text-white px-5 py-2.5 rounded-lg hover:bg-etec-main transition text-sm font-semibold">
+                    ✓ Aprovar e encaminhar ao Auxiliar
+                </button>
+            </form>
+            <form action="{{ route('lab.reservations.reject', $reservation) }}" method="POST">
+                @csrf @method('PATCH')
+                <button class="inline-flex items-center gap-2 bg-red-600 text-white px-5 py-2.5 rounded-lg hover:bg-red-700 transition text-sm font-semibold">
+                    ✗ Recusar
+                </button>
+            </form>
         </div>
         @endif
 

@@ -23,9 +23,11 @@ Route::prefix('v1')->name('api.')->group(function () {
         Route::get('/materials', [MaterialController::class, 'index'])->name('materials.index');
         Route::get('/calendar', [LabReservationController::class, 'calendarEvents'])->name('calendar');
         Route::get('/spaces/{space}/availability', [LabReservationController::class, 'availability'])->name('spaces.availability');
+        Route::get('/coordenadores', [LabReservationController::class, 'coordenadores'])->name('coordenadores');
 
         Route::middleware('can-coordinate')->group(function () {
             Route::get('/auxiliares', [SpaceController::class, 'auxiliares'])->name('auxiliares');
+            Route::get('/auxiliares-para-aprovacao', [LabReservationController::class, 'auxiliaresParaAprovacao'])->name('auxiliares-para-aprovacao');
 
             Route::post('/spaces', [SpaceController::class, 'store'])->name('spaces.store');
             Route::post('/spaces/{space}/update', [SpaceController::class, 'update'])->name('spaces.update');
@@ -41,6 +43,7 @@ Route::prefix('v1')->name('api.')->group(function () {
             Route::post('/', [LabReservationController::class, 'store'])->name('store');
             Route::get('/history', [LabReservationController::class, 'history'])->name('history');
             Route::get('/{reservation}', [LabReservationController::class, 'show'])->name('show');
+            Route::get('/{reservation}/pdf', [LabReservationController::class, 'pdf'])->name('pdf');
             Route::post('/{reservation}/start', [LabReservationController::class, 'startClass'])->name('start');
             Route::post('/{reservation}/professor-obs', [LabReservationController::class, 'submitProfessorObs'])->name('professor-obs');
             Route::post('/{reservation}/auxiliar-finalize', [LabReservationController::class, 'auxiliarFinalize'])->name('auxiliar-finalize');
