@@ -3,10 +3,12 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:open_filex/open_filex.dart';
 
 import '../../core/api_client.dart';
 import '../../core/lab_repository.dart';
 import '../../models/reservation.dart';
+import '../../models/user.dart';
 import '../auth/auth_controller.dart';
 import '../shared/formatters.dart';
 import '../shared/status_badge.dart';
@@ -62,11 +64,57 @@ class _ReservationDetailScreenState extends ConsumerState<ReservationDetailScree
     );
   }
 
+  Future<AppUser?> _askForAuxiliar() async {
+    final auxiliares = await ref.read(labRepositoryProvider).auxiliaresParaAprovacao();
+    if (!mounted) return null;
+
+    if (auxiliares.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Você não possui auxiliares vinculados. Peça ao administrador para vincular um auxiliar à sua conta.'),
+        backgroundColor: Colors.red,
+      ));
+      return null;
+    }
+
+    AppUser? selected = auxiliares.first;
+    return showDialog<AppUser>(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialogState) => AlertDialog(
+          title: const Text('Auxiliar responsável'),
+          content: DropdownButtonFormField<AppUser>(
+            initialValue: selected,
+            decoration: const InputDecoration(labelText: 'Auxiliar', border: OutlineInputBorder()),
+            items: auxiliares.map((a) => DropdownMenuItem(value: a, child: Text(a.name))).toList(),
+            onChanged: (v) => setDialogState(() => selected = v),
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancelar')),
+            FilledButton(onPressed: () => Navigator.pop(ctx, selected), child: const Text('Aprovar')),
+          ],
+        ),
+      ),
+    );
+  }
+
   Future<void> _uploadPhoto(String type) async {
     final picker = ImagePicker();
     final picked = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85);
     if (picked == null) return;
     await _run(() => ref.read(labRepositoryProvider).uploadImage(widget.reservationId, type, File(picked.path)));
+  }
+
+  Future<void> _downloadPdf() async {
+    setState(() => _busy = true);
+    try {
+      final file = await ref.read(labRepositoryProvider).downloadPdf(widget.reservationId);
+      await OpenFilex.open(file.path);
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message), backgroundColor: Colors.red));
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
   }
 
   @override
@@ -96,6 +144,7 @@ class _ReservationDetailScreenState extends ConsumerState<ReservationDetailScree
     final canAuxiliarFinalize = isAuxiliar && r.auxiliarReleasedAt == null &&
         ['aprovada', 'em_execucao', 'aguardando_conferencia'].contains(r.status);
     final canUploadPhoto = isAuxiliar && ['aprovada', 'em_execucao', 'aguardando_conferencia'].contains(r.status);
+    final canDownloadPdf = ['validada', 'concluida', 'finalizada'].contains(r.status);
 
     return RefreshIndicator(
       onRefresh: () async => ref.invalidate(reservationDetailProvider(widget.reservationId)),
@@ -115,6 +164,14 @@ class _ReservationDetailScreenState extends ConsumerState<ReservationDetailScree
           const SizedBox(height: 4),
           Text('${formatBrDateWeekday(r.reservationDate)} às ${formatShortTime(r.startTime)}'
               '${r.endTime != null ? ' - ${formatShortTime(r.endTime)}' : ''}'),
+          if (canDownloadPdf) ...[
+            const SizedBox(height: 16),
+            OutlinedButton.icon(
+              onPressed: _busy ? null : _downloadPdf,
+              icon: const Icon(Icons.picture_as_pdf_outlined),
+              label: const Text('Baixar PDF da atividade'),
+            ),
+          ],
           const Divider(height: 32),
           _sectionTitle('Professor'),
           Text(r.user?.name ?? '—'),
@@ -175,7 +232,14 @@ class _ReservationDetailScreenState extends ConsumerState<ReservationDetailScree
               children: [
                 Expanded(
                   child: FilledButton.icon(
-                    onPressed: _busy ? null : () => _run(() => ref.read(labRepositoryProvider).approve(r.id)),
+                    onPressed: _busy
+                        ? null
+                        : () async {
+                            final auxiliar = await _askForAuxiliar();
+                            if (auxiliar != null) {
+                              await _run(() => ref.read(labRepositoryProvider).approve(r.id, auxiliarId: auxiliar.id));
+                            }
+                          },
                     icon: const Icon(Icons.check),
                     label: const Text('Aprovar'),
                   ),

@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../../core/api_client.dart';
 import '../../core/lab_repository.dart';
 import '../../models/space.dart';
+import '../../models/user.dart';
 import 'reservations_provider.dart';
 
 class ReservationCreateScreen extends ConsumerStatefulWidget {
@@ -18,6 +19,7 @@ class _ReservationCreateScreenState extends ConsumerState<ReservationCreateScree
   final _formKey = GlobalKey<FormState>();
   final _descriptionController = TextEditingController();
   Space? _selectedSpace;
+  AppUser? _selectedCoordenador;
   DateTime? _selectedDate;
   TimeOfDay? _startTime;
   TimeOfDay? _endTime;
@@ -57,8 +59,8 @@ class _ReservationCreateScreenState extends ConsumerState<ReservationCreateScree
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    if (_selectedSpace == null || _selectedDate == null || _startTime == null) {
-      setState(() => _error = 'Preencha espaço, data e horário de início.');
+    if (_selectedSpace == null || _selectedCoordenador == null || _selectedDate == null || _startTime == null) {
+      setState(() => _error = 'Preencha espaço, coordenador, data e horário de início.');
       return;
     }
 
@@ -70,6 +72,7 @@ class _ReservationCreateScreenState extends ConsumerState<ReservationCreateScree
     try {
       final response = await ref.read(labRepositoryProvider).create(
             spaceId: _selectedSpace!.id,
+            coordenadorId: _selectedCoordenador!.id,
             reservationDate: DateFormat('yyyy-MM-dd').format(_selectedDate!),
             startTime: _formatTime(_startTime!),
             endTime: _endTime != null ? _formatTime(_endTime!) : null,
@@ -91,6 +94,7 @@ class _ReservationCreateScreenState extends ConsumerState<ReservationCreateScree
   @override
   Widget build(BuildContext context) {
     final spacesAsync = ref.watch(spacesProvider);
+    final coordenadoresAsync = ref.watch(coordenadoresProvider);
     final materialsAsync = ref.watch(materialsProvider);
 
     return Scaffold(
@@ -111,6 +115,18 @@ class _ReservationCreateScreenState extends ConsumerState<ReservationCreateScree
                   items: spaces.map((s) => DropdownMenuItem(value: s, child: Text(s.name))).toList(),
                   onChanged: (v) => setState(() => _selectedSpace = v),
                   validator: (v) => v == null ? 'Selecione um espaço' : null,
+                ),
+              ),
+              const SizedBox(height: 16),
+              coordenadoresAsync.when(
+                loading: () => const LinearProgressIndicator(),
+                error: (e, _) => Text('Erro ao carregar coordenadores: $e'),
+                data: (coordenadores) => DropdownButtonFormField<AppUser>(
+                  initialValue: _selectedCoordenador,
+                  decoration: const InputDecoration(labelText: 'Coordenador responsável', border: OutlineInputBorder()),
+                  items: coordenadores.map((c) => DropdownMenuItem(value: c, child: Text(c.name))).toList(),
+                  onChanged: (v) => setState(() => _selectedCoordenador = v),
+                  validator: (v) => v == null ? 'Selecione um coordenador' : null,
                 ),
               ),
               const SizedBox(height: 16),

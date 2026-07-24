@@ -54,6 +54,34 @@ class LabReservation extends Model
         return $this->professor_released_at !== null && $this->auxiliar_released_at !== null;
     }
 
+    public function isVisibleTo(User $user): bool
+    {
+        if ($user->is_admin) return true;
+        if ($this->user_id === $user->id) return true;
+        if ($this->coordenador_id === $user->id) return true;
+        if ($this->auxiliar_id === $user->id) return true;
+
+        // Fallback para reservas criadas antes do vínculo coordenador/auxiliar existir.
+        if ($this->coordenador_id === null && $this->status === 'pre_alocada' && $user->hasRole('Coordenador')) return true;
+        if ($this->auxiliar_id === null && in_array($this->status, ['aprovada', 'em_execucao', 'aguardando_conferencia']) && $user->hasRole('Auxiliar')) return true;
+
+        return false;
+    }
+
+    public function canBeActedOnByCoordenador(User $user): bool
+    {
+        if ($user->is_admin) return true;
+        if ($this->coordenador_id === null) return $user->hasRole('Coordenador');
+        return $this->coordenador_id === $user->id;
+    }
+
+    public function canBeFinalizedByAuxiliar(User $user): bool
+    {
+        if ($user->is_admin) return true;
+        if ($this->auxiliar_id === null) return $user->hasRole('Auxiliar');
+        return $this->auxiliar_id === $user->id;
+    }
+
     public function materials()
     {
         return $this->belongsToMany(Material::class, 'lab_material_reservation')

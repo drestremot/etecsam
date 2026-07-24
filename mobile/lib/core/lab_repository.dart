@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../models/material.dart';
 import '../models/reservation.dart';
@@ -193,6 +194,7 @@ class LabRepository {
 
   Future<ReservationResponse> create({
     required int spaceId,
+    required int coordenadorId,
     required String reservationDate,
     required String startTime,
     String? endTime,
@@ -202,6 +204,7 @@ class LabRepository {
       _guard(() async {
         final formData = FormData.fromMap({
           'space_id': spaceId,
+          'coordenador_id': coordenadorId,
           'reservation_date': reservationDate,
           'start_time': startTime,
           if (endTime != null) 'end_time': endTime,
@@ -215,7 +218,8 @@ class LabRepository {
         return _toReservationResponse(res.data);
       });
 
-  Future<ReservationResponse> approve(int id) => _action('/reservations/$id/approve', method: 'PATCH');
+  Future<ReservationResponse> approve(int id, {required int auxiliarId}) =>
+      _action('/reservations/$id/approve', method: 'PATCH', data: {'auxiliar_id': auxiliarId});
   Future<ReservationResponse> reject(int id) => _action('/reservations/$id/reject', method: 'PATCH');
   Future<ReservationResponse> start(int id) => _action('/reservations/$id/start');
 
@@ -237,6 +241,17 @@ class LabRepository {
         return _toReservationResponse(res.data);
       });
 
+  Future<File> downloadPdf(int id) => _guard(() async {
+        final res = await _dio.get<List<int>>(
+          '/reservations/$id/pdf',
+          options: Options(responseType: ResponseType.bytes),
+        );
+        final dir = await getTemporaryDirectory();
+        final file = File('${dir.path}/checklist-reserva-$id.pdf');
+        await file.writeAsBytes(res.data!, flush: true);
+        return file;
+      });
+
   Future<ReservationResponse> _action(String path, {String method = 'POST', Map<String, dynamic>? data}) =>
       _guard(() async {
         final res = method == 'PATCH'
@@ -253,6 +268,16 @@ class LabRepository {
   }
 
   // ── Administração: espaços, materiais e auxiliares ──
+
+  Future<List<AppUser>> coordenadores() => _guard(() async {
+        final res = await _dio.get('/coordenadores');
+        return (res.data['data'] as List<dynamic>).map((u) => AppUser.fromJson(u as Map<String, dynamic>)).toList();
+      });
+
+  Future<List<AppUser>> auxiliaresParaAprovacao() => _guard(() async {
+        final res = await _dio.get('/auxiliares-para-aprovacao');
+        return (res.data['data'] as List<dynamic>).map((u) => AppUser.fromJson(u as Map<String, dynamic>)).toList();
+      });
 
   Future<List<AppUser>> auxiliares() => _guard(() async {
         final res = await _dio.get('/auxiliares');

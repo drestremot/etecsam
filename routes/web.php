@@ -190,6 +190,7 @@ Route::prefix('laboratorio')->name('lab.')->middleware(['auth'])->group(function
             Route::get('/',                      [LabUserController::class, 'index'])->name('index');
             Route::post('/',                     [LabUserController::class, 'store'])->name('store');
             Route::patch('/{user}/papel',        [LabUserController::class, 'updateRole'])->name('role');
+            Route::patch('/{user}/vinculos',     [LabUserController::class, 'updateVinculos'])->name('vinculos');
             Route::patch('/{user}/status',       [LabUserController::class, 'toggleStatus'])->name('status');
             Route::post('/{user}/reset-senha',   [LabUserController::class, 'sendResetLink'])->name('reset-link');
             Route::delete('/{user}',             [LabUserController::class, 'destroy'])->name('destroy');

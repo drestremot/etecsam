@@ -32,24 +32,30 @@ class LabReservationController extends Controller
             ];
             $recent = LabReservation::with(['user', 'space'])->latest()->take(5)->get();
         } elseif ($user->hasRole('Coordenador')) {
+            $meus = fn ($q) => $q->where('coordenador_id', $user->id)->orWhereNull('coordenador_id');
+
             $stats = [
-                'aguardando_aprovacao' => LabReservation::where('status', 'pre_alocada')->count(),
-                'aguardando_validacao' => LabReservation::where('status', 'aguardando_validacao')->count(),
-                'ativas'               => LabReservation::whereIn('status', ['aprovada', 'em_execucao', 'aguardando_conferencia'])->count(),
-                'validadas'            => LabReservation::where('status', 'validada')->count(),
+                'aguardando_aprovacao' => LabReservation::where('status', 'pre_alocada')->where($meus)->count(),
+                'aguardando_validacao' => LabReservation::where('status', 'aguardando_validacao')->where('coordenador_id', $user->id)->count(),
+                'ativas'               => LabReservation::whereIn('status', ['aprovada', 'em_execucao', 'aguardando_conferencia'])->where('coordenador_id', $user->id)->count(),
+                'validadas'            => LabReservation::where('status', 'validada')->where('coordenador_id', $user->id)->count(),
             ];
             $recent = LabReservation::with(['user', 'space'])
                 ->whereIn('status', ['pre_alocada', 'aguardando_validacao'])
+                ->where(fn ($q) => $q->where('coordenador_id', $user->id)->orWhere(fn ($s) => $s->whereNull('coordenador_id')->where('status', 'pre_alocada')))
                 ->latest()->take(5)->get();
         } elseif ($user->hasRole('Auxiliar')) {
+            $meus = fn ($q) => $q->where('auxiliar_id', $user->id)->orWhereNull('auxiliar_id');
+
             $stats = [
-                'aguardando' => LabReservation::whereIn('status', ['aprovada', 'aguardando_conferencia'])->count(),
-                'ativas'     => LabReservation::whereIn('status', ['aprovada', 'em_execucao'])->count(),
-                'concluidas' => LabReservation::whereIn('status', ['validada', 'concluida', 'finalizada'])->count(),
-                'total'      => LabReservation::count(),
+                'aguardando' => LabReservation::whereIn('status', ['aprovada', 'aguardando_conferencia'])->where($meus)->count(),
+                'ativas'     => LabReservation::whereIn('status', ['aprovada', 'em_execucao'])->where($meus)->count(),
+                'concluidas' => LabReservation::whereIn('status', ['validada', 'concluida', 'finalizada'])->where('auxiliar_id', $user->id)->count(),
+                'total'      => LabReservation::where('auxiliar_id', $user->id)->count(),
             ];
             $recent = LabReservation::with(['user', 'space'])
                 ->whereIn('status', ['aprovada', 'aguardando_conferencia', 'em_execucao'])
+                ->where($meus)
                 ->latest()->take(5)->get();
         } else {
             // Professor
@@ -97,7 +103,7 @@ class LabReservationController extends Controller
             }
         };
 
-        if ($user->is_admin || $user->hasRole('Coordenador')) {
+        if ($user->is_admin) {
             $pendentes    = LabReservation::with(['user', 'space'])
                 ->whereIn('status', ['pre_alocada', 'aguardando_validacao'])
                 ->orderByRaw("CASE status WHEN 'aguardando_validacao' THEN 0 ELSE 1 END")
@@ -108,13 +114,32 @@ class LabReservationController extends Controller
                 ->tap($applyFilters)
                 ->latest()->paginate(20)->withQueryString();
 
+        } elseif ($user->hasRole('Coordenador')) {
+            $meus = fn ($q) => $q->where('coordenador_id', $user->id)->orWhere(fn ($s) => $s->whereNull('coordenador_id')->where('status', 'pre_alocada'));
+
+            $pendentes    = LabReservation::with(['user', 'space'])
+                ->whereIn('status', ['pre_alocada', 'aguardando_validacao'])
+                ->where($meus)
+                ->orderByRaw("CASE status WHEN 'aguardando_validacao' THEN 0 ELSE 1 END")
+                ->latest()->get();
+
+            $reservations = LabReservation::with(['user', 'space'])
+                ->whereNotIn('status', ['validada'])
+                ->where($meus)
+                ->tap($applyFilters)
+                ->latest()->paginate(20)->withQueryString();
+
         } elseif ($user->hasRole('Auxiliar')) {
+            $meus = fn ($q) => $q->where('auxiliar_id', $user->id)->orWhereNull('auxiliar_id');
+
             $pendentes    = LabReservation::with(['user', 'space'])
                 ->whereIn('status', ['aprovada', 'aguardando_conferencia'])
+                ->where($meus)
                 ->latest()->get();
 
             $reservations = LabReservation::with(['user', 'space'])
                 ->whereNotIn('status', ['validada', 'recusada'])
+                ->where(fn ($q) => $q->where('auxiliar_id', $user->id)->orWhere(fn ($s) => $s->whereNull('auxiliar_id')->whereIn('status', ['aprovada', 'em_execucao', 'aguardando_conferencia'])))
                 ->tap($applyFilters)
                 ->latest()->paginate(20)->withQueryString();
 
@@ -142,9 +167,10 @@ class LabReservationController extends Controller
 
     public function create()
     {
-        $spaces    = Space::orderBy('name')->get();
-        $materials = Material::orderBy('name')->get();
-        return view('lab.reservations.create', compact('spaces', 'materials'));
+        $spaces        = Space::orderBy('name')->get();
+        $materials     = Material::orderBy('name')->get();
+        $coordenadores = User::role('Coordenador')->where('is_active', true)->orderBy('name')->get();
+        return view('lab.reservations.create', compact('spaces', 'materials', 'coordenadores'));
     }
 
     public function store(Request $request)
@@ -153,6 +179,11 @@ class LabReservationController extends Controller
 
         $validated = $request->validate([
             'space_id'         => 'required|exists:spaces,id',
+            'coordenador_id'   => ['required', 'exists:users,id', function ($attr, $val, $fail) {
+                if (! User::find($val)?->hasRole('Coordenador')) {
+                    $fail('O usuário selecionado não é um Coordenador.');
+                }
+            }],
             'reservation_date' => "required|date|after_or_equal:{$minDate}",
             'start_time'       => 'required',
             'end_time'         => 'nullable',
@@ -165,11 +196,13 @@ class LabReservationController extends Controller
             'reservation_date.after_or_equal' => 'A reserva deve ser feita com pelo menos 2 dias de antecedência.',
             'description.required'            => 'Descreva o plano de aula.',
             'description.min'                 => 'Descreva o plano de aula com pelo menos 10 caracteres.',
+            'coordenador_id.required'         => 'Selecione o coordenador responsável.',
         ]);
 
         $reservation = LabReservation::create([
             'user_id'          => auth()->id(),
             'space_id'         => $validated['space_id'],
+            'coordenador_id'   => $validated['coordenador_id'],
             'reservation_date' => $validated['reservation_date'],
             'start_time'       => $validated['start_time'],
             'end_time'         => $validated['end_time'] ?? null,
@@ -188,10 +221,10 @@ class LabReservationController extends Controller
             ]);
         }
 
-        $reservation->load(['user', 'space']);
+        $reservation->load(['user', 'space', 'coordenador']);
         $title = 'Nova reserva aguardando aprovação';
         $body  = "{$reservation->user?->name} solicitou a reserva de {$reservation->space?->name} para {$reservation->reservation_date->format('d/m/Y')}.";
-        $this->notifier()->notify(User::coordenadores()->get(), $reservation, $title, $body, auth()->user());
+        $this->notifier()->notify([$reservation->coordenador], $reservation, $title, $body, auth()->user());
 
         return redirect()->route('lab.reservations.show', $reservation)
             ->with('success', 'Reserva criada com sucesso! Aguarde aprovação do coordenador.')
@@ -200,31 +233,54 @@ class LabReservationController extends Controller
 
     public function show(LabReservation $reservation)
     {
-        $reservation->load(['user', 'space', 'auxiliar', 'coordenador', 'materials', 'images']);
-        return view('lab.reservations.show', compact('reservation'));
+        abort_unless($reservation->isVisibleTo(auth()->user()), 403);
+
+        $reservation->load(['user', 'space.auxiliar', 'auxiliar', 'coordenador', 'materials', 'images']);
+        $auxiliaresDisponiveis = auth()->user()->auxiliaresParaAprovacao();
+
+        return view('lab.reservations.show', compact('reservation', 'auxiliaresDisponiveis'));
     }
 
     // ── Coordenador / Admin: aprovar e encaminhar ao auxiliar ──
-    public function approve(LabReservation $reservation)
+    public function approve(Request $request, LabReservation $reservation)
     {
+        abort_unless($reservation->canBeActedOnByCoordenador(auth()->user()), 403);
+
+        $request->validate([
+            'auxiliar_id' => ['required', 'exists:users,id', function ($attr, $val, $fail) {
+                $user = auth()->user();
+                $ok = $user->is_admin
+                    ? User::find($val)?->hasRole('Auxiliar')
+                    : $user->auxiliaresVinculados()->where('is_active', true)->whereKey($val)->exists();
+                if (! $ok) {
+                    $fail('Selecione um auxiliar válido vinculado a você.');
+                }
+            }],
+        ], [
+            'auxiliar_id.required' => 'Selecione o auxiliar responsável.',
+        ]);
+
         $reservation->update([
             'status'         => 'aprovada',
-            'coordenador_id' => auth()->id(),
+            'coordenador_id' => $reservation->coordenador_id ?? auth()->id(),
+            'auxiliar_id'    => $request->auxiliar_id,
         ]);
-        $reservation->loadMissing(['user', 'space.auxiliar']);
+        $reservation->loadMissing(['user', 'auxiliar']);
 
         $title = 'Reserva aprovada';
         $body  = "A reserva de {$reservation->space?->name} para {$reservation->reservation_date->format('d/m/Y')} foi aprovada pelo coordenador.";
-        $this->notifier()->notify([$reservation->user, $reservation->space?->auxiliar], $reservation, $title, $body, auth()->user());
+        $this->notifier()->notify([$reservation->user, $reservation->auxiliar], $reservation, $title, $body, auth()->user());
 
         return back()->with('success', 'Reserva aprovada! O auxiliar foi notificado para preparar o laboratório.');
     }
 
     public function reject(LabReservation $reservation)
     {
+        abort_unless($reservation->canBeActedOnByCoordenador(auth()->user()), 403);
+
         $reservation->update([
             'status'         => 'recusada',
-            'coordenador_id' => auth()->id(),
+            'coordenador_id' => $reservation->coordenador_id ?? auth()->id(),
         ]);
         return back()->with('success', 'Reserva recusada.');
     }
@@ -232,6 +288,15 @@ class LabReservationController extends Controller
     // ── Auxiliar: entregar materiais + professor assina ──
     public function startClass(LabReservation $reservation)
     {
+        $user = auth()->user();
+        abort_unless(
+            $user->is_admin
+                || $reservation->user_id === $user->id
+                || $reservation->auxiliar_id === $user->id
+                || (is_null($reservation->auxiliar_id) && $user->hasRole('Auxiliar')),
+            403
+        );
+
         $reservation->update([
             'status'               => 'em_execucao',
             'professor_signed_at'  => now(),
@@ -249,6 +314,8 @@ class LabReservationController extends Controller
     // ── Professor: observações e liberação ──
     public function submitProfessorObs(Request $request, LabReservation $reservation)
     {
+        abort_unless($reservation->user_id === auth()->id() || auth()->user()->is_admin, 403);
+
         $request->validate([
             'obs' => 'required|string|min:10',
         ], [
@@ -287,6 +354,8 @@ class LabReservationController extends Controller
     // ── Auxiliar: conferência e liberação ──
     public function auxiliarFinalize(Request $request, LabReservation $reservation)
     {
+        abort_unless($reservation->canBeFinalizedByAuxiliar(auth()->user()), 403);
+
         $request->validate([
             'auxiliar_obs' => 'required|string|min:5',
         ], [
@@ -295,7 +364,7 @@ class LabReservationController extends Controller
 
         $data = [
             'auxiliar_obs'            => $request->auxiliar_obs,
-            'auxiliar_id'             => auth()->id(),
+            'auxiliar_id'             => $reservation->auxiliar_id ?? auth()->id(),
             'auxiliar_released_at'    => now(),
             'confirmed_by_auxiliar_at' => now(),
         ];
@@ -327,6 +396,8 @@ class LabReservationController extends Controller
     // ── Coordenador / Admin: validar e arquivar ──
     public function validateActivity(Request $request, LabReservation $reservation)
     {
+        abort_unless($reservation->canBeActedOnByCoordenador(auth()->user()), 403);
+
         $request->validate([
             'coordenador_obs' => 'nullable|string|max:2000',
         ]);
@@ -335,7 +406,7 @@ class LabReservationController extends Controller
             'status'          => 'validada',
             'validated_at'    => now(),
             'coordenador_obs' => $request->coordenador_obs,
-            'coordenador_id'  => auth()->id(),
+            'coordenador_id'  => $reservation->coordenador_id ?? auth()->id(),
         ]);
 
         $reservation->load(['user', 'space', 'auxiliar', 'coordenador', 'materials']);
@@ -383,8 +454,19 @@ class LabReservationController extends Controller
 
     public function history()
     {
+        $user = auth()->user();
+
         $reservations = LabReservation::with(['user', 'space'])
             ->whereIn('status', ['validada', 'concluida', 'finalizada'])
+            ->when(! $user->is_admin, function ($query) use ($user) {
+                if ($user->hasRole('Coordenador')) {
+                    $query->where('coordenador_id', $user->id);
+                } elseif ($user->hasRole('Auxiliar')) {
+                    $query->where('auxiliar_id', $user->id);
+                } else {
+                    $query->where('user_id', $user->id);
+                }
+            })
             ->orderByRaw('COALESCE(finalized_at, validated_at) DESC')
             ->paginate(20);
 
@@ -393,6 +475,8 @@ class LabReservationController extends Controller
 
     public function generatePDF(LabReservation $reservation)
     {
+        abort_unless($reservation->isVisibleTo(auth()->user()), 403);
+
         $reservation->load(['user', 'space', 'auxiliar', 'materials']);
         $pdf = Pdf::loadView('lab.reservations.pdf', compact('reservation'));
         return $pdf->stream("checklist-reserva-{$reservation->id}.pdf");

@@ -432,6 +432,26 @@
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M22 12.07C22 6.51 17.52 2 12 2S2 6.51 2 12.07c0 5.02 3.66 9.18 8.44 9.93v-7.03H7.9v-2.9h2.54V9.85c0-2.51 1.49-3.9 3.78-3.9 1.1 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.78-1.63 1.57v1.89h2.78l-.44 2.9h-2.34V22c4.78-.75 8.44-4.91 8.44-9.93z"/></svg>
                         </a>
                     </div>
+
+                    {{-- App EtecSam Reserva Labs --}}
+                    <div class="mt-6">
+                        <h3 class="text-xs font-bold uppercase tracking-widest text-gray-300 mb-3">Baixe o app Reserva Labs</h3>
+                        <div class="flex items-center gap-3">
+                            <a href="{{ asset('downloads/reserva-labs.apk') }}" download title="Baixar para Android"
+                               class="w-9 h-9 rounded-full bg-white/10 hover:bg-etec-accent hover:text-etec-dark flex items-center justify-center transition">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M17.6 9.48l1.84-3.18a.5.5 0 00-.87-.5l-1.88 3.24a10.94 10.94 0 00-8.98 0L5.83 5.8a.5.5 0 10-.87.5L6.8 9.48C3.98 11.24 2 14.35 2 18h20c0-3.65-1.98-6.76-4.4-8.52zM7 15.25a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5zm10 0a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5z"/>
+                                </svg>
+                            </a>
+                            <span title="Em breve na App Store"
+                                  class="w-9 h-9 rounded-full bg-white/5 text-white/30 flex items-center justify-center cursor-not-allowed">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 384 512">
+                                    <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-27-47.3-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5c0 26.2 4.8 53.3 14.4 81.2 12.8 37 59 127.6 107.2 126.1 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.5-65.2-30.7-61.7-90.5-61.7-92.6zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
+                                </svg>
+                            </span>
+                            <span class="text-xs text-gray-500">Android disponível &middot; iOS em breve</span>
+                        </div>
+                    </div>
                 </div>
                 <div>
                     <h3 class="text-sm font-bold uppercase tracking-widest text-gray-300 mb-4">Links Rápidos</h3>

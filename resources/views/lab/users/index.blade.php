@@ -113,6 +113,7 @@
                     <th class="px-6 py-3 text-left">Nome</th>
                     <th class="px-6 py-3 text-left">E-mail</th>
                     <th class="px-6 py-3 text-left">Papel</th>
+                    <th class="px-6 py-3 text-left">Vínculos</th>
                     <th class="px-6 py-3 text-center">Status</th>
                     <th class="px-6 py-3 text-right">Ações</th>
                 </tr>
@@ -150,6 +151,21 @@
                             <button class="text-xs text-etec-main dark:text-etec-accent hover:underline font-semibold">OK</button>
                         </form>
                     </td>
+                    <td class="px-6 py-3">
+                        @if($u->hasRole('Auxiliar'))
+                        <form action="{{ route('lab.users.vinculos', $u) }}" method="POST" class="flex gap-2 items-center">
+                            @csrf @method('PATCH')
+                            <select name="coordenador_ids[]" multiple size="3" class="border border-gray-200 dark:border-gray-600 rounded px-2 py-1 text-xs dark:bg-gray-700 dark:text-white focus:ring-1 focus:ring-etec-dark outline-none min-w-[10rem]">
+                                @foreach($coordenadoresList as $c)
+                                <option value="{{ $c->id }}" {{ $u->coordenadoresVinculados->contains('id', $c->id) ? 'selected' : '' }}>{{ $c->name }}</option>
+                                @endforeach
+                            </select>
+                            <button class="text-xs text-etec-main dark:text-etec-accent hover:underline font-semibold">OK</button>
+                        </form>
+                        @else
+                        <span class="text-gray-300 text-xs">—</span>
+                        @endif
+                    </td>
                     <td class="px-6 py-3 text-center">
                         <form action="{{ route('lab.users.status', $u) }}" method="POST">
                             @csrf @method('PATCH')
@@ -180,7 +196,7 @@
                     </td>
                 </tr>
                 @empty
-                <tr><td colspan="5" class="px-6 py-8 text-center text-gray-400">Nenhum usuário encontrado.</td></tr>
+                <tr><td colspan="6" class="px-6 py-8 text-center text-gray-400">Nenhum usuário encontrado.</td></tr>
                 @endforelse
             </tbody>
         </table>
