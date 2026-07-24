@@ -33,7 +33,7 @@
     <div class="bg-etec-main rounded-2xl shadow-sm overflow-hidden border border-etec-dark/30 dark:border-white/10">
         <div class="flex flex-col md:flex-row">
             {{-- Foto --}}
-            <div class="md:w-80 h-72 md:h-auto relative bg-etec-dark flex-shrink-0 overflow-hidden">
+            <div class="md:w-80 h-72 md:h-[420px] relative bg-etec-dark flex-shrink-0 overflow-hidden">
                 <img src="{{ photo_url($director->photo) }}"
                      onerror="this.src='{{ avatar_url($director->name, '0c1f3f', 'fff', ['bold' => 'true', 'size' => 512]) }}'"
                      class="w-full h-full object-cover opacity-90 hover:opacity-100 scale-[1.15] hover:scale-[1.4375] transition duration-700 ease-in-out">
