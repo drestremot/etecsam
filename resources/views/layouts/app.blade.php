@@ -136,6 +136,7 @@
                     class="h-16 w-auto flex-shrink-0">
             </a>
 
+            @unless(electoral_period_active())
             <nav class="hidden xl:flex items-center gap-0.5 text-sm font-medium whitespace-nowrap">
                 <a href="{{ route('home') }}" class="px-4 py-2 text-white hover:text-etec-accent hover:bg-white/10 rounded-lg transition">Início</a>
                 <a href="{{ route('institutional') }}" class="px-4 py-2 text-white/75 hover:text-white hover:bg-white/10 rounded-lg transition">A Escola</a>
@@ -307,6 +308,7 @@
 
                 </div>
             </nav>
+            @endunless
             {{-- ↑ FIM DO MENU DESKTOP (hidden xl:flex) — NÃO REMOVER esta tag </nav> --}}
 
             {{-- ═══════════════════════════════════════════════════════════════
@@ -321,6 +323,7 @@
                  O CSS .mobile-hamburger esconde-o em desktop via media query.
                  NÃO mover este bloco para dentro da <nav class="hidden xl:flex">.
             ════════════════════════════════════════════════════════════════ --}}
+            @unless(electoral_period_active())
             <div class="mobile-hamburger">
                 <img src="{{ asset('imagens/logo/logo-cps-2022.svg') }}" alt="Centro Paula Souza" class="h-11 w-auto opacity-95">
 
@@ -341,6 +344,7 @@
                     </svg>
                 </button>
             </div>
+            @endunless
             {{-- FIM DO HAMBÚRGUER --}}
 
         </div>{{-- fim container flex justify-between --}}
@@ -350,6 +354,7 @@
              Atualizar SEMPRE que adicionar itens ao menu desktop acima.
              Inclui todos os itens + subpáginas de Gestão expandidas.
         ════════════════════════════════════════════════════════════════ --}}
+        @unless(electoral_period_active())
         <div x-show="open" x-transition class="mobile-nav-menu border-t border-white/10 bg-etec-dark shadow-lg" style="display:none">
             <nav class="container mx-auto px-4 py-3 flex flex-col gap-0.5 text-sm font-medium">
                 <a href="{{ route('home') }}"         @click="open=false" class="px-4 py-3 text-white hover:text-etec-accent hover:bg-white/10 rounded-lg transition">Início</a>
@@ -421,6 +426,7 @@
                 </div>
             </nav>
         </div>
+        @endunless
         {{-- FIM DO MENU MOBILE --}}
 
     </header>
@@ -475,6 +481,7 @@
                         </div>
                     </div>
                 </div>
+                @unless(electoral_period_active())
                 <div>
                     <h3 class="text-sm font-bold uppercase tracking-widest text-gray-300 mb-4">Links Rápidos</h3>
                     <ul class="space-y-2 text-sm text-gray-400">
@@ -484,6 +491,7 @@
                         <li><a href="{{ route('library') }}" class="hover:text-etec-accent transition flex items-center gap-2"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>Biblioteca</a></li>
                     </ul>
                 </div>
+                @endunless
                 <div>
                     <h3 class="text-sm font-bold uppercase tracking-widest text-gray-300 mb-4">Localização e Contato</h3>
                     <ul class="space-y-3 text-sm text-gray-400">

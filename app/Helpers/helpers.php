@@ -67,6 +67,19 @@ if (!function_exists('photo_url')) {
     }
 }
 
+if (!function_exists('electoral_period_active')) {
+    /**
+     * Período de silêncio eleitoral (2026): em atendimento à legislação
+     * eleitoral, o site fica com a navegação/menus desativados até o fim da
+     * eleição estadual em SP. Volta ao normal sozinho após essa data — usado
+     * pelo HomeController e pelos layouts (público e admin/laboratórios).
+     */
+    function electoral_period_active(): bool
+    {
+        return now()->lt(\Illuminate\Support\Carbon::parse('2026-10-25 23:59:59'));
+    }
+}
+
 if (!function_exists('avatar_url')) {
     /**
      * Monta a URL do avatar de fallback (ui-avatars.com) para um nome.

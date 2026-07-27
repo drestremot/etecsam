@@ -24,6 +24,7 @@
             </a>
         </div>
 
+        @unless(electoral_period_active())
         <nav class="flex-1 px-3 py-4 overflow-y-auto text-sm space-y-0.5">
 
             {{-- Dashboard --}}
@@ -338,6 +339,9 @@
                 </a>
                 @endif
         </nav>
+        @else
+        <div class="flex-1"></div>
+        @endunless
 
         <div class="px-4 py-4 border-t border-gray-800 bg-gray-950/40">
             <div class="flex items-center gap-2 mb-3">
