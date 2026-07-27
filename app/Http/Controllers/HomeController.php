@@ -10,8 +10,17 @@ use App\Models\Sector; // <--- Importante: Adicionamos o modelo de Setores
 
 class HomeController extends Controller
 {
+    // Período de silêncio eleitoral: a partir de 04/07/2026 a home fica
+    // restrita a este aviso, em atendimento à legislação eleitoral, até o fim
+    // da eleição estadual em SP. Volta ao normal sozinha depois dessa data.
+    private const ELECTORAL_NOTICE_UNTIL = '2026-10-25 23:59:59';
+
     public function index()
 {
+    if (now()->lt(\Carbon\Carbon::parse(self::ELECTORAL_NOTICE_UNTIL))) {
+        return view('pages.electoral-notice');
+    }
+
     // ALTERAÇÃO AQUI: Adicionei ->orderBy('city')
     // Também coloquei ->orderBy('name') para organizar alfabeticamente dentro da mesma cidade
     $units = Unit::withCount('courses')
