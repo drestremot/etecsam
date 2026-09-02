@@ -121,70 +121,68 @@
         <!-- Punches Table -->
         <div class="rounded-2xl border border-gray-200 bg-white shadow-xs overflow-hidden">
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs sm:text-sm">
+                <table class="w-full text-left text-xs">
                     <thead class="bg-gray-50/90 text-[11px] font-semibold uppercase text-gray-500 border-b border-gray-200 tracking-wider">
                         <tr>
-                            <th class="px-5 py-3">Biometria Facial</th>
-                            <th class="px-5 py-3">Horário & Tipo</th>
-                            <th class="px-5 py-3">Colaborador</th>
-                            <th class="px-5 py-3">Unidade Escolar</th>
-                            <th class="px-5 py-3 text-center">GPS / Distância</th>
-                            <th class="px-5 py-3 text-center">Grade / Atraso</th>
-                            <th class="px-5 py-3 text-center">Status</th>
-                            <th class="px-5 py-3 text-right">Auditoria</th>
+                            <th class="px-3.5 py-3 min-w-[70px]">Foto</th>
+                            <th class="px-3 py-3 min-w-[100px]">Horário & Tipo</th>
+                            <th class="px-3 py-3 min-w-[160px]">Colaborador</th>
+                            <th class="px-3 py-3 min-w-[120px]">Unidade</th>
+                            <th class="px-3 py-3 text-center min-w-[110px]">GPS / Local</th>
+                            <th class="px-3 py-3 text-center min-w-[100px]">Grade / Atraso</th>
+                            <th class="px-3 py-3 text-center min-w-[90px]">Status</th>
+                            <th class="px-3.5 py-3 text-right min-w-[110px]">Auditoria</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
                         @forelse($records as $rec)
                         <tr class="hover:bg-gray-50/80 transition">
                             <!-- Facial Photo -->
-                            <td class="px-5 py-3.5 whitespace-nowrap">
+                            <td class="px-3.5 py-2.5 whitespace-nowrap">
                                 @if($rec->photo_url)
                                     <button type="button" @click="openPhotoModal('{{ $rec->photo_url }}', '{{ $rec->user->name }}', '{{ $rec->recorded_at->format('d/m/Y H:i:s') }}')"
                                             class="group relative inline-block">
-                                        <img src="{{ $rec->photo_url }}" alt="Snapshot" class="w-10 h-10 rounded-xl object-cover border border-indigo-200 shadow-2xs group-hover:scale-105 transition">
+                                        <img src="{{ $rec->photo_url }}" alt="Snapshot" class="w-8 h-8 rounded-lg object-cover border border-indigo-200 shadow-2xs group-hover:scale-105 transition">
                                         <span class="absolute -bottom-1 -right-1 bg-indigo-600 text-white rounded-full p-0.5">
-                                            <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                                            <svg class="w-2 h-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                                         </span>
                                     </button>
                                 @else
-                                    <span class="rounded-xl bg-gray-100 p-2 text-gray-400 text-xs inline-block">Sem foto</span>
+                                    <span class="rounded-md bg-gray-100 px-1.5 py-1 text-gray-400 text-[10px] inline-block">Sem foto</span>
                                 @endif
                             </td>
 
                             <!-- Time & Type -->
-                            <td class="px-5 py-3.5 whitespace-nowrap">
-                                <div class="font-mono font-medium text-gray-900 text-xs sm:text-sm">
+                            <td class="px-3 py-2.5 whitespace-nowrap">
+                                <div class="font-mono font-medium text-gray-900 text-xs">
                                     {{ $rec->recorded_at->format('H:i:s') }}
                                 </div>
-                                <span class="inline-block mt-0.5 rounded-md px-2 py-0.5 text-[11px] font-medium border {{ $rec->getRecordTypeBadgeClass() }}">
+                                <span class="inline-block mt-0.5 rounded px-1.5 py-0.2 text-[10.5px] font-medium border {{ $rec->getRecordTypeBadgeClass() }}">
                                     {{ $rec->getRecordTypeLabel() }}
                                 </span>
                             </td>
 
                             <!-- Employee -->
-                            <td class="px-5 py-3.5">
-                                <div class="font-semibold text-gray-900 text-xs sm:text-sm">{{ $rec->user->name }}</div>
-                                <div class="text-[11px] text-gray-500 font-normal">{{ $rec->user->role ?? 'Colaborador' }}</div>
+                            <td class="px-3 py-2.5">
+                                <div class="font-semibold text-gray-900 truncate max-w-[180px]" title="{{ $rec->user->name }}">{{ $rec->user->name }}</div>
+                                <div class="text-[11px] text-gray-500 font-normal truncate max-w-[180px]">{{ $rec->user->role ?? 'Colaborador' }}</div>
                             </td>
 
                             <!-- Unit -->
-                            <td class="px-5 py-3.5 whitespace-nowrap">
-                                <span class="inline-flex items-center gap-1.5 rounded-lg bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700">
-                                    <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                            <td class="px-3 py-2.5 whitespace-nowrap">
+                                <span class="inline-flex items-center gap-1 rounded-md bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-700 truncate max-w-[130px]">
                                     <span>{{ $rec->unit->name ?? 'Unidade Geral' }}</span>
                                 </span>
                             </td>
 
                             <!-- GPS -->
-                            <td class="px-5 py-3.5 text-center whitespace-nowrap">
+                            <td class="px-3 py-2.5 text-center whitespace-nowrap">
                                 @if($rec->distance_to_unit_meters !== null)
-                                    <span class="inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-medium {{ $rec->is_within_geofence ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200' }}">
-                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                    <span class="inline-flex items-center gap-1 rounded-full px-2 py-0.2 text-[10.5px] font-medium {{ $rec->is_within_geofence ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200' }}">
                                         {{ $rec->is_within_geofence ? 'Na Escola' : 'Fora' }} ({{ $rec->distance_to_unit_meters }}m)
                                     </span>
                                 @elseif($rec->verification_method === 'totem_kiosk')
-                                    <span class="rounded-full bg-blue-50 text-blue-700 border border-blue-200 px-2.5 py-0.5 text-[11px] font-medium">
+                                    <span class="rounded-full bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.2 text-[10.5px] font-medium">
                                         Totem Físico
                                     </span>
                                 @else
@@ -193,21 +191,21 @@
                             </td>
 
                             <!-- Schedule & Delay -->
-                            <td class="px-5 py-3.5 text-center whitespace-nowrap">
+                            <td class="px-3 py-2.5 text-center whitespace-nowrap">
                                 @if($rec->delay_minutes > 0)
-                                    <span class="rounded-full bg-amber-100 text-amber-800 px-2.5 py-0.5 text-[11px] font-medium">
+                                    <span class="rounded-full bg-amber-100 text-amber-800 px-2 py-0.2 text-[10.5px] font-medium">
                                         +{{ $rec->delay_minutes }}m atraso
                                     </span>
                                 @elseif($rec->is_within_schedule)
-                                    <span class="text-emerald-600 font-medium text-xs">No Horário</span>
+                                    <span class="text-emerald-600 font-medium text-[11px]">No Horário</span>
                                 @else
-                                    <span class="text-purple-600 font-medium text-[11px]">Extra / Fora da Grade</span>
+                                    <span class="text-purple-600 font-medium text-[10.5px]">Extra</span>
                                 @endif
                             </td>
 
                             <!-- Status -->
-                            <td class="px-5 py-3.5 text-center whitespace-nowrap">
-                                <span class="inline-block rounded-full px-2.5 py-1 text-xs font-medium border {{ $rec->getStatusBadgeClass() }}">
+                            <td class="px-3 py-2.5 text-center whitespace-nowrap">
+                                <span class="inline-block rounded-full px-2 py-0.5 text-[11px] font-medium border {{ $rec->getStatusBadgeClass() }}">
                                     {{ $rec->getStatusLabel() }}
                                 </span>
                             </td>

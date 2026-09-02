@@ -79,19 +79,19 @@
             </div>
 
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs sm:text-sm">
+                <table class="w-full text-left text-xs">
                     <thead class="bg-gray-50/90 text-[11px] font-semibold uppercase text-gray-500 border-b border-gray-200 tracking-wider">
                         <tr>
-                            <th @click="sort('disc')" class="px-6 py-3.5 cursor-pointer hover:bg-gray-100 select-none">
+                            <th @click="sort('disc')" class="px-3.5 py-3 cursor-pointer hover:bg-gray-100 select-none min-w-[200px]">
                                 Disciplina <span class="ml-1 text-gray-400" x-text="icon('disc')"></span>
                             </th>
-                            <th @click="sort('sem')" class="px-6 py-3.5 cursor-pointer hover:bg-gray-100 select-none">
+                            <th @click="sort('sem')" class="px-3 py-3 cursor-pointer hover:bg-gray-100 select-none min-w-[120px]">
                                 Semestre / Período <span class="ml-1 text-gray-400" x-text="icon('sem')"></span>
                             </th>
-                            <th class="px-6 py-3.5">Carga Horária</th>
-                            <th class="px-6 py-3.5">Professor Responsável (Associação Direta)</th>
-                            <th class="px-6 py-3.5">PTD</th>
-                            <th class="px-6 py-3.5 text-right">Ações</th>
+                            <th class="px-3 py-3 min-w-[80px]">Carga Horária</th>
+                            <th class="px-3 py-3 min-w-[200px]">Professor Responsável</th>
+                            <th class="px-3 py-3 min-w-[80px]">PTD</th>
+                            <th class="px-3.5 py-3 text-right min-w-[110px]">Ações</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
@@ -101,26 +101,26 @@
                             data-disc="{{ strtolower($subject->name) }}"
                             data-prof="{{ strtolower($subject->teacher?->name ?? '') }}"
                             data-sem="{{ strtolower($subject->semester ?? '') }}">
-                            <td class="px-6 py-3.5 font-semibold text-gray-900">
+                            <td class="px-3.5 py-2.5 font-semibold text-gray-900 truncate max-w-[220px]" title="{{ $subject->name }}">
                                 <span>{{ $subject->name }}</span>
                             </td>
-                            <td class="px-6 py-3.5 text-gray-600 font-normal">
-                                <span class="rounded-lg bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700">
+                            <td class="px-3 py-2.5 text-gray-600 font-normal">
+                                <span class="rounded-md bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-700">
                                     {{ $subject->semester ?: 'Não definido' }}
                                 </span>
                             </td>
-                            <td class="px-6 py-3.5">
-                                <span class="rounded-xl bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700 border border-blue-200">
+                            <td class="px-3 py-2.5">
+                                <span class="rounded-md bg-blue-50 px-2 py-0.5 text-[11px] font-medium text-blue-700 border border-blue-200">
                                     {{ $subject->workload }}h
                                 </span>
                             </td>
-                            <td class="px-6 py-3.5">
+                            <td class="px-3 py-2.5">
                                 <!-- Quick Inline Teacher Association -->
-                                <form action="{{ route('admin.courses.subjects.teacher', [$course, $subject]) }}" method="POST" class="flex items-center gap-2">
+                                <form action="{{ route('admin.courses.subjects.teacher', [$course, $subject]) }}" method="POST" class="flex items-center gap-1.5">
                                     @csrf @method('PATCH')
                                     <select name="teacher_id" onchange="this.form.submit()"
-                                            class="rounded-xl border border-gray-300 bg-white px-3 py-1.5 text-xs text-gray-800 shadow-2xs focus:outline-none focus:ring-2 focus:ring-indigo-400 min-w-[15rem] max-w-[20rem]">
-                                        <option value="">— Selecione o Professor Responsável —</option>
+                                            class="rounded-lg border border-gray-300 bg-white px-2.5 py-1 text-xs text-gray-800 shadow-2xs focus:outline-none focus:ring-1 focus:ring-indigo-400 min-w-[12rem] max-w-[16rem]">
+                                        <option value="">— Selecionar Professor —</option>
                                         @foreach($teachers as $t)
                                             <option value="{{ $t->id }}" {{ $subject->teacher_id == $t->id ? 'selected' : '' }}>
                                                 {{ $t->name }}{{ $t->specialty ? ' ('.$t->specialty.')' : '' }}
@@ -128,28 +128,28 @@
                                         @endforeach
                                     </select>
                                     <noscript>
-                                        <button type="submit" class="rounded-xl bg-indigo-600 px-2.5 py-1.5 text-xs font-semibold text-white">Salvar</button>
+                                        <button type="submit" class="rounded-lg bg-indigo-600 px-2 py-0.5 text-[11px] font-semibold text-white">OK</button>
                                     </noscript>
                                 </form>
                             </td>
-                            <td class="px-6 py-3.5">
+                            <td class="px-3 py-2.5">
                                 @if($subject->ptd_file)
                                     <a href="{{ $subject->ptd_file }}" target="_blank" class="inline-flex items-center gap-1 text-xs font-medium text-indigo-600 hover:text-indigo-800 hover:underline">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                                        <span>Ver PTD</span>
+                                        <span>PTD</span>
                                     </a>
                                 @else
                                     <span class="text-xs text-gray-400 italic">—</span>
                                 @endif
                             </td>
-                            <td class="px-6 py-3.5 text-right">
-                                <div class="flex items-center justify-end gap-2">
-                                    <a href="{{ route('admin.courses.subjects.edit', [$course, $subject]) }}" class="rounded-xl bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-200 transition">
+                            <td class="px-3.5 py-2.5 text-right whitespace-nowrap">
+                                <div class="flex items-center justify-end gap-1.5">
+                                    <a href="{{ route('admin.courses.subjects.edit', [$course, $subject]) }}" class="rounded-lg bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-200 transition">
                                         Editar
                                     </a>
                                     <form action="{{ route('admin.courses.subjects.destroy', [$course, $subject]) }}" method="POST" onsubmit="return confirm('Remover a disciplina \'{{ addslashes($subject->name) }}\'?')">
                                         @csrf @method('DELETE')
-                                        <button class="rounded-xl bg-red-50 px-3 py-1.5 text-xs font-bold text-red-600 hover:bg-red-100 transition">
+                                        <button class="rounded-lg bg-red-50 px-2.5 py-1 text-xs font-medium text-red-600 hover:bg-red-100 transition">
                                             Excluir
                                         </button>
                                     </form>

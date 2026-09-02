@@ -149,39 +149,39 @@
         <!-- Table Container -->
         <div class="rounded-2xl border border-gray-200 bg-white shadow-xs overflow-hidden">
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs sm:text-sm">
-                    <thead class="bg-gray-50 text-xs font-semibold uppercase text-gray-500 border-b border-gray-200 tracking-wider">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-gray-50/90 text-[11px] font-semibold uppercase text-gray-500 border-b border-gray-200 tracking-wider">
                         <tr>
-                            <th class="px-5 py-3.5">Data / Hora</th>
-                            <th class="px-5 py-3.5">Usuário / Autor</th>
-                            <th class="px-5 py-3.5">Ação Realizada</th>
-                            <th class="px-5 py-3.5">Módulo</th>
-                            <th class="px-5 py-3.5">Descrição do Evento</th>
-                            <th class="px-5 py-3.5">Origem (IP)</th>
-                            <th class="px-5 py-3.5 text-right">Detalhes</th>
+                            <th class="px-3.5 py-3 min-w-[120px]">Data / Hora</th>
+                            <th class="px-3 py-3 min-w-[150px]">Usuário / Autor</th>
+                            <th class="px-3 py-3 min-w-[100px]">Ação</th>
+                            <th class="px-3 py-3 min-w-[100px]">Módulo</th>
+                            <th class="px-3 py-3 min-w-[200px]">Descrição do Evento</th>
+                            <th class="px-3 py-3 min-w-[90px]">Origem</th>
+                            <th class="px-3.5 py-3 text-right min-w-[70px]">Detalhes</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
                         @forelse($logs as $log)
                         <tr class="hover:bg-gray-50/80 transition">
-                            <td class="px-5 py-3.5 whitespace-nowrap">
-                                <span class="font-bold text-gray-900 block text-xs">
+                            <td class="px-3.5 py-2.5 whitespace-nowrap">
+                                <span class="font-semibold text-gray-900 block text-xs">
                                     {{ $log->created_at ? $log->created_at->format('d/m/Y H:i:s') : '—' }}
                                 </span>
-                                <span class="text-[11px] text-gray-400 block font-normal">
+                                <span class="text-[10.5px] text-gray-400 block font-normal">
                                     {{ $log->created_at ? $log->created_at->diffForHumans() : '' }}
                                 </span>
                             </td>
 
-                            <td class="px-5 py-3.5">
-                                <div class="flex items-center gap-2.5">
-                                    <div class="w-7 h-7 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold flex-shrink-0">
+                            <td class="px-3 py-2.5">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-[10px] font-bold flex-shrink-0">
                                         {{ strtoupper(substr($log->user_name ?? 'S', 0, 1)) }}
                                     </div>
                                     <div class="min-w-0">
                                         <div class="font-semibold text-gray-900 truncate text-xs">{{ $log->user_name ?? 'Sistema' }}</div>
                                         @if($log->user_role)
-                                            <span class="inline-block rounded-md bg-gray-100 px-1.5 py-0.2 text-[10px] font-medium text-gray-600 border border-gray-200">
+                                            <span class="inline-block rounded bg-gray-100 px-1 py-0.2 text-[9.5px] font-medium text-gray-600 border border-gray-200">
                                                 {{ $log->user_role }}
                                             </span>
                                         @endif
@@ -189,35 +189,33 @@
                                 </div>
                             </td>
 
-                            <td class="px-5 py-3.5 whitespace-nowrap">
-                                <span class="inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-xs font-semibold border {{ $log->getActionBadgeClass() }}">
+                            <td class="px-3 py-2.5 whitespace-nowrap">
+                                <span class="inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[11px] font-medium border {{ $log->getActionBadgeClass() }}">
                                     {{ $log->getActionLabel() }}
                                 </span>
                             </td>
 
-                            <td class="px-5 py-3.5 whitespace-nowrap">
+                            <td class="px-3 py-2.5 whitespace-nowrap">
                                 <span class="inline-flex items-center gap-1 text-xs font-medium text-gray-700">
                                     <span>{{ $log->getModuleIcon() }}</span>
                                     <span>{{ $log->module }}</span>
                                 </span>
                             </td>
 
-                            <td class="px-5 py-3.5 max-w-md">
-                                <p class="text-xs text-gray-800 line-clamp-2">{{ $log->description }}</p>
-                            </td>
-
-                            <td class="px-5 py-3.5 whitespace-nowrap">
-                                <span class="text-xs font-mono text-gray-600 block">{{ $log->ip_address ?: '—' }}</span>
-                                <span class="text-[10px] text-gray-400 truncate max-w-[120px] block" title="{{ $log->user_agent }}">
-                                    {{ $log->method }} {{ $log->user_agent ? Str::limit($log->user_agent, 20) : '' }}
+                            <td class="px-3 py-2.5">
+                                <span class="text-gray-700 text-xs line-clamp-2" title="{{ $log->description }}">
+                                    {{ $log->description }}
                                 </span>
                             </td>
 
-                            <td class="px-5 py-3.5 text-right whitespace-nowrap">
-                                <button @click="openModal({{ $log->id }})"
-                                        class="inline-flex items-center gap-1 rounded-xl bg-gray-100 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 border border-gray-200 transition shadow-2xs">
+                            <td class="px-3 py-2.5 whitespace-nowrap font-mono text-[11px] text-gray-500">
+                                {{ $log->ip_address ?? '—' }}
+                            </td>
+
+                            <td class="px-3.5 py-2.5 text-right whitespace-nowrap">
+                                <button type="button" @click="openModal({{ json_encode($log) }})"
+                                        class="rounded-lg bg-gray-100 p-1.5 text-gray-600 hover:bg-gray-200 transition" title="Ver detalhes do registro">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                                    <span>Ver Diff</span>
                                 </button>
                             </td>
                         </tr>

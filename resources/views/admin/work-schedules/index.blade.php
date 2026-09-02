@@ -113,49 +113,48 @@
         <!-- Table of Schedules -->
         <div class="rounded-2xl border border-gray-200 bg-white shadow-xs overflow-hidden">
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs sm:text-sm">
+                <table class="w-full text-left text-xs">
                     <thead class="bg-gray-50/90 text-[11px] font-semibold uppercase text-gray-500 border-b border-gray-200 tracking-wider">
                         <tr>
-                            <th class="px-5 py-3">Dia</th>
-                            <th class="px-5 py-3">Professor / Colaborador</th>
-                            <th class="px-5 py-3">Unidade Escolar</th>
-                            <th class="px-5 py-3">Turno / Descrição</th>
-                            <th class="px-5 py-3 text-center">Horário Previsto</th>
-                            <th class="px-5 py-3 text-center">Intervalo</th>
-                            <th class="px-5 py-3 text-center">Tolerância</th>
-                            <th class="px-5 py-3 text-right">Ações</th>
+                            <th class="px-3.5 py-3 min-w-[100px]">Dia</th>
+                            <th class="px-3 py-3 min-w-[180px]">Professor / Colaborador</th>
+                            <th class="px-3 py-3 min-w-[120px]">Unidade</th>
+                            <th class="px-3 py-3 min-w-[110px]">Turno</th>
+                            <th class="px-3 py-3 text-center min-w-[100px]">Horário</th>
+                            <th class="px-3 py-3 text-center min-w-[90px]">Intervalo</th>
+                            <th class="px-3 py-3 text-center min-w-[80px]">Tolerância</th>
+                            <th class="px-3.5 py-3 text-right min-w-[80px]">Ações</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
                         @forelse($schedules as $sched)
                         <tr class="hover:bg-gray-50/80 transition">
-                            <td class="px-5 py-3.5 whitespace-nowrap">
-                                <span class="inline-flex items-center rounded-lg bg-indigo-50 border border-indigo-200/80 px-2.5 py-1 text-xs font-medium text-indigo-700">
+                            <td class="px-3.5 py-2.5 whitespace-nowrap">
+                                <span class="inline-flex items-center rounded-md bg-indigo-50 border border-indigo-200/80 px-2 py-0.5 text-[11px] font-medium text-indigo-700">
                                     {{ $sched->day_short }} • {{ $sched->day_name }}
                                 </span>
                             </td>
 
-                            <td class="px-5 py-3.5">
-                                <div class="font-semibold text-gray-900 text-xs sm:text-sm">{{ $sched->user->name }}</div>
-                                <div class="text-[11px] text-gray-500 font-normal">{{ $sched->user->email }}</div>
+                            <td class="px-3 py-2.5">
+                                <div class="font-semibold text-gray-900 truncate max-w-[200px]" title="{{ $sched->user->name }}">{{ $sched->user->name }}</div>
+                                <div class="text-[11px] text-gray-500 font-normal truncate max-w-[200px]">{{ $sched->user->email }}</div>
                             </td>
 
-                            <td class="px-5 py-3.5 whitespace-nowrap">
-                                <span class="inline-flex items-center gap-1.5 rounded-lg bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700">
-                                    <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                            <td class="px-3 py-2.5 whitespace-nowrap">
+                                <span class="inline-flex items-center gap-1 rounded-md bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-700">
                                     <span>{{ $sched->unit->name }}</span>
                                 </span>
                             </td>
 
-                            <td class="px-5 py-3.5">
-                                <div class="font-medium text-gray-700 text-xs sm:text-sm">{{ $sched->shift_name ?: 'Jornada Padrão' }}</div>
+                            <td class="px-3 py-2.5">
+                                <div class="font-normal text-gray-700 truncate max-w-[120px]">{{ $sched->shift_name ?: 'Jornada Padrão' }}</div>
                             </td>
 
-                            <td class="px-5 py-3.5 text-center font-mono font-medium text-indigo-950 text-xs sm:text-sm whitespace-nowrap">
+                            <td class="px-3 py-2.5 text-center font-mono font-medium text-indigo-950 whitespace-nowrap">
                                 {{ $sched->formatted_schedule }}
                             </td>
 
-                            <td class="px-5 py-3.5 text-center font-mono text-gray-600 text-xs whitespace-nowrap">
+                            <td class="px-3 py-2.5 text-center font-mono text-gray-600 whitespace-nowrap">
                                 @if($sched->break_start_time)
                                     {{ substr($sched->break_start_time, 0, 5) }} às {{ substr($sched->break_end_time, 0, 5) }}
                                 @else
@@ -163,16 +162,16 @@
                                 @endif
                             </td>
 
-                            <td class="px-5 py-3.5 text-center whitespace-nowrap">
-                                <span class="rounded-full bg-amber-50 border border-amber-200 px-2 py-0.5 text-[11px] font-medium text-amber-800">
+                            <td class="px-3 py-2.5 text-center whitespace-nowrap">
+                                <span class="rounded-full bg-amber-50 border border-amber-200 px-2 py-0.2 text-[10.5px] font-medium text-amber-800">
                                     {{ $sched->tolerance_minutes }} min
                                 </span>
                             </td>
 
-                            <td class="px-5 py-3.5 text-right whitespace-nowrap">
-                                <div class="flex items-center justify-end gap-1.5">
-                                    <a href="{{ route('admin.work-schedules.edit', $sched) }}" class="rounded-lg bg-gray-100 hover:bg-gray-200 p-1.5 text-gray-700 transition" title="Editar">
-                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                            <td class="px-3.5 py-2.5 text-right whitespace-nowrap">
+                                <div class="flex items-center justify-end gap-1">
+                                    <a href="{{ route('admin.work-schedules.edit', $sched) }}" class="rounded-lg bg-gray-100 hover:bg-gray-200 p-1 text-gray-700 transition" title="Editar">
+                                        <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                     </a>
 
                                     <form action="{{ route('admin.work-schedules.destroy', $sched) }}" method="POST" class="inline" onsubmit="return confirm('Remover este horário da grade?')">

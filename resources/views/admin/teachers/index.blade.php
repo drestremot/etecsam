@@ -54,23 +54,23 @@
             </div>
 
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs sm:text-sm">
+                <table class="w-full text-left text-xs">
                     <thead class="bg-gray-50/90 text-[11px] font-semibold uppercase text-gray-500 border-b border-gray-200 tracking-wider">
                         <tr>
-                            <th @click="sort('nome')" class="px-6 py-3.5 cursor-pointer hover:bg-gray-100 select-none">
+                            <th @click="sort('nome')" class="px-3.5 py-3 cursor-pointer hover:bg-gray-100 select-none min-w-[200px]">
                                 Nome <span class="ml-1 text-gray-400" x-text="icon('nome')"></span>
                             </th>
-                            <th @click="sort('cargo')" class="px-6 py-3.5 cursor-pointer hover:bg-gray-100 select-none">
+                            <th @click="sort('cargo')" class="px-3 py-3 cursor-pointer hover:bg-gray-100 select-none min-w-[150px]">
                                 Cargo / Função <span class="ml-1 text-gray-400" x-text="icon('cargo')"></span>
                             </th>
-                            <th @click="sort('email')" class="px-6 py-3.5 cursor-pointer hover:bg-gray-100 select-none">
+                            <th @click="sort('email')" class="px-3 py-3 cursor-pointer hover:bg-gray-100 select-none min-w-[180px]">
                                 E-mail <span class="ml-1 text-gray-400" x-text="icon('email')"></span>
                             </th>
-                            <th class="px-6 py-3.5">Conta no Sistema</th>
-                            <th @click="sort('status')" class="px-6 py-3.5 text-center cursor-pointer hover:bg-gray-100 select-none">
+                            <th class="px-3 py-3 min-w-[120px]">Conta no Sistema</th>
+                            <th @click="sort('status')" class="px-3 py-3 text-center cursor-pointer hover:bg-gray-100 select-none min-w-[80px]">
                                 Status <span class="ml-1 text-gray-400" x-text="icon('status')"></span>
                             </th>
-                            <th class="px-6 py-3.5 text-right">Ações</th>
+                            <th class="px-3.5 py-3 text-right min-w-[100px]">Ações</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
@@ -85,9 +85,9 @@
                             data-cargo="{{ strtolower($teacher->role) }}"
                             data-email="{{ strtolower($teacher->email ?? '') }}"
                             data-status="{{ $teacher->is_active ? 'ativo' : 'inativo' }}">
-                            <td class="px-6 py-3.5 font-semibold text-gray-900">
-                                <div class="flex items-center gap-3">
-                                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-700 font-semibold text-xs overflow-hidden flex-shrink-0 shadow-2xs">
+                            <td class="px-3.5 py-2.5 font-semibold text-gray-900">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-blue-100 text-blue-700 font-semibold text-[11px] overflow-hidden flex-shrink-0 shadow-2xs">
                                         @if($teacher->photo)
                                             <img src="{{ photo_url($teacher->photo) }}" alt="{{ $teacher->name }}"
                                                  class="w-full h-full object-cover"
@@ -97,42 +97,42 @@
                                             {{ strtoupper(substr($teacher->name, 0, 2)) }}
                                         @endif
                                     </span>
-                                    <span>{{ $teacher->name }}</span>
+                                    <span class="truncate">{{ $teacher->name }}</span>
                                 </div>
                             </td>
-                            <td class="px-6 py-3.5 text-gray-600 font-normal">{{ $teacher->role }}</td>
-                            <td class="px-6 py-3.5 text-gray-600 font-mono text-xs">{{ $teacher->email ?? '—' }}</td>
-                            <td class="px-6 py-3.5">
+                            <td class="px-3 py-2.5 text-gray-600 font-normal truncate max-w-[180px]">{{ $teacher->role }}</td>
+                            <td class="px-3 py-2.5 text-gray-600 font-mono text-xs truncate max-w-[200px]">{{ $teacher->email ?? '—' }}</td>
+                            <td class="px-3 py-2.5">
                                 @if($hasUserAccount)
-                                    <span class="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200 shadow-2xs">
+                                    <span class="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 shadow-2xs">
                                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                                         Conta Ativa
                                     </span>
                                 @else
                                     <a href="{{ route('admin.teachers.create-user', $teacher) }}"
                                        onclick="return confirm('Criar conta de usuário com o e-mail {{ $teacher->email }} e senha padrão (cpf ou 12345678)?')"
-                                       class="inline-flex items-center gap-1 text-xs font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded-full border border-blue-200 transition shadow-2xs"
+                                       class="inline-flex items-center gap-1 text-[11px] font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 px-2 py-0.5 rounded-full border border-blue-200 transition shadow-2xs"
                                        title="Criar login de acesso para este professor">
                                         <span>+ Criar Conta</span>
                                     </a>
                                 @endif
                             </td>
-                            <td class="px-6 py-3.5 text-center">
+                            <td class="px-3 py-2.5 text-center">
                                 <form action="{{ route('admin.teachers.toggle', $teacher) }}" method="POST">
                                     @csrf @method('PATCH')
-                                    <button class="px-3 py-1 rounded-full text-xs font-medium transition shadow-2xs {{ $teacher->is_active ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-red-100 text-red-800 hover:bg-red-200' }}">
+                                    <button class="px-2.5 py-0.5 rounded-full text-[11px] font-medium transition shadow-2xs {{ $teacher->is_active ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-red-100 text-red-800 hover:bg-red-200' }}">
                                         {{ $teacher->is_active ? 'Ativo' : 'Inativo' }}
                                     </button>
                                 </form>
                             </td>
-                            <td class="px-6 py-3.5 text-right">
-                                <div class="flex items-center justify-end gap-2">
-                                    <a href="{{ route('admin.teachers.edit', $teacher) }}" class="rounded-xl bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-200 transition">
+                            <td class="px-3.5 py-2.5 text-right whitespace-nowrap">
+                                <div class="flex items-center justify-end gap-1.5">
+                                    <a href="{{ route('admin.teachers.edit', $teacher) }}" class="rounded-lg bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-200 transition">
                                         Editar
                                     </a>
                                     <form action="{{ route('admin.teachers.destroy', $teacher) }}" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir?')">
                                         @csrf @method('DELETE')
-                                        <button class="rounded-xl bg-red-50 px-3 py-1.5 text-xs font-bold text-red-600 hover:bg-red-100 transition">
+                                        <button class="rounded-lg bg-red-50 px-2.5 py-1 text-xs font-medium text-red-600 hover:bg-red-100 transition">
                                             Excluir
                                         </button>
                                     </form>
@@ -140,7 +140,7 @@
                             </td>
                         </tr>
                         @empty
-                        <tr><td colspan="6" class="px-6 py-10 text-center text-gray-400">Nenhum professor cadastrado.</td></tr>
+                        <tr><td colspan="6" class="px-4 py-8 text-center text-gray-400">Nenhum professor cadastrado.</td></tr>
                         @endforelse
                     </tbody>
                 </table>

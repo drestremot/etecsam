@@ -39,20 +39,20 @@
             </div>
 
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs sm:text-sm">
-                    <thead class="bg-gray-50 text-xs font-bold uppercase text-gray-600 border-b border-gray-200">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-gray-50/90 text-[11px] font-semibold uppercase text-gray-500 border-b border-gray-200 tracking-wider">
                         <tr>
-                            <th @click="sort('nome')" class="px-6 py-4 cursor-pointer hover:bg-gray-100 select-none">
+                            <th @click="sort('nome')" class="px-3.5 py-3 cursor-pointer hover:bg-gray-100 select-none min-w-[200px]">
                                 Departamento <span class="ml-1 text-gray-400" x-text="icon('nome')"></span>
                             </th>
-                            <th @click="sort('resp')" class="px-6 py-4 cursor-pointer hover:bg-gray-100 select-none">
+                            <th @click="sort('resp')" class="px-3 py-3 cursor-pointer hover:bg-gray-100 select-none min-w-[150px]">
                                 Responsável <span class="ml-1 text-gray-400" x-text="icon('resp')"></span>
                             </th>
-                            <th class="px-6 py-4">Contato</th>
-                            <th @click="sort('status')" class="px-6 py-4 text-center cursor-pointer hover:bg-gray-100 select-none">
+                            <th class="px-3 py-3 min-w-[180px]">Contato</th>
+                            <th @click="sort('status')" class="px-3 py-3 text-center cursor-pointer hover:bg-gray-100 select-none min-w-[80px]">
                                 Status <span class="ml-1 text-gray-400" x-text="icon('status')"></span>
                             </th>
-                            <th class="px-6 py-4 text-right">Ações</th>
+                            <th class="px-3.5 py-3 text-right min-w-[100px]">Ações</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
@@ -63,32 +63,32 @@
                             data-nome="{{ strtolower($dept->name) }}"
                             data-resp="{{ strtolower($dept->responsible?->name ?? '') }}"
                             data-status="{{ $dept->is_active ? 'ativo' : 'inativo' }}">
-                            <td class="px-6 py-4 font-bold text-gray-900">
+                            <td class="px-3.5 py-2.5 font-semibold text-gray-900 truncate max-w-[220px]" title="{{ $dept->name }}">
                                 {{ $dept->name }}
                             </td>
-                            <td class="px-6 py-4 text-gray-700 font-semibold">
+                            <td class="px-3 py-2.5 text-gray-700 font-medium truncate max-w-[160px]">
                                 {{ $dept->responsible?->name ?? '—' }}
                             </td>
-                            <td class="px-6 py-4 text-gray-500 text-xs">
-                                <div class="font-mono">{{ $dept->email ?? '' }}</div>
-                                @if($dept->phone) <div class="text-gray-400">{{ $dept->phone }}</div> @endif
+                            <td class="px-3 py-2.5 text-gray-500 text-xs">
+                                <div class="font-mono text-gray-600 truncate max-w-[180px]">{{ $dept->email ?? '' }}</div>
+                                @if($dept->phone) <div class="text-gray-400 text-[11px]">{{ $dept->phone }}</div> @endif
                             </td>
-                            <td class="px-6 py-4 text-center">
+                            <td class="px-3 py-2.5 text-center">
                                 <form action="{{ route('admin.departments.toggle', $dept) }}" method="POST">
                                     @csrf @method('PATCH')
-                                    <button class="px-3 py-1 rounded-full text-xs font-bold transition shadow-2xs {{ $dept->is_active ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-red-100 text-red-800 hover:bg-red-200' }}">
+                                    <button class="px-2.5 py-0.5 rounded-full text-[11px] font-medium transition shadow-2xs {{ $dept->is_active ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-red-100 text-red-800 hover:bg-red-200' }}">
                                         {{ $dept->is_active ? 'Ativo' : 'Inativo' }}
                                     </button>
                                 </form>
                             </td>
-                            <td class="px-6 py-4 text-right">
-                                <div class="flex items-center justify-end gap-2">
-                                    <a href="{{ route('admin.departments.edit', $dept) }}" class="rounded-xl bg-gray-100 px-3 py-1.5 text-xs font-bold text-gray-700 hover:bg-gray-200 transition">
+                            <td class="px-3.5 py-2.5 text-right whitespace-nowrap">
+                                <div class="flex items-center justify-end gap-1.5">
+                                    <a href="{{ route('admin.departments.edit', $dept) }}" class="rounded-lg bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700 hover:bg-gray-200 transition">
                                         Editar
                                     </a>
                                     <form action="{{ route('admin.departments.destroy', $dept) }}" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir?')">
                                         @csrf @method('DELETE')
-                                        <button class="rounded-xl bg-red-50 px-3 py-1.5 text-xs font-bold text-red-600 hover:bg-red-100 transition">
+                                        <button class="rounded-lg bg-red-50 px-2.5 py-1 text-xs font-medium text-red-600 hover:bg-red-100 transition">
                                             Excluir
                                         </button>
                                     </form>
@@ -96,7 +96,7 @@
                             </td>
                         </tr>
                         @empty
-                        <tr><td colspan="5" class="px-6 py-10 text-center text-gray-400">Nenhum departamento cadastrado.</td></tr>
+                        <tr><td colspan="5" class="px-4 py-8 text-center text-gray-400">Nenhum departamento cadastrado.</td></tr>
                         @endforelse
                     </tbody>
                 </table>

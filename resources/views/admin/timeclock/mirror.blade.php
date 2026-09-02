@@ -97,18 +97,18 @@
             </div>
 
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs sm:text-sm">
+                <table class="w-full text-left text-xs">
                     <thead class="bg-gray-50/90 text-[11px] font-semibold uppercase text-gray-500 border-b border-gray-200 tracking-wider">
                         <tr>
-                            <th class="px-4 py-3">Data</th>
-                            <th class="px-4 py-3">Dia</th>
-                            <th class="px-4 py-3">Grade Prevista</th>
-                            <th class="px-3 py-3 text-center">1ª Entrada</th>
-                            <th class="px-3 py-3 text-center">1ª Saída</th>
-                            <th class="px-3 py-3 text-center">2ª Entrada</th>
-                            <th class="px-3 py-3 text-center">2ª Saída</th>
-                            <th class="px-4 py-3 text-center">Horas Feitas</th>
-                            <th class="px-4 py-3">Ocorrências / Integrações</th>
+                            <th class="px-3 py-2.5 min-w-[85px]">Data</th>
+                            <th class="px-2 py-2.5 min-w-[50px]">Dia</th>
+                            <th class="px-3 py-2.5 min-w-[150px]">Grade Prevista</th>
+                            <th class="px-2 py-2.5 text-center min-w-[70px]">1ª Entrada</th>
+                            <th class="px-2 py-2.5 text-center min-w-[70px]">1ª Saída</th>
+                            <th class="px-2 py-2.5 text-center min-w-[70px]">2ª Entrada</th>
+                            <th class="px-2 py-2.5 text-center min-w-[70px]">2ª Saída</th>
+                            <th class="px-2.5 py-2.5 text-center min-w-[80px]">Trabalhado</th>
+                            <th class="px-3 py-2.5 min-w-[140px]">Ocorrências</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100 font-mono">
@@ -119,22 +119,22 @@
                         @endphp
                         <tr class="{{ $isWeekend ? 'bg-gray-50/50 text-gray-400' : 'hover:bg-gray-50/80' }} transition">
                             <!-- Date -->
-                            <td class="px-4 py-3 font-semibold text-gray-900 font-sans whitespace-nowrap">
+                            <td class="px-3 py-2 font-semibold text-gray-900 font-sans whitespace-nowrap">
                                 {{ $d['date']->format('d/m/Y') }}
                             </td>
 
                             <!-- Day -->
-                            <td class="px-4 py-3 font-sans whitespace-nowrap">
-                                <span class="rounded-md px-2 py-0.5 text-[11px] font-medium {{ $isWeekend ? 'bg-gray-200 text-gray-600' : 'bg-indigo-50 text-indigo-700' }}">
+                            <td class="px-2 py-2 font-sans whitespace-nowrap">
+                                <span class="rounded px-1.5 py-0.2 text-[10.5px] font-medium {{ $isWeekend ? 'bg-gray-200 text-gray-600' : 'bg-indigo-50 text-indigo-700' }}">
                                     {{ $d['day_short'] }}
                                 </span>
                             </td>
 
                             <!-- Scheduled -->
-                            <td class="px-4 py-3 font-sans">
+                            <td class="px-3 py-2 font-sans">
                                 @if($d['schedules']->count() > 0)
                                     @foreach($d['schedules'] as $s)
-                                        <div class="text-[11px] text-gray-800 font-medium">{{ $s->formatted_schedule }} ({{ $s->unit->name }})</div>
+                                        <div class="text-[11px] text-gray-800 font-medium truncate max-w-[180px]">{{ $s->formatted_schedule }} ({{ $s->unit->name }})</div>
                                     @endforeach
                                 @else
                                     <span class="text-gray-400 text-xs">-</span>
