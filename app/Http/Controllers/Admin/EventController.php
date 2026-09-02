@@ -111,4 +111,38 @@ class EventController extends Controller
             ]);
         }
     }
+
+    public function bulkAction(Request $request)
+    {
+        $request->validate([
+            'action' => 'required|in:activate,deactivate,delete',
+            'ids'    => 'required|array|min:1',
+            'ids.*'  => 'exists:events,id',
+        ]);
+
+        $count = count($request->ids);
+
+        if ($request->action === 'activate') {
+            Event::whereIn('id', $request->ids)->update(['is_active' => true]);
+            return back()->with('success', "{$count} evento(s) ativado(s) com sucesso!");
+        }
+
+        if ($request->action === 'deactivate') {
+            Event::whereIn('id', $request->ids)->update(['is_active' => false]);
+            return back()->with('success', "{$count} evento(s) desativado(s) com sucesso!");
+        }
+
+        if ($request->action === 'delete') {
+            $events = Event::with('photos')->whereIn('id', $request->ids)->get();
+            foreach ($events as $event) {
+                foreach ($event->photos as $photo) {
+                    Storage::disk('public')->delete($photo->path);
+                }
+                $event->delete();
+            }
+            return back()->with('success', "{$count} evento(s) excluído(s) com sucesso!");
+        }
+
+        return back();
+    }
 }

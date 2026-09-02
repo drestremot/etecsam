@@ -110,4 +110,38 @@ class LaboratoryController extends Controller
         $laboratory->delete();
         return redirect()->route('admin.laboratories.index')->with('success', 'Laboratório removido!');
     }
+
+    public function bulkAction(Request $request)
+    {
+        $request->validate([
+            'action' => 'required|in:activate,deactivate,delete',
+            'ids'    => 'required|array|min:1',
+            'ids.*'  => 'exists:laboratories,id',
+        ]);
+
+        $count = count($request->ids);
+
+        if ($request->action === 'activate') {
+            Laboratory::whereIn('id', $request->ids)->update(['is_active' => true]);
+            return back()->with('success', "{$count} laboratório(s) ativado(s) com sucesso!");
+        }
+
+        if ($request->action === 'deactivate') {
+            Laboratory::whereIn('id', $request->ids)->update(['is_active' => false]);
+            return back()->with('success', "{$count} laboratório(s) desativado(s) com sucesso!");
+        }
+
+        if ($request->action === 'delete') {
+            $labs = Laboratory::whereIn('id', $request->ids)->get();
+            foreach ($labs as $lab) {
+                if ($lab->photo) {
+                    Storage::disk('public')->delete($lab->photo);
+                }
+                $lab->delete();
+            }
+            return back()->with('success', "{$count} laboratório(s) excluído(s) com sucesso!");
+        }
+
+        return back();
+    }
 }

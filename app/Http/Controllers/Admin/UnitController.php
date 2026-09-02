@@ -85,4 +85,38 @@ class UnitController extends Controller
         $unit->delete();
         return redirect()->route('admin.units.index')->with('success', 'Unidade removida!');
     }
+
+    public function bulkAction(Request $request)
+    {
+        $request->validate([
+            'action' => 'required|in:activate,deactivate,delete',
+            'ids'    => 'required|array|min:1',
+            'ids.*'  => 'exists:units,id',
+        ]);
+
+        $count = count($request->ids);
+
+        if ($request->action === 'activate') {
+            Unit::whereIn('id', $request->ids)->update(['is_active' => true]);
+            return back()->with('success', "{$count} unidade(s) ativada(s) com sucesso!");
+        }
+
+        if ($request->action === 'deactivate') {
+            Unit::whereIn('id', $request->ids)->update(['is_active' => false]);
+            return back()->with('success', "{$count} unidade(s) desativada(s) com sucesso!");
+        }
+
+        if ($request->action === 'delete') {
+            $units = Unit::whereIn('id', $request->ids)->get();
+            foreach ($units as $unit) {
+                if ($unit->image) {
+                    Storage::disk('public')->delete($unit->image);
+                }
+                $unit->delete();
+            }
+            return back()->with('success', "{$count} unidade(s) excluída(s) com sucesso!");
+        }
+
+        return back();
+    }
 }

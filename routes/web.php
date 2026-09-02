@@ -119,18 +119,32 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
     Route::post('teachers/sync-all', [\App\Http\Controllers\Admin\TeacherController::class, 'syncAllToUsers'])->name('teachers.sync-all');
     Route::post('teachers/{teacher}/sync-user', [\App\Http\Controllers\Admin\TeacherController::class, 'syncSingleUser'])->name('teachers.sync-user');
+    Route::post('teachers/bulk-action', [\App\Http\Controllers\Admin\TeacherController::class, 'bulkAction'])->name('teachers.bulk-action');
     Route::resource('teachers',    \App\Http\Controllers\Admin\TeacherController::class)->except(['show']);
     Route::patch('teachers/{teacher}/toggle', [\App\Http\Controllers\Admin\TeacherController::class, 'toggle'])->name('teachers.toggle');
+    
+    Route::post('departments/bulk-action', [\App\Http\Controllers\Admin\DepartmentController::class, 'bulkAction'])->name('departments.bulk-action');
     Route::resource('departments', \App\Http\Controllers\Admin\DepartmentController::class)->except(['show']);
+    
+    Route::post('laboratories/bulk-action', [\App\Http\Controllers\Admin\LaboratoryController::class, 'bulkAction'])->name('laboratories.bulk-action');
     Route::resource('laboratories',\App\Http\Controllers\Admin\LaboratoryController::class)->except(['show']);
     Route::resource('projects',    \App\Http\Controllers\Admin\ProjectController::class)->except(['show']);
+    
+    Route::post('courses/bulk-action', [\App\Http\Controllers\Admin\CourseController::class, 'bulkAction'])->name('courses.bulk-action');
     Route::resource('courses',     \App\Http\Controllers\Admin\CourseController::class)->except(['show']);
     Route::patch('courses/{course}/subjects/{subject}/teacher', [\App\Http\Controllers\Admin\SubjectController::class, 'updateTeacher'])->name('courses.subjects.teacher');
+    Route::post('courses/{course}/subjects/bulk-action', [\App\Http\Controllers\Admin\SubjectController::class, 'bulkAction'])->name('courses.subjects.bulk-action');
     Route::resource('courses.subjects', \App\Http\Controllers\Admin\SubjectController::class)->except(['show']);
+    
+    Route::post('units/bulk-action', [\App\Http\Controllers\Admin\UnitController::class, 'bulkAction'])->name('units.bulk-action');
     Route::resource('units',       \App\Http\Controllers\Admin\UnitController::class)->except(['show']);
     Route::resource('sectors',     \App\Http\Controllers\Admin\SectorController::class)->except(['show']);
+    
+    Route::post('events/bulk-action', [\App\Http\Controllers\Admin\EventController::class, 'bulkAction'])->name('events.bulk-action');
     Route::resource('events',      \App\Http\Controllers\Admin\EventController::class)->except(['show']);
     Route::delete('event-photos/{photo}', [\App\Http\Controllers\Admin\EventController::class, 'destroyPhoto'])->name('event-photos.destroy');
+    
+    Route::post('documents/bulk-action', [\App\Http\Controllers\Admin\DocumentController::class, 'bulkAction'])->name('documents.bulk-action');
     Route::resource('documents',   \App\Http\Controllers\Admin\DocumentController::class)->except(['show']);
 
     // Cooperativa Escola
@@ -198,6 +212,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('usuarios/{user}/permissoes/toggle', [\App\Http\Controllers\Admin\RolePermissionController::class, 'toggleUserPermission'])->name('users.permissions.toggle');
 
     // Gestão de Grade de Horários dos Professores & Colaboradores
+    Route::post('work-schedules/bulk-action', [\App\Http\Controllers\Admin\WorkScheduleController::class, 'bulkAction'])->name('work-schedules.bulk-action');
     Route::resource('work-schedules', \App\Http\Controllers\Admin\WorkScheduleController::class)->except(['show']);
 
     // Painel do Ponto Eletrônico & Espelho de Ponto (Diretoria/RH)
@@ -286,6 +301,7 @@ Route::prefix('laboratorio')->name('lab.')->middleware(['auth'])->group(function
         Route::prefix('usuarios')->name('users.')->group(function () {
             Route::get('/',                      [LabUserController::class, 'index'])->name('index');
             Route::post('/',                     [LabUserController::class, 'store'])->name('store');
+            Route::post('/bulk-action',          [LabUserController::class, 'bulkAction'])->name('bulk-action');
             Route::put('/{user}',                [LabUserController::class, 'update'])->name('update');
             Route::post('/sincronizar-todos',    [LabUserController::class, 'syncAllTeachers'])->name('sync-all');
             Route::patch('/{user}/papel',        [LabUserController::class, 'updateRole'])->name('role');

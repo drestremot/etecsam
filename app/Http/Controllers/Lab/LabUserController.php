@@ -263,4 +263,45 @@ class LabUserController extends Controller
 
         return back()->with('success', 'Usuário e perfil docente removidos com sucesso.');
     }
+
+    public function bulkAction(Request $request)
+    {
+        $request->validate([
+            'action' => 'required|in:activate,deactivate,delete',
+            'ids'    => 'required|array|min:1',
+            'ids.*'  => 'exists:users,id',
+        ]);
+
+        $ids = array_filter($request->ids, fn($id) => (int)$id !== (int)auth()->id());
+        $count = count($ids);
+
+        if ($count === 0) {
+            return back()->with('error', 'Nenhum usuário válido selecionado para a ação.');
+        }
+
+        $users = User::whereIn('id', $ids)->get();
+
+        if ($request->action === 'activate') {
+            User::whereIn('id', $ids)->update(['is_active' => true]);
+            $emails = $users->pluck('email')->filter();
+            Teacher::whereIn('email', $emails)->update(['is_active' => true]);
+            return back()->with('success', "{$count} usuário(s) ativado(s) com sucesso!");
+        }
+
+        if ($request->action === 'deactivate') {
+            User::whereIn('id', $ids)->update(['is_active' => false]);
+            $emails = $users->pluck('email')->filter();
+            Teacher::whereIn('email', $emails)->update(['is_active' => false]);
+            return back()->with('success', "{$count} usuário(s) desativado(s) com sucesso!");
+        }
+
+        if ($request->action === 'delete') {
+            $emails = $users->pluck('email')->filter();
+            Teacher::whereIn('email', $emails)->delete();
+            User::whereIn('id', $ids)->delete();
+            return back()->with('success', "{$count} usuário(s) excluído(s) com sucesso!");
+        }
+
+        return back();
+    }
 }

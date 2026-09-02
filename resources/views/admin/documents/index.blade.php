@@ -15,17 +15,43 @@
         <button x-show="q" @click="q='';search()" class="text-gray-400 hover:text-gray-600 text-xs">✕ limpar</button>
     </div>
 
-    <table class="min-w-full divide-y divide-gray-200 text-sm">
-        <thead class="bg-gray-50">
+    <!-- Bulk Action Bar -->
+    <div x-show="selected.length > 0" x-cloak class="px-4 py-2.5 bg-indigo-50 border-b border-indigo-100 flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div class="flex items-center gap-2 text-indigo-900 font-medium">
+            <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-indigo-600 text-white text-[10px] font-bold" x-text="selected.length"></span>
+            <span>documento(s) selecionado(s)</span>
+        </div>
+        <div class="flex items-center gap-2">
+            <form action="{{ route('admin.documents.bulk-action') }}" method="POST" class="inline" onsubmit="return confirm('Tem certeza que deseja excluir os documentos selecionados?');">
+                @csrf
+                <input type="hidden" name="action" value="delete">
+                <template x-for="id in selected" :key="'del-'+id">
+                    <input type="hidden" name="ids[]" :value="id">
+                </template>
+                <button type="submit" class="rounded-lg bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 font-medium shadow-2xs transition">
+                    Excluir Selecionados
+                </button>
+            </form>
+            <button type="button" @click="clearSelection()" class="text-gray-500 hover:text-gray-700 font-medium ml-1">
+                Cancelar
+            </button>
+        </div>
+    </div>
+
+    <table class="min-w-full divide-y divide-gray-200 text-xs sm:text-sm">
+        <thead class="bg-gray-50 text-[11px] font-semibold text-gray-500 uppercase">
             <tr>
-                <th @click="sort('titulo')" class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none">
+                <th class="px-3 py-3 w-10 text-center">
+                    <input type="checkbox" x-model="allSelected" @change="toggleSelectAll()" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer">
+                </th>
+                <th @click="sort('titulo')" class="px-3.5 py-3 text-left cursor-pointer hover:bg-gray-100 select-none">
                     Título <span class="ml-1 text-gray-400" x-text="icon('titulo')"></span>
                 </th>
-                <th @click="sort('categoria')" class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none">
+                <th @click="sort('categoria')" class="px-3.5 py-3 text-left cursor-pointer hover:bg-gray-100 select-none">
                     Categoria <span class="ml-1 text-gray-400" x-text="icon('categoria')"></span>
                 </th>
-                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Arquivo / Link</th>
-                <th class="px-4 py-3 w-24"></th>
+                <th class="px-3.5 py-3 text-left">Arquivo / Link</th>
+                <th class="px-3.5 py-3 w-24"></th>
             </tr>
         </thead>
         <tbody class="divide-y divide-gray-100">
@@ -35,7 +61,10 @@
                 data-active="1"
                 data-titulo="{{ strtolower($doc->title) }}"
                 data-categoria="{{ strtolower($doc->category) }}">
-                <td class="px-4 py-3 font-medium text-gray-800">{{ $doc->title }}</td>
+                <td class="px-3 py-2.5 text-center">
+                    <input type="checkbox" value="{{ $doc->id }}" x-model="selected" @change="updateSelectAll()" data-bulk-item class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer">
+                </td>
+                <td class="px-3.5 py-2.5 font-medium text-gray-800 leading-snug">{{ $doc->title }}</td>
                 <td class="px-4 py-3">
                     <span class="px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">{{ $doc->category }}</span>
                 </td>

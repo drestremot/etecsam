@@ -148,5 +148,22 @@ class WorkScheduleController extends Controller
         return redirect()->route('admin.work-schedules.index')
             ->with('success', 'Horário removido da grade.');
     }
+
+    public function bulkAction(Request $request)
+    {
+        $request->validate([
+            'action' => 'required|in:delete',
+            'ids'    => 'required|array|min:1',
+            'ids.*'  => 'exists:work_schedules,id',
+        ]);
+
+        $count = count($request->ids);
+        if ($request->action === 'delete') {
+            WorkSchedule::whereIn('id', $request->ids)->delete();
+            return back()->with('success', "{$count} horário(s) removido(s) da grade!");
+        }
+
+        return back();
+    }
 }
 

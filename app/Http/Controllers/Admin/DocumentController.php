@@ -72,4 +72,27 @@ class DocumentController extends Controller
         $document->delete();
         return redirect()->route('admin.documents.index')->with('success', 'Documento removido!');
     }
+
+    public function bulkAction(Request $request)
+    {
+        $request->validate([
+            'action' => 'required|in:delete',
+            'ids'    => 'required|array|min:1',
+            'ids.*'  => 'exists:documents,id',
+        ]);
+
+        $documents = Document::whereIn('id', $request->ids)->get();
+        $count = $documents->count();
+        if ($request->action === 'delete') {
+            foreach ($documents as $document) {
+                if (!empty($document->file_path)) {
+                    Storage::disk('public')->delete($document->file_path);
+                }
+                $document->delete();
+            }
+            return back()->with('success', "{$count} documento(s) removido(s) com sucesso!");
+        }
+
+        return back();
+    }
 }

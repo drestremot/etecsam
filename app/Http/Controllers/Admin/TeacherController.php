@@ -247,4 +247,45 @@ class TeacherController extends Controller
         $teacher->delete();
         return redirect()->route('admin.teachers.index')->with('success', 'Colaborador removido!');
     }
+
+    public function bulkAction(Request $request)
+    {
+        $request->validate([
+            'action' => 'required|in:activate,deactivate,delete',
+            'ids'    => 'required|array|min:1',
+            'ids.*'  => 'exists:teachers,id',
+        ]);
+
+        $teachers = Teacher::whereIn('id', $request->ids)->get();
+        $count = $teachers->count();
+        $emails = $teachers->pluck('email')->filter();
+
+        if ($request->action === 'activate') {
+            Teacher::whereIn('id', $request->ids)->update(['is_active' => true]);
+            if ($emails->isNotEmpty()) {
+                User::whereIn('email', $emails)->update(['is_active' => true]);
+            }
+            return back()->with('success', "{$count} docente(s) ativado(s) com sucesso!");
+        }
+
+        if ($request->action === 'deactivate') {
+            Teacher::whereIn('id', $request->ids)->update(['is_active' => false]);
+            if ($emails->isNotEmpty()) {
+                User::whereIn('email', $emails)->where('id', '!=', auth()->id())->update(['is_active' => false]);
+            }
+            return back()->with('success', "{$count} docente(s) desativado(s) com sucesso!");
+        }
+
+        if ($request->action === 'delete') {
+            foreach ($teachers as $teacher) {
+                if ($teacher->photo) {
+                    Storage::disk('public')->delete($teacher->photo);
+                }
+                $teacher->delete();
+            }
+            return back()->with('success', "{$count} docente(s) excluído(s) com sucesso!");
+        }
+
+        return back();
+    }
 }

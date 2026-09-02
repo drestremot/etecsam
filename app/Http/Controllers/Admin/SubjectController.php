@@ -91,4 +91,21 @@ class SubjectController extends Controller
             ->route('admin.courses.subjects.index', $course)
             ->with('success', 'Disciplina removida.');
     }
+
+    public function bulkAction(Request $request, Course $course)
+    {
+        $request->validate([
+            'action' => 'required|in:delete',
+            'ids'    => 'required|array|min:1',
+            'ids.*'  => 'exists:subjects,id',
+        ]);
+
+        $count = count($request->ids);
+        if ($request->action === 'delete') {
+            $course->subjects()->whereIn('id', $request->ids)->delete();
+            return back()->with('success', "{$count} disciplina(s) excluída(s) com sucesso!");
+        }
+
+        return back();
+    }
 }

@@ -4,16 +4,37 @@ import Alpine from 'alpinejs';
 
 window.Alpine = Alpine;
 
-// Componente de tabela admin (busca + ordenação client-side)
+// Componente de tabela admin (busca + ordenação + seleção em massa)
 Alpine.data('adminTable', () => ({
     q: '',
     sortCol: '',
     sortDir: 'asc',
     rows: [],
+    selected: [],
+    allSelected: false,
 
     init() {
         this.rows = [...this.$el.querySelectorAll('tbody tr[data-row]')];
         this.applySort();
+    },
+
+    toggleSelectAll() {
+        const checkboxes = [...this.$el.querySelectorAll('tbody input[type="checkbox"][data-bulk-item]')];
+        if (this.allSelected) {
+            this.selected = checkboxes.map(cb => cb.value);
+        } else {
+            this.selected = [];
+        }
+    },
+
+    updateSelectAll() {
+        const checkboxes = [...this.$el.querySelectorAll('tbody input[type="checkbox"][data-bulk-item]')];
+        this.allSelected = checkboxes.length > 0 && this.selected.length === checkboxes.length;
+    },
+
+    clearSelection() {
+        this.selected = [];
+        this.allSelected = false;
     },
 
     search() {

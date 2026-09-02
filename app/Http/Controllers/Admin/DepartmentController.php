@@ -77,4 +77,32 @@ class DepartmentController extends Controller
         $department->delete();
         return redirect()->route('admin.departments.index')->with('success', 'Departamento removido!');
     }
+
+    public function bulkAction(Request $request)
+    {
+        $request->validate([
+            'action' => 'required|in:activate,deactivate,delete',
+            'ids'    => 'required|array|min:1',
+            'ids.*'  => 'exists:departments,id',
+        ]);
+
+        $count = count($request->ids);
+
+        if ($request->action === 'activate') {
+            Department::whereIn('id', $request->ids)->update(['is_active' => true]);
+            return back()->with('success', "{$count} departamento(s) ativado(s) com sucesso!");
+        }
+
+        if ($request->action === 'deactivate') {
+            Department::whereIn('id', $request->ids)->update(['is_active' => false]);
+            return back()->with('success', "{$count} departamento(s) desativado(s) com sucesso!");
+        }
+
+        if ($request->action === 'delete') {
+            Department::whereIn('id', $request->ids)->delete();
+            return back()->with('success', "{$count} departamento(s) excluído(s) com sucesso!");
+        }
+
+        return back();
+    }
 }

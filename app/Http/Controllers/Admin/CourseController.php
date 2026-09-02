@@ -129,4 +129,38 @@ class CourseController extends Controller
             $course->coordinators()->attach($id, ['role' => 'descentralizado', 'order' => $i]);
         }
     }
+
+    public function bulkAction(Request $request)
+    {
+        $request->validate([
+            'action' => 'required|in:activate,deactivate,delete',
+            'ids'    => 'required|array|min:1',
+            'ids.*'  => 'exists:courses,id',
+        ]);
+
+        $count = count($request->ids);
+
+        if ($request->action === 'activate') {
+            Course::whereIn('id', $request->ids)->update(['is_active' => true]);
+            return back()->with('success', "{$count} curso(s) ativado(s) com sucesso!");
+        }
+
+        if ($request->action === 'deactivate') {
+            Course::whereIn('id', $request->ids)->update(['is_active' => false]);
+            return back()->with('success', "{$count} curso(s) desativado(s) com sucesso!");
+        }
+
+        if ($request->action === 'delete') {
+            $courses = Course::whereIn('id', $request->ids)->get();
+            foreach ($courses as $course) {
+                if ($course->image) {
+                    Storage::disk('public')->delete($course->image);
+                }
+                $course->delete();
+            }
+            return back()->with('success', "{$count} curso(s) excluído(s) com sucesso!");
+        }
+
+        return back();
+    }
 }

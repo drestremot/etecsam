@@ -111,11 +111,37 @@
         </div>
 
         <!-- Table of Schedules -->
-        <div class="rounded-2xl border border-gray-200 bg-white shadow-xs overflow-hidden">
+        <div class="rounded-2xl border border-gray-200 bg-white shadow-xs overflow-hidden" x-data="adminTable()">
+            <!-- Bulk Action Bar -->
+            <div x-show="selected.length > 0" x-cloak class="px-4 py-2.5 bg-indigo-50 border-b border-indigo-100 flex flex-wrap items-center justify-between gap-3 text-xs">
+                <div class="flex items-center gap-2 text-indigo-900 font-medium">
+                    <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-indigo-600 text-white text-[10px] font-bold" x-text="selected.length"></span>
+                    <span>horário(s) selecionado(s)</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <form action="{{ route('admin.work-schedules.bulk-action') }}" method="POST" class="inline" onsubmit="return confirm('Tem certeza que deseja remover os horários selecionados da grade?');">
+                        @csrf
+                        <input type="hidden" name="action" value="delete">
+                        <template x-for="id in selected" :key="'del-'+id">
+                            <input type="hidden" name="ids[]" :value="id">
+                        </template>
+                        <button type="submit" class="rounded-lg bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 font-medium shadow-2xs transition">
+                            Excluir da Grade
+                        </button>
+                    </form>
+                    <button type="button" @click="clearSelection()" class="text-gray-500 hover:text-gray-700 font-medium ml-1">
+                        Cancelar
+                    </button>
+                </div>
+            </div>
+
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-xs">
                     <thead class="bg-gray-50/90 text-[11px] font-semibold uppercase text-gray-500 border-b border-gray-200 tracking-wider">
                         <tr>
+                            <th class="px-3 py-3 w-10 text-center">
+                                <input type="checkbox" x-model="allSelected" @change="toggleSelectAll()" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer">
+                            </th>
                             <th class="px-3.5 py-3 min-w-[100px]">Dia</th>
                             <th class="px-3 py-3 min-w-[180px]">Professor / Colaborador</th>
                             <th class="px-3 py-3 text-center min-w-[130px]">Unidade</th>
@@ -128,7 +154,11 @@
                     </thead>
                     <tbody class="divide-y divide-gray-100">
                         @forelse($schedules as $sched)
-                        <tr class="hover:bg-gray-50/80 transition">
+                        <tr class="hover:bg-gray-50/80 transition"
+                            data-row="{{ strtolower($sched->user->name . ' ' . $sched->user->email . ' ' . $sched->unit->name . ' ' . $sched->day_name) }}">
+                            <td class="px-3 py-2.5 text-center">
+                                <input type="checkbox" value="{{ $sched->id }}" x-model="selected" @change="updateSelectAll()" data-bulk-item class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer">
+                            </td>
                             <td class="px-3.5 py-2.5 whitespace-nowrap">
                                 <span class="inline-flex items-center rounded-md bg-indigo-50 border border-indigo-200/80 px-2 py-0.5 text-[11px] font-medium text-indigo-700">
                                     {{ $sched->day_short }} • {{ $sched->day_name }}
