@@ -47,6 +47,14 @@ window.adminTable = function() {
             return Math.min(this.page * pp, this.filteredRows.length);
         },
 
+        get allSelected() {
+            if (!this.$el) return false;
+            const visibleCheckboxes = [...this.$el.querySelectorAll('tbody tr:not(.hidden) input[type="checkbox"][data-bulk-item]')];
+            if (visibleCheckboxes.length === 0) return false;
+            const selSet = new Set(this.selected.map(String));
+            return visibleCheckboxes.every(cb => selSet.has(String(cb.value)));
+        },
+
         setPerPage(val) {
             this.perPage = val;
             this.page = 1;
@@ -88,80 +96,22 @@ window.adminTable = function() {
                     r.classList.toggle('hidden', !isVisible);
                 });
             }
-            this.syncCheckboxDOM();
-        },
-
-        syncCheckboxDOM() {
-            const selSet = new Set(this.selected.map(String));
-            const checkboxes = [...this.$el.querySelectorAll('tbody input[type="checkbox"][data-bulk-item]')];
-            checkboxes.forEach(cb => {
-                cb.checked = selSet.has(String(cb.value));
-            });
-            this.updateSelectAll();
         },
 
         toggleSelectAll(checked) {
-            if (typeof checked !== 'boolean') {
-                checked = !this.allSelected;
-            }
-            this.allSelected = checked;
-            if (this.$refs.selectAllCheckbox) {
-                this.$refs.selectAllCheckbox.checked = checked;
-            }
             const visibleCheckboxes = [...this.$el.querySelectorAll('tbody tr:not(.hidden) input[type="checkbox"][data-bulk-item]')];
+            const visibleValues = visibleCheckboxes.map(cb => String(cb.value));
             if (checked) {
-                const newIds = visibleCheckboxes.map(cb => String(cb.value));
-                const combined = new Set([...this.selected.map(String), ...newIds]);
+                const combined = new Set([...this.selected.map(String), ...visibleValues]);
                 this.selected = Array.from(combined);
-                visibleCheckboxes.forEach(cb => { cb.checked = true; });
             } else {
-                const visibleSet = new Set(visibleCheckboxes.map(cb => String(cb.value)));
-                this.selected = this.selected.filter(id => !visibleSet.has(String(id)));
-                visibleCheckboxes.forEach(cb => { cb.checked = false; });
-            }
-            this.updateSelectAll();
-        },
-
-        toggleItem(id, checked) {
-            id = String(id);
-            if (typeof checked !== 'boolean') {
-                checked = !this.selected.map(String).includes(id);
-            }
-            if (checked) {
-                if (!this.selected.map(String).includes(id)) {
-                    this.selected.push(id);
-                }
-            } else {
-                this.selected = this.selected.filter(x => String(x) !== id);
-            }
-            this.updateSelectAll();
-        },
-
-        updateSelectAll() {
-            const visibleCheckboxes = [...this.$el.querySelectorAll('tbody tr:not(.hidden) input[type="checkbox"][data-bulk-item]')];
-            if (visibleCheckboxes.length === 0) {
-                this.allSelected = false;
-                if (this.$refs.selectAllCheckbox) {
-                    this.$refs.selectAllCheckbox.checked = false;
-                }
-                return;
-            }
-            const selSet = new Set(this.selected.map(String));
-            const allChecked = visibleCheckboxes.every(cb => selSet.has(String(cb.value)));
-            this.allSelected = allChecked;
-            if (this.$refs.selectAllCheckbox) {
-                this.$refs.selectAllCheckbox.checked = allChecked;
+                const visibleSet = new Set(visibleValues);
+                this.selected = this.selected.map(String).filter(id => !visibleSet.has(id));
             }
         },
 
         clearSelection() {
             this.selected = [];
-            this.allSelected = false;
-            if (this.$refs.selectAllCheckbox) {
-                this.$refs.selectAllCheckbox.checked = false;
-            }
-            const checkboxes = [...this.$el.querySelectorAll('tbody input[type="checkbox"][data-bulk-item]')];
-            checkboxes.forEach(cb => { cb.checked = false; });
         },
 
         search() {

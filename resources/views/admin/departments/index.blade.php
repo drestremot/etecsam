@@ -89,7 +89,7 @@
                     <thead class="bg-gray-50/90 text-[11px] font-semibold uppercase text-gray-500 border-b border-gray-200 tracking-wider">
                         <tr>
                             <th class="px-3 py-3 w-10 text-center">
-                                <input type="checkbox" x-ref="selectAllCheckbox" @click="toggleSelectAll($event.target.checked)" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer">
+                                <input type="checkbox" :checked="allSelected" @change="toggleSelectAll($event.target.checked)" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer">
                             </th>
                             <th @click="sort('nome')" class="px-3.5 py-3 cursor-pointer hover:bg-gray-100 select-none min-w-[200px]">
                                 Departamento <span class="ml-1 text-gray-400" x-text="icon('nome')"></span>
@@ -113,7 +113,7 @@
                             data-resp="{{ strtolower($dept->responsible?->name ?? '') }}"
                             data-status="{{ $dept->is_active ? 'ativo' : 'inativo' }}">
                             <td class="px-3 py-2.5 text-center">
-                                <input type="checkbox" value="{{ $dept->id }}" data-bulk-item @click="toggleItem('{{ $dept->id }}', $event.target.checked)" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer">
+                                <input type="checkbox" value="{{ $dept->id }}" x-model="selected" data-bulk-item class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer">
                             </td>
                             <td class="px-3.5 py-2.5 font-semibold text-gray-900 truncate max-w-[220px]" title="{{ $dept->name }}">
                                 {{ $dept->name }}

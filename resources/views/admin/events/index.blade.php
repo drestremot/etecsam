@@ -65,7 +65,7 @@
         <thead class="bg-gray-50 text-[11px] font-semibold text-gray-500 uppercase">
             <tr>
                 <th class="px-3 py-3 w-10 text-center">
-                    <input type="checkbox" x-ref="selectAllCheckbox" @click="toggleSelectAll($event.target.checked)" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer">
+                    <input type="checkbox" :checked="allSelected" @change="toggleSelectAll($event.target.checked)" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer">
                 </th>
                 <th @click="sort('titulo')" class="px-3.5 py-3 text-left cursor-pointer hover:bg-gray-100 select-none">
                     Evento <span class="ml-1 text-gray-400" x-text="icon('titulo')"></span>
@@ -92,7 +92,7 @@
                 data-local="{{ strtolower($event->location ?? '') }}"
                 data-status="{{ $event->is_active ? 'ativo' : 'inativo' }}">
                 <td class="px-3 py-2.5 text-center">
-                    <input type="checkbox" value="{{ $event->id }}" data-bulk-item @click="toggleItem('{{ $event->id }}', $event.target.checked)" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer">
+                    <input type="checkbox" value="{{ $event->id }}" x-model="selected" data-bulk-item class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer">
                 </td>
                 <td class="px-3.5 py-2.5 font-semibold text-gray-900 leading-snug">{{ $event->title }}</td>
                 <td class="px-4 py-3 text-gray-500">
