@@ -40,22 +40,22 @@
 
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-xs sm:text-sm">
-                    <thead class="bg-gray-50 text-xs font-bold uppercase text-gray-600 border-b border-gray-200">
+                    <thead class="bg-gray-50/90 text-[11px] font-semibold uppercase text-gray-500 border-b border-gray-200 tracking-wider">
                         <tr>
-                            <th @click="sort('titulo')" class="px-6 py-4 cursor-pointer hover:bg-gray-100 select-none">
+                            <th @click="sort('titulo')" class="px-6 py-3.5 cursor-pointer hover:bg-gray-100 select-none">
                                 Curso <span class="ml-1 text-gray-400" x-text="icon('titulo')"></span>
                             </th>
-                            <th @click="sort('tipo')" class="px-6 py-4 cursor-pointer hover:bg-gray-100 select-none">
+                            <th @click="sort('tipo')" class="px-6 py-3.5 cursor-pointer hover:bg-gray-100 select-none">
                                 Tipo <span class="ml-1 text-gray-400" x-text="icon('tipo')"></span>
                             </th>
-                            <th @click="sort('unidade')" class="px-6 py-4 cursor-pointer hover:bg-gray-100 select-none">
+                            <th @click="sort('unidade')" class="px-6 py-3.5 cursor-pointer hover:bg-gray-100 select-none">
                                 Unidade <span class="ml-1 text-gray-400" x-text="icon('unidade')"></span>
                             </th>
-                            <th class="px-6 py-4">Coordenação</th>
-                            <th @click="sort('status')" class="px-6 py-4 text-center cursor-pointer hover:bg-gray-100 select-none">
+                            <th class="px-6 py-3.5">Coordenação</th>
+                            <th @click="sort('status')" class="px-6 py-3.5 text-center cursor-pointer hover:bg-gray-100 select-none">
                                 Status <span class="ml-1 text-gray-400" x-text="icon('status')"></span>
                             </th>
-                            <th class="px-6 py-4 text-right">Ações</th>
+                            <th class="px-6 py-3.5 text-right">Ações</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
@@ -67,35 +67,35 @@
                             data-tipo="{{ strtolower($course->type) }}"
                             data-unidade="{{ strtolower($course->unit?->name ?? '') }}"
                             data-status="{{ $course->is_active ? 'ativo' : 'inativo' }}">
-                            <td class="px-6 py-4 font-bold text-gray-900">
+                            <td class="px-6 py-3.5 font-semibold text-gray-900">
                                 {{ $course->title }}
                             </td>
-                            <td class="px-6 py-4">
-                                <span class="rounded-lg bg-gray-100 px-2 py-0.5 text-xs font-bold text-gray-700">{{ $course->type }}</span>
+                            <td class="px-6 py-3.5">
+                                <span class="rounded-lg bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-700">{{ $course->type }}</span>
                             </td>
-                            <td class="px-6 py-4 text-gray-600">{{ $course->unit?->name ?? '—' }}</td>
-                            <td class="px-6 py-4 text-gray-600">
+                            <td class="px-6 py-3.5 text-gray-600 font-normal">{{ $course->unit?->name ?? '—' }}</td>
+                            <td class="px-6 py-3.5 text-gray-600">
                                 @forelse($course->technicalCoordinators as $c)
-                                    <span class="block text-xs font-semibold text-gray-800">{{ $c->name }}</span>
+                                    <span class="block text-xs font-medium text-gray-800">{{ $c->name }}</span>
                                 @empty
                                     <span class="text-gray-400 text-xs">—</span>
                                 @endforelse
                             </td>
-                            <td class="px-6 py-4 text-center">
+                            <td class="px-6 py-3.5 text-center">
                                 <form action="{{ route('admin.courses.toggle', $course) }}" method="POST">
                                     @csrf @method('PATCH')
-                                    <button class="px-3 py-1 rounded-full text-xs font-bold transition shadow-2xs {{ $course->is_active ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-red-100 text-red-800 hover:bg-red-200' }}">
+                                    <button class="px-3 py-1 rounded-full text-xs font-medium transition shadow-2xs {{ $course->is_active ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-red-100 text-red-800 hover:bg-red-200' }}">
                                         {{ $course->is_active ? 'Ativo' : 'Inativo' }}
                                     </button>
                                 </form>
                             </td>
-                            <td class="px-6 py-4 text-right">
+                            <td class="px-6 py-3.5 text-right">
                                 <div class="flex items-center justify-end gap-2">
-                                    <a href="{{ route('admin.courses.subjects.index', $course) }}" class="inline-flex items-center gap-1.5 rounded-xl bg-indigo-50 px-3 py-1.5 text-xs font-bold text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition shadow-2xs">
+                                    <a href="{{ route('admin.courses.subjects.index', $course) }}" class="inline-flex items-center gap-1.5 rounded-xl bg-indigo-50 px-3 py-1.5 text-xs font-medium text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition shadow-2xs">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                                         <span>Disciplinas & Professores</span>
                                     </a>
-                                    <a href="{{ route('admin.courses.edit', $course) }}" class="rounded-xl bg-gray-100 px-3 py-1.5 text-xs font-bold text-gray-700 hover:bg-gray-200 transition">
+                                    <a href="{{ route('admin.courses.edit', $course) }}" class="rounded-xl bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-200 transition">
                                         Editar
                                     </a>
                                     <form action="{{ route('admin.courses.destroy', $course) }}" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir?')">

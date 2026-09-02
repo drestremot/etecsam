@@ -7,13 +7,14 @@
         <!-- Header -->
         <div class="flex flex-wrap items-center justify-between gap-4">
             <div>
-                <div class="flex items-center gap-2 text-xs font-bold text-gray-500 mb-1">
+                <div class="flex items-center gap-2 text-xs font-semibold text-gray-500 mb-1">
                     <a href="{{ route('admin.dashboard') }}" class="hover:text-indigo-600 transition">Gerenciamento</a>
                     <span>/</span>
-                    <span class="text-indigo-600 font-extrabold">Grade de Horários</span>
+                    <span class="text-indigo-600 font-semibold">Grade de Horários</span>
                 </div>
-                <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 flex items-center gap-3">
-                    <span>📅 Grade de Horários dos Professores & Colaboradores</span>
+                <h1 class="text-xl sm:text-2xl font-semibold tracking-tight text-gray-900 flex items-center gap-2.5">
+                    <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    <span>Grade de Horários dos Professores & Colaboradores</span>
                 </h1>
                 <p class="text-xs sm:text-sm text-gray-600 mt-1 font-normal">
                     Definição de turnos, jornadas e unidades escolares onde cada docente leciona durante a semana
@@ -23,15 +24,15 @@
             <div class="flex items-center gap-2.5">
                 <a href="{{ route('admin.work-schedules.create') }}" class="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-semibold text-white shadow-xs hover:bg-indigo-500 transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                    <span>+ Cadastrar Horário de Professor</span>
+                    <span>Cadastrar Horário</span>
                 </a>
 
-                <a href="{{ route('admin.timeclock.index') }}" class="inline-flex items-center gap-2 rounded-xl bg-white border border-gray-300 px-4 py-2.5 text-xs font-semibold text-gray-700 shadow-2xs hover:bg-gray-50 transition">
+                <a href="{{ route('admin.timeclock.index') }}" class="inline-flex items-center gap-2 rounded-xl bg-white border border-gray-300 px-4 py-2.5 text-xs font-medium text-gray-700 shadow-2xs hover:bg-gray-50 transition">
                     <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     <span>Painel do Ponto</span>
                 </a>
 
-                <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center gap-2 rounded-xl bg-gray-900 px-4 py-2.5 text-xs font-semibold text-white shadow-xs transition hover:bg-gray-800">
+                <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center gap-2 rounded-xl bg-gray-900 px-4 py-2.5 text-xs font-medium text-white shadow-xs transition hover:bg-gray-800">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                     <span>Voltar</span>
                 </a>
@@ -39,7 +40,7 @@
         </div>
 
         @if(session('success'))
-            <div class="rounded-2xl bg-emerald-500 text-white p-4 text-xs sm:text-sm font-bold shadow-md flex items-center justify-between">
+            <div class="rounded-2xl bg-emerald-500 text-white p-4 text-xs sm:text-sm font-medium shadow-md flex items-center justify-between">
                 <span>{{ session('success') }}</span>
                 <button onclick="this.parentElement.remove()" class="text-white hover:text-gray-200 text-base font-semibold">&times;</button>
             </div>
@@ -49,17 +50,17 @@
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-xs">
                 <span class="text-xs font-medium text-gray-500 block">Jornadas Cadastradas</span>
-                <div class="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 mt-1">{{ $stats['total_schedules'] }}</div>
+                <div class="text-xl sm:text-2xl font-semibold tracking-tight text-gray-900 mt-1">{{ $stats['total_schedules'] }}</div>
             </div>
 
             <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-xs">
                 <span class="text-xs font-medium text-gray-500 block">Professores com Grade</span>
-                <div class="text-2xl sm:text-3xl font-bold tracking-tight text-indigo-700 mt-1">{{ $stats['scheduled_users'] }}</div>
+                <div class="text-xl sm:text-2xl font-semibold tracking-tight text-indigo-700 mt-1">{{ $stats['scheduled_users'] }}</div>
             </div>
 
             <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-xs">
                 <span class="text-xs font-medium text-gray-500 block">Unidades Escolares</span>
-                <div class="text-2xl sm:text-3xl font-bold tracking-tight text-teal-700 mt-1">{{ $stats['active_units'] }}</div>
+                <div class="text-xl sm:text-2xl font-semibold tracking-tight text-teal-700 mt-1">{{ $stats['active_units'] }}</div>
             </div>
         </div>
 
@@ -67,7 +68,7 @@
         <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-xs">
             <form method="GET" action="{{ route('admin.work-schedules.index') }}" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
                 <div>
-                    <label class="block text-[11px] font-semibold text-gray-600 uppercase mb-1">Professor / Funcionário</label>
+                    <label class="block text-[11px] font-medium text-gray-600 uppercase mb-1">Professor / Funcionário</label>
                     <select name="user_id" class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-400">
                         <option value="">Todos os Professores</option>
                         @foreach($users as $u)
@@ -77,7 +78,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-[11px] font-semibold text-gray-600 uppercase mb-1">Unidade Escolar</label>
+                    <label class="block text-[11px] font-medium text-gray-600 uppercase mb-1">Unidade Escolar</label>
                     <select name="unit_id" class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-400">
                         <option value="">Todas as Unidades</option>
                         @foreach($units as $un)
@@ -87,7 +88,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-[11px] font-semibold text-gray-600 uppercase mb-1">Dia da Semana</label>
+                    <label class="block text-[11px] font-medium text-gray-600 uppercase mb-1">Dia da Semana</label>
                     <select name="day_of_week" class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-400">
                         <option value="">Todos os Dias</option>
                         @foreach(\App\Models\WorkSchedule::getDaysList() as $num => $name)
@@ -99,10 +100,10 @@
                 </div>
 
                 <div class="flex items-end gap-2">
-                    <button type="submit" class="flex-1 rounded-xl bg-gray-900 px-4 py-2 text-xs font-bold text-white hover:bg-gray-800 transition">
+                    <button type="submit" class="flex-1 rounded-xl bg-gray-900 px-4 py-2 text-xs font-semibold text-white hover:bg-gray-800 transition">
                         Filtrar
                     </button>
-                    <a href="{{ route('admin.work-schedules.index') }}" class="rounded-xl border border-gray-300 px-3 py-2 text-xs font-semibold text-gray-600 hover:bg-gray-100 transition">
+                    <a href="{{ route('admin.work-schedules.index') }}" class="rounded-xl border border-gray-300 px-3 py-2 text-xs font-medium text-gray-600 hover:bg-gray-100 transition">
                         Limpar
                     </a>
                 </div>
@@ -113,7 +114,7 @@
         <div class="rounded-2xl border border-gray-200 bg-white shadow-xs overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-xs sm:text-sm">
-                    <thead class="bg-gray-100/70 text-xs font-semibold uppercase text-gray-600 border-b border-gray-200 tracking-wider">
+                    <thead class="bg-gray-50/90 text-[11px] font-semibold uppercase text-gray-500 border-b border-gray-200 tracking-wider">
                         <tr>
                             <th class="px-5 py-3">Dia</th>
                             <th class="px-5 py-3">Professor / Colaborador</th>
@@ -128,32 +129,33 @@
                     <tbody class="divide-y divide-gray-100">
                         @forelse($schedules as $sched)
                         <tr class="hover:bg-gray-50/80 transition">
-                            <td class="px-5 py-3.5">
-                                <span class="inline-flex items-center rounded-lg bg-indigo-50 border border-indigo-200 px-2.5 py-1 text-xs font-bold text-indigo-700">
+                            <td class="px-5 py-3.5 whitespace-nowrap">
+                                <span class="inline-flex items-center rounded-lg bg-indigo-50 border border-indigo-200/80 px-2.5 py-1 text-xs font-medium text-indigo-700">
                                     {{ $sched->day_short }} • {{ $sched->day_name }}
                                 </span>
                             </td>
 
                             <td class="px-5 py-3.5">
-                                <div class="font-bold text-gray-900">{{ $sched->user->name }}</div>
+                                <div class="font-semibold text-gray-900 text-xs sm:text-sm">{{ $sched->user->name }}</div>
                                 <div class="text-[11px] text-gray-500 font-normal">{{ $sched->user->email }}</div>
                             </td>
 
-                            <td class="px-5 py-3.5">
-                                <span class="rounded-lg bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-800">
-                                    🏢 {{ $sched->unit->name }}
+                            <td class="px-5 py-3.5 whitespace-nowrap">
+                                <span class="inline-flex items-center gap-1.5 rounded-lg bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-700">
+                                    <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                                    <span>{{ $sched->unit->name }}</span>
                                 </span>
                             </td>
 
                             <td class="px-5 py-3.5">
-                                <div class="font-semibold text-gray-800">{{ $sched->shift_name ?: 'Jornada Padrão' }}</div>
+                                <div class="font-medium text-gray-700 text-xs sm:text-sm">{{ $sched->shift_name ?: 'Jornada Padrão' }}</div>
                             </td>
 
-                            <td class="px-5 py-3.5 text-center font-mono font-bold text-indigo-900">
+                            <td class="px-5 py-3.5 text-center font-mono font-medium text-indigo-950 text-xs sm:text-sm whitespace-nowrap">
                                 {{ $sched->formatted_schedule }}
                             </td>
 
-                            <td class="px-5 py-3.5 text-center font-mono text-gray-600">
+                            <td class="px-5 py-3.5 text-center font-mono text-gray-600 text-xs whitespace-nowrap">
                                 @if($sched->break_start_time)
                                     {{ substr($sched->break_start_time, 0, 5) }} às {{ substr($sched->break_end_time, 0, 5) }}
                                 @else
@@ -161,8 +163,8 @@
                                 @endif
                             </td>
 
-                            <td class="px-5 py-3.5 text-center">
-                                <span class="rounded-full bg-amber-50 border border-amber-200 px-2 py-0.5 text-[10.5px] font-bold text-amber-800">
+                            <td class="px-5 py-3.5 text-center whitespace-nowrap">
+                                <span class="rounded-full bg-amber-50 border border-amber-200 px-2 py-0.5 text-[11px] font-medium text-amber-800">
                                     {{ $sched->tolerance_minutes }} min
                                 </span>
                             </td>
@@ -186,8 +188,8 @@
                         @empty
                         <tr>
                             <td colspan="8" class="px-6 py-12 text-center text-gray-400">
-                                <span class="text-3xl block mb-2">📅</span>
-                                <p class="text-sm font-medium">Nenhum horário cadastrado para os filtros selecionados.</p>
+                                <svg class="w-8 h-8 mx-auto text-gray-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                <p class="text-sm font-normal text-gray-500">Nenhum horário cadastrado para os filtros selecionados.</p>
                             </td>
                         </tr>
                         @endforelse
