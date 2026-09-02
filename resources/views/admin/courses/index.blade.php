@@ -173,40 +173,4 @@
     </div>
 </div>
 
-<script>
-function adminTable() {
-    return {
-        q: '',
-        sortBy: '',
-        sortDir: 'asc',
-        search() {
-            const query = this.q.toLowerCase();
-            document.querySelectorAll('[data-row]').forEach(tr => {
-                const text = tr.dataset.row || '';
-                tr.style.display = (!query || text.includes(query)) ? '' : 'none';
-            });
-        },
-        sort(col) {
-            if (this.sortBy === col) {
-                this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
-            } else {
-                this.sortBy = col;
-                this.sortDir = 'asc';
-            }
-            const tbody = document.querySelector('tbody');
-            const rows = Array.from(tbody.querySelectorAll('tr[data-row]'));
-            rows.sort((a, b) => {
-                const va = a.dataset[col] || '';
-                const vb = b.dataset[col] || '';
-                return this.sortDir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
-            });
-            rows.forEach(r => tbody.appendChild(r));
-        },
-        icon(col) {
-            if (this.sortBy !== col) return '↕';
-            return this.sortDir === 'asc' ? '↑' : '↓';
-        }
-    }
-}
-</script>
 @endsection

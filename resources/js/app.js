@@ -5,55 +5,57 @@ import Alpine from 'alpinejs';
 window.Alpine = Alpine;
 
 // Componente de tabela admin (busca + ordenação + seleção em massa)
-Alpine.data('adminTable', () => ({
-    q: '',
-    sortCol: '',
-    sortDir: 'asc',
-    rows: [],
-    selected: [],
-    allSelected: false,
+window.adminTable = function() {
+    return {
+        q: '',
+        sortCol: '',
+        sortDir: 'asc',
+        rows: [],
+        selected: [],
+        allSelected: false,
 
-    init() {
-        this.rows = [...this.$el.querySelectorAll('tbody tr[data-row]')];
-        this.applySort();
-    },
+        init() {
+            this.rows = [...this.$el.querySelectorAll('tbody tr[data-row]')];
+            this.applySort();
+        },
 
-    toggleSelectAll() {
-        const checkboxes = [...this.$el.querySelectorAll('tbody input[type="checkbox"][data-bulk-item]')];
-        if (this.allSelected) {
-            this.selected = checkboxes.map(cb => cb.value);
-        } else {
+        toggleSelectAll() {
+            const checkboxes = [...this.$el.querySelectorAll('tbody tr:not(.hidden) input[type="checkbox"][data-bulk-item]')];
+            if (this.allSelected) {
+                this.selected = checkboxes.map(cb => String(cb.value));
+            } else {
+                this.selected = [];
+            }
+        },
+
+        updateSelectAll() {
+            const checkboxes = [...this.$el.querySelectorAll('tbody tr:not(.hidden) input[type="checkbox"][data-bulk-item]')];
+            const selSet = new Set(this.selected.map(String));
+            this.allSelected = checkboxes.length > 0 && checkboxes.every(cb => selSet.has(String(cb.value)));
+        },
+
+        clearSelection() {
             this.selected = [];
-        }
-    },
+            this.allSelected = false;
+        },
 
-    updateSelectAll() {
-        const checkboxes = [...this.$el.querySelectorAll('tbody input[type="checkbox"][data-bulk-item]')];
-        this.allSelected = checkboxes.length > 0 && this.selected.length === checkboxes.length;
-    },
+        search() {
+            const q = this.q.toLowerCase().trim();
+            this.rows.forEach(r => {
+                const match = !q || (r.dataset.row || '').toLowerCase().includes(q);
+                r.classList.toggle('hidden', !match);
+            });
+        },
 
-    clearSelection() {
-        this.selected = [];
-        this.allSelected = false;
-    },
-
-    search() {
-        const q = this.q.toLowerCase().trim();
-        this.rows.forEach(r => {
-            const match = !q || (r.dataset.row || '').toLowerCase().includes(q);
-            r.classList.toggle('hidden', !match);
-        });
-    },
-
-    sort(col) {
-        if (this.sortCol === col) {
-            this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
-        } else {
-            this.sortCol = col;
-            this.sortDir = 'asc';
-        }
-        this.applySort();
-    },
+        sort(col) {
+            if (this.sortCol === col) {
+                this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+            } else {
+                this.sortCol = col;
+                this.sortDir = 'asc';
+            }
+            this.applySort();
+        },
 
     applySort() {
         const tbody = this.$el.querySelector('tbody');
@@ -79,6 +81,9 @@ Alpine.data('adminTable', () => ({
         if (this.sortCol !== col) return '↕';
         return this.sortDir === 'asc' ? '↑' : '↓';
     }
-}));
+    };
+};
+
+Alpine.data('adminTable', window.adminTable);
 
 Alpine.start();
