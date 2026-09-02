@@ -96,22 +96,33 @@ window.adminTable = function() {
                     r.classList.toggle('hidden', !isVisible);
                 });
             }
+            const selSet = new Set(this.selected.map(String));
+            this.$el.querySelectorAll('tbody input[type="checkbox"][data-bulk-item]').forEach(cb => {
+                cb.checked = selSet.has(String(cb.value));
+            });
         },
 
-        toggleSelectAll(checked) {
+        toggleSelectAll() {
+            const shouldSelectAll = !this.allSelected;
             const visibleCheckboxes = [...this.$el.querySelectorAll('tbody tr:not(.hidden) input[type="checkbox"][data-bulk-item]')];
             const visibleValues = visibleCheckboxes.map(cb => String(cb.value));
-            if (checked) {
+
+            if (shouldSelectAll) {
                 const combined = new Set([...this.selected.map(String), ...visibleValues]);
                 this.selected = Array.from(combined);
+                visibleCheckboxes.forEach(cb => { cb.checked = true; });
             } else {
                 const visibleSet = new Set(visibleValues);
                 this.selected = this.selected.map(String).filter(id => !visibleSet.has(id));
+                visibleCheckboxes.forEach(cb => { cb.checked = false; });
             }
         },
 
         clearSelection() {
             this.selected = [];
+            this.$el.querySelectorAll('tbody input[type="checkbox"][data-bulk-item]').forEach(cb => {
+                cb.checked = false;
+            });
         },
 
         search() {
