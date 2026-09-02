@@ -291,14 +291,14 @@
                     </div>
 
                     <!-- Departamentos / Setores (Combobox + Add Button + Cards com botão remover) -->
-                    <div class="sm:col-span-2 space-y-2">
+                    <div class="sm:col-span-2 lg:col-span-2 min-w-0 space-y-2">
                         <label class="block text-[11px] font-semibold text-gray-700 uppercase">
                             Departamentos / Setores
                         </label>
                         
-                        <div class="flex items-center gap-2">
+                        <div class="flex items-center gap-2 w-full min-w-0">
                             <select x-model="selectedDeptInput"
-                                    class="flex-1 rounded-xl border border-gray-300 bg-gray-50/50 px-3 py-2 text-xs text-gray-800 shadow-2xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400 transition">
+                                    class="w-0 flex-1 min-w-0 max-w-full rounded-xl border border-gray-300 bg-gray-50/50 px-3 py-2 text-xs text-gray-800 shadow-2xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400 transition truncate">
                                 <option value="">Selecione um departamento para adicionar...</option>
                                 <template x-for="dept in allDepts" :key="'opt-d-'+dept.id">
                                     <option :value="dept.id" :disabled="selectedDepts.includes(dept.id)" x-text="dept.name + (selectedDepts.includes(dept.id) ? ' (já adicionado)' : '')"></option>
@@ -314,15 +314,15 @@
                         </div>
 
                         <!-- Cards dos departamentos adicionados com cores e botão de remover -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1" x-show="selectedDepts.length > 0">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 w-full min-w-0" x-show="selectedDepts.length > 0">
                             <template x-for="id in selectedDepts" :key="'card-d-'+id">
                                 <div :class="deptColor(id)"
-                                     class="relative flex items-center justify-between p-2.5 rounded-xl border shadow-2xs transition">
+                                     class="relative flex items-center justify-between p-2.5 rounded-xl border shadow-2xs transition min-w-0 w-full overflow-hidden">
                                     <div class="flex items-center gap-2.5 min-w-0 pr-6">
                                         <div class="w-7 h-7 rounded-lg bg-white/80 border border-black/5 flex items-center justify-center flex-shrink-0 shadow-2xs">
                                             <svg class="w-3.5 h-3.5 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                                         </div>
-                                        <div class="min-w-0">
+                                        <div class="min-w-0 truncate">
                                             <p class="text-xs font-bold leading-tight truncate" x-text="getDeptName(id)"></p>
                                             <p class="text-[9.5px] opacity-75 font-medium">Departamento / Setor</p>
                                         </div>
@@ -337,7 +337,7 @@
                             </template>
                         </div>
                         <div x-show="selectedDepts.length === 0" class="text-[11px] text-gray-400 italic py-0.5">
-                            Nenhum departamento vinculado. Selecione acima e clique em Adicionar.
+                            Nenhum departamento vinculado.
                         </div>
 
                         <template x-for="id in selectedDepts" :key="'new-d-in-'+id">
@@ -346,14 +346,14 @@
                     </div>
 
                     <!-- Cursos Técnicos Vinculados (Combobox + Add Button + Cards com botão remover) -->
-                    <div class="sm:col-span-2 space-y-2">
+                    <div class="sm:col-span-2 lg:col-span-2 min-w-0 space-y-2">
                         <label class="block text-[11px] font-semibold text-gray-700 uppercase">
                             Cursos Técnicos Vinculados
                         </label>
                         
-                        <div class="flex items-center gap-2">
+                        <div class="flex items-center gap-2 w-full min-w-0">
                             <select x-model="selectedCourseInput"
-                                    class="flex-1 rounded-xl border border-gray-300 bg-gray-50/50 px-3 py-2 text-xs text-gray-800 shadow-2xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 transition">
+                                    class="w-0 flex-1 min-w-0 max-w-full rounded-xl border border-gray-300 bg-gray-50/50 px-3 py-2 text-xs text-gray-800 shadow-2xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 transition truncate">
                                 <option value="">Selecione um curso para adicionar...</option>
                                 <template x-for="course in allCourses" :key="'opt-c-'+course.id">
                                     <option :value="course.id" :disabled="selectedCourses.includes(course.id)" x-text="course.name + (selectedCourses.includes(course.id) ? ' (já adicionado)' : '')"></option>
@@ -369,15 +369,15 @@
                         </div>
 
                         <!-- Cards dos cursos adicionados com cores e botão de remover -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1" x-show="selectedCourses.length > 0">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 w-full min-w-0" x-show="selectedCourses.length > 0">
                             <template x-for="id in selectedCourses" :key="'card-c-'+id">
                                 <div :class="courseColor(id)"
-                                     class="relative flex items-center justify-between p-2.5 rounded-xl border shadow-2xs transition">
+                                     class="relative flex items-center justify-between p-2.5 rounded-xl border shadow-2xs transition min-w-0 w-full overflow-hidden">
                                     <div class="flex items-center gap-2.5 min-w-0 pr-6">
                                         <div class="w-7 h-7 rounded-lg bg-white/80 border border-black/5 flex items-center justify-center flex-shrink-0 shadow-2xs">
                                             <svg class="w-3.5 h-3.5 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"/></svg>
                                         </div>
-                                        <div class="min-w-0">
+                                        <div class="min-w-0 truncate">
                                             <p class="text-xs font-bold leading-tight truncate" x-text="getCourseName(id)"></p>
                                             <p class="text-[9.5px] opacity-75 font-medium">Curso Técnico</p>
                                         </div>
@@ -392,7 +392,7 @@
                             </template>
                         </div>
                         <div x-show="selectedCourses.length === 0" class="text-[11px] text-gray-400 italic py-0.5">
-                            Nenhum curso vinculado. Selecione acima e clique em Adicionar.
+                            Nenhum curso vinculado.
                         </div>
 
                         <template x-for="id in selectedCourses" :key="'new-c-in-'+id">
@@ -689,14 +689,14 @@
                         </div>
 
                         <!-- Departamentos / Setores (Combobox + Add Button + Cards com botão remover) -->
-                        <div class="sm:col-span-2 space-y-2">
+                        <div class="sm:col-span-2 min-w-0 space-y-2">
                             <label class="block text-[11px] font-semibold text-gray-700 uppercase">
                                 Departamentos / Setores
                             </label>
                             
-                            <div class="flex items-center gap-2">
+                            <div class="flex items-center gap-2 w-full min-w-0">
                                 <select x-model="editDeptInput"
-                                        class="flex-1 rounded-xl border border-gray-300 bg-gray-50/50 px-3 py-2 text-xs text-gray-800 shadow-2xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400 transition">
+                                        class="w-0 flex-1 min-w-0 max-w-full rounded-xl border border-gray-300 bg-gray-50/50 px-3 py-2 text-xs text-gray-800 shadow-2xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400 transition truncate">
                                     <option value="">Selecione um departamento para adicionar...</option>
                                     <template x-for="dept in allDepts" :key="'edit-opt-d-'+dept.id">
                                         <option :value="dept.id" :disabled="editUser.department_ids.includes(dept.id)" x-text="dept.name + (editUser.department_ids.includes(dept.id) ? ' (já adicionado)' : '')"></option>
@@ -712,15 +712,15 @@
                             </div>
 
                             <!-- Cards dos departamentos adicionados com cores e botão de remover -->
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1" x-show="editUser.department_ids.length > 0">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 w-full min-w-0" x-show="editUser.department_ids.length > 0">
                                 <template x-for="id in editUser.department_ids" :key="'edit-card-d-'+id">
                                     <div :class="deptColor(id)"
-                                         class="relative flex items-center justify-between p-2.5 rounded-xl border shadow-2xs transition">
+                                         class="relative flex items-center justify-between p-2.5 rounded-xl border shadow-2xs transition min-w-0 w-full overflow-hidden">
                                         <div class="flex items-center gap-2.5 min-w-0 pr-6">
                                             <div class="w-7 h-7 rounded-lg bg-white/80 border border-black/5 flex items-center justify-center flex-shrink-0 shadow-2xs">
                                                 <svg class="w-3.5 h-3.5 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                                             </div>
-                                            <div class="min-w-0">
+                                            <div class="min-w-0 truncate">
                                                 <p class="text-xs font-bold leading-tight truncate" x-text="getDeptName(id)"></p>
                                                 <p class="text-[9.5px] opacity-75 font-medium">Departamento / Setor</p>
                                             </div>
@@ -735,7 +735,7 @@
                                 </template>
                             </div>
                             <div x-show="editUser.department_ids.length === 0" class="text-[11px] text-gray-400 italic py-0.5">
-                                Nenhum departamento vinculado. Selecione acima e clique em Adicionar.
+                                Nenhum departamento vinculado.
                             </div>
 
                             <template x-for="id in editUser.department_ids" :key="'edit-d-in-'+id">
@@ -744,14 +744,14 @@
                         </div>
 
                         <!-- Cursos Técnicos Vinculados (Combobox + Add Button + Cards com botão remover) -->
-                        <div class="sm:col-span-2 space-y-2">
+                        <div class="sm:col-span-2 min-w-0 space-y-2">
                             <label class="block text-[11px] font-semibold text-gray-700 uppercase">
                                 Cursos Técnicos Vinculados
                             </label>
                             
-                            <div class="flex items-center gap-2">
+                            <div class="flex items-center gap-2 w-full min-w-0">
                                 <select x-model="editCourseInput"
-                                        class="flex-1 rounded-xl border border-gray-300 bg-gray-50/50 px-3 py-2 text-xs text-gray-800 shadow-2xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 transition">
+                                        class="w-0 flex-1 min-w-0 max-w-full rounded-xl border border-gray-300 bg-gray-50/50 px-3 py-2 text-xs text-gray-800 shadow-2xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 transition truncate">
                                     <option value="">Selecione um curso para adicionar...</option>
                                     <template x-for="course in allCourses" :key="'edit-opt-c-'+course.id">
                                         <option :value="course.id" :disabled="editUser.course_ids.includes(course.id)" x-text="course.name + (editUser.course_ids.includes(course.id) ? ' (já adicionado)' : '')"></option>
@@ -767,15 +767,15 @@
                             </div>
 
                             <!-- Cards dos cursos adicionados com cores e botão de remover -->
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1" x-show="editUser.course_ids.length > 0">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 w-full min-w-0" x-show="editUser.course_ids.length > 0">
                                 <template x-for="id in editUser.course_ids" :key="'edit-card-c-'+id">
                                     <div :class="courseColor(id)"
-                                         class="relative flex items-center justify-between p-2.5 rounded-xl border shadow-2xs transition">
+                                         class="relative flex items-center justify-between p-2.5 rounded-xl border shadow-2xs transition min-w-0 w-full overflow-hidden">
                                         <div class="flex items-center gap-2.5 min-w-0 pr-6">
                                             <div class="w-7 h-7 rounded-lg bg-white/80 border border-black/5 flex items-center justify-center flex-shrink-0 shadow-2xs">
                                                 <svg class="w-3.5 h-3.5 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"/></svg>
                                             </div>
-                                            <div class="min-w-0">
+                                            <div class="min-w-0 truncate">
                                                 <p class="text-xs font-bold leading-tight truncate" x-text="getCourseName(id)"></p>
                                                 <p class="text-[9.5px] opacity-75 font-medium">Curso Técnico</p>
                                             </div>
@@ -790,7 +790,7 @@
                                 </template>
                             </div>
                             <div x-show="editUser.course_ids.length === 0" class="text-[11px] text-gray-400 italic py-0.5">
-                                Nenhum curso vinculado. Selecione acima e clique em Adicionar.
+                                Nenhum curso vinculado.
                             </div>
 
                             <template x-for="id in editUser.course_ids" :key="'edit-c-in-'+id">
