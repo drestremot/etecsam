@@ -48,7 +48,7 @@
                             <th @click="sort('tipo')" class="px-3 py-3 cursor-pointer hover:bg-gray-100 select-none min-w-[100px]">
                                 Tipo <span class="ml-1 text-gray-400" x-text="icon('tipo')"></span>
                             </th>
-                            <th @click="sort('unidade')" class="px-3 py-3 cursor-pointer hover:bg-gray-100 select-none min-w-[120px]">
+                            <th @click="sort('unidade')" class="px-3 py-3 text-center cursor-pointer hover:bg-gray-100 select-none min-w-[130px]">
                                 Unidade <span class="ml-1 text-gray-400" x-text="icon('unidade')"></span>
                             </th>
                             <th class="px-3 py-3 min-w-[150px]">Coordenação</th>
@@ -73,7 +73,9 @@
                             <td class="px-3 py-2.5">
                                 <span class="rounded-lg bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-700">{{ $course->type }}</span>
                             </td>
-                            <td class="px-3 py-2.5 text-gray-600 font-normal truncate max-w-[140px]">{{ $course->unit?->name ?? '—' }}</td>
+                            <td class="px-3 py-2.5 text-center text-gray-600 font-normal text-[11px] leading-snug break-words max-w-[150px]">
+                                {{ $course->unit?->name ?? '—' }}
+                            </td>
                             <td class="px-3 py-2.5 text-gray-600">
                                 @forelse($course->technicalCoordinators as $c)
                                     <span class="block text-xs font-medium text-gray-800 truncate max-w-[180px]">{{ $c->name }}</span>

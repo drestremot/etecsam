@@ -118,7 +118,7 @@
                         <tr>
                             <th class="px-3.5 py-3 min-w-[100px]">Dia</th>
                             <th class="px-3 py-3 min-w-[180px]">Professor / Colaborador</th>
-                            <th class="px-3 py-3 min-w-[120px]">Unidade</th>
+                            <th class="px-3 py-3 text-center min-w-[130px]">Unidade</th>
                             <th class="px-3 py-3 min-w-[110px]">Turno</th>
                             <th class="px-3 py-3 text-center min-w-[100px]">Horário</th>
                             <th class="px-3 py-3 text-center min-w-[90px]">Intervalo</th>
@@ -140,9 +140,9 @@
                                 <div class="text-[11px] text-gray-500 font-normal truncate max-w-[200px]">{{ $sched->user->email }}</div>
                             </td>
 
-                            <td class="px-3 py-2.5 whitespace-nowrap">
-                                <span class="inline-flex items-center gap-1 rounded-md bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-700">
-                                    <span>{{ $sched->unit->name }}</span>
+                            <td class="px-3 py-2.5 text-center">
+                                <span class="inline-block rounded-md bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-700 leading-snug break-words max-w-[140px]">
+                                    {{ $sched->unit->name }}
                                 </span>
                             </td>
 

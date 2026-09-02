@@ -127,7 +127,7 @@
                             <th class="px-3.5 py-3 min-w-[70px]">Foto</th>
                             <th class="px-3 py-3 min-w-[100px]">Horário & Tipo</th>
                             <th class="px-3 py-3 min-w-[160px]">Colaborador</th>
-                            <th class="px-3 py-3 min-w-[120px]">Unidade</th>
+                            <th class="px-3 py-3 text-center min-w-[130px]">Unidade</th>
                             <th class="px-3 py-3 text-center min-w-[110px]">GPS / Local</th>
                             <th class="px-3 py-3 text-center min-w-[100px]">Grade / Atraso</th>
                             <th class="px-3 py-3 text-center min-w-[90px]">Status</th>
@@ -169,9 +169,9 @@
                             </td>
 
                             <!-- Unit -->
-                            <td class="px-3 py-2.5 whitespace-nowrap">
-                                <span class="inline-flex items-center gap-1 rounded-md bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-700 truncate max-w-[130px]">
-                                    <span>{{ $rec->unit->name ?? 'Unidade Geral' }}</span>
+                            <td class="px-3 py-2.5 text-center">
+                                <span class="inline-block rounded-md bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-700 leading-snug break-words max-w-[130px]">
+                                    {{ $rec->unit->name ?? 'Unidade Geral' }}
                                 </span>
                             </td>
 
