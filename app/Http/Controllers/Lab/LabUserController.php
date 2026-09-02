@@ -123,6 +123,10 @@ class LabUserController extends Controller
         $user->update($userData);
         $user->syncRoles($request->role);
 
+        if ($request->role === 'Auxiliar' && $request->has('coordenador_ids')) {
+            $user->coordenadoresVinculados()->sync($request->coordenador_ids ?? []);
+        }
+
         // Sincronizar com a tabela de professores e colaboradores do site
         $teacher = Teacher::where('email', $oldEmail)->first();
         if ($teacher) {
