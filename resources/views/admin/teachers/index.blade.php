@@ -9,7 +9,7 @@
             <div>
                 <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 flex items-center gap-3">
                     <span>Professores & Equipe no Site</span>
-                    <span class="rounded-xl bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-700 normal-case tracking-normal">{{ $teachers->total() }} registros</span>
+                    <span class="rounded-xl bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-700 normal-case tracking-normal">{{ count($teachers) }} registros</span>
                 </h1>
                 <p class="text-xs sm:text-sm text-gray-600 font-medium mt-1">Exibição pública da equipe escolar no site institucional, biografias, fotos e sincronização de acesso</p>
             </div>

@@ -9,7 +9,7 @@
             <div>
                 <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 flex items-center gap-3">
                     <span>Cursos Técnicos</span>
-                    <span class="rounded-xl bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700 normal-case tracking-normal">{{ $courses->total() }} cadastrados</span>
+                    <span class="rounded-xl bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700 normal-case tracking-normal">{{ count($courses) }} cadastrados</span>
                 </h1>
                 <p class="text-xs sm:text-sm text-gray-600 font-medium mt-1">Gestão de cursos, modalidades (M-Tec, Noturno, AMS), matrizes e coordenações</p>
             </div>

@@ -45,7 +45,7 @@
                 <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-gray-900 flex items-center gap-3">
                     <span><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg> Usuários & Colaboradores</span>
                     <span class="rounded-xl bg-indigo-100 border border-indigo-200 px-2.5 py-0.5 text-xs font-semibold text-indigo-700">
-                        {{ method_exists($users, 'total') ? $users->total() : $users->count() }} cadastros
+                        {{ count($users) }} cadastros
                     </span>
                 </h1>
                 <p class="text-xs text-gray-600 mt-0.5 font-normal">

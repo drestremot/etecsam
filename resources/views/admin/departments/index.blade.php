@@ -9,7 +9,7 @@
             <div>
                 <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 flex items-center gap-3">
                     <span>Departamentos & Coordenações</span>
-                    <span class="rounded-xl bg-purple-100 px-3 py-1 text-xs font-semibold text-purple-700 normal-case tracking-normal">{{ $departments->total() }} cadastrados</span>
+                    <span class="rounded-xl bg-purple-100 px-3 py-1 text-xs font-semibold text-purple-700 normal-case tracking-normal">{{ count($departments) }} cadastrados</span>
                 </h1>
                 <p class="text-xs sm:text-sm text-gray-600 font-medium mt-1">Gestão de coordenações pedagógicas, secretarias e responsáveis de área</p>
             </div>
