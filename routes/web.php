@@ -286,6 +286,7 @@ Route::prefix('laboratorio')->name('lab.')->middleware(['auth'])->group(function
         Route::prefix('usuarios')->name('users.')->group(function () {
             Route::get('/',                      [LabUserController::class, 'index'])->name('index');
             Route::post('/',                     [LabUserController::class, 'store'])->name('store');
+            Route::put('/{user}',                [LabUserController::class, 'update'])->name('update');
             Route::post('/sincronizar-todos',    [LabUserController::class, 'syncAllTeachers'])->name('sync-all');
             Route::patch('/{user}/papel',        [LabUserController::class, 'updateRole'])->name('role');
             Route::patch('/{user}/vinculos',     [LabUserController::class, 'updateVinculos'])->name('vinculos');

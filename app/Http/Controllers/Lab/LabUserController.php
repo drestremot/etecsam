@@ -86,6 +86,67 @@ class LabUserController extends Controller
         return back()->with('success', $msg);
     }
 
+    public function update(Request $request, User $user)
+    {
+        $request->validate([
+            'name'                => 'required|string|max:255',
+            'email'               => 'required|email|unique:users,email,' . $user->id,
+            'registration_number' => 'nullable|string|unique:users,registration_number,' . $user->id,
+            'role'                => 'required|exists:roles,name',
+            'job_title'           => 'nullable|string|max:255',
+            'department_id'       => 'nullable|exists:departments,id',
+            'phone'               => 'nullable|string|max:30',
+            'password'            => 'nullable|string|min:6|confirmed',
+            'show_on_site'        => 'nullable|boolean',
+        ], [
+            'password.min'       => 'A nova senha deve ter pelo menos 6 caracteres.',
+            'password.confirmed' => 'As senhas não coincidem.',
+        ]);
+
+        $oldEmail = $user->email;
+
+        $userData = [
+            'name'                => $request->name,
+            'email'               => $request->email,
+            'registration_number' => $request->registration_number,
+            'role'                => $request->job_title ?: $request->role,
+            'department_id'       => $request->department_id,
+            'phone'               => $request->phone,
+            'is_admin'            => $request->role === 'Administrador' || $request->role === 'admin',
+        ];
+
+        if ($request->filled('password')) {
+            $userData['password'] = Hash::make($request->password);
+            $userData['must_change_password'] = false;
+        }
+
+        $user->update($userData);
+        $user->syncRoles($request->role);
+
+        // Sincronizar com a tabela de professores e colaboradores do site
+        $teacher = Teacher::where('email', $oldEmail)->first();
+        if ($teacher) {
+            $teacher->update([
+                'name'       => $user->name,
+                'email'      => $user->email,
+                'role'       => $request->job_title ?: $request->role,
+                'phone'      => $user->phone,
+            ]);
+        } elseif ($request->boolean('show_on_site', true)) {
+            Teacher::updateOrCreate(
+                ['email' => $user->email],
+                [
+                    'name'       => $user->name,
+                    'role'       => $request->job_title ?: $request->role,
+                    'phone'      => $user->phone,
+                    'is_active'  => $user->is_active,
+                ]
+            );
+        }
+
+        return back()->with('success', "Dados do usuário {$user->name} atualizados com sucesso!");
+    }
+
     public function syncAllTeachers()
     {
         $existingEmails = User::whereNotNull('email')->pluck('email')->toArray();

@@ -269,6 +269,26 @@
                             </td>
                             <td class="px-6 py-4 text-right">
                                 <div class="flex justify-end gap-2 items-center">
+                                    <!-- Botão Editar -->
+                                    <button type="button"
+                                            @click="openEdit({
+                                                id: {{ $u->id }},
+                                                name: '{{ addslashes($u->name) }}',
+                                                email: '{{ addslashes($u->email) }}',
+                                                roleName: '{{ addslashes($u->roles->first()?->name ?? '') }}',
+                                                job_title: '{{ addslashes($u->role ?? '') }}',
+                                                department_id: '{{ $u->department_id ?? '' }}',
+                                                registration_number: '{{ addslashes($u->registration_number ?? '') }}',
+                                                phone: '{{ addslashes($u->phone ?? '') }}'
+                                            }, '{{ route('lab.users.update', $u) }}')"
+                                            class="rounded-xl bg-blue-50 p-2 text-blue-600 hover:bg-blue-100 hover:text-blue-800 transition shadow-2xs"
+                                            title="Editar dados do usuário">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                        </svg>
+                                    </button>
+
+                                    <!-- Link Reset Senha -->
                                     <form action="{{ route('lab.users.reset-link', $u) }}" method="POST" title="Enviar link de redefinição de senha">
                                         @csrf
                                         <button class="rounded-xl bg-gray-100 p-2 text-gray-600 hover:bg-gray-200 transition shadow-2xs" title="Enviar link de redefinição de senha">
@@ -277,6 +297,8 @@
                                             </svg>
                                         </button>
                                     </form>
+
+                                    <!-- Botão Excluir -->
                                     @if($u->id !== auth()->id())
                                     <form action="{{ route('lab.users.destroy', $u) }}" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir o usuário {{ addslashes($u->name) }}?')">
                                         @csrf @method('DELETE')
@@ -298,6 +320,100 @@
             @if($users->hasPages())
                 <div class="px-6 py-4 border-t border-gray-100 bg-gray-50">{{ $users->links() }}</div>
             @endif
+
+            <!-- Modal de Edição de Usuário & Colaborador -->
+            <div x-show="editOpen" x-cloak class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
+                <div class="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity" @click="editOpen = false"></div>
+                <div class="flex min-h-full items-center justify-center p-4">
+                    <div class="relative w-full max-w-2xl rounded-2xl bg-white p-6 shadow-2xl transition-all" @click.stop>
+                        <div class="flex items-center justify-between border-b border-gray-100 pb-4 mb-4">
+                            <h3 class="text-base font-bold text-gray-900 flex items-center gap-2">
+                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-100 text-indigo-700">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </span>
+                                <span>Editar Usuário & Colaborador</span>
+                            </h3>
+                            <button type="button" @click="editOpen = false" class="text-gray-400 hover:text-gray-600 text-lg font-bold">&times;</button>
+                        </div>
+
+                        <form :action="editUser.updateUrl" method="POST" class="space-y-4">
+                            @csrf
+                            @method('PUT')
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="sm:col-span-2">
+                                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Nome Completo *</label>
+                                    <input type="text" name="name" x-model="editUser.name" required class="w-full rounded-xl border border-gray-300 px-3.5 py-2 text-xs sm:text-sm text-gray-800 focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">E-mail Institucional *</label>
+                                    <input type="email" name="email" x-model="editUser.email" required class="w-full rounded-xl border border-gray-300 px-3.5 py-2 text-xs sm:text-sm text-gray-800 focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Papel no Sistema *</label>
+                                    <select name="role" x-model="editUser.role" required class="w-full rounded-xl border border-gray-300 px-3.5 py-2 text-xs sm:text-sm text-gray-800 focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+                                        @foreach($roles as $role)
+                                        <option value="{{ $role->name }}">{{ $role->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Cargo / Especialidade (Site)</label>
+                                    <input type="text" name="job_title" x-model="editUser.job_title" placeholder="Ex: Professor de Informática" class="w-full rounded-xl border border-gray-300 px-3.5 py-2 text-xs sm:text-sm text-gray-800 focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Matrícula / Registro</label>
+                                    <input type="text" name="registration_number" x-model="editUser.registration_number" placeholder="Ex: 12345" class="w-full rounded-xl border border-gray-300 px-3.5 py-2 text-xs sm:text-sm text-gray-800 focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Telefone / Ramal</label>
+                                    <input type="text" name="phone" x-model="editUser.phone" placeholder="(19) 99999-9999" class="w-full rounded-xl border border-gray-300 px-3.5 py-2 text-xs sm:text-sm text-gray-800 focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Departamento / Setor</label>
+                                    <select name="department_id" x-model="editUser.department_id" class="w-full rounded-xl border border-gray-300 px-3.5 py-2 text-xs sm:text-sm text-gray-800 focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+                                        <option value="">Nenhum / Geral</option>
+                                        @foreach($departments as $dept)
+                                        <option value="{{ $dept->id }}">{{ $dept->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                <div class="sm:col-span-2 pt-2 border-t border-gray-100">
+                                    <p class="text-xs font-semibold text-gray-500 uppercase mb-2">Alterar Senha de Acesso (opcional - deixe em branco para manter a atual)</p>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-xs font-medium text-gray-600 mb-1">Nova Senha</label>
+                                            <input type="password" name="password" placeholder="Mínimo 6 caracteres" class="w-full rounded-xl border border-gray-300 px-3.5 py-2 text-xs sm:text-sm text-gray-800 focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+                                        </div>
+                                        <div>
+                                            <label class="block text-xs font-medium text-gray-600 mb-1">Confirmar Nova Senha</label>
+                                            <input type="password" name="password_confirmation" placeholder="Repita a nova senha" class="w-full rounded-xl border border-gray-300 px-3.5 py-2 text-xs sm:text-sm text-gray-800 focus:ring-2 focus:ring-indigo-400 focus:outline-none">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
+                                <button type="button" @click="editOpen = false" class="px-4 py-2 rounded-xl text-xs font-semibold text-gray-600 hover:bg-gray-100 transition">
+                                    Cancelar
+                                </button>
+                                <button type="submit" class="rounded-xl bg-indigo-600 px-5 py-2 text-xs sm:text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 transition">
+                                    Salvar Alterações
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -309,6 +425,32 @@ function adminTable() {
         q: '',
         sortBy: '',
         sortDir: 'asc',
+        editOpen: false,
+        editUser: {
+            id: null,
+            name: '',
+            email: '',
+            role: '',
+            job_title: '',
+            department_id: '',
+            registration_number: '',
+            phone: '',
+            updateUrl: ''
+        },
+        openEdit(u, updateUrl) {
+            this.editUser = {
+                id: u.id,
+                name: u.name || '',
+                email: u.email || '',
+                role: u.roleName || '',
+                job_title: u.job_title || '',
+                department_id: u.department_id || '',
+                registration_number: u.registration_number || '',
+                phone: u.phone || '',
+                updateUrl: updateUrl
+            };
+            this.editOpen = true;
+        },
         search() {
             const query = this.q.toLowerCase();
             document.querySelectorAll('[data-row]').forEach(tr => {
