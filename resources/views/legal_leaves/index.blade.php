@@ -77,7 +77,7 @@
             <div class="rounded-xl border border-gray-200 bg-white p-3.5 shadow-2xs border-t-4 border-t-purple-600">
                 <div class="flex items-center justify-between">
                     <span class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Total Concedido</span>
-                    <span class="text-base">🌟</span>
+                    <span class="text-base"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg></span>
                 </div>
                 <div class="text-xl sm:text-2xl font-bold text-gray-900 mt-1">{{ $stats['total_granted'] }} <span class="text-xs font-semibold text-gray-500">dias</span></div>
             </div>
@@ -85,7 +85,7 @@
             <div class="rounded-xl border border-gray-200 bg-white p-3.5 shadow-2xs border-t-4 border-t-blue-500">
                 <div class="flex items-center justify-between">
                     <span class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Dias Já Usufruídos</span>
-                    <span class="text-base">🏖️</span>
+                    <span class="text-base"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></span>
                 </div>
                 <div class="text-xl sm:text-2xl font-bold text-blue-600 mt-1">{{ $stats['total_used'] }} <span class="text-xs font-semibold text-gray-500">dias</span></div>
             </div>
@@ -93,7 +93,7 @@
             <div class="rounded-xl border border-gray-200 bg-white p-3.5 shadow-2xs border-t-4 border-t-emerald-600">
                 <div class="flex items-center justify-between">
                     <span class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Saldo Restante</span>
-                    <span class="text-base">⚖️</span>
+                    <span class="text-base"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg></span>
                 </div>
                 <div class="text-xl sm:text-2xl font-bold text-emerald-700 mt-1">{{ $stats['total_remaining'] }} <span class="text-xs font-semibold text-gray-500">dias</span></div>
             </div>
@@ -101,7 +101,7 @@
             <div class="rounded-xl border border-gray-200 bg-white p-3.5 shadow-2xs border-t-4 border-t-amber-500">
                 <div class="flex items-center justify-between">
                     <span class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Aguardando Ciência</span>
-                    <span class="text-base">⏳</span>
+                    <span class="text-base"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></span>
                 </div>
                 <div class="text-xl sm:text-2xl font-bold text-amber-600 mt-1">{{ $stats['pending_requests'] }} <span class="text-xs font-semibold text-gray-500">pedidos</span></div>
             </div>
@@ -109,7 +109,7 @@
             <div class="rounded-xl border border-gray-200 bg-white p-3.5 shadow-2xs border-t-4 border-t-teal-600">
                 <div class="flex items-center justify-between">
                     <span class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Aprovadas / Tomadas</span>
-                    <span class="text-base">✅</span>
+                    <span class="text-base"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg></span>
                 </div>
                 <div class="text-xl sm:text-2xl font-bold text-teal-700 mt-1">{{ $stats['approved_requests'] }} <span class="text-xs font-semibold text-gray-500">gozos</span></div>
             </div>
@@ -120,7 +120,7 @@
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <span class="flex h-8 w-8 items-center justify-center rounded-xl bg-purple-600 text-white font-semibold text-sm">
-                        ⚖️
+                        <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
                     </span>
                     <div>
                         <h2 class="text-xs font-semibold uppercase tracking-wide text-purple-900">
@@ -140,7 +140,7 @@
                 <!-- Eleição -->
                 <div class="rounded-xl bg-white p-3 border border-purple-100 shadow-2xs space-y-1">
                     <span class="font-extrabold text-purple-900 block flex items-center gap-1">
-                        🗳️ <span>Eleição / TRE (Em Dobro)</span>
+                        <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> <span>Eleição / TRE (Em Dobro)</span>
                     </span>
                     <p class="text-[10.5px] text-gray-600 leading-relaxed">
                         <strong>Art. 98 da Lei 9.504/97:</strong> Cada 1 dia convocado para serviço ou treinamento do TRE concede <strong>2 dias de folga</strong>.
@@ -150,7 +150,7 @@
                 <!-- Júri Popular -->
                 <div class="rounded-xl bg-white p-3 border border-purple-100 shadow-2xs space-y-1">
                     <span class="font-extrabold text-indigo-900 block flex items-center gap-1">
-                        🏛️ <span>Tribunal do Júri</span>
+                        <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg> <span>Tribunal do Júri</span>
                     </span>
                     <p class="text-[10.5px] text-gray-600 leading-relaxed">
                         <strong>Art. 430 do CPP:</strong> Dias de comparecimento às sessões do júri garantem folga integral e preservação salarial conforme certidão.
@@ -160,7 +160,7 @@
                 <!-- Doação de Sangue -->
                 <div class="rounded-xl bg-white p-3 border border-purple-100 shadow-2xs space-y-1">
                     <span class="font-extrabold text-red-900 block flex items-center gap-1">
-                        🩸 <span>Doação de Sangue</span>
+                        <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg> <span>Doação de Sangue</span>
                     </span>
                     <p class="text-[10.5px] text-gray-600 leading-relaxed">
                         <strong>Art. 473, IV da CLT:</strong> <strong>1 dia de folga</strong> a cada 12 meses trabalhados, comprovado por atestado do hemocentro.
@@ -170,7 +170,7 @@
                 <!-- Regra 72 Horas -->
                 <div class="rounded-xl bg-white p-3 border border-amber-200 shadow-2xs space-y-1 bg-amber-50/40">
                     <span class="font-extrabold text-amber-900 block flex items-center gap-1">
-                        ⏱️ <span>Antecedência Mínima (72h)</span>
+                        <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> <span>Antecedência Mínima (72h)</span>
                     </span>
                     <p class="text-[10.5px] text-gray-700 leading-relaxed">
                         A solicitação do dia de folga deve ser feita com <strong>no mínimo 72 horas de antecedência</strong> para ciência do coordenador de curso / chefia.
@@ -184,7 +184,7 @@
             <div class="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 pb-3">
                 <div class="flex items-center gap-2">
                     <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-100 text-amber-700 font-bold text-xs">
-                        📅
+                        <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                     </span>
                     <div>
                         <h2 class="text-xs font-semibold uppercase tracking-wide text-gray-900">
@@ -242,11 +242,11 @@
                                 <td class="py-3 px-3">
                                     @if($req->is_within_72h_deadline)
                                         <span class="inline-flex items-center gap-1 rounded-md bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-800 border border-emerald-200">
-                                            ✅ Dentro do prazo (≥72h)
+                                            <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Dentro do prazo (≥72h)
                                         </span>
                                     @else
                                         <span class="inline-flex items-center gap-1 rounded-md bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-800 border border-amber-200" title="Solicitado com menos de 72h de antecedência">
-                                            ⚠️ Urgência (&lt;72h)
+                                            <svg class="w-4 h-4 inline-block text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg> Urgência (&lt;72h)
                                         </span>
                                     @endif
                                 </td>
@@ -313,7 +313,7 @@
             <div class="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 pb-3">
                 <div class="flex items-center gap-2">
                     <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-purple-100 text-purple-700 font-bold text-xs">
-                        ⚖️
+                        <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
                     </span>
                     <div>
                         <h2 class="text-xs font-semibold uppercase tracking-wide text-gray-900">
@@ -420,7 +420,7 @@
                                         class="inline-flex items-center gap-1 rounded-lg bg-gray-100 px-2.5 py-1 text-[10.5px] font-bold text-gray-700 hover:bg-gray-200 transition"
                                         title="Baixar Comprovante"
                                     >
-                                        <span>📄 Anexo</span>
+                                        <span><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> Anexo</span>
                                         <svg class="h-3 w-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
                                     </a>
                                 </td>

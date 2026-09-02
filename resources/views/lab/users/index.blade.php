@@ -43,7 +43,7 @@
                     <span class="text-indigo-600 font-bold">Controle de Usuários</span>
                 </div>
                 <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-gray-900 flex items-center gap-3">
-                    <span>👥 Usuários & Colaboradores</span>
+                    <span><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg> Usuários & Colaboradores</span>
                     <span class="rounded-xl bg-indigo-100 border border-indigo-200 px-2.5 py-0.5 text-xs font-semibold text-indigo-700">
                         {{ $users->total() }} cadastros
                     </span>
@@ -233,7 +233,7 @@
                 <svg class="w-3.5 h-3.5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 <input x-model="q" @input="search()" type="text" placeholder="Buscar por nome, e-mail institucional, papel, cargo..."
                        class="flex-1 text-xs border-0 outline-none bg-transparent text-gray-800 placeholder-gray-400">
-                <button x-show="q" @click="q='';search()" class="text-gray-400 hover:text-gray-600 text-xs font-semibold">✕ limpar</button>
+                <button x-show="q" @click="q='';search()" class="text-gray-400 hover:text-gray-600 text-xs font-semibold">limpar</button>
             </div>
 
             <!-- Bulk Action Bar -->

@@ -13,7 +13,7 @@
                     <span class="text-indigo-600 font-extrabold">Políticas de Acesso</span>
                 </div>
                 <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 flex items-center gap-3">
-                    <span>🎛️ Matriz de Papéis & Permissões (RBAC)</span>
+                    <span>️ Matriz de Papéis & Permissões (RBAC)</span>
                     <span class="rounded-xl bg-indigo-100 border border-indigo-200 px-3 py-1 text-xs font-semibold text-indigo-700">
                         Acesso Granular por Grupo
                     </span>
@@ -162,7 +162,7 @@
 function permissionsMatrix() {
     return {
         matrix: {},
-        toast: { show: false, message: '', icon: '✓' },
+        toast: { show: false, message: '', icon: '<svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>' },
 
         isGranted(roleId, permName, initialValue) {
             const key = roleId + '_' + permName;
@@ -196,7 +196,7 @@ function permissionsMatrix() {
             .then(data => {
                 if (data.success) {
                     this.matrix[key] = data.has_permission;
-                    this.showToast(data.message || 'Permissão atualizada!', data.has_permission ? '🟢' : '⚪');
+                    this.showToast(data.message || 'Permissão atualizada!', data.has_permission ? '<span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500"></span>' : '<span class="inline-block w-2.5 h-2.5 rounded-full bg-gray-300"></span>');
                 } else {
                     // Rollback
                     this.matrix[key] = currentVal;
@@ -209,7 +209,7 @@ function permissionsMatrix() {
             });
         },
 
-        showToast(msg, icon = '✓') {
+        showToast(msg, icon = '<svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>') {
             this.toast.message = msg;
             this.toast.icon = icon;
             this.toast.show = true;

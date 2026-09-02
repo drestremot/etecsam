@@ -13,7 +13,7 @@
                     <span class="text-indigo-600 font-extrabold">Minha Conta</span>
                 </div>
                 <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 flex items-center gap-3">
-                    <span>👤 Meu Perfil</span>
+                    <span><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg> Meu Perfil</span>
                 </h1>
                 <p class="text-xs sm:text-sm text-gray-600 mt-1 font-normal">
                     Atualize seus dados de cadastro, biografia acadêmica e foto de exibição

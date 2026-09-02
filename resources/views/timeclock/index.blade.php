@@ -13,7 +13,7 @@
                     <span class="text-indigo-600 font-extrabold">Ponto Eletrônico</span>
                 </div>
                 <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 flex items-center gap-3">
-                    <span>🕒 Ponto Digital com Reconhecimento Facial</span>
+                    <span><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Ponto Digital com Reconhecimento Facial</span>
                 </h1>
                 <p class="text-xs sm:text-sm text-gray-600 mt-1 font-normal">
                     Registro de frequência com captura facial, geolocalização e conferência de grade horária
@@ -63,7 +63,7 @@
                         <template x-if="gps.status === 'success'">
                             <span class="inline-flex items-center gap-1.5 rounded-xl px-3 py-1 text-[11px] font-semibold border"
                                   :class="gps.is_within ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-rose-50 text-rose-700 border-rose-200'">
-                                <span x-text="gps.is_within ? '📍 Na Unidade Escolar' : '⚠️ Fora da Escola'"></span>
+                                <span x-text="gps.is_within ? '<svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg> Na Unidade Escolar' : '<svg class="w-4 h-4 inline-block text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg> Fora da Escola'"></span>
                                 <span class="font-normal" x-text="'(' + gps.distance + 'm)'"></span>
                             </span>
                         </template>
@@ -99,7 +99,7 @@
 
                     <!-- Camera Error or Permission prompt -->
                     <div x-show="cameraError" class="absolute inset-0 bg-gray-900/90 flex flex-col items-center justify-center p-6 text-center text-white space-y-3" style="display: none;">
-                        <span class="text-3xl">📷</span>
+                        <span class="text-3xl"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg></span>
                         <p class="text-xs font-semibold" x-text="cameraErrorMessage"></p>
                         <button type="button" @click="startCamera()" class="rounded-xl bg-indigo-600 px-4 py-2 text-xs font-bold hover:bg-indigo-500 transition">
                             Permitir e Ativar Câmera
@@ -154,7 +154,7 @@
                         <template x-if="!submitting">
                             <span class="flex items-center gap-2">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                <span>📸 REGISTRAR PONTO COM RECONHECIMENTO FACIAL</span>
+                                <span><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg> REGISTRAR PONTO COM RECONHECIMENTO FACIAL</span>
                             </span>
                         </template>
                         <template x-if="submitting">
@@ -243,7 +243,7 @@
 
                         <template x-if="todayRecords.length === 0">
                             <div class="py-6 text-center text-gray-400 text-xs">
-                                <span class="text-2xl block mb-1">⏱️</span>
+                                <span class="text-2xl block mb-1"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></span>
                                 <span>Nenhum ponto registrado hoje.</span>
                             </div>
                         </template>
@@ -261,7 +261,7 @@
                 <div class="relative transform overflow-hidden rounded-3xl bg-white text-left shadow-2xl transition-all sm:my-8 w-full max-w-md p-6 space-y-5">
                     <div class="text-center space-y-1">
                         <div class="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-2xl mx-auto shadow-xs">
-                            ✓
+                            <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                         </div>
                         <h3 class="text-lg font-bold text-gray-900">Comprovante de Ponto Digital</h3>
                         <p class="text-xs text-gray-500">Registro de presença com reconhecimento facial concluído</p>

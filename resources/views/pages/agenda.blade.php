@@ -126,7 +126,7 @@
         @if(isset($birthdays) && $birthdays->count() > 0)
         <div class="mt-16 max-w-4xl mx-auto space-y-8">
 
-            {{-- ★ DESTAQUE: Aniversariante(s) do DIA ★ --}}
+            {{-- DESTAQUE: Aniversariante(s) do DIA --}}
             @if($todayBirthdays->count() > 0)
             <div x-data="{
                     current: 0,
@@ -143,7 +143,8 @@
 
                 <div class="relative rounded-3xl overflow-hidden shadow-xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-slate-950 p-8 text-center">
                     <div class="inline-flex items-center gap-2 bg-slate-950/20 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest mb-6">
-                        🎂 Aniversariante de Hoje · {{ now()->translatedFormat('d \d\e F') }}
+                        <svg class="w-4 h-4 text-slate-950" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <span>Aniversariante de Hoje · {{ now()->translatedFormat('d \d\e F') }}</span>
                     </div>
 
                     @foreach($todayBirthdays as $i => $teacher)
@@ -170,7 +171,9 @@
             {{-- Grade: todos os aniversariantes do mês --}}
             <div class="bg-[#14284b] rounded-3xl shadow-sm border border-white/10 overflow-hidden">
                 <div class="px-6 py-4 border-b border-white/10 bg-[#0f223f] flex items-center gap-3">
-                    <div class="w-9 h-9 bg-amber-400/15 text-amber-300 rounded-xl flex items-center justify-center text-lg">🎂</div>
+                    <div class="w-9 h-9 bg-amber-400/15 text-amber-300 rounded-xl flex items-center justify-center">
+                        <svg class="w-5 h-5 text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    </div>
                     <div>
                         <h2 class="text-base font-bold text-white">Aniversariantes de {{ \Carbon\Carbon::now()->translatedFormat('F') }}</h2>
                         <p class="text-xs text-slate-300">Professores e funcionários que fazem aniversário este mês</p>
@@ -194,7 +197,7 @@
                             <div class="min-w-0">
                                 <p class="font-bold text-white text-xs leading-tight truncate">{{ $teacher->name }}</p>
                                 <p class="text-[11px] font-medium mt-0.5 {{ $isToday ? 'text-amber-300 font-bold' : 'text-slate-300' }}">
-                                    {{ $isToday ? '🎂 Hoje!' : 'Dia ' . \Carbon\Carbon::parse($teacher->birth_date)->format('d') }}
+                                    {{ $isToday ? ' Hoje!' : 'Dia ' . \Carbon\Carbon::parse($teacher->birth_date)->format('d') }}
                                 </p>
                             </div>
                         </div>
@@ -222,7 +225,7 @@
                 </div>
                 <button onclick="closeEventModal()"
                         class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full text-slate-300 hover:bg-white/10 hover:text-white transition text-lg">
-                    ✕
+                    ×
                 </button>
             </div>
             <div id="modal-carousel" class="relative bg-black/50 hidden">
@@ -267,7 +270,7 @@ function openEventModal(data) {
 
     const locEl = document.getElementById('modal-location');
     if (data.location) {
-        locEl.textContent = '📍 ' + data.location;
+        locEl.innerHTML = '<svg class="w-4 h-4 inline-block mr-1 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg> ' + data.location;
         locEl.classList.remove('hidden');
     } else {
         locEl.classList.add('hidden');

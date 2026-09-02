@@ -11,7 +11,7 @@
                 Voltar aos Detalhes
             </a>
             <span class="rounded-lg bg-amber-100 px-2.5 py-1 text-[11px] font-bold text-amber-800">
-                ⚠️ Edição com Auditoria Ativa
+                <svg class="w-4 h-4 inline-block text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg> Edição com Auditoria Ativa
             </span>
         </div>
 
@@ -20,7 +20,7 @@
             <div class="border-b border-gray-100 pb-4 mb-6">
                 <div class="flex items-center gap-2">
                     <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-blue-100 text-blue-600 font-semibold text-xs">
-                        ✏️
+                        <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>️
                     </span>
                     <div>
                         <h1 class="text-xl font-bold text-gray-900">
@@ -154,9 +154,9 @@
                             Status da Homologação <span class="text-red-500">*</span>
                         </label>
                         <select name="status" id="status" required class="w-full rounded-xl border-gray-300 shadow-2xs text-xs font-bold focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20" onchange="toggleRejectionReason(this.value)">
-                            <option value="pendente" {{ old('status', $medicalCertificate->status) == 'pendente' ? 'selected' : '' }}>⏳ Pendente</option>
-                            <option value="homologado" {{ old('status', $medicalCertificate->status) == 'homologado' ? 'selected' : '' }}>✅ Homologado (Aprovado)</option>
-                            <option value="rejeitado" {{ old('status', $medicalCertificate->status) == 'rejeitado' ? 'selected' : '' }}>❌ Rejeitado</option>
+                            <option value="pendente" {{ old('status', $medicalCertificate->status) == 'pendente' ? 'selected' : '' }}><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Pendente</option>
+                            <option value="homologado" {{ old('status', $medicalCertificate->status) == 'homologado' ? 'selected' : '' }}><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Homologado (Aprovado)</option>
+                            <option value="rejeitado" {{ old('status', $medicalCertificate->status) == 'rejeitado' ? 'selected' : '' }}><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg> Rejeitado</option>
                         </select>
                         <x-input-error :messages="$errors->get('status')" class="mt-1" />
                     </div>

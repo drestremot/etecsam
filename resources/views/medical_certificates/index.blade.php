@@ -63,7 +63,7 @@
             <div class="rounded-xl border border-gray-200 bg-white p-3.5 shadow-2xs border-t-4 border-t-gray-800">
                 <div class="flex items-center justify-between">
                     <span class="text-[10px] font-bold text-gray-400 uppercase">Total Registrado</span>
-                    <span class="text-xs">📋</span>
+                    <span class="text-xs"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg></span>
                 </div>
                 <div class="text-xl sm:text-2xl font-bold text-gray-800 mt-1">{{ $stats['total'] }}</div>
             </div>
@@ -71,7 +71,7 @@
             <div class="rounded-xl border border-gray-200 bg-white p-3.5 shadow-2xs border-t-4 border-t-[#f2994a]">
                 <div class="flex items-center justify-between">
                     <span class="text-[10px] font-bold text-gray-400 uppercase">Pendentes Homologação</span>
-                    <span class="text-xs">⏳</span>
+                    <span class="text-xs"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></span>
                 </div>
                 <div class="text-xl sm:text-2xl font-bold text-amber-600 mt-1">{{ $stats['pendentes'] }}</div>
             </div>
@@ -79,7 +79,7 @@
             <div class="rounded-xl border border-gray-200 bg-white p-3.5 shadow-2xs border-t-4 border-t-[#27ae60]">
                 <div class="flex items-center justify-between">
                     <span class="text-[10px] font-bold text-gray-400 uppercase">Homologados</span>
-                    <span class="text-xs">✅</span>
+                    <span class="text-xs"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg></span>
                 </div>
                 <div class="text-xl sm:text-2xl font-bold text-emerald-600 mt-1">{{ $stats['homologados'] }}</div>
             </div>
@@ -87,7 +87,7 @@
             <div class="rounded-xl border border-gray-200 bg-white p-3.5 shadow-2xs border-t-4 border-t-[#eb5757]">
                 <div class="flex items-center justify-between">
                     <span class="text-[10px] font-bold text-gray-400 uppercase">Rejeitados</span>
-                    <span class="text-xs">❌</span>
+                    <span class="text-xs"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></span>
                 </div>
                 <div class="text-xl sm:text-2xl font-bold text-red-600 mt-1">{{ $stats['rejeitados'] }}</div>
             </div>
@@ -95,7 +95,7 @@
             <div class="rounded-xl border border-gray-200 bg-white p-3.5 shadow-2xs border-t-4 border-t-purple-600 col-span-2 sm:col-span-1">
                 <div class="flex items-center justify-between">
                     <span class="text-[10px] font-bold text-gray-400 uppercase">Afastados Hoje</span>
-                    <span class="text-xs">🏥</span>
+                    <span class="text-xs"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg></span>
                 </div>
                 <div class="text-xl sm:text-2xl font-bold text-purple-700 mt-1">{{ $stats['afastados_hoje'] }}</div>
             </div>
@@ -161,7 +161,7 @@
                     </button>
                     @if(request()->anyFilled(['search', 'user_id', 'type', 'status']))
                         <a href="{{ route('medical-certificates.index') }}" class="inline-flex justify-center items-center rounded-xl bg-gray-200 py-2 px-2.5 text-xs font-bold text-gray-600 hover:bg-gray-300 transition" title="Limpar Filtros">
-                            ✖
+                            &times;
                         </a>
                     @endif
                 </div>
@@ -227,7 +227,7 @@
                                         {{ $cert->start_date->format('d/m/Y') }} a {{ $cert->end_date->format('d/m/Y') }}
                                     </div>
                                     <div class="text-[10px] font-bold text-blue-600 mt-0.5">
-                                        ⏱️ {{ $cert->days }} {{ $cert->days == 1 ? 'dia' : 'dias' }} de licença
+                                        <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> {{ $cert->days }} {{ $cert->days == 1 ? 'dia' : 'dias' }} de licença
                                     </div>
                                 </td>
 

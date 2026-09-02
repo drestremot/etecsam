@@ -81,7 +81,7 @@
         <div class="flex items-center gap-3 pt-1">
             <button type="submit"
                     class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-6 py-2.5 rounded-lg shadow-sm transition">
-                {{ $action === 'create' ? '✓ Cadastrar Entrada' : '✓ Salvar Alterações' }}
+                {{ $action === 'create' ? '<svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Cadastrar Entrada' : '<svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Salvar Alterações' }}
             </button>
             <a href="{{ route('admin.apm-incomes.index') }}"
                class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 px-4 py-2.5 rounded-lg border border-gray-300 hover:bg-gray-50 transition">

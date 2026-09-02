@@ -144,7 +144,7 @@
           <td style="text-align:center">{{ $m->pivot->quantity_requested }} {{ $m->unit ?? '' }}</td>
           <td style="text-align:center">
             @if($m->pivot->delivered)
-              <span class="qty-ok">✓ Sim</span>
+              <span class="qty-ok"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Sim</span>
               @if($m->pivot->delivered_at)
                 <br><span style="font-size:9px;color:#9ca3af">{{ \Carbon\Carbon::parse($m->pivot->delivered_at)->format('H:i') }}</span>
               @endif
@@ -154,7 +154,7 @@
           </td>
           <td style="text-align:center">
             @if($m->pivot->returned)
-              <span class="qty-ok">✓ Sim</span>
+              <span class="qty-ok"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Sim</span>
               @if($m->pivot->returned_at)
                 <br><span style="font-size:9px;color:#9ca3af">{{ \Carbon\Carbon::parse($m->pivot->returned_at)->format('H:i') }}</span>
               @endif

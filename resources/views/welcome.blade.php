@@ -77,14 +77,14 @@
 
                     <div class="h-40 bg-etec-dark relative overflow-hidden flex items-center justify-center">
                         <div class="absolute inset-0 bg-pattern opacity-10"></div> <div class="text-6xl group-hover:scale-110 transition duration-500">
-                            @if(Str::contains($unit->name, 'Agrícola') || Str::contains($unit->name, 'Sede')) 🚜
-                            @elseif(Str::contains($unit->name, 'FEA')) 🏢
-                            @elseif(Str::contains($unit->name, 'Youssef')) 🏫
-                            @else 🏛️ @endif
+                            @if(Str::contains($unit->name, 'Agrícola') || Str::contains($unit->name, 'Sede')) 
+                            @elseif(Str::contains($unit->name, 'FEA')) 
+                            @elseif(Str::contains($unit->name, 'Youssef')) 
+                            @else <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg> @endif
                         </div>
 
                         <div class="absolute bottom-3 left-4 text-white font-bold text-xs bg-black/30 px-2 py-1 rounded backdrop-blur-sm flex items-center gap-1">
-                            📍 {{ $unit->city }}
+                            <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg> {{ $unit->city }}
                         </div>
                     </div>
 
@@ -99,10 +99,10 @@
 
                         <div class="mt-auto pt-4 flex items-center justify-between border-t border-gray-100">
                             <span class="text-sm font-bold text-etec-dark bg-etec-light/30 px-3 py-1 rounded-full">
-                                📚 {{ $unit->courses_count }} Curso(s)
+                                <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> {{ $unit->courses_count }} Curso(s)
                             </span>
                             <span class="w-8 h-8 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center group-hover:bg-etec-accent group-hover:text-etec-dark transition">
-                                ➜
+                                &rarr;
                             </span>
                         </div>
                     </div>
@@ -132,10 +132,10 @@
             @foreach($sectors as $sector)
             <div class="bg-white/5 backdrop-blur-md p-6 rounded-lg hover:bg-white/10 transition border border-white/5 group cursor-pointer">
                 <div class="text-3xl mb-4 group-hover:scale-110 transition transform text-etec-accent">
-                    @if($sector->icon == 'cow') 🐮
-                    @elseif($sector->icon == 'leaf') 🌱
-                    @elseif($sector->icon == 'tractor') 🚜
-                    @else ⚙️ @endif
+                    @if($sector->icon == 'cow') 
+                    @elseif($sector->icon == 'leaf') 
+                    @elseif($sector->icon == 'tractor') 
+                    @else <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>️ @endif
                 </div>
                 <h3 class="font-bold text-lg mb-1">{{ $sector->name }}</h3>
                 <p class="text-xs text-gray-400 line-clamp-2">{{ $sector->summary }}</p>
@@ -161,8 +161,8 @@
                         <a href="#">{{ $event->title }}</a>
                     </h3>
                     <div class="flex items-center gap-4 text-sm text-gray-500 mt-2">
-                        <span class="flex items-center gap-1">🕒 {{ \Carbon\Carbon::parse($event->start_date)->format('H:i') }}</span>
-                        <span class="flex items-center gap-1">📍 {{ $event->location }}</span>
+                        <span class="flex items-center gap-1"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> {{ \Carbon\Carbon::parse($event->start_date)->format('H:i') }}</span>
+                        <span class="flex items-center gap-1"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg> {{ $event->location }}</span>
                     </div>
                     <p class="text-gray-600 mt-2 text-sm">{{ Str::limit($event->description, 100) }}</p>
                 </div>

@@ -165,7 +165,7 @@
                     </td>
                     <td class="px-6 py-3 text-center">
                         @if($m->pivot->delivered)
-                            <span class="text-green-600 font-bold text-xs">✓ Sim</span>
+                            <span class="text-green-600 font-bold text-xs"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Sim</span>
                             @if($m->pivot->delivered_at)
                                 <p class="text-xs text-gray-400">{{ \Carbon\Carbon::parse($m->pivot->delivered_at)->format('H:i') }}</p>
                             @endif
@@ -175,7 +175,7 @@
                     </td>
                     <td class="px-6 py-3 text-center">
                         @if($m->pivot->returned)
-                            <span class="text-blue-600 font-bold text-xs">✓ Sim</span>
+                            <span class="text-blue-600 font-bold text-xs"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Sim</span>
                             @if($m->pivot->returned_at)
                                 <p class="text-xs text-gray-400">{{ \Carbon\Carbon::parse($m->pivot->returned_at)->format('H:i') }}</p>
                             @endif
@@ -215,13 +215,13 @@
                     @endif
                 </div>
                 <button class="inline-flex items-center gap-2 bg-etec-dark text-white px-5 py-2.5 rounded-lg hover:bg-etec-main transition text-sm font-semibold">
-                    ✓ Aprovar e encaminhar ao Auxiliar
+                    <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Aprovar e encaminhar ao Auxiliar
                 </button>
             </form>
             <form action="{{ route('lab.reservations.reject', $reservation) }}" method="POST">
                 @csrf @method('PATCH')
                 <button class="inline-flex items-center gap-2 bg-red-600 text-white px-5 py-2.5 rounded-lg hover:bg-red-700 transition text-sm font-semibold">
-                    ✗ Recusar
+                    <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg> Recusar
                 </button>
             </form>
         </div>
@@ -240,7 +240,7 @@
             <form action="{{ route('lab.reservations.start', $reservation) }}" method="POST">
                 @csrf
                 <button class="inline-flex items-center gap-2 bg-etec-accent text-etec-dark px-5 py-2.5 rounded-lg hover:bg-yellow-400 transition text-sm font-semibold">
-                    ✓ Materiais entregues — Professor assina checklist e inicia aula
+                    <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Materiais entregues — Professor assina checklist e inicia aula
                 </button>
             </form>
         </div>
@@ -415,7 +415,7 @@
         <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm p-5">
             <h3 class="font-bold text-gray-900 dark:text-white mb-3 text-sm">Documento Assinado (finalização)</h3>
             @if($reservation->scanned_doc)
-                <p class="text-sm text-green-600 mb-3">✓ Documento já enviado.</p>
+                <p class="text-sm text-green-600 mb-3"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Documento já enviado.</p>
             @endif
             <form action="{{ route('lab.reservations.upload-doc', $reservation) }}" method="POST" enctype="multipart/form-data" class="flex items-center gap-3">
                 @csrf

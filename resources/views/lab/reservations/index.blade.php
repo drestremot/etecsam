@@ -401,7 +401,7 @@
                                             <div class="flex flex-wrap items-center justify-between gap-1.5">
                                                 <div class="flex items-center gap-1.5">
                                                     <a href="{{ route('lab.reservations.pdf', $res->id) }}" target="_blank" class="inline-flex items-center rounded-lg border border-gray-200 bg-gray-50 px-2 py-1 text-xs font-bold text-gray-700 hover:bg-gray-100 transition shadow-2xs" title="Imprimir Checklist PDF">
-                                                        📄 PDF
+                                                        <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> PDF
                                                     </a>
 
                                                     <a href="{{ route('lab.reservations.show', $res->id) }}" class="text-xs font-bold text-blue-600 hover:text-blue-800 hover:underline px-1">

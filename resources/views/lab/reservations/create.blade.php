@@ -180,7 +180,7 @@
                     <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Laboratório / Espaço *</label>
                     @if($spaces->isEmpty())
                         <div class="rounded-lg bg-yellow-50 border border-yellow-200 p-3 text-sm text-yellow-800">
-                            ⚠ Nenhum espaço didático cadastrado ainda.
+                            <svg class="w-4 h-4 inline-block text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg> Nenhum espaço didático cadastrado ainda.
                             @if(auth()->user()->is_admin)
                                 <a href="{{ route('lab.spaces.create') }}" class="font-bold underline ml-1">Cadastrar agora →</a>
                             @else
@@ -209,7 +209,7 @@
                     <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Coordenador responsável *</label>
                     @if($coordenadores->isEmpty())
                         <div class="rounded-lg bg-yellow-50 border border-yellow-200 p-3 text-sm text-yellow-800">
-                            ⚠ Nenhum coordenador cadastrado ainda.
+                            <svg class="w-4 h-4 inline-block text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg> Nenhum coordenador cadastrado ainda.
                             @if(auth()->user()->is_admin)
                                 <a href="{{ route('lab.users.index') }}" class="font-bold underline ml-1">Cadastrar agora →</a>
                             @else
@@ -235,7 +235,7 @@
                         <div>
                             <p class="font-semibold text-etec-dark dark:text-white text-sm" x-text="selectionLabel"></p>
                             <button type="button" @click="selectedDate='';selectedStart='';selectedEnd=''"
-                                    class="text-xs text-red-400 hover:text-red-600 mt-1">✕ Limpar seleção</button>
+                                    class="text-xs text-red-400 hover:text-red-600 mt-1">× Limpar seleção</button>
                         </div>
                     </template>
                     <template x-if="!hasSelection">
@@ -281,7 +281,7 @@
                     @if($materials->isEmpty())
                         <div class="p-4 flex-1">
                             <div class="rounded-lg bg-yellow-50 border border-yellow-200 p-4 text-sm text-yellow-800">
-                                <p class="font-semibold mb-1">⚠ Nenhum material cadastrado.</p>
+                                <p class="font-semibold mb-1"><svg class="w-4 h-4 inline-block text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg> Nenhum material cadastrado.</p>
                                 @if(auth()->user()->is_admin)
                                     <a href="{{ route('lab.materials.create') }}"
                                        class="inline-flex items-center gap-1 text-xs bg-yellow-600 text-white font-bold px-3 py-1.5 rounded-lg hover:bg-yellow-700 transition mt-1">
@@ -469,7 +469,7 @@
                 {{-- Rodapé com instrução --}}
                 <div class="px-4 py-2.5 border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/50">
                     <p class="text-xs text-gray-500 dark:text-gray-400">
-                        💡 <strong>Clique</strong> em um horário para selecionar · <strong>Arraste</strong> para selecionar múltiplas horas · Dias sombreados = mínimo 48h não atingido
+                         <strong>Clique</strong> em um horário para selecionar · <strong>Arraste</strong> para selecionar múltiplas horas · Dias sombreados = mínimo 48h não atingido
                     </p>
                 </div>
             </div>

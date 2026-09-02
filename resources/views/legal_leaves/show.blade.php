@@ -147,7 +147,7 @@
                     <div class="rounded-2xl border border-purple-200 bg-white p-5 shadow-sm space-y-3">
                         <div class="flex items-center gap-2 border-b border-gray-100 pb-2">
                             <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-purple-100 text-purple-700 font-bold text-xs">
-                                🏖️
+                                <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                             </span>
                             <div>
                                 <h3 class="text-xs font-semibold uppercase tracking-wide text-purple-900">
@@ -222,7 +222,7 @@
                                 type="submit"
                                 class="w-full inline-flex items-center justify-center gap-1.5 rounded-xl bg-purple-600 py-2.5 px-4 text-xs font-bold text-white shadow-2xs hover:bg-purple-500 transition"
                             >
-                                <span>📅 Enviar Solicitação para Ciência da Coordenação</span>
+                                <span><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg> Enviar Solicitação para Ciência da Coordenação</span>
                             </button>
                         </form>
                     </div>
@@ -231,7 +231,7 @@
                 <!-- Extrato Cronológico de Dias Usufruídos / Tirados -->
                 <div class="rounded-2xl border border-gray-300 bg-white p-5 shadow-sm space-y-3">
                     <h3 class="text-xs font-semibold uppercase tracking-wide text-gray-800 flex items-center gap-1.5 border-b border-gray-100 pb-2">
-                        <span>🏖️ Extrato de Dias Usufruídos & Tirados</span>
+                        <span><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg> Extrato de Dias Usufruídos & Tirados</span>
                     </h3>
 
                     <div class="space-y-2 text-xs">
@@ -248,7 +248,7 @@
 
                                 <div class="flex items-center justify-between text-[10.5px] text-gray-500">
                                     <span>
-                                        {{ $req->is_within_72h_deadline ? '✅ Solicitado com ≥72h de antecedência' : '⚠️ Solicitado com <72h (Urgência)' }}
+                                        {{ $req->is_within_72h_deadline ? '<svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Solicitado com ≥72h de antecedência' : '<svg class="w-4 h-4 inline-block text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg> Solicitado com <72h (Urgência)' }}
                                     </span>
                                     @if($req->reviewed_by && $req->reviewer)
                                         <span>Ciência por {{ $req->reviewer->name }}</span>
@@ -304,7 +304,7 @@
                             />
                         @else
                             <div class="text-center py-12 text-gray-400">
-                                📄 <p class="text-xs font-bold text-gray-600 mt-2">Formato não suportado para visualização direta.</p>
+                                <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> <p class="text-xs font-bold text-gray-600 mt-2">Formato não suportado para visualização direta.</p>
                                 <a href="{{ route('legal-leaves.download', $legalLeave->id) }}" class="mt-3 inline-block rounded-xl bg-purple-600 px-4 py-2 text-xs font-bold text-white shadow-2xs">
                                     Baixar Arquivo
                                 </a>
@@ -319,7 +319,7 @@
                         <div class="flex items-center justify-between border-b border-gray-200 pb-3">
                             <div class="flex items-center gap-2">
                                 <span class="inline-flex h-7 w-7 items-center justify-center rounded-xl bg-purple-100 text-purple-700 font-bold text-xs">
-                                    🛡️
+                                    <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>️
                                 </span>
                                 <div>
                                     <h3 class="text-xs font-semibold uppercase tracking-wide text-gray-900">
@@ -349,7 +349,7 @@
                                             </span>
                                         </div>
                                         <div class="text-[10px] text-gray-500 font-medium">
-                                            🕒 {{ $audit->created_at->format('d/m/Y H:i:s') }}
+                                            <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> {{ $audit->created_at->format('d/m/Y H:i:s') }}
                                             @if($audit->ip_address)
                                                 • IP: {{ $audit->ip_address }}
                                             @endif
@@ -408,13 +408,13 @@ function checkAntecedencia(dateVal) {
 
     if (diffHours >= 72) {
         notice.classList.add('text-emerald-700');
-        notice.innerText = "✅ Prazo regulamentar atendido (" + Math.round(diffHours) + "h de antecedência).";
+        notice.innerText = "<svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Prazo regulamentar atendido (" + Math.round(diffHours) + "h de antecedência).";
     } else if (diffHours > 0) {
         notice.classList.add('text-amber-700');
-        notice.innerText = "⚠️ Atenção: Solicitado com " + Math.round(diffHours) + "h de antecedência (< 72h regulamentares). Envio classificado como urgência.";
+        notice.innerText = "<svg class="w-4 h-4 inline-block text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg> Atenção: Solicitado com " + Math.round(diffHours) + "h de antecedência (< 72h regulamentares). Envio classificado como urgência.";
     } else {
         notice.classList.add('text-red-700');
-        notice.innerText = "❌ A data selecionada já passou.";
+        notice.innerText = "<svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg> A data selecionada já passou.";
     }
 }
 </script>

@@ -20,7 +20,7 @@
             <div class="border-b border-gray-100 pb-4 mb-6">
                 <h1 class="text-xl font-bold text-gray-900 flex items-center gap-2">
                     <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-purple-100 text-purple-700 font-bold text-base">
-                        ⚖️
+                        <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
                     </span>
                     <span>Conceder Crédito de Folga Prevista em Lei</span>
                 </h1>
@@ -86,7 +86,7 @@
 
                 <!-- Info Box Dinâmico da Legislação -->
                 <div id="legal-info-box" class="rounded-xl bg-purple-50 p-3.5 border border-purple-200 text-xs text-purple-900 space-y-1">
-                    <span class="font-extrabold block text-purple-950" id="legal-title">⚖️ Regra Legal Aplicável:</span>
+                    <span class="font-extrabold block text-purple-950" id="legal-title"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg> Regra Legal Aplicável:</span>
                     <p id="legal-desc" class="text-[11.5px] leading-relaxed text-purple-800">
                         Selecione o tipo de folga acima para visualizar a fundamentação jurídica e o cálculo de dias.
                     </p>
@@ -161,13 +161,13 @@
                 <div class="flex flex-wrap items-center gap-2 pt-1">
                     <span class="text-[11px] font-bold text-gray-500 uppercase">Preenchimento Rápido:</span>
                     <button type="button" onclick="setQuickDays('eleicao', 1, 2, 'Serviço Eleitoral TRE (1 Turno = 2 Folgas)')" class="rounded-lg bg-gray-100 hover:bg-purple-100 text-purple-900 border border-gray-200 px-2.5 py-1 text-[11px] font-bold transition">
-                        🗳️ 1 Turno TRE (2 dias)
+                        <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> 1 Turno TRE (2 dias)
                     </button>
                     <button type="button" onclick="setQuickDays('eleicao', 2, 4, 'Serviço Eleitoral TRE (2 Turnos = 4 Folgas)')" class="rounded-lg bg-gray-100 hover:bg-purple-100 text-purple-900 border border-gray-200 px-2.5 py-1 text-[11px] font-bold transition">
-                        🗳️ 2 Turnos TRE (4 dias)
+                        <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> 2 Turnos TRE (4 dias)
                     </button>
                     <button type="button" onclick="setQuickDays('doacao_sangue', 1, 1, 'Doação de Sangue - Comprovante Hemocentro')" class="rounded-lg bg-gray-100 hover:bg-red-100 text-red-900 border border-gray-200 px-2.5 py-1 text-[11px] font-bold transition">
-                        🩸 Doação de Sangue (1 dia)
+                        <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg> Doação de Sangue (1 dia)
                     </button>
                 </div>
 
@@ -218,7 +218,7 @@
                         type="submit"
                         class="inline-flex items-center gap-2 rounded-xl bg-purple-600 px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-purple-500 transition"
                     >
-                        <span>⚖️ Conceder Saldo de Folga</span>
+                        <span><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg> Conceder Saldo de Folga</span>
                     </button>
                 </div>
             </form>
@@ -230,35 +230,35 @@
 <script>
 const legalRules = {
     eleicao: {
-        title: "🗳️ Serviço Eleitoral (Art. 98 da Lei Federal nº 9.504/1997)",
+        title: "<svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> Serviço Eleitoral (Art. 98 da Lei Federal nº 9.504/1997)",
         desc: "Cada 1 dia trabalhado ou convocado para treinamento da Justiça Eleitoral concede DIREITO A 2 DIAS DE FOLGA remunerada (Concessão em dobro)."
     },
     juri_popular: {
-        title: "🏛️ Tribunal do Júri (Art. 430 do Código de Processo Penal)",
+        title: "<svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg> Tribunal do Júri (Art. 430 do Código de Processo Penal)",
         desc: "Nenhum desconto será feito nos vencimentos do jurado sorteado que comparecer à sessão do júri, conferindo folga correspondente aos dias do julgamento."
     },
     doacao_sangue: {
-        title: "🩸 Doação Voluntária de Sangue (Art. 473, IV da CLT / Lei Estadual SP)",
+        title: "<svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg> Doação Voluntária de Sangue (Art. 473, IV da CLT / Lei Estadual SP)",
         desc: "Dispensa de 1 dia de trabalho a cada 12 meses mediante apresentação de atestado do banco de sangue ou hemocentro."
     },
     alistamento: {
-        title: "📋 Alistamento Eleitoral (Art. 473, V da CLT)",
+        title: "<svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> Alistamento Eleitoral (Art. 473, V da CLT)",
         desc: "Até 2 dias de folga para fins de alistamento eleitoral ou transferência de domicílio eleitoral."
     },
     casamento: {
-        title: "💍 Casamento / Gala (Art. 473, II da CLT / Estatuto dos Servidores)",
+        title: "<svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> Casamento / Gala (Art. 473, II da CLT / Estatuto dos Servidores)",
         desc: "Folga remunerada de 3 a 8 dias consecutivos em virtude de casamento."
     },
     luto: {
-        title: "🕊️ Luto / Nojo (Art. 473, I da CLT / Estatuto dos Servidores)",
+        title: "<svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>️ Luto / Nojo (Art. 473, I da CLT / Estatuto dos Servidores)",
         desc: "Afastamento remunerado em caso de falecimento de cônjuge, ascendente, descendente ou dependente."
     },
     convocacao_judicial: {
-        title: "⚖️ Convocação Judicial / Testemunha (Art. 822 da CLT)",
+        title: "<svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg> Convocação Judicial / Testemunha (Art. 822 da CLT)",
         desc: "O empregado não sofrerá desconto salarial pelo tempo que comparecer como testemunha ou convocado pela Justiça."
     },
     outro: {
-        title: "📄 Outro Direito Previsto em Lei",
+        title: "<svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> Outro Direito Previsto em Lei",
         desc: "Concessão fundamentada em legislação trabalhista ou estatutária específica."
     }
 };
@@ -290,7 +290,7 @@ function setQuickDays(type, workedDays, grantedDays, desc) {
 function previewFileName(input) {
     const preview = document.getElementById('file-name-preview');
     if (input.files && input.files[0]) {
-        preview.innerText = "📄 Arquivo selecionado: " + input.files[0].name;
+        preview.innerText = "<svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> Arquivo selecionado: " + input.files[0].name;
         preview.classList.remove('hidden');
     }
 }

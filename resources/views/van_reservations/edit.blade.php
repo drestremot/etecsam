@@ -3,7 +3,7 @@
         <div class="flex items-center justify-between">
             <div>
                 <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-800">
-                    🚐 VanTec • Edição de Reserva
+                    <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg> VanTec • Edição de Reserva
                 </span>
                 <h1 class="text-xl font-bold tracking-tight text-gray-900 mt-1">
                     Editar Reserva #{{ $vanReservation->id }}

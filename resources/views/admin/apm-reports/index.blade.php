@@ -29,9 +29,9 @@
                 <td class="px-4 py-3 text-gray-500">{{ $report->published_at ? $report->published_at->format('d/m/Y') : '—' }}</td>
                 <td class="px-4 py-3 text-gray-500">
                     @if($report->file_path)
-                        <a href="{{ photo_url($report->file_path) }}" target="_blank" class="text-indigo-600 hover:underline">📄 Abrir</a>
+                        <a href="{{ photo_url($report->file_path) }}" target="_blank" class="text-indigo-600 hover:underline"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> Abrir</a>
                     @elseif($report->url)
-                        <a href="{{ $report->url }}" target="_blank" class="text-indigo-600 hover:underline">🔗 Link</a>
+                        <a href="{{ $report->url }}" target="_blank" class="text-indigo-600 hover:underline"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg> Link</a>
                     @else
                         —
                     @endif

@@ -8,7 +8,7 @@
         <div class="flex flex-wrap items-center justify-between gap-4">
             <div>
                 <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-3 py-1 text-xs font-extrabold text-blue-800">
-                    🚐 VanTec • Gestão de Frotas & Transporte Escolar
+                    <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg> VanTec • Gestão de Frotas & Transporte Escolar
                 </span>
                 <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 mt-2">
                     Reserva da Van Escolar
@@ -56,15 +56,15 @@
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs text-blue-900/90 mt-3">
                 <div class="bg-white/80 rounded-xl p-3 border border-blue-100 shadow-2xs">
-                    <span class="font-bold text-blue-800 block mb-1">⏱️ Antecedência Mínima de 72h</span>
+                    <span class="font-bold text-blue-800 block mb-1"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Antecedência Mínima de 72h</span>
                     A solicitação deve ser feita no mínimo 72 horas antes da viagem para análise do itinerário e programação institucional.
                 </div>
                 <div class="bg-white/80 rounded-xl p-3 border border-blue-100 shadow-2xs">
-                    <span class="font-bold text-blue-800 block mb-1">✍️ Liberação pela Diretora de Serviços</span>
+                    <span class="font-bold text-blue-800 block mb-1"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>️ Liberação pela Diretora de Serviços</span>
                     A reserva só é confirmada após autorização expressa da Diretoria de Serviços no sistema.
                 </div>
                 <div class="bg-white/80 rounded-xl p-3 border border-blue-100 shadow-2xs">
-                    <span class="font-bold text-blue-800 block mb-1">🚗 Hodômetro Obrigatório (KM Inicial & Final)</span>
+                    <span class="font-bold text-blue-800 block mb-1"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg> Hodômetro Obrigatório (KM Inicial & Final)</span>
                     O condutor/solicitante deve registrar a quilometragem exata na saída e no retorno do veículo.
                 </div>
             </div>
@@ -140,22 +140,22 @@
                                     <span class="text-[10px] font-bold text-gray-400">#{{ $req->id }} • {{ $req->created_at->format('d/m/Y H:i') }}</span>
                                     @if($req->is_within_72h_deadline)
                                         <span class="inline-flex items-center gap-1 rounded bg-emerald-50 px-1.5 py-0.5 text-[9.5px] font-bold text-emerald-800 border border-emerald-200">
-                                            ✅ ≥ 72h ({{ $req->hours_in_advance }}h)
+                                            <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> ≥ 72h ({{ $req->hours_in_advance }}h)
                                         </span>
                                     @else
                                         <span class="inline-flex items-center gap-1 rounded bg-red-50 px-1.5 py-0.5 text-[9.5px] font-bold text-red-800 border border-red-200" title="Solicitado com menos de 72h">
-                                            ⚠️ Urgência (< 72h: {{ $req->hours_in_advance }}h)
+                                            <svg class="w-4 h-4 inline-block text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg> Urgência (< 72h: {{ $req->hours_in_advance }}h)
                                         </span>
                                     @endif
                                 </div>
                                 <h3 class="text-xs font-bold text-gray-900">{{ $req->purpose }}</h3>
-                                <p class="text-[11px] text-gray-600 mt-0.5 font-medium">📍 Destino: {{ $req->destination }}</p>
+                                <p class="text-[11px] text-gray-600 mt-0.5 font-medium"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg> Destino: {{ $req->destination }}</p>
 
                                 <div class="mt-2 text-[10.5px] text-gray-500 space-y-0.5 bg-gray-50 p-2 rounded-lg">
-                                    <div>👤 <strong>Solicitante:</strong> {{ $req->user->name }} ({{ $req->user->department?->name ?? 'Etec' }})</div>
-                                    <div>📅 <strong>Saída:</strong> {{ $req->departure_date->format('d/m/Y') }} às {{ $req->departure_time }}</div>
-                                    <div>🔄 <strong>Retorno:</strong> {{ $req->return_date->format('d/m/Y') }} às {{ $req->return_time }}</div>
-                                    <div>👥 <strong>Passageiros:</strong> {{ $req->passengers_count }} pessoas • Condutor: {{ $req->driver_name }}</div>
+                                    <div><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg> <strong>Solicitante:</strong> {{ $req->user->name }} ({{ $req->user->department?->name ?? 'Etec' }})</div>
+                                    <div><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg> <strong>Saída:</strong> {{ $req->departure_date->format('d/m/Y') }} às {{ $req->departure_time }}</div>
+                                    <div><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> <strong>Retorno:</strong> {{ $req->return_date->format('d/m/Y') }} às {{ $req->return_time }}</div>
+                                    <div><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg> <strong>Passageiros:</strong> {{ $req->passengers_count }} pessoas • Condutor: {{ $req->driver_name }}</div>
                                 </div>
                             </div>
 
@@ -188,7 +188,7 @@
             <div class="rounded-2xl border border-gray-200 bg-white p-4 sm:p-5 shadow-sm space-y-3">
                 <div class="flex items-center justify-between border-b border-gray-100 pb-2.5">
                     <div class="flex items-center gap-2">
-                        <span class="text-sm">🗓️</span>
+                        <span class="text-sm"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>️</span>
                         <h2 class="text-xs font-semibold uppercase tracking-wide text-gray-800">
                             Agenda da Van Escolar (Próximas Viagens Confirmadas)
                         </h2>
@@ -206,10 +206,10 @@
                                 <span class="text-[10px] font-bold text-gray-500">{{ $trip->departure_date->format('d/m/Y') }}</span>
                             </div>
                             <h4 class="text-xs font-bold text-gray-900 truncate">{{ $trip->purpose }}</h4>
-                            <p class="text-[11px] text-blue-700 font-semibold truncate">📍 {{ $trip->destination }}</p>
+                            <p class="text-[11px] text-blue-700 font-semibold truncate"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg> {{ $trip->destination }}</p>
                             <div class="text-[10px] text-gray-500 mt-1 flex justify-between">
                                 <span>⏰ {{ $trip->departure_time }} até {{ $trip->return_time }}</span>
-                                <span>👤 {{ $trip->user->name }}</span>
+                                <span><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg> {{ $trip->user->name }}</span>
                             </div>
                         </div>
                     @endforeach
@@ -222,7 +222,7 @@
             <div class="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 pb-3">
                 <div class="flex items-center gap-2">
                     <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-100 text-blue-700 font-bold text-xs">
-                        🚐
+                        <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
                     </span>
                     <div>
                         <h2 class="text-xs font-semibold uppercase tracking-wide text-gray-900">
@@ -302,30 +302,30 @@
                                 </td>
                                 <td class="py-3 px-3">
                                     <div class="font-bold text-gray-900">{{ $res->purpose }}</div>
-                                    <div class="text-[10px] text-blue-700 font-semibold">📍 {{ $res->destination }}</div>
+                                    <div class="text-[10px] text-blue-700 font-semibold"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg> {{ $res->destination }}</div>
                                 </td>
                                 <td class="py-3 px-3 whitespace-nowrap">
-                                    <div class="font-bold text-gray-900">🛫 {{ $res->departure_date->format('d/m/Y') }} às {{ $res->departure_time }}</div>
-                                    <div class="text-[10px] text-gray-500">🛬 {{ $res->return_date->format('d/m/Y') }} às {{ $res->return_time }}</div>
+                                    <div class="font-bold text-gray-900"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg> {{ $res->departure_date->format('d/m/Y') }} às {{ $res->departure_time }}</div>
+                                    <div class="text-[10px] text-gray-500"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> {{ $res->return_date->format('d/m/Y') }} às {{ $res->return_time }}</div>
                                 </td>
                                 <td class="py-3 px-3">
-                                    <div>👥 {{ $res->passengers_count }} passageiros</div>
-                                    <div class="text-[10px] text-gray-500">🚗 {{ $res->driver_name }}</div>
+                                    <div><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg> {{ $res->passengers_count }} passageiros</div>
+                                    <div class="text-[10px] text-gray-500"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg> {{ $res->driver_name }}</div>
                                 </td>
                                 <td class="py-3 px-3">
                                     @if($res->is_within_72h_deadline)
                                         <span class="inline-flex items-center gap-1 rounded bg-emerald-50 px-1.5 py-0.5 text-[9.5px] font-bold text-emerald-800 border border-emerald-200">
-                                            ✅ ≥ 72h
+                                            <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> ≥ 72h
                                         </span>
                                     @else
                                         <span class="inline-flex items-center gap-1 rounded bg-amber-50 px-1.5 py-0.5 text-[9.5px] font-bold text-amber-800 border border-amber-200" title="Solicitado com menos de 72h de antecedência">
-                                            ⚠️ &lt; 72h
+                                            <svg class="w-4 h-4 inline-block text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg> &lt; 72h
                                         </span>
                                     @endif
                                 </td>
                                 <td class="py-3 px-3 whitespace-nowrap">
                                     @if($res->status === 'concluida')
-                                        <div class="font-bold text-emerald-700">🏁 {{ number_format($res->total_km, 0, ',', '.') }} km</div>
+                                        <div class="font-bold text-emerald-700"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> {{ number_format($res->total_km, 0, ',', '.') }} km</div>
                                         <div class="text-[9.5px] text-gray-400">{{ number_format($res->initial_km, 0, ',', '.') }} &rarr; {{ number_format($res->final_km, 0, ',', '.') }} km</div>
                                     @elseif($res->status === 'em_andamento')
                                         <div class="font-bold text-blue-600">Saída: {{ number_format($res->initial_km, 0, ',', '.') }} km</div>

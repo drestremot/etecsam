@@ -111,7 +111,7 @@
                                 @csrf @method('DELETE')
                                 <button type="submit"
                                         class="w-7 h-7 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center shadow opacity-0 group-hover:opacity-100 transition text-xs font-bold">
-                                    ✕
+                                    ×
                                 </button>
                             </form>
                         </div>
@@ -149,7 +149,7 @@
         <div class="flex items-center gap-3 pt-1">
             <button type="submit"
                     class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-6 py-2.5 rounded-lg shadow-sm transition">
-                {{ $action === 'create' ? '✓ Cadastrar Evento' : '✓ Salvar Alterações' }}
+                {{ $action === 'create' ? '<svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Cadastrar Evento' : '<svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Salvar Alterações' }}
             </button>
             <a href="{{ route('admin.events.index') }}"
                class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 px-4 py-2.5 rounded-lg border border-gray-300 hover:bg-gray-50 transition">
@@ -204,7 +204,7 @@ function addPhotoRow() {
         <input type="text" name="captions[]" placeholder="Legenda (opcional)"
                class="flex-1 rounded-lg border border-gray-300 px-3.5 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500">
         <button type="button" onclick="this.parentElement.remove()"
-                class="mt-1 text-gray-400 hover:text-red-500 transition text-lg leading-none">✕</button>
+                class="mt-1 text-gray-400 hover:text-red-500 transition text-lg leading-none">×</button>
     `;
     container.appendChild(row);
 }

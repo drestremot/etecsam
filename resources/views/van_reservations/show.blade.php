@@ -12,7 +12,7 @@
                     {{ $vanReservation->purpose }}
                 </h1>
                 <p class="text-xs text-blue-700 font-semibold mt-0.5">
-                    📍 Destino: {{ $vanReservation->destination }}
+                    <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg> Destino: {{ $vanReservation->destination }}
                 </p>
             </div>
 
@@ -64,7 +64,7 @@
                                 @csrf
                                 @method('PATCH')
                                 <button type="submit" class="rounded-xl bg-emerald-600 px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-emerald-500 transition">
-                                    ✅ Liberar e Autorizar Viagem
+                                    <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Liberar e Autorizar Viagem
                                 </button>
                             </form>
 
@@ -74,7 +74,7 @@
                                 onclick="document.getElementById('modal-reject').classList.remove('hidden')"
                                 class="rounded-xl bg-red-600 px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-red-500 transition"
                             >
-                                ❌ Recusar
+                                <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg> Recusar
                             </button>
                         </div>
                     @endif
@@ -84,7 +84,7 @@
             <div class="rounded-2xl border border-emerald-300 bg-emerald-50/70 p-5 shadow-sm flex items-center justify-between gap-4">
                 <div>
                     <div class="flex items-center gap-2">
-                        <span class="text-emerald-600 text-lg">✅</span>
+                        <span class="text-emerald-600 text-lg"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg></span>
                         <h3 class="text-sm font-bold text-emerald-950">Viagem Liberada e Autorizada pela Diretoria de Serviços</h3>
                     </div>
                     <p class="text-xs text-emerald-800 mt-1">
@@ -100,7 +100,7 @@
         @elseif($vanReservation->status === 'rejeitada')
             <div class="rounded-2xl border border-red-300 bg-red-50/70 p-5 shadow-sm">
                 <div class="flex items-center gap-2 text-red-950 font-bold text-sm">
-                    <span>❌</span> Solicitação Recusada pela Diretoria de Serviços
+                    <span><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></span> Solicitação Recusada pela Diretoria de Serviços
                 </div>
                 <p class="text-xs text-red-800 mt-1">
                     <strong>Motivo da Recusa:</strong> {{ $vanReservation->rejection_reason }}
@@ -119,7 +119,7 @@
                     <div class="flex items-center justify-between border-b border-gray-100 pb-3">
                         <div class="flex items-center gap-2">
                             <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700 font-bold text-xs">
-                                🚗
+                                <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
                             </span>
                             <div>
                                 <h2 class="text-xs font-semibold uppercase tracking-wide text-gray-900">
@@ -186,7 +186,7 @@
                                 </div>
                                 <div class="flex justify-end">
                                     <button type="submit" class="rounded-xl bg-blue-600 px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-blue-500 transition">
-                                        🛫 Confirmar Saída da Van
+                                        <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg> Confirmar Saída da Van
                                     </button>
                                 </div>
                             </form>
@@ -251,7 +251,7 @@
                                 </div>
                                 <div class="flex justify-end">
                                     <button type="submit" class="rounded-xl bg-purple-700 px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-purple-600 transition">
-                                        🏁 Concluir Viagem & Atualizar Hodômetro
+                                        <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Concluir Viagem & Atualizar Hodômetro
                                     </button>
                                 </div>
                             </form>
@@ -350,7 +350,7 @@
                                 href="{{ route('van-reservations.edit', $vanReservation->id) }}"
                                 class="w-full flex items-center justify-center gap-1.5 rounded-xl border border-gray-300 bg-white px-3 py-2 text-xs font-bold text-gray-700 shadow-2xs hover:bg-gray-50 transition"
                             >
-                                ✏️ Editar Solicitação
+                                <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>️ Editar Solicitação
                             </a>
 
                             <form action="{{ route('van-reservations.cancel', $vanReservation->id) }}" method="POST" onsubmit="return confirm('Deseja realmente cancelar esta reserva?');">
@@ -359,7 +359,7 @@
                                     type="submit"
                                     class="w-full rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-bold text-red-700 hover:bg-red-100 shadow-2xs transition"
                                 >
-                                    ❌ Cancelar Reserva
+                                    <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg> Cancelar Reserva
                                 </button>
                             </form>
                         @endif
@@ -370,7 +370,7 @@
                 @if($canViewAudit && $vanReservation->audits->count() > 0)
                     <div class="rounded-2xl border border-gray-300 bg-white p-4 sm:p-5 shadow-sm space-y-3">
                         <div class="flex items-center gap-1.5 border-b border-gray-100 pb-2">
-                            <span class="text-xs">🛡️</span>
+                            <span class="text-xs"><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>️</span>
                             <h3 class="text-xs font-semibold uppercase tracking-wide text-gray-900">
                                 Auditoria & Histórico
                             </h3>

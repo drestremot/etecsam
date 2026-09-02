@@ -28,7 +28,7 @@
                 @if($action === 'edit')
                 <a href="{{ route('admin.courses.subjects.index', $course) }}" class="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-indigo-500">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-                    <span>📚 Grade & Professores ({{ $course->subjects->count() }})</span>
+                    <span><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> Grade & Professores ({{ $course->subjects->count() }})</span>
                 </a>
                 @endif
             </div>
@@ -39,7 +39,7 @@
         <div class="rounded-2xl border border-indigo-200 bg-indigo-50/80 p-5 shadow-sm flex flex-wrap items-center justify-between gap-4">
             <div class="flex items-center gap-3">
                 <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-white font-semibold text-lg shadow-sm">
-                    📚
+                    <svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 </span>
                 <div>
                     <h3 class="text-sm font-bold text-indigo-950">Grade Curricular & Atribuição de Professores</h3>
@@ -207,7 +207,7 @@
                 </a>
                 <button type="submit"
                         class="inline-flex items-center gap-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs sm:text-sm font-bold px-6 py-2.5 shadow-sm transition">
-                    <span>{{ $action === 'create' ? '✓ Cadastrar Curso' : '✓ Salvar Alterações' }}</span>
+                    <span>{{ $action === 'create' ? '<svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Cadastrar Curso' : '<svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Salvar Alterações' }}</span>
                 </button>
             </div>
         </form>

@@ -36,7 +36,7 @@
                         </label>
                         <select name="icon" class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition bg-white" required>
                             @php
-                                $icons = ['cow'=>'🐮 Vaca','pig'=>'🐷 Porco','chicken'=>'🐔 Galinha','fish'=>'🐟 Peixe','bee'=>'🐝 Abelha','leaf'=>'🌱 Planta','tree'=>'🌳 Árvore','factory'=>'🏭 Fábrica','computer'=>'💻 Computador','flask'=>'🧪 Lab.','cheese'=>'🧀 Queijo','meat'=>'🥩 Carne'];
+                                $icons = ['cow'=>' Vaca','pig'=>' Porco','chicken'=>' Galinha','fish'=>' Peixe','bee'=>' Abelha','leaf'=>' Planta','tree'=>' Árvore','factory'=>' Fábrica','computer'=>' Computador','flask'=>' Lab.','cheese'=>' Queijo','meat'=>' Carne'];
                             @endphp
                             @foreach($icons as $val => $label)
                                 <option value="{{ $val }}" {{ old('icon', $sector->icon) === $val ? 'selected' : '' }}>{{ $label }}</option>
@@ -92,7 +92,7 @@
         <div class="flex items-center gap-3 pt-1">
             <button type="submit"
                     class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-6 py-2.5 rounded-lg shadow-sm transition">
-                {{ $action === 'create' ? '✓ Cadastrar Setor' : '✓ Salvar Alterações' }}
+                {{ $action === 'create' ? '<svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Cadastrar Setor' : '<svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Salvar Alterações' }}
             </button>
             <a href="{{ route('admin.sectors.index') }}"
                class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 px-4 py-2.5 rounded-lg border border-gray-300 hover:bg-gray-50 transition">

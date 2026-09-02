@@ -225,7 +225,10 @@
             <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-xs">
                 <div class="flex items-center justify-between mb-3 border-b border-gray-100 pb-2.5">
                     <h3 class="text-sm font-bold text-gray-800 flex items-center gap-2">
-                        <span>🏥 Atestados Médicos</span>
+                        <span class="p-1 rounded-lg bg-red-50 text-red-600 inline-flex items-center justify-center">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        </span>
+                        <span>Atestados Médicos</span>
                     </h3>
                     <a href="{{ route('medical-certificates.index') }}" class="text-xs font-semibold text-red-600 hover:underline">Ver</a>
                 </div>
@@ -245,7 +248,10 @@
             <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-xs">
                 <div class="flex items-center justify-between mb-3 border-b border-gray-100 pb-2.5">
                     <h3 class="text-sm font-bold text-gray-800 flex items-center gap-2">
-                        <span>⚖️ Folgas Legais</span>
+                        <span class="p-1 rounded-lg bg-purple-50 text-purple-600 inline-flex items-center justify-center">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"/></svg>
+                        </span>
+                        <span>Folgas Legais</span>
                     </h3>
                     <a href="{{ route('legal-leaves.index') }}" class="text-xs font-semibold text-purple-600 hover:underline">Ver</a>
                 </div>
@@ -265,7 +271,10 @@
             <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-xs">
                 <div class="flex items-center justify-between mb-3 border-b border-gray-100 pb-2.5">
                     <h3 class="text-sm font-bold text-gray-800 flex items-center gap-2">
-                        <span>🚐 Van Escolar (72h)</span>
+                        <span class="p-1 rounded-lg bg-sky-50 text-sky-600 inline-flex items-center justify-center">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+                        </span>
+                        <span>Van Escolar (72h)</span>
                     </h3>
                     <a href="{{ route('van-reservations.index') }}" class="text-xs font-semibold text-blue-600 hover:underline">Ver</a>
                 </div>
