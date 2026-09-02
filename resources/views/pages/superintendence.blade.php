@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('content')
 
@@ -192,29 +192,29 @@
     @if($staff->isNotEmpty())
     <div>
         <h2 class="text-xl font-bold text-etec-dark dark:text-white mb-6 border-l-4 border-etec-accent pl-3">Equipe de Apoio à Direção</h2>
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
             @foreach($staff as $member)
-            <div class="bg-etec-main rounded-xl shadow-sm border border-etec-dark/30 dark:border-white/10 p-5 flex gap-4 hover:shadow-md hover:shadow-etec-dark/30 transition">
-                <div class="relative hover:z-20 w-[64px] h-[64px] rounded-full border-2 border-white/10 flex-shrink-0">
+            <div class="bg-[#14284b] rounded-2xl shadow-sm border border-white/10 p-5 flex gap-4 hover:border-amber-400/40 hover:shadow-lg transition items-start min-w-0">
+                <div class="relative hover:z-20 w-[60px] h-[60px] rounded-full border-2 border-white/10 flex-shrink-0 bg-[#0b172a] overflow-hidden">
                     <img src="{{ photo_url($member->photo) }}"
-                         onerror="this.src='{{ avatar_url($member->name, 'dbeafe', '1a3a6e') }}'"
-                         class="w-full h-full object-cover rounded-full scale-[1.15] hover:scale-[1.4375] transition duration-700 ease-in-out">
+                         onerror="this.src='{{ avatar_url($member->name, '14284b', 'fff') }}'"
+                         class="w-full h-full object-cover rounded-full scale-[1.05] hover:scale-[1.25] transition duration-700 ease-in-out">
                 </div>
-                <div class="min-w-0">
-                    <h4 class="font-bold text-white leading-tight">{{ $member->name }}</h4>
-                    <span class="text-xs font-bold text-etec-light uppercase tracking-wide block mb-1.5">{{ $member->role }}</span>
+                <div class="min-w-0 flex-1">
+                    <h4 class="font-semibold text-white leading-tight text-sm sm:text-base">{{ $member->name }}</h4>
+                    <span class="text-xs font-semibold text-amber-300 uppercase tracking-wide block mb-1.5">{{ $member->role }}</span>
                     @if($member->email)
-                    <a href="mailto:{{ $member->email }}" class="inline-flex items-center gap-1 text-xs text-green-200/70 hover:text-etec-accent hover:underline">
-                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                        {{ $member->email }}
+                    <a href="mailto:{{ $member->email }}" class="inline-flex items-center gap-1.5 text-xs text-slate-300 hover:text-amber-300 hover:underline max-w-full min-w-0 truncate" title="{{ $member->email }}">
+                        <svg class="w-3.5 h-3.5 flex-shrink-0 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        <span class="truncate block min-w-0">{{ $member->email }}</span>
                     </a>
                     @endif
                     @if($member->bio)
                     <div x-data="{ open: false }" class="mt-1.5">
-                        <button type="button" @click="open = !open" class="text-xs text-etec-accent hover:underline">
+                        <button type="button" @click="open = !open" class="text-xs text-amber-400 hover:underline">
                             <span x-text="open ? 'Ocultar mini-currículo' : 'Ver mini-currículo'"></span>
                         </button>
-                        <div x-show="open" x-cloak class="bg-white/10 rounded-lg p-3 mt-1.5 text-xs text-green-100 leading-relaxed [&_p]:mb-2 [&_p:last-child]:mb-0 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_a]:underline [&_a]:text-etec-accent">{!! $member->bio !!}</div>
+                        <div x-show="open" x-cloak class="bg-black/20 border border-white/5 rounded-xl p-3 mt-1.5 text-xs text-slate-200 leading-relaxed [&_p]:mb-2 [&_p:last-child]:mb-0 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_a]:underline [&_a]:text-amber-300">{!! $member->bio !!}</div>
                     </div>
                     @endif
                 </div>
