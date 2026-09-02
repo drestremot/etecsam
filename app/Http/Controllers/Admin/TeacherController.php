@@ -4,20 +4,123 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Teacher;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Permission\Models\Role;
 
 class TeacherController extends Controller
 {
     public function index()
     {
         $teachers = Teacher::orderByDesc('is_active')->orderBy('name')->paginate(50);
-        return view('admin.teachers.index', compact('teachers'));
+        $userEmails = User::pluck('email')->filter()->toArray();
+        $pendingUsersCount = Teacher::whereNotNull('email')
+            ->where('email', '!=', '')
+            ->whereNotIn('email', $userEmails)
+            ->count();
+
+        return view('admin.teachers.index', compact('teachers', 'userEmails', 'pendingUsersCount'));
+    }
+
+    public function syncAllToUsers()
+    {
+        $existingEmails = User::whereNotNull('email')->pluck('email')->toArray();
+        $teachers = Teacher::whereNotNull('email')
+            ->where('email', '!=', '')
+            ->whereNotIn('email', $existingEmails)
+            ->get();
+
+        if ($teachers->isEmpty()) {
+            return back()->with('info', 'Todos os professores e colaboradores já possuem contas de usuário cadastradas no sistema.');
+        }
+
+        $created = 0;
+        foreach ($teachers as $teacher) {
+            $roleLower = strtolower($teacher->role ?? '');
+            if (str_contains($roleLower, 'superintendente')) {
+                $roleName = 'Superintendente';
+            } elseif (str_contains($roleLower, 'diretor') || str_contains($roleLower, 'diretora')) {
+                $roleName = 'Diretor';
+            } elseif (str_contains($roleLower, 'coordenad')) {
+                $roleName = 'Coordenador';
+            } elseif (str_contains($roleLower, 'auxiliar')) {
+                $roleName = 'Auxiliar';
+            } else {
+                $roleName = 'Professor';
+            }
+
+            $user = User::create([
+                'name'                 => $teacher->name,
+                'email'                => $teacher->email,
+                'registration_number'  => $teacher->registration_number ?? null,
+                'role'                 => $teacher->role ?? $roleName,
+                'phone'                => $teacher->phone,
+                'password'             => Hash::make('etec1234'),
+                'must_change_password' => true,
+                'is_active'            => $teacher->is_active ?? true,
+                'is_admin'             => in_array($roleName, ['Superintendente', 'Diretor', 'admin']),
+            ]);
+
+            if (Role::where('name', $roleName)->exists()) {
+                $user->assignRole($roleName);
+            }
+            $created++;
+        }
+
+        return back()->with('success', "Foram criadas {$created} novas contas de usuário com senha padrão 'etec1234'. A troca de senha será solicitada no primeiro acesso.");
+    }
+
+    public function syncSingleUser(Teacher $teacher)
+    {
+        if (empty($teacher->email)) {
+            return back()->with('error', 'Este colaborador não possui e-mail cadastrado para criar uma conta.');
+        }
+
+        $user = User::where('email', $teacher->email)->first();
+        if ($user) {
+            return back()->with('info', "O colaborador {$teacher->name} já possui conta de usuário ativa.");
+        }
+
+        $roleLower = strtolower($teacher->role ?? '');
+        if (str_contains($roleLower, 'superintendente')) {
+            $roleName = 'Superintendente';
+        } elseif (str_contains($roleLower, 'diretor') || str_contains($roleLower, 'diretora')) {
+            $roleName = 'Diretor';
+        } elseif (str_contains($roleLower, 'coordenad')) {
+            $roleName = 'Coordenador';
+        } elseif (str_contains($roleLower, 'auxiliar')) {
+            $roleName = 'Auxiliar';
+        } else {
+            $roleName = 'Professor';
+        }
+
+        $user = User::create([
+            'name'                 => $teacher->name,
+            'email'                => $teacher->email,
+            'registration_number'  => $teacher->registration_number ?? null,
+            'role'                 => $teacher->role ?? $roleName,
+            'phone'                => $teacher->phone,
+            'password'             => Hash::make('etec1234'),
+            'must_change_password' => true,
+            'is_active'            => $teacher->is_active ?? true,
+            'is_admin'             => in_array($roleName, ['Superintendente', 'Diretor', 'admin']),
+        ]);
+
+        if (Role::where('name', $roleName)->exists()) {
+            $user->assignRole($roleName);
+        }
+
+        return back()->with('success', "Conta de usuário criada para {$teacher->name} com papel '{$roleName}' e senha padrão 'etec1234'. A troca de senha será solicitada no primeiro acesso.");
     }
 
     public function toggle(Teacher $teacher)
     {
         $teacher->update(['is_active' => !$teacher->is_active]);
+        if ($teacher->email) {
+            User::where('email', $teacher->email)->update(['is_active' => $teacher->is_active]);
+        }
         return back()->with('success', '"' . $teacher->name . '" ' . ($teacher->is_active ? 'ativado' : 'desativado') . '.');
     }
 
@@ -48,8 +151,43 @@ class TeacherController extends Controller
             $data['photo'] = $request->file('photo')->store('teachers', 'public');
         }
 
-        Teacher::create($data);
-        return redirect()->route('admin.teachers.index')->with('success', 'Professor cadastrado com sucesso!');
+        $teacher = Teacher::create($data);
+
+        // Sincronização automática: cria conta de usuário no sistema se tiver e-mail
+        if (!empty($data['email'])) {
+            $user = User::where('email', $data['email'])->first();
+            if (!$user) {
+                $roleLower = strtolower($data['role'] ?? '');
+                if (str_contains($roleLower, 'superintendente')) {
+                    $roleName = 'Superintendente';
+                } elseif (str_contains($roleLower, 'diretor') || str_contains($roleLower, 'diretora')) {
+                    $roleName = 'Diretor';
+                } elseif (str_contains($roleLower, 'coordenad')) {
+                    $roleName = 'Coordenador';
+                } elseif (str_contains($roleLower, 'auxiliar')) {
+                    $roleName = 'Auxiliar';
+                } else {
+                    $roleName = 'Professor';
+                }
+
+                $user = User::create([
+                    'name'                 => $data['name'],
+                    'email'                => $data['email'],
+                    'role'                 => $data['role'],
+                    'phone'                => $data['phone'] ?? null,
+                    'password'             => Hash::make('etec1234'),
+                    'must_change_password' => true,
+                    'is_active'            => true,
+                    'is_admin'             => in_array($roleName, ['Superintendente', 'Diretor', 'admin']),
+                ]);
+
+                if (Role::where('name', $roleName)->exists()) {
+                    $user->assignRole($roleName);
+                }
+            }
+        }
+
+        return redirect()->route('admin.teachers.index')->with('success', 'Colaborador cadastrado e sincronizado com sucesso!');
     }
 
     public function edit(Teacher $teacher)
@@ -82,8 +220,23 @@ class TeacherController extends Controller
             $data['photo'] = $request->file('photo')->store('teachers', 'public');
         }
 
+        $oldEmail = $teacher->email;
         $teacher->update($data);
-        return redirect()->route('admin.teachers.index')->with('success', 'Professor atualizado com sucesso!');
+
+        // Atualiza usuário correspondente
+        if (!empty($data['email'])) {
+            $user = User::where('email', $oldEmail)->orWhere('email', $data['email'])->first();
+            if ($user) {
+                $user->update([
+                    'name'  => $data['name'],
+                    'email' => $data['email'],
+                    'role'  => $data['role'],
+                    'phone' => $data['phone'] ?? $user->phone,
+                ]);
+            }
+        }
+
+        return redirect()->route('admin.teachers.index')->with('success', 'Colaborador atualizado com sucesso!');
     }
 
     public function destroy(Teacher $teacher)
@@ -92,6 +245,6 @@ class TeacherController extends Controller
             Storage::disk('public')->delete($teacher->photo);
         }
         $teacher->delete();
-        return redirect()->route('admin.teachers.index')->with('success', 'Professor removido!');
+        return redirect()->route('admin.teachers.index')->with('success', 'Colaborador removido!');
     }
 }

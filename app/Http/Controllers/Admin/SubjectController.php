@@ -12,13 +12,14 @@ class SubjectController extends Controller
 {
     public function index(Course $course)
     {
-        $subjects = $course->subjects()->with('teacher')->orderBy('name')->get();
-        return view('admin.subjects.index', compact('course', 'subjects'));
+        $subjects = $course->subjects()->with('teacher')->orderBy('semester')->orderBy('name')->get();
+        $teachers = Teacher::orderByDesc('is_active')->orderBy('name')->get();
+        return view('admin.subjects.index', compact('course', 'subjects', 'teachers'));
     }
 
     public function create(Course $course)
     {
-        $teachers = Teacher::orderBy('name')->get();
+        $teachers = Teacher::orderByDesc('is_active')->orderBy('name')->get();
         return view('admin.subjects.form', compact('course', 'teachers'));
     }
 
@@ -42,7 +43,7 @@ class SubjectController extends Controller
     public function edit(Course $course, Subject $subject)
     {
         abort_unless($subject->course_id === $course->id, 404);
-        $teachers = Teacher::orderBy('name')->get();
+        $teachers = Teacher::orderByDesc('is_active')->orderBy('name')->get();
         return view('admin.subjects.form', compact('course', 'subject', 'teachers'));
     }
 
@@ -63,6 +64,22 @@ class SubjectController extends Controller
         return redirect()
             ->route('admin.courses.subjects.index', $course)
             ->with('success', 'Disciplina atualizada com sucesso.');
+    }
+
+    public function updateTeacher(Request $request, Course $course, Subject $subject)
+    {
+        abort_unless($subject->course_id === $course->id, 404);
+
+        $request->validate([
+            'teacher_id' => 'nullable|exists:teachers,id',
+        ]);
+
+        $subject->update([
+            'teacher_id' => $request->teacher_id,
+        ]);
+
+        $teacherName = $subject->teacher ? $subject->teacher->name : 'Nenhum professor (desvinculado)';
+        return back()->with('success', "Professor da disciplina '{$subject->name}' atualizado: {$teacherName}.");
     }
 
     public function destroy(Course $course, Subject $subject)

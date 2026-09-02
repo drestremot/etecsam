@@ -406,4 +406,13 @@ class SiteController extends Controller
             'emptyMessage' => 'Nenhum vigilante cadastrado ainda.',
         ]);
     }
+
+    public function coursesList()
+    {
+        $units = \App\Models\Unit::with(['courses' => function ($q) {
+            $q->where('is_active', true);
+        }, 'coordinator'])->where('is_active', true)->orderBy('city')->orderBy('name')->get();
+
+        return view('pages.courses-list', compact('units'));
+    }
 }

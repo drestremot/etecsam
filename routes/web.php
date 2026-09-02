@@ -11,6 +11,9 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/home', [HomeController::class, 'index']);
 
 Route::get('/escola',              [SiteController::class, 'institutional'])->name('institutional');
+Route::get('/a-escola',            [SiteController::class, 'institutional']);
+Route::get('/cursos',              [SiteController::class, 'coursesList'])->name('courses.index');
+Route::get('/unidades',            [SiteController::class, 'coursesList'])->name('units.index');
 Route::get('/curso/{slug}',        [SiteController::class, 'show'])->name('courses.show');
 Route::get('/secretaria',          [SiteController::class, 'academic'])->name('academic');
 Route::get('/contato',             [SiteController::class, 'contact'])->name('contact');
@@ -33,12 +36,77 @@ Route::get('/unidade/{id}',        [SiteController::class, 'unit'])->name('units
 Route::get('/unidade-didatica/{slug}', [SiteController::class, 'sector'])->name('sectors.show');
 Route::get('/politica-de-privacidade', fn () => view('pages.privacy-policy'))->name('privacy-policy');
 
+use App\Http\Controllers\TaskBoardController;
+use App\Http\Controllers\MedicalCertificateController;
+use App\Http\Controllers\LegalLeaveController;
+use App\Http\Controllers\VanReservationController;
+
 // ─── Autenticação (Breeze) ────────────────────────────────────────────────────
 
 Route::middleware('auth')->group(function () {
+    // Troca obrigatória de senha no primeiro acesso
+    Route::get('/alterar-senha',  [\App\Http\Controllers\Auth\PasswordChangeController::class, 'show'])->name('password.change');
+    Route::post('/alterar-senha', [\App\Http\Controllers\Auth\PasswordChangeController::class, 'update'])->name('password.change.update');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // ─── Painel Integrado & Módulos Operacionais ─────────────────────────────
+    Route::get('/dashboard', [TaskBoardController::class, 'dashboard'])->name('dashboard');
+
+    // KanbanTec (Tarefas / Ordens de Serviço)
+    Route::get('/tasks',               [TaskBoardController::class, 'index'])->name('tasks.index');
+    Route::get('/tasks/create',        [TaskBoardController::class, 'create'])->name('tasks.create');
+    Route::get('/tasks/report',        [TaskBoardController::class, 'report'])->name('tasks.report');
+    Route::get('/tasks/{task}',        [TaskBoardController::class, 'show'])->name('tasks.show');
+    Route::post('/tasks',              [TaskBoardController::class, 'store'])->name('tasks.store');
+    Route::post('/tasks/{task}/status',[TaskBoardController::class, 'updateStatus'])->name('tasks.status');
+    Route::patch('/tasks/{task}/status',[TaskBoardController::class, 'updateStatus'])->name('tasks.update-status');
+
+    // Atestados Médicos (AtestadosTec)
+    Route::get('/atestados',                              [MedicalCertificateController::class, 'index'])->name('medical-certificates.index');
+    Route::get('/atestados/create',                       [MedicalCertificateController::class, 'create'])->name('medical-certificates.create');
+    Route::post('/atestados',                             [MedicalCertificateController::class, 'store'])->name('medical-certificates.store');
+    Route::get('/atestados/{medicalCertificate}',         [MedicalCertificateController::class, 'show'])->name('medical-certificates.show');
+    Route::get('/atestados/{medicalCertificate}/edit',    [MedicalCertificateController::class, 'edit'])->name('medical-certificates.edit');
+    Route::put('/atestados/{medicalCertificate}',         [MedicalCertificateController::class, 'update'])->name('medical-certificates.update');
+    Route::get('/atestados/{medicalCertificate}/download',[MedicalCertificateController::class, 'download'])->name('medical-certificates.download');
+    Route::patch('/atestados/{medicalCertificate}/status',[MedicalCertificateController::class, 'updateStatus'])->name('medical-certificates.updateStatus');
+    Route::delete('/atestados/{medicalCertificate}',      [MedicalCertificateController::class, 'destroy'])->name('medical-certificates.destroy');
+
+    // Folgas Previstas em Lei (FolgasTec)
+    Route::get('/folgas-legais',                                  [LegalLeaveController::class, 'index'])->name('legal-leaves.index');
+    Route::get('/folgas-legais/create',                           [LegalLeaveController::class, 'create'])->name('legal-leaves.create');
+    Route::post('/folgas-legais',                                 [LegalLeaveController::class, 'store'])->name('legal-leaves.store');
+    Route::get('/folgas-legais/{legalLeave}',                     [LegalLeaveController::class, 'show'])->name('legal-leaves.show');
+    Route::get('/folgas-legais/{legalLeave}/edit',                [LegalLeaveController::class, 'edit'])->name('legal-leaves.edit');
+    Route::put('/folgas-legais/{legalLeave}',                     [LegalLeaveController::class, 'update'])->name('legal-leaves.update');
+    Route::post('/folgas-legais/{legalLeave}/solicitar',          [LegalLeaveController::class, 'requestUsage'])->name('legal-leaves.request-usage');
+    Route::patch('/folgas-legais/solicitacoes/{leaveRequest}/avaliar', [LegalLeaveController::class, 'reviewRequest'])->name('legal-leaves.review-request');
+    Route::get('/folgas-legais/{legalLeave}/download',            [LegalLeaveController::class, 'download'])->name('legal-leaves.download');
+    Route::delete('/folgas-legais/{legalLeave}',                  [LegalLeaveController::class, 'destroy'])->name('legal-leaves.destroy');
+
+    // Reserva de Van Escolar (VanTec)
+    Route::get('/van-reservas',                         [VanReservationController::class, 'index'])->name('van-reservations.index');
+    Route::get('/van-reservas/create',                  [VanReservationController::class, 'create'])->name('van-reservations.create');
+    Route::post('/van-reservas',                        [VanReservationController::class, 'store'])->name('van-reservations.store');
+    Route::get('/van-reservas/{vanReservation}',        [VanReservationController::class, 'show'])->name('van-reservations.show');
+    Route::get('/van-reservas/{vanReservation}/edit',   [VanReservationController::class, 'edit'])->name('van-reservations.edit');
+    Route::put('/van-reservas/{vanReservation}',        [VanReservationController::class, 'update'])->name('van-reservations.update');
+    Route::post('/van-reservas/{vanReservation}/approve',[VanReservationController::class, 'approve'])->name('van-reservations.approve');
+    Route::patch('/van-reservas/{vanReservation}/approve',[VanReservationController::class, 'approve']);
+    Route::post('/van-reservas/{vanReservation}/reject', [VanReservationController::class, 'reject'])->name('van-reservations.reject');
+    Route::patch('/van-reservas/{vanReservation}/reject', [VanReservationController::class, 'reject']);
+    Route::post('/van-reservas/{vanReservation}/start-trip', [VanReservationController::class, 'startTrip'])->name('van-reservations.start-trip');
+    Route::post('/van-reservas/{vanReservation}/finish-trip', [VanReservationController::class, 'finishTrip'])->name('van-reservations.finish-trip');
+    Route::post('/van-reservas/{vanReservation}/cancel', [VanReservationController::class, 'cancel'])->name('van-reservations.cancel');
+
+    // Aliases de conveniência para rotas de reservas
+    Route::get('/reservas', fn() => redirect()->route('lab.reservations.index'))->name('reservations.index');
+    Route::get('/reservas/create', fn() => redirect()->route('lab.reservations.create'))->name('reservations.create');
+    Route::get('/reservas/mapa', fn() => redirect()->route('lab.reservations.calendar'))->name('reservations.calendar');
+    Route::get('/reservas/{reservation}', fn($res) => redirect()->route('lab.reservations.show', $res))->name('reservations.show');
 });
 
 require __DIR__.'/auth.php';
@@ -49,12 +117,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
     Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
 
+    Route::post('teachers/sync-all', [\App\Http\Controllers\Admin\TeacherController::class, 'syncAllToUsers'])->name('teachers.sync-all');
+    Route::post('teachers/{teacher}/sync-user', [\App\Http\Controllers\Admin\TeacherController::class, 'syncSingleUser'])->name('teachers.sync-user');
     Route::resource('teachers',    \App\Http\Controllers\Admin\TeacherController::class)->except(['show']);
     Route::patch('teachers/{teacher}/toggle', [\App\Http\Controllers\Admin\TeacherController::class, 'toggle'])->name('teachers.toggle');
     Route::resource('departments', \App\Http\Controllers\Admin\DepartmentController::class)->except(['show']);
     Route::resource('laboratories',\App\Http\Controllers\Admin\LaboratoryController::class)->except(['show']);
     Route::resource('projects',    \App\Http\Controllers\Admin\ProjectController::class)->except(['show']);
     Route::resource('courses',     \App\Http\Controllers\Admin\CourseController::class)->except(['show']);
+    Route::patch('courses/{course}/subjects/{subject}/teacher', [\App\Http\Controllers\Admin\SubjectController::class, 'updateTeacher'])->name('courses.subjects.teacher');
     Route::resource('courses.subjects', \App\Http\Controllers\Admin\SubjectController::class)->except(['show']);
     Route::resource('units',       \App\Http\Controllers\Admin\UnitController::class)->except(['show']);
     Route::resource('sectors',     \App\Http\Controllers\Admin\SectorController::class)->except(['show']);
@@ -114,12 +185,37 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::resource('partners', \App\Http\Controllers\Admin\PartnerController::class);
     Route::patch('partners/{partner}/toggle', [\App\Http\Controllers\Admin\PartnerController::class, 'toggle'])->name('partners.toggle');
 
-    // Temas do Site
-    Route::resource('themes', \App\Http\Controllers\Admin\ThemeController::class);
-    Route::post('themes/{theme}/activate', [\App\Http\Controllers\Admin\ThemeController::class, 'activate'])->name('themes.activate');
-    Route::post('themes/deactivate', [\App\Http\Controllers\Admin\ThemeController::class, 'deactivate'])->name('themes.deactivate');
+    // Auditoria e Logs do Sistema (Superintendente, Diretora de Serviços, Admin)
+    Route::get('auditoria', [\App\Http\Controllers\Admin\AuditLogController::class, 'index'])->name('audit.index')->middleware('can.view.audit');
+    Route::get('auditoria/export', [\App\Http\Controllers\Admin\AuditLogController::class, 'export'])->name('audit.export')->middleware('can.view.audit');
+    Route::get('auditoria/{auditLog}', [\App\Http\Controllers\Admin\AuditLogController::class, 'show'])->name('audit.show')->middleware('can.view.audit');
+
+    // Matriz de Papéis e Permissões (RBAC)
+    Route::get('permissoes', [\App\Http\Controllers\Admin\RolePermissionController::class, 'index'])->name('permissions.index');
+    Route::post('permissoes/toggle', [\App\Http\Controllers\Admin\RolePermissionController::class, 'toggle'])->name('permissions.toggle');
+    Route::post('permissoes/resetar-padroes', [\App\Http\Controllers\Admin\RolePermissionController::class, 'resetDefaults'])->name('permissions.reset-defaults');
+    Route::get('usuarios/{user}/permissoes', [\App\Http\Controllers\Admin\RolePermissionController::class, 'userPermissions'])->name('users.permissions');
+    Route::post('usuarios/{user}/permissoes/toggle', [\App\Http\Controllers\Admin\RolePermissionController::class, 'toggleUserPermission'])->name('users.permissions.toggle');
+
+    // Gestão de Grade de Horários dos Professores & Colaboradores
+    Route::resource('work-schedules', \App\Http\Controllers\Admin\WorkScheduleController::class)->except(['show']);
+
+    // Painel do Ponto Eletrônico & Espelho de Ponto (Diretoria/RH)
+    Route::get('ponto-gestao', [\App\Http\Controllers\Admin\AdminTimeClockController::class, 'index'])->name('timeclock.index');
+    Route::get('ponto-gestao/espelho', [\App\Http\Controllers\Admin\AdminTimeClockController::class, 'mirror'])->name('timeclock.mirror');
+    Route::post('ponto-gestao/{timeClockRecord}/justificar', [\App\Http\Controllers\Admin\AdminTimeClockController::class, 'justify'])->name('timeclock.justify');
 
 });
+
+// ─── Ponto Eletrônico com Reconhecimento Facial & GPS ─────────────────────────
+Route::middleware(['auth'])->group(function () {
+    Route::get('ponto', [\App\Http\Controllers\TimeClockController::class, 'index'])->name('timeclock.index');
+    Route::post('ponto/registrar', [\App\Http\Controllers\TimeClockController::class, 'store'])->name('timeclock.store');
+});
+
+// Totem Kiosk da Instituição (Acessível na recepção / sala dos professores)
+Route::get('ponto-totem/{unit?}', [\App\Http\Controllers\TimeClockController::class, 'totem'])->name('timeclock.totem');
+Route::post('ponto-totem/registrar', [\App\Http\Controllers\TimeClockController::class, 'totemStore'])->name('timeclock.totem.store');
 
 // ─── Módulo Laboratório ───────────────────────────────────────────────────────
 use App\Http\Controllers\Lab\LabReservationController;
@@ -148,7 +244,7 @@ Route::prefix('laboratorio')->name('lab.')->middleware(['auth'])->group(function
         Route::post('/{reservation}/obs-professor',    [LabReservationController::class, 'submitProfessorObs'])->name('professor-obs');
         Route::post('/{reservation}/conferencia',      [LabReservationController::class, 'auxiliarFinalize'])->name('auxiliar-finalize');
         Route::get('/historico/concluidas',            [LabReservationController::class, 'history'])->name('history');
-        Route::get('/mapa/calendario',                 fn() => view('lab.reservations.calendar'))->name('calendar');
+        Route::get('/mapa/calendario',                 [LabReservationController::class, 'calendar'])->name('calendar');
     });
 
     // API calendário e disponibilidade
@@ -167,7 +263,7 @@ Route::prefix('laboratorio')->name('lab.')->middleware(['auth'])->group(function
     Route::middleware(['admin'])->group(function () {
 
         // Espaços
-        Route::resource('espacos', SpaceController::class)->names([
+        Route::resource('espacos', SpaceController::class)->parameters(['espacos' => 'space'])->names([
             'index'   => 'spaces.index',
             'create'  => 'spaces.create',
             'store'   => 'spaces.store',
@@ -177,7 +273,7 @@ Route::prefix('laboratorio')->name('lab.')->middleware(['auth'])->group(function
         ]);
 
         // Materiais
-        Route::resource('materiais', MaterialController::class)->names([
+        Route::resource('materiais', MaterialController::class)->parameters(['materiais' => 'material'])->names([
             'index'   => 'materials.index',
             'create'  => 'materials.create',
             'store'   => 'materials.store',
@@ -186,10 +282,11 @@ Route::prefix('laboratorio')->name('lab.')->middleware(['auth'])->group(function
             'destroy' => 'materials.destroy',
         ]);
 
-        // Usuários do lab
+        // Usuários do sistema e colaboradores
         Route::prefix('usuarios')->name('users.')->group(function () {
             Route::get('/',                      [LabUserController::class, 'index'])->name('index');
             Route::post('/',                     [LabUserController::class, 'store'])->name('store');
+            Route::post('/sincronizar-todos',    [LabUserController::class, 'syncAllTeachers'])->name('sync-all');
             Route::patch('/{user}/papel',        [LabUserController::class, 'updateRole'])->name('role');
             Route::patch('/{user}/vinculos',     [LabUserController::class, 'updateVinculos'])->name('vinculos');
             Route::patch('/{user}/status',       [LabUserController::class, 'toggleStatus'])->name('status');

@@ -12,9 +12,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->appendToGroup('web', \App\Http\Middleware\EnsurePasswordIsChanged::class);
+
         $middleware->alias([
             'admin'          => \App\Http\Middleware\AdminMiddleware::class,
             'can-coordinate' => \App\Http\Middleware\CanCoordinateMiddleware::class,
+            'can.view.audit' => \App\Http\Middleware\CanViewSystemAudit::class,
             'role'           => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission'     => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,

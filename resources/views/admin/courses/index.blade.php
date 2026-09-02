@@ -1,106 +1,161 @@
-@extends('admin.layouts.app')
-@section('page-title', 'Cursos Técnicos')
-
-@section('header-actions')
-    <a href="{{ route('admin.courses.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-lg">+ Novo</a>
-@endsection
+@extends('layouts.operational')
 
 @section('content')
-<div class="bg-white rounded-xl shadow-sm overflow-hidden" x-data="adminTable()">
+<div class="min-h-screen bg-[#dfe1e5] px-3 sm:px-6 lg:px-8 py-5 sm:py-8 pb-20 sm:pb-8">
+    <div class="w-full max-w-[1850px] mx-auto space-y-6">
 
-    {{-- Busca --}}
-    <div class="px-4 py-3 border-b border-gray-100 flex items-center gap-2">
-        <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-        <input x-model="q" @input="search()" type="text" placeholder="Buscar por curso, tipo, unidade..."
-               class="flex-1 text-sm border-0 outline-none bg-transparent text-gray-700 placeholder-gray-400">
-        <button x-show="q" @click="q='';search()" class="text-gray-400 hover:text-gray-600 text-xs">✕ limpar</button>
+        <!-- Top Header -->
+        <div class="flex flex-wrap items-center justify-between gap-4">
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 flex items-center gap-3">
+                    <span>Cursos Técnicos</span>
+                    <span class="rounded-xl bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700 normal-case tracking-normal">{{ $courses->total() }} cadastrados</span>
+                </h1>
+                <p class="text-xs sm:text-sm text-gray-600 font-medium mt-1">Gestão de cursos, modalidades (M-Tec, Noturno, AMS), matrizes e coordenações</p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3">
+                <a href="{{ route('admin.courses.create') }}" class="inline-flex items-center gap-2 rounded-xl bg-amber-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-amber-500">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    <span>Novo Curso</span>
+                </a>
+            </div>
+        </div>
+
+        @if(session('success'))
+            <div class="rounded-2xl bg-emerald-500 text-white p-4 text-sm font-bold shadow-md flex items-center justify-between">
+                <span>{{ session('success') }}</span>
+                <button onclick="this.parentElement.remove()" class="text-white hover:text-gray-200 text-base font-semibold">&times;</button>
+            </div>
+        @endif
+
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden" x-data="adminTable()">
+            <!-- Search bar -->
+            <div class="px-5 py-3.5 border-b border-gray-100 flex items-center gap-3 bg-gray-50/50">
+                <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <input x-model="q" @input="search()" type="text" placeholder="Buscar por título, tipo, unidade ou coordenador..."
+                       class="flex-1 text-xs sm:text-sm border-0 outline-none bg-transparent text-gray-800 placeholder-gray-400">
+                <button x-show="q" @click="q='';search()" class="text-gray-400 hover:text-gray-600 text-xs font-bold">✕ limpar</button>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs sm:text-sm">
+                    <thead class="bg-gray-50 text-xs font-bold uppercase text-gray-600 border-b border-gray-200">
+                        <tr>
+                            <th @click="sort('titulo')" class="px-6 py-4 cursor-pointer hover:bg-gray-100 select-none">
+                                Curso <span class="ml-1 text-gray-400" x-text="icon('titulo')"></span>
+                            </th>
+                            <th @click="sort('tipo')" class="px-6 py-4 cursor-pointer hover:bg-gray-100 select-none">
+                                Tipo <span class="ml-1 text-gray-400" x-text="icon('tipo')"></span>
+                            </th>
+                            <th @click="sort('unidade')" class="px-6 py-4 cursor-pointer hover:bg-gray-100 select-none">
+                                Unidade <span class="ml-1 text-gray-400" x-text="icon('unidade')"></span>
+                            </th>
+                            <th class="px-6 py-4">Coordenação</th>
+                            <th @click="sort('status')" class="px-6 py-4 text-center cursor-pointer hover:bg-gray-100 select-none">
+                                Status <span class="ml-1 text-gray-400" x-text="icon('status')"></span>
+                            </th>
+                            <th class="px-6 py-4 text-right">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        @forelse($courses as $course)
+                        <tr class="hover:bg-gray-50/80 transition {{ !$course->is_active ? 'opacity-60' : '' }}"
+                            data-row="{{ strtolower($course->title . ' ' . $course->type . ' ' . ($course->unit?->name ?? '') . ' ' . $course->technicalCoordinators->pluck('name')->implode(' ')) }}"
+                            data-active="{{ $course->is_active ? '1' : '0' }}"
+                            data-titulo="{{ strtolower($course->title) }}"
+                            data-tipo="{{ strtolower($course->type) }}"
+                            data-unidade="{{ strtolower($course->unit?->name ?? '') }}"
+                            data-status="{{ $course->is_active ? 'ativo' : 'inativo' }}">
+                            <td class="px-6 py-4 font-bold text-gray-900">
+                                {{ $course->title }}
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="rounded-lg bg-gray-100 px-2 py-0.5 text-xs font-bold text-gray-700">{{ $course->type }}</span>
+                            </td>
+                            <td class="px-6 py-4 text-gray-600">{{ $course->unit?->name ?? '—' }}</td>
+                            <td class="px-6 py-4 text-gray-600">
+                                @forelse($course->technicalCoordinators as $c)
+                                    <span class="block text-xs font-semibold text-gray-800">{{ $c->name }}</span>
+                                @empty
+                                    <span class="text-gray-400 text-xs">—</span>
+                                @endforelse
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <form action="{{ route('admin.courses.toggle', $course) }}" method="POST">
+                                    @csrf @method('PATCH')
+                                    <button class="px-3 py-1 rounded-full text-xs font-bold transition shadow-2xs {{ $course->is_active ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200' : 'bg-red-100 text-red-800 hover:bg-red-200' }}">
+                                        {{ $course->is_active ? 'Ativo' : 'Inativo' }}
+                                    </button>
+                                </form>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <div class="flex items-center justify-end gap-2">
+                                    <a href="{{ route('admin.courses.subjects.index', $course) }}" class="inline-flex items-center gap-1.5 rounded-xl bg-indigo-50 px-3 py-1.5 text-xs font-bold text-indigo-700 hover:bg-indigo-100 border border-indigo-200 transition shadow-2xs">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                                        <span>Disciplinas & Professores</span>
+                                    </a>
+                                    <a href="{{ route('admin.courses.edit', $course) }}" class="rounded-xl bg-gray-100 px-3 py-1.5 text-xs font-bold text-gray-700 hover:bg-gray-200 transition">
+                                        Editar
+                                    </a>
+                                    <form action="{{ route('admin.courses.destroy', $course) }}" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir?')">
+                                        @csrf @method('DELETE')
+                                        <button class="rounded-xl bg-red-50 px-3 py-1.5 text-xs font-bold text-red-600 hover:bg-red-100 transition">
+                                            Excluir
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr><td colspan="6" class="px-6 py-10 text-center text-gray-400">Nenhum curso cadastrado.</td></tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            @if($courses->hasPages())
+                <div class="px-6 py-4 border-t border-gray-100 bg-gray-50">{{ $courses->links() }}</div>
+            @endif
+        </div>
+
     </div>
-
-    <table class="min-w-full divide-y divide-gray-200 text-sm">
-        <thead class="bg-gray-50">
-            <tr>
-                <th @click="sort('titulo')" class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none">
-                    Curso <span class="ml-1 text-gray-400" x-text="icon('titulo')"></span>
-                </th>
-                <th @click="sort('tipo')" class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none">
-                    Tipo <span class="ml-1 text-gray-400" x-text="icon('tipo')"></span>
-                </th>
-                <th @click="sort('unidade')" class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none">
-                    Unidade <span class="ml-1 text-gray-400" x-text="icon('unidade')"></span>
-                </th>
-                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Coordenadores</th>
-                <th @click="sort('status')" class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none">
-                    Status <span class="ml-1 text-gray-400" x-text="icon('status')"></span>
-                </th>
-                <th class="px-4 py-3 w-32"></th>
-            </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-100">
-            @forelse($courses as $course)
-            <tr class="hover:bg-gray-50 {{ !$course->is_active ? 'opacity-60' : '' }}"
-                data-row="{{ strtolower($course->title . ' ' . $course->type . ' ' . ($course->unit?->name ?? '') . ' ' . $course->technicalCoordinators->pluck('name')->implode(' ')) }}"
-                data-active="{{ $course->is_active ? '1' : '0' }}"
-                data-titulo="{{ strtolower($course->title) }}"
-                data-tipo="{{ strtolower($course->type) }}"
-                data-unidade="{{ strtolower($course->unit?->name ?? '') }}"
-                data-status="{{ $course->is_active ? 'ativo' : 'inativo' }}">
-                <td class="px-4 py-3 font-medium text-gray-800">{{ $course->title }}</td>
-                <td class="px-4 py-3 text-gray-500 text-xs">{{ $course->type }}</td>
-                <td class="px-4 py-3 text-gray-500">{{ $course->unit?->name ?? '—' }}</td>
-                <td class="px-4 py-3 text-gray-600 text-xs">
-                    @forelse($course->technicalCoordinators as $c)
-                        <span class="block">{{ $c->name }}</span>
-                    @empty
-                        <span class="text-gray-400">—</span>
-                    @endforelse
-                </td>
-                <td class="px-4 py-3">
-                    <span class="px-2 py-1 rounded-full text-xs font-semibold {{ $course->is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500' }}">
-                        {{ $course->is_active ? 'Ativo' : 'Inativo' }}
-                    </span>
-                </td>
-                <td class="px-4 py-3">
-                    <div class="flex items-center justify-end gap-1">
-                        {{-- Grade --}}
-                        <a href="{{ route('admin.courses.subjects.index', $course) }}" title="Grade curricular"
-                           class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-                        </a>
-                        {{-- Toggle --}}
-                        <form action="{{ route('admin.courses.toggle', $course) }}" method="POST" class="inline">
-                            @csrf @method('PATCH')
-                            <button type="submit" title="{{ $course->is_active ? 'Desativar' : 'Ativar' }}"
-                                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg transition {{ $course->is_active ? 'bg-green-50 text-green-600 hover:bg-green-100' : 'bg-gray-100 text-gray-400 hover:bg-gray-200' }}">
-                                @if($course->is_active)
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                @else
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                @endif
-                            </button>
-                        </form>
-                        {{-- Editar --}}
-                        <a href="{{ route('admin.courses.edit', $course) }}" title="Editar"
-                           class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                        </a>
-                        {{-- Excluir --}}
-                        <form action="{{ route('admin.courses.destroy', $course) }}" method="POST" class="inline"
-                              onsubmit="return confirm('Remover o curso \'{{ addslashes($course->title) }}\'?')">
-                            @csrf @method('DELETE')
-                            <button type="submit" title="Excluir"
-                                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                            </button>
-                        </form>
-                    </div>
-                </td>
-            </tr>
-            @empty
-            <tr><td colspan="6" class="px-4 py-8 text-center text-gray-400">Nenhum curso cadastrado.</td></tr>
-            @endforelse
-        </tbody>
-    </table>
-    <div class="px-4 py-3">{{ $courses->links() }}</div>
 </div>
-@include('admin.partials.table-script')
+
+<script>
+function adminTable() {
+    return {
+        q: '',
+        sortBy: '',
+        sortDir: 'asc',
+        search() {
+            const query = this.q.toLowerCase();
+            document.querySelectorAll('[data-row]').forEach(tr => {
+                const text = tr.dataset.row || '';
+                tr.style.display = (!query || text.includes(query)) ? '' : 'none';
+            });
+        },
+        sort(col) {
+            if (this.sortBy === col) {
+                this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+            } else {
+                this.sortBy = col;
+                this.sortDir = 'asc';
+            }
+            const tbody = document.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr[data-row]'));
+            rows.sort((a, b) => {
+                const va = a.dataset[col] || '';
+                const vb = b.dataset[col] || '';
+                return this.sortDir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
+            });
+            rows.forEach(r => tbody.appendChild(r));
+        },
+        icon(col) {
+            if (this.sortBy !== col) return '↕';
+            return this.sortDir === 'asc' ? '↑' : '↓';
+        }
+    }
+}
+</script>
 @endsection

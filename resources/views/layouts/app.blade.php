@@ -110,409 +110,415 @@
     @endif
 </head>
 
-<body class="font-sans antialiased text-gray-700 dark:text-gray-200 bg-etec-bg dark:bg-etec-night flex flex-col min-h-screen transition-colors duration-300">
+<body class="font-sans antialiased text-slate-100 bg-[#0b172a] flex flex-col min-h-screen selection:bg-amber-400 selection:text-slate-950" style="background-color: #0b172a; color: #f1f5f9;">
 
-    {{-- Top bar --}}
-    <div class="bg-etec-dark text-white text-xs py-2 border-b border-white/10">
-        <div class="container mx-auto px-4 flex justify-between items-center">
-            <span class="text-gray-300">Centro Paula Souza &mdash; Governo do Estado de São Paulo</span>
-            <div class="flex items-center gap-4">
-                <a href="tel:1837026850" class="flex items-center gap-1.5 text-gray-300 hover:text-white transition">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 7V5z"/></svg>
-                    (18) 3702-6850
+    {{-- Top bar institucional --}}
+    <div class="bg-[#0b172a] text-slate-300 text-[11.5px] py-1.5 border-b border-white/10 transition-colors" style="background-color: #0b172a; color: #cbd5e1;">
+        <div class="container mx-auto px-4 flex flex-wrap justify-between items-center gap-2">
+            <div class="flex items-center gap-2 text-slate-300 font-medium">
+                <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>Centro Paula Souza &bull; Governo do Estado de São Paulo</span>
+            </div>
+            <div class="flex items-center gap-4 text-slate-300">
+                <a href="tel:1837026850" class="flex items-center gap-1.5 hover:text-white transition">
+                    <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 7V5z"/></svg>
+                    <span>(18) 3702-6850</span>
                 </a>
-                <a href="mailto:e028dir@cps.sp.gov.br" class="flex items-center gap-1.5 text-gray-300 hover:text-white transition">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                    e028dir@cps.sp.gov.br
+                <span class="text-white/20 hidden sm:inline">|</span>
+                <a href="mailto:e028dir@cps.sp.gov.br" class="hidden sm:flex items-center gap-1.5 hover:text-white transition">
+                    <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    <span>e028dir@cps.sp.gov.br</span>
                 </a>
+                <span class="text-white/20 hidden md:inline">|</span>
+                <a href="https://nsaetec.com.br/" target="_blank" rel="noopener noreferrer" class="hidden md:flex items-center gap-1 hover:text-amber-300 font-semibold transition">
+                    <span>Portal NSA</span>
+                </a>
+                <span class="text-white/20">|</span>
+                @auth
+                    <a href="{{ route('dashboard') }}" class="flex items-center gap-1 text-amber-300 hover:text-amber-200 font-bold transition">
+                        <span>Minha Área</span>
+                    </a>
+                @else
+                    <a href="{{ route('login') }}" class="flex items-center gap-1 hover:text-white font-medium transition">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
+                        <span>Acesso Restrito</span>
+                    </a>
+                @endauth
             </div>
         </div>
     </div>
 
-    <header class="bg-etec-dark shadow-sm sticky top-0 z-50 border-b border-white/10" x-data="{ open: false }">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <a href="{{ route('home') }}" class="flex items-center group flex-shrink-0">
-                <img src="{{ asset('imagens/logo/etec.png') }}" alt="Logo Etec Sebastiana Augusta de Moraes"
-                    class="h-16 w-auto flex-shrink-0">
+    {{-- Header Sticky Glassmorphism --}}
+    <header class="bg-[#0f223f] sticky top-0 z-50 border-b border-white/10 shadow-md transition-all text-white" style="background-color: #0f223f; color: #ffffff;" x-data="{ open: false, activeDrop: null }">
+        <div class="container mx-auto px-4 py-2.5 flex justify-between items-center gap-4">
+
+            {{-- Logotipo com proporção e efeito suave --}}
+            <a href="{{ route('home') }}" class="flex items-center gap-3 group flex-shrink-0">
+                <img src="{{ asset('imagens/logo/etec_ra_aracatuba_andradina_sebastina_augusta_de_moraes/etec_ra_aracatuba_andradina_sebastina_augusta_de_moraes_br.png') }}"
+                     onerror="this.onerror=null;this.src='{{ asset('imagens/logo/etec.png') }}'"
+                     alt="Logo Etec Sebastiana Augusta de Moraes"
+                     class="h-11 sm:h-13 w-auto transition-transform duration-300 group-hover:scale-105 drop-shadow-sm">
             </a>
 
             @unless(electoral_period_active())
-            <nav class="hidden xl:flex items-center gap-0.5 text-sm font-medium whitespace-nowrap">
-                <a href="{{ route('home') }}" class="px-4 py-2 text-white hover:text-etec-accent hover:bg-white/10 rounded-lg transition">Início</a>
-                <a href="{{ route('institutional') }}" class="px-4 py-2 text-white/75 hover:text-white hover:bg-white/10 rounded-lg transition">A Escola</a>
-                <a href="{{ route('library') }}" class="px-4 py-2 text-white/75 hover:text-white hover:bg-white/10 rounded-lg transition">Biblioteca</a>
-                <a href="{{ route('home') }}#unidades" class="px-4 py-2 text-white/75 hover:text-white hover:bg-white/10 rounded-lg transition">Cursos</a>
-                <a href="{{ route('home') }}#fazenda" class="px-4 py-2 text-white/75 hover:text-white hover:bg-white/10 rounded-lg transition">Escola Fazenda</a>
+            {{-- Menu Desktop --}}
+            <nav class="hidden xl:flex items-center gap-1 text-sm font-medium whitespace-nowrap">
+                <a href="{{ route('home') }}" class="px-3.5 py-2 text-white hover:text-amber-300 hover:bg-white/10 rounded-xl transition duration-200 {{ request()->routeIs('home') ? 'bg-white/10 text-amber-300 font-bold' : '' }}">
+                    Início
+                </a>
+                <a href="{{ route('institutional') }}" class="px-3.5 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition duration-200 {{ request()->routeIs('institutional') ? 'bg-white/10 text-white font-bold' : '' }}">
+                    A Escola
+                </a>
+                <a href="{{ route('home') }}#unidades" class="px-3.5 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition duration-200">
+                    Cursos & Polos
+                </a>
+                <a href="{{ route('home') }}#fazenda" class="px-3.5 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition duration-200">
+                    Escola Fazenda
+                </a>
+                <a href="{{ route('library') }}" class="px-3.5 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition duration-200 {{ request()->routeIs('library') ? 'bg-white/10 text-white font-bold' : '' }}">
+                    Biblioteca
+                </a>
+
                 {{-- Dropdown Apoio Institucional --}}
-                <div class="relative group">
-                    <button class="px-4 py-2 text-white/75 hover:text-white hover:bg-white/10 rounded-lg transition flex items-center gap-1 select-none">
-                        Apoio Institucional
-                        <svg class="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
-                        </svg>
+                <div class="relative group" @mouseenter="activeDrop = 'apoio'" @mouseleave="activeDrop = null">
+                    <button class="px-3.5 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition duration-200 flex items-center gap-1 select-none">
+                        <span>Apoio</span>
+                        <svg class="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                     </button>
-                    <div class="absolute top-full left-0 pt-1 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-150 z-50">
-                        <div class="bg-etec-main rounded-xl shadow-lg border border-white/10 py-1.5 min-w-[220px] overflow-hidden">
-
-                            <a href="{{ route('cooperative') }}"
-                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-white/80 hover:text-white hover:bg-white/10 transition">
-                                <div class="w-7 h-7 bg-white/15 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-3.5 h-3.5 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                    </svg>
+                    <div class="absolute top-full left-0 pt-2 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-200 z-50">
+                        <div class="bg-[#14284b]/98 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/15 p-2 min-w-[240px] space-y-1">
+                            <a href="{{ route('cooperative') }}" class="flex items-center gap-3 px-3 py-2 text-xs font-semibold text-white/85 hover:text-white hover:bg-white/10 rounded-xl transition">
+                                <div class="w-8 h-8 rounded-lg bg-amber-400/20 text-amber-300 flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                                 </div>
-                                <strong class="font-semibold text-white text-xs">Cooperativa Escola</strong>
+                                <div>
+                                    <div class="font-bold text-white">Cooperativa Escola</div>
+                                    <div class="text-[10px] text-white/50">Projetos práticos agrícolas</div>
+                                </div>
                             </a>
-                            <a href="{{ route('apm') }}"
-                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-white/80 hover:text-white hover:bg-white/10 transition">
-                                <div class="w-7 h-7 bg-white/15 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-3.5 h-3.5 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-                                    </svg>
+                            <a href="{{ route('apm') }}" class="flex items-center gap-3 px-3 py-2 text-xs font-semibold text-white/85 hover:text-white hover:bg-white/10 rounded-xl transition">
+                                <div class="w-8 h-8 rounded-lg bg-emerald-400/20 text-emerald-300 flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                                 </div>
-                                <strong class="font-semibold text-white text-xs">APM</strong>
+                                <div>
+                                    <div class="font-bold text-white">APM</div>
+                                    <div class="text-[10px] text-white/50">Associação Pais e Mestres</div>
+                                </div>
                             </a>
-                            <a href="{{ route('auxiliary-teachers') }}"
-                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-white/80 hover:text-white hover:bg-white/10 transition">
-                                <div class="w-7 h-7 bg-white/15 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-3.5 h-3.5 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
-                                    </svg>
+                            <a href="{{ route('auxiliary-teachers') }}" class="flex items-center gap-3 px-3 py-2 text-xs font-semibold text-white/85 hover:text-white hover:bg-white/10 rounded-xl transition">
+                                <div class="w-8 h-8 rounded-lg bg-blue-400/20 text-blue-300 flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
                                 </div>
-                                <strong class="font-semibold text-white text-xs">Auxiliares Docentes</strong>
+                                <div>
+                                    <div class="font-bold text-white">Auxiliares Docentes</div>
+                                    <div class="text-[10px] text-white/50">Apoio aos laboratórios</div>
+                                </div>
                             </a>
-                            <a href="{{ route('collaborators') }}"
-                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-white/80 hover:text-white hover:bg-white/10 transition">
-                                <div class="w-7 h-7 bg-white/15 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-3.5 h-3.5 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                                    </svg>
+                            <a href="{{ route('collaborators') }}" class="flex items-center gap-3 px-3 py-2 text-xs font-semibold text-white/85 hover:text-white hover:bg-white/10 rounded-xl transition">
+                                <div class="w-8 h-8 rounded-lg bg-purple-400/20 text-purple-300 flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                                 </div>
-                                <strong class="font-semibold text-white text-xs">Colaboradores</strong>
+                                <div>
+                                    <div class="font-bold text-white">Colaboradores</div>
+                                    <div class="text-[10px] text-white/50">Equipe administrativa</div>
+                                </div>
                             </a>
-                            <a href="{{ route('security-staff') }}"
-                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-white/80 hover:text-white hover:bg-white/10 transition">
-                                <div class="w-7 h-7 bg-white/15 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-3.5 h-3.5 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                                    </svg>
+                            <a href="{{ route('security-staff') }}" class="flex items-center gap-3 px-3 py-2 text-xs font-semibold text-white/85 hover:text-white hover:bg-white/10 rounded-xl transition">
+                                <div class="w-8 h-8 rounded-lg bg-rose-400/20 text-rose-300 flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                                 </div>
-                                <strong class="font-semibold text-white text-xs">Seguranças (Vigilantes)</strong>
-                            </a>
-
-                            {{-- Divisor --}}
-                            <div class="mx-3 my-1 border-t border-white/10"></div>
-
-                            <a href="{{ route('lab.dashboard') }}"
-                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-white/80 hover:text-white hover:bg-white/10 transition">
-                                <div class="w-7 h-7 bg-white/15 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-3.5 h-3.5 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
-                                    </svg>
+                                <div>
+                                    <div class="font-bold text-white">Vigilância & Segurança</div>
+                                    <div class="text-[10px] text-white/50">Proteção do campus</div>
                                 </div>
-                                <strong class="font-semibold text-white text-xs">Reservar Laboratório</strong>
                             </a>
                         </div>
                     </div>
                 </div>
+
                 {{-- Dropdown Gestão --}}
-                <div class="relative group">
-                    <button class="px-4 py-2 text-white/75 hover:text-white hover:bg-white/10 rounded-lg transition flex items-center gap-1 select-none">
-                        Gestão
-                        <svg class="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
-                        </svg>
+                <div class="relative group" @mouseenter="activeDrop = 'gestao'" @mouseleave="activeDrop = null">
+                    <button class="px-3.5 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition duration-200 flex items-center gap-1 select-none">
+                        <span>Gestão</span>
+                        <svg class="w-3.5 h-3.5 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
                     </button>
-                    <div class="absolute top-full left-0 pt-1 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-150 z-50">
-                        <div class="bg-etec-main rounded-xl shadow-lg border border-white/10 py-1.5 min-w-[220px] overflow-hidden">
-
-                            <a href="{{ route('superintendence') }}"
-                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-white/80 hover:text-white hover:bg-white/10 transition">
-                                <div class="w-7 h-7 bg-white/15 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-3.5 h-3.5 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                                    </svg>
+                    <div class="absolute top-full left-0 pt-2 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-200 z-50">
+                        <div class="bg-[#14284b]/98 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/15 p-2 min-w-[260px] space-y-1">
+                            <a href="{{ route('superintendence') }}" class="flex items-center gap-3 px-3 py-2 text-xs font-semibold text-white/85 hover:text-white hover:bg-white/10 rounded-xl transition">
+                                <div class="w-8 h-8 rounded-lg bg-indigo-400/20 text-indigo-300 flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                                 </div>
                                 <div>
-                                    <strong class="block font-semibold text-white text-xs">Superintendência</strong>
-                                    <span class="text-xs text-white/50">Direção da Unidade</span>
+                                    <div class="font-bold text-white">Superintendência</div>
+                                    <div class="text-[10px] text-white/50">Direção da Unidade</div>
                                 </div>
                             </a>
-                            <a href="{{ route('regional-supervision') }}"
-                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-white/80 hover:text-white hover:bg-white/10 transition">
-                                <div class="w-7 h-7 bg-white/15 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-3.5 h-3.5 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                    </svg>
+                            <a href="{{ route('regional-supervision') }}" class="flex items-center gap-3 px-3 py-2 text-xs font-semibold text-white/85 hover:text-white hover:bg-white/10 rounded-xl transition">
+                                <div class="w-8 h-8 rounded-lg bg-teal-400/20 text-teal-300 flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                                 </div>
                                 <div>
-                                    <strong class="block font-semibold text-white text-xs">Supervisão Regional</strong>
-                                    <span class="text-xs text-white/50">Supervisão de Ensino — PR01</span>
+                                    <div class="font-bold text-white">Supervisão Regional</div>
+                                    <div class="text-[10px] text-white/50">Supervisão de Ensino PR01</div>
                                 </div>
                             </a>
-                            <a href="{{ route('academic') }}"
-                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-white/80 hover:text-white hover:bg-white/10 transition">
-                                <div class="w-7 h-7 bg-white/15 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-3.5 h-3.5 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                    </svg>
+                            <a href="{{ route('academic') }}" class="flex items-center gap-3 px-3 py-2 text-xs font-semibold text-white/85 hover:text-white hover:bg-white/10 rounded-xl transition">
+                                <div class="w-8 h-8 rounded-lg bg-cyan-400/20 text-cyan-300 flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                 </div>
                                 <div>
-                                    <strong class="block font-semibold text-white text-xs">Secretaria Acadêmica</strong>
-                                    <span class="text-xs text-white/50">Vida Escolar e Matrículas</span>
+                                    <div class="font-bold text-white">Secretaria Acadêmica</div>
+                                    <div class="text-[10px] text-white/50">Vida escolar e matrículas</div>
                                 </div>
                             </a>
-                            <a href="{{ route('academic-division') }}"
-                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-white/80 hover:text-white hover:bg-white/10 transition">
-                                <div class="w-7 h-7 bg-white/15 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-3.5 h-3.5 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
-                                    </svg>
+                            <a href="{{ route('academic-division') }}" class="flex items-center gap-3 px-3 py-2 text-xs font-semibold text-white/85 hover:text-white hover:bg-white/10 rounded-xl transition">
+                                <div class="w-8 h-8 rounded-lg bg-emerald-400/20 text-emerald-300 flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
                                 </div>
                                 <div>
-                                    <strong class="block font-semibold text-white text-xs">Gestão Pedagógica</strong>
-                                    <span class="text-xs text-white/50">Coordenação e Orientação</span>
+                                    <div class="font-bold text-white">Gestão Pedagógica</div>
+                                    <div class="text-[10px] text-white/50">Coordenação de cursos</div>
                                 </div>
                             </a>
-                            <a href="{{ route('administrative') }}"
-                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-white/80 hover:text-white hover:bg-white/10 transition">
-                                <div class="w-7 h-7 bg-white/15 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-3.5 h-3.5 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                                    </svg>
+                            <a href="{{ route('administrative') }}" class="flex items-center gap-3 px-3 py-2 text-xs font-semibold text-white/85 hover:text-white hover:bg-white/10 rounded-xl transition">
+                                <div class="w-8 h-8 rounded-lg bg-amber-400/20 text-amber-300 flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                                 </div>
                                 <div>
-                                    <strong class="block font-semibold text-white text-xs">Diretoria de Serviços</strong>
-                                    <span class="text-xs text-white/50">Administrativo e Financeiro</span>
+                                    <div class="font-bold text-white">Diretoria de Serviços</div>
+                                    <div class="text-[10px] text-white/50">Administrativo e financeiro</div>
                                 </div>
-
                             </a>
                         </div>
                     </div>
                 </div>
-                <a href="{{ route('contact') }}" class="px-4 py-2 text-white/75 hover:text-white hover:bg-white/10 rounded-lg transition">Contato</a>
-                <a href="{{ route('agenda') }}" class="px-4 py-2 text-white/75 hover:text-white hover:bg-white/10 rounded-lg transition">Agenda</a>
-                <a href="https://vestibulinho.etec.sp.gov.br/home/" class="ml-2 px-4 py-2 bg-etec-accent text-etec-dark rounded-lg hover:bg-yellow-400 transition font-semibold text-sm shadow-sm">Vestibulinho</a>
 
+                <a href="{{ route('contact') }}" class="px-3.5 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition duration-200 {{ request()->routeIs('contact') ? 'bg-white/10 text-white font-bold' : '' }}">
+                    Contato
+                </a>
+                <a href="{{ route('agenda') }}" class="px-3.5 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition duration-200 {{ request()->routeIs('agenda') ? 'bg-white/10 text-white font-bold' : '' }}">
+                    Agenda
+                </a>
+
+                {{-- Botão Destaque Vestibulinho --}}
+                <a href="https://vestibulinho.etec.sp.gov.br/home/" target="_blank" rel="noopener noreferrer"
+                   class="ml-2 inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold text-xs rounded-xl shadow-md hover:from-amber-300 hover:to-amber-400 hover:shadow-lg transition duration-200">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
+                    <span>Vestibulinho</span>
+                </a>
+
+                {{-- Botão Alternador Tema Escuro/Claro --}}
                 <button onclick="etecToggleDarkMode()" title="Alternar modo escuro/claro" aria-label="Alternar modo escuro"
-                        class="ml-2 p-2 rounded-lg text-white/75 hover:text-white hover:bg-white/10 transition">
+                        class="ml-2 p-2 rounded-xl text-white/75 hover:text-white hover:bg-white/10 transition">
                     <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m8.485-8.485h1M3.515 12h1m13.435 6.364l-.707-.707M6.757 6.757l-.707-.707m11.314 0l-.707.707M6.757 17.243l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                     <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
                 </button>
 
-                <div class="ml-4 pl-4 border-l border-white/10">
-                    <a href="https://www.cps.sp.gov.br/">
-                        <img src="{{ asset('imagens/logo/logo-cps-2022.svg') }}" alt="Centro Paula Souza" class="h-14 w-auto flex-shrink-0 opacity-95 hover:opacity-100 transition">
+                {{-- Logo CPS --}}
+                <div class="ml-3 pl-3 border-l border-white/15">
+                    <a href="https://www.cps.sp.gov.br/" target="_blank" rel="noopener noreferrer" class="block bg-white px-2.5 py-1 rounded-xl shadow-xs hover:bg-slate-100 transition">
+                        <img src="{{ asset('imagens/logo/logo-cps-2022.svg') }}" alt="Centro Paula Souza" class="h-8 w-auto">
                     </a>
-
                 </div>
             </nav>
             @endunless
-            {{-- ↑ FIM DO MENU DESKTOP (hidden xl:flex) — NÃO REMOVER esta tag </nav> --}}
 
-            {{-- ═══════════════════════════════════════════════════════════════
-                 HAMBÚRGUER — visível ATÉ 1280px (breakpoint xl)
-                 Usamos xl em vez de lg porque com todos os itens do menu (Início,
-                 A Escola, Biblioteca, Cursos, Escola Fazenda, Apoio Institucional,
-                 Gestão, Contato, Agenda, Vestibulinho + logos) não cabe confortavelmente
-                 em telas menores que 1280px sem quebrar linha ou ficar apertado —
-                 isso causava desalinhamento visível ao dar zoom no navegador.
-                 ATENÇÃO: este bloco deve ficar FORA da <nav> acima e DENTRO
-                 do <div class="container ... flex justify-between">.
-                 O CSS .mobile-hamburger esconde-o em desktop via media query.
-                 NÃO mover este bloco para dentro da <nav class="hidden xl:flex">.
-            ════════════════════════════════════════════════════════════════ --}}
+            {{-- Hambúrguer Mobile --}}
             @unless(electoral_period_active())
-            <div class="mobile-hamburger">
-                <img src="{{ asset('imagens/logo/logo-cps-2022.svg') }}" alt="Centro Paula Souza" class="h-11 w-auto opacity-95">
+            <div class="mobile-hamburger flex items-center gap-2">
+                <a href="https://vestibulinho.etec.sp.gov.br/home/" target="_blank" rel="noopener noreferrer"
+                   class="px-2.5 py-1.5 bg-amber-400 text-slate-950 font-bold text-[11px] rounded-lg shadow-xs">
+                    Vestibulinho
+                </a>
 
                 <button onclick="etecToggleDarkMode()" title="Alternar modo escuro/claro" aria-label="Alternar modo escuro"
-                        class="p-2 rounded-lg text-white/75 hover:text-white hover:bg-white/10 transition">
+                        class="p-2 rounded-xl text-white/75 hover:text-white hover:bg-white/10 transition">
                     <svg class="w-5 h-5 dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m8.485-8.485h1M3.515 12h1m13.435 6.364l-.707-.707M6.757 6.757l-.707-.707m11.314 0l-.707.707M6.757 17.243l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                     <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
                 </button>
 
                 <button @click="open = !open"
-                    class="p-2 rounded-lg text-white/75 hover:text-white hover:bg-white/10 transition focus:outline-none"
+                    class="p-2 rounded-xl text-white hover:bg-white/10 transition focus:outline-none"
                     aria-label="Abrir menu">
-                    <svg x-show="!open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                    </svg>
-                    <svg x-show="open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display:none">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
+                    <svg x-show="!open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                    <svg x-show="open" class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display:none"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
             @endunless
-            {{-- FIM DO HAMBÚRGUER --}}
 
-        </div>{{-- fim container flex justify-between --}}
+        </div>
 
-        {{-- ═══════════════════════════════════════════════════════════════
-             MENU MOBILE — abre/fecha via Alpine.js x-show="open"
-             Atualizar SEMPRE que adicionar itens ao menu desktop acima.
-             Inclui todos os itens + subpáginas de Gestão expandidas.
-        ════════════════════════════════════════════════════════════════ --}}
+        {{-- Gaveta Mobile Drawer --}}
         @unless(electoral_period_active())
-        <div x-show="open" x-transition class="mobile-nav-menu border-t border-white/10 bg-etec-dark shadow-lg" style="display:none">
-            <nav class="container mx-auto px-4 py-3 flex flex-col gap-0.5 text-sm font-medium">
-                <a href="{{ route('home') }}"         @click="open=false" class="px-4 py-3 text-white hover:text-etec-accent hover:bg-white/10 rounded-lg transition">Início</a>
-                <a href="{{ route('institutional') }}" @click="open=false" class="px-4 py-3 text-white/75 hover:text-white hover:bg-white/10 rounded-lg transition">A Escola</a>
-                <a href="{{ route('library') }}"       @click="open=false" class="px-4 py-3 text-white/75 hover:text-white hover:bg-white/10 rounded-lg transition">Biblioteca</a>
-                <a href="{{ route('home') }}#unidades" @click="open=false" class="px-4 py-3 text-white/75 hover:text-white hover:bg-white/10 rounded-lg transition">Cursos</a>
-                <a href="{{ route('home') }}#fazenda"  @click="open=false" class="px-4 py-3 text-white/75 hover:text-white hover:bg-white/10 rounded-lg transition">Escola Fazenda</a>
-                {{-- Apoio Institucional (expandido no mobile) --}}
-                <div class="border-t border-white/10 pt-1 mt-1">
-                    <p class="px-4 py-1.5 text-xs font-bold text-white/40 uppercase tracking-widest">Apoio Institucional</p>
-                    <a href="{{ route('cooperative') }}"       @click="open=false" class="px-4 py-3 text-white/75 hover:text-white hover:bg-white/10 rounded-lg transition flex items-center gap-2">
-                        <svg class="w-4 h-4 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        Cooperativa Escola
-                    </a>
-                    <a href="{{ route('apm') }}"               @click="open=false" class="px-4 py-3 text-white/75 hover:text-white hover:bg-white/10 rounded-lg transition flex items-center gap-2">
-                        <svg class="w-4 h-4 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-                        APM
-                    </a>
-                    <a href="{{ route('auxiliary-teachers') }}" @click="open=false" class="px-4 py-3 text-white/75 hover:text-white hover:bg-white/10 rounded-lg transition flex items-center gap-2">
-                        <svg class="w-4 h-4 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
-                        Auxiliares Docentes
-                    </a>
-                    <a href="{{ route('collaborators') }}"     @click="open=false" class="px-4 py-3 text-white/75 hover:text-white hover:bg-white/10 rounded-lg transition flex items-center gap-2">
-                        <svg class="w-4 h-4 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                        Colaboradores
-                    </a>
-                    <a href="{{ route('security-staff') }}"    @click="open=false" class="px-4 py-3 text-white/75 hover:text-white hover:bg-white/10 rounded-lg transition flex items-center gap-2">
-                        <svg class="w-4 h-4 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                        Seguranças (Vigilantes)
-                    </a>
-                    <a href="{{ route('lab.dashboard') }}" @click="open=false" class="px-4 py-3 text-white/75 hover:text-white hover:bg-white/10 rounded-lg transition flex items-center gap-2">
-                        <svg class="w-4 h-4 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
-                        Reservar Laboratório
-                    </a>
+        <div x-show="open" x-transition.opacity class="mobile-nav-menu border-t border-white/10 bg-[#0f223f] shadow-2xl" style="display:none">
+            <nav class="container mx-auto px-4 py-4 flex flex-col gap-1 text-sm font-medium">
+                <a href="{{ route('home') }}" @click="open=false" class="px-4 py-2.5 text-white hover:text-amber-300 hover:bg-white/10 rounded-xl transition flex items-center gap-2.5">
+                    <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                    <span>Início</span>
+                </a>
+                <a href="{{ route('institutional') }}" @click="open=false" class="px-4 py-2.5 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition flex items-center gap-2.5">
+                    <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                    <span>A Escola</span>
+                </a>
+                <a href="{{ route('home') }}#unidades" @click="open=false" class="px-4 py-2.5 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition flex items-center gap-2.5">
+                    <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
+                    <span>Cursos & Polos</span>
+                </a>
+                <a href="{{ route('home') }}#fazenda" @click="open=false" class="px-4 py-2.5 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition flex items-center gap-2.5">
+                    <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064"/></svg>
+                    <span>Escola Fazenda</span>
+                </a>
+                <a href="{{ route('library') }}" @click="open=false" class="px-4 py-2.5 text-white/80 hover:text-white hover:bg-white/10 rounded-xl transition flex items-center gap-2.5">
+                    <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                    <span>Biblioteca</span>
+                </a>
+
+                <div class="border-t border-white/10 pt-2 mt-2">
+                    <span class="px-4 text-[10px] font-bold text-white/40 uppercase tracking-widest block mb-1">Apoio & Comunidade</span>
+                    <div class="grid grid-cols-2 gap-1">
+                        <a href="{{ route('cooperative') }}" @click="open=false" class="px-3 py-2 text-xs text-white/80 hover:bg-white/10 rounded-lg transition flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                            <span>Cooperativa</span>
+                        </a>
+                        <a href="{{ route('apm') }}" @click="open=false" class="px-3 py-2 text-xs text-white/80 hover:bg-white/10 rounded-lg transition flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                            <span>APM</span>
+                        </a>
+                        <a href="{{ route('auxiliary-teachers') }}" @click="open=false" class="px-3 py-2 text-xs text-white/80 hover:bg-white/10 rounded-lg transition flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+                            <span>Aux. Docentes</span>
+                        </a>
+                        <a href="{{ route('collaborators') }}" @click="open=false" class="px-3 py-2 text-xs text-white/80 hover:bg-white/10 rounded-lg transition flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-purple-400"></span>
+                            <span>Colaboradores</span>
+                        </a>
+                    </div>
                 </div>
 
-                {{-- Gestão (expandido no mobile) --}}
-                <div class="border-t border-white/10 pt-1 mt-1">
-                    <p class="px-4 py-1.5 text-xs font-bold text-white/40 uppercase tracking-widest">Gestão</p>
-                    <a href="{{ route('academic') }}"      @click="open=false" class="px-4 py-3 text-white/75 hover:text-white hover:bg-white/10 rounded-lg transition flex items-center gap-2">
-                        <svg class="w-4 h-4 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                        Secretaria
-                    </a>
-                    <a href="{{ route('superintendence') }}"   @click="open=false" class="px-4 py-3 text-white/75 hover:text-white hover:bg-white/10 rounded-lg transition flex items-center gap-2">
-                        <svg class="w-4 h-4 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                        Superintendência
-                    </a>
-                    <a href="{{ route('regional-supervision') }}" @click="open=false" class="px-4 py-3 text-white/75 hover:text-white hover:bg-white/10 rounded-lg transition flex items-center gap-2">
-                        <svg class="w-4 h-4 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        Supervisão Regional
-                    </a>
-                    <a href="{{ route('academic-division') }}" @click="open=false" class="px-4 py-3 text-white/75 hover:text-white hover:bg-white/10 rounded-lg transition flex items-center gap-2">
-                        <svg class="w-4 h-4 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
-                        Gestão Pedagógica
-                    </a>
-                    <a href="{{ route('administrative') }}"    @click="open=false" class="px-4 py-3 text-white/75 hover:text-white hover:bg-white/10 rounded-lg transition flex items-center gap-2">
-                        <svg class="w-4 h-4 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                        Diretoria de Serviços
-                    </a>
+                <div class="border-t border-white/10 pt-2 mt-2">
+                    <span class="px-4 text-[10px] font-bold text-white/40 uppercase tracking-widest block mb-1">Gestão & Secretaria</span>
+                    <div class="grid grid-cols-2 gap-1">
+                        <a href="{{ route('superintendence') }}" @click="open=false" class="px-3 py-2 text-xs text-white/80 hover:bg-white/10 rounded-lg transition flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
+                            <span>Direção</span>
+                        </a>
+                        <a href="{{ route('academic') }}" @click="open=false" class="px-3 py-2 text-xs text-white/80 hover:bg-white/10 rounded-lg transition flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+                            <span>Secretaria</span>
+                        </a>
+                        <a href="{{ route('academic-division') }}" @click="open=false" class="px-3 py-2 text-xs text-white/80 hover:bg-white/10 rounded-lg transition flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                            <span>Coordenação</span>
+                        </a>
+                        <a href="{{ route('administrative') }}" @click="open=false" class="px-3 py-2 text-xs text-white/80 hover:bg-white/10 rounded-lg transition flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                            <span>Administrativo</span>
+                        </a>
+                    </div>
                 </div>
 
-                <div class="border-t border-white/10 pt-1 mt-1">
-                    <a href="{{ route('contact') }}" @click="open=false" class="px-4 py-3 text-white/75 hover:text-white hover:bg-white/10 rounded-lg transition">Contato</a>
-                    <a href="{{ route('agenda') }}"  @click="open=false" class="px-4 py-3 text-white/75 hover:text-white hover:bg-white/10 rounded-lg transition">Agenda</a>
-                </div>
-
-                <div class="pt-2 pb-1">
-                    <a href="#" @click="open=false" class="block px-4 py-3 bg-etec-accent text-etec-dark rounded-lg hover:bg-yellow-400 transition font-semibold text-center shadow-sm">Vestibulinho</a>
+                <div class="border-t border-white/10 pt-3 mt-2 flex flex-col gap-2">
+                    <a href="{{ route('contact') }}" @click="open=false" class="px-4 py-2.5 text-white/80 hover:bg-white/10 rounded-xl transition flex items-center gap-2">
+                        <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        <span>Fale Conosco</span>
+                    </a>
+                    <a href="https://vestibulinho.etec.sp.gov.br/home/" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 bg-amber-400 text-slate-950 font-bold text-center rounded-xl shadow-sm flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
+                        <span>Inscrições no Vestibulinho</span>
+                    </a>
                 </div>
             </nav>
         </div>
         @endunless
-        {{-- FIM DO MENU MOBILE --}}
-
     </header>
 
-    <main class="flex-grow">
+    <main class="flex-grow bg-[#0b172a]" style="background-color: #0b172a;">
         @yield('content')
     </main>
 
-    <footer class="bg-etec-dark text-white pt-12 pb-6 mt-12">
+    {{-- Footer Institucional 4 Colunas --}}
+    <footer class="bg-[#0a1628] text-slate-300 text-sm border-t border-white/10 pt-16 pb-8 transition-colors" style="background-color: #0a1628; color: #cbd5e1;">
         <div class="container mx-auto px-4">
-            <div class="grid md:grid-cols-3 gap-10 pb-10 border-b border-white/10">
-                <div>
-                    <div class="flex items-center gap-3 mb-4">
-                        <img src="{{ asset('imagens/logo/etec.png') }}" alt="Logo" class="h-10 w-auto brightness-200 opacity-80">
-                        <span class="font-bold text-lg leading-tight text-white/90">Etec Sebastiana<br>Augusta de Moraes</span>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-white/10">
+
+                {{-- Coluna 1: Identidade Etec SAM & Redes --}}
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3">
+                        <img src="{{ asset('imagens/logo/etec_ra_aracatuba_andradina_sebastina_augusta_de_moraes/etec_ra_aracatuba_andradina_sebastina_augusta_de_moraes_br.png') }}"
+                             onerror="this.onerror=null;this.src='{{ asset('imagens/logo/etec.png') }}'"
+                             alt="Logo Etec" class="h-12 w-auto drop-shadow-sm">
                     </div>
-                    <p class="text-sm text-gray-400 leading-relaxed">
-                        Referência em ensino técnico agrícola, formando profissionais competentes para o agronegócio e a tecnologia desde 1994.
+                    <p class="text-xs text-slate-400 leading-relaxed font-normal">
+                        A <strong class="text-white font-bold">Etec Sebastiana Augusta de Moraes</strong> é referência regional em educação técnica pública e gratuita, preparando jovens e adultos para o mercado de trabalho desde 1994.
                     </p>
-                    <div class="flex items-center gap-3 mt-4">
-                        <a href="https://wa.me/551837026857" target="_blank" rel="noopener" title="WhatsApp"
-                           class="w-9 h-9 rounded-full bg-white/10 hover:bg-etec-accent hover:text-etec-dark flex items-center justify-center transition">
+                    <div class="flex items-center gap-3 pt-2">
+                        <a href="https://wa.me/551837026857" target="_blank" rel="noopener noreferrer" title="WhatsApp"
+                           class="w-9 h-9 rounded-xl bg-white/10 hover:bg-emerald-500 hover:text-white flex items-center justify-center transition duration-200 text-slate-300">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-1.746-.873-2.892-1.557-4.043-3.53-.305-.524.305-.486.872-1.617.097-.198.05-.371-.05-.52-.099-.149-.67-1.612-.92-2.207-.241-.579-.487-.5-.67-.51-.173-.01-.371-.012-.57-.012-.198 0-.52.074-.793.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.04 3.115 4.946 4.247 2.906 1.131 2.906.755 3.428.707.521-.05 1.758-.718 2.006-1.413.248-.694.248-1.288.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12.004 2C6.486 2 2 6.486 2 12.004c0 1.937.557 3.78 1.611 5.39L2 22l4.751-1.572A9.953 9.953 0 0012.004 22C17.522 22 22 17.522 22 12.004 22 6.486 17.522 2 12.004 2zm0 18.012a8 8 0 01-4.273-1.238l-.306-.187-2.823.934.95-2.755-.2-.32A8.002 8.002 0 1112.004 20.012z"/></svg>
                         </a>
-                        <a href="https://www.instagram.com/etecsam" target="_blank" rel="noopener" title="Instagram"
-                           class="w-9 h-9 rounded-full bg-white/10 hover:bg-etec-accent hover:text-etec-dark flex items-center justify-center transition">
+                        <a href="https://www.instagram.com/etecsam" target="_blank" rel="noopener noreferrer" title="Instagram"
+                           class="w-9 h-9 rounded-xl bg-white/10 hover:bg-rose-500 hover:text-white flex items-center justify-center transition duration-200 text-slate-300">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.332.014 7.052.072 2.695.272.273 2.69.073 7.052.014 8.332 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.332 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.668-.072-4.948-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
                         </a>
-                        <a href="https://www.facebook.com/EtecSAM" target="_blank" rel="noopener" title="Facebook"
-                           class="w-9 h-9 rounded-full bg-white/10 hover:bg-etec-accent hover:text-etec-dark flex items-center justify-center transition">
+                        <a href="https://www.facebook.com/EtecSAM" target="_blank" rel="noopener noreferrer" title="Facebook"
+                           class="w-9 h-9 rounded-xl bg-white/10 hover:bg-blue-600 hover:text-white flex items-center justify-center transition duration-200 text-slate-300">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M22 12.07C22 6.51 17.52 2 12 2S2 6.51 2 12.07c0 5.02 3.66 9.18 8.44 9.93v-7.03H7.9v-2.9h2.54V9.85c0-2.51 1.49-3.9 3.78-3.9 1.1 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.78-1.63 1.57v1.89h2.78l-.44 2.9h-2.34V22c4.78-.75 8.44-4.91 8.44-9.93z"/></svg>
                         </a>
                     </div>
+                </div>
 
-                    {{-- App EtecSam Reserva Labs --}}
-                    <div class="mt-6">
-                        <h3 class="text-xs font-bold uppercase tracking-widest text-gray-300 mb-3">Baixe o app Reserva Labs</h3>
-                        <div class="flex items-center gap-3">
-                            <a href="{{ asset('downloads/reserva-labs.apk') }}" download title="Baixar para Android"
-                               class="w-9 h-9 rounded-full bg-white/10 hover:bg-etec-accent hover:text-etec-dark flex items-center justify-center transition">
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M17.6 9.48l1.84-3.18a.5.5 0 00-.87-.5l-1.88 3.24a10.94 10.94 0 00-8.98 0L5.83 5.8a.5.5 0 10-.87.5L6.8 9.48C3.98 11.24 2 14.35 2 18h20c0-3.65-1.98-6.76-4.4-8.52zM7 15.25a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5zm10 0a1.25 1.25 0 110-2.5 1.25 1.25 0 010 2.5z"/>
-                                </svg>
-                            </a>
-                            <span title="Em breve na App Store"
-                                  class="w-9 h-9 rounded-full bg-white/5 text-white/30 flex items-center justify-center cursor-not-allowed">
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 384 512">
-                                    <path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-27-47.3-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5c0 26.2 4.8 53.3 14.4 81.2 12.8 37 59 127.6 107.2 126.1 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.5-65.2-30.7-61.7-90.5-61.7-92.6zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
-                                </svg>
-                            </span>
-                            <span class="text-xs text-gray-500">Android disponível &middot; iOS em breve</span>
-                        </div>
-                    </div>
-                </div>
-                @unless(electoral_period_active())
-                <div>
-                    <h3 class="text-sm font-bold uppercase tracking-widest text-gray-300 mb-4">Links Rápidos</h3>
-                    <ul class="space-y-2 text-sm text-gray-400">
-                        <li><a href="https://nsaetec.com.br/" class="hover:text-etec-accent transition flex items-center gap-2"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>Portal do Aluno (NSA)</a></li>
-                        <li><a href="#" class="hover:text-etec-accent transition flex items-center gap-2"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>Calendário Escolar</a></li>
-                        <li><a href="https://www.transparencia.sp.gov.br/home/servidor" class="hover:text-etec-accent transition flex items-center gap-2"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>Transparência Pública</a></li>
-                        <li><a href="{{ route('library') }}" class="hover:text-etec-accent transition flex items-center gap-2"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>Biblioteca</a></li>
+                {{-- Coluna 2: Cursos & Ensino --}}
+                <div class="space-y-3">
+                    <h3 class="text-xs font-extrabold uppercase tracking-widest text-amber-400">Ensino & Cursos</h3>
+                    <ul class="space-y-2 text-xs text-slate-300">
+                        <li><a href="{{ route('home') }}#unidades" class="hover:text-white hover:translate-x-1 transition duration-150 inline-flex items-center gap-1.5"><span class="text-amber-400 font-bold">&rsaquo;</span> Cursos Técnicos e Integrados</a></li>
+                        <li><a href="{{ route('home') }}#fazenda" class="hover:text-white hover:translate-x-1 transition duration-150 inline-flex items-center gap-1.5"><span class="text-amber-400 font-bold">&rsaquo;</span> Escola Fazenda e Laboratórios</a></li>
+                        <li><a href="{{ route('library') }}" class="hover:text-white hover:translate-x-1 transition duration-150 inline-flex items-center gap-1.5"><span class="text-amber-400 font-bold">&rsaquo;</span> Biblioteca e Acervo</a></li>
+                        <li><a href="https://vestibulinho.etec.sp.gov.br/home/" target="_blank" rel="noopener noreferrer" class="text-amber-300 font-bold hover:underline inline-flex items-center gap-1.5"><span class="text-amber-400 font-bold">&rsaquo;</span> Vestibulinho 2026</a></li>
+                        <li><a href="https://nsaetec.com.br/" target="_blank" rel="noopener noreferrer" class="text-amber-300 font-bold hover:underline inline-flex items-center gap-1.5"><span class="text-amber-400 font-bold">&rsaquo;</span> Portal do Aluno (NSA)</a></li>
                     </ul>
                 </div>
-                @endunless
-                <div>
-                    <h3 class="text-sm font-bold uppercase tracking-widest text-gray-300 mb-4">Localização e Contato</h3>
-                    <ul class="space-y-3 text-sm text-gray-400">
+
+                {{-- Coluna 3: Institucional & Governança --}}
+                <div class="space-y-3">
+                    <h3 class="text-xs font-extrabold uppercase tracking-widest text-amber-400">Institucional</h3>
+                    <ul class="space-y-2 text-xs text-slate-300">
+                        <li><a href="{{ route('institutional') }}" class="hover:text-white hover:translate-x-1 transition duration-150 inline-flex items-center gap-1.5"><span class="text-amber-400 font-bold">&rsaquo;</span> Nossa História</a></li>
+                        <li><a href="{{ route('superintendence') }}" class="hover:text-white hover:translate-x-1 transition duration-150 inline-flex items-center gap-1.5"><span class="text-amber-400 font-bold">&rsaquo;</span> Direção e Superintendência</a></li>
+                        <li><a href="{{ route('academic') }}" class="hover:text-white hover:translate-x-1 transition duration-150 inline-flex items-center gap-1.5"><span class="text-amber-400 font-bold">&rsaquo;</span> Secretaria Acadêmica</a></li>
+                        <li><a href="{{ route('apm') }}" class="hover:text-white hover:translate-x-1 transition duration-150 inline-flex items-center gap-1.5"><span class="text-amber-400 font-bold">&rsaquo;</span> Associação Pais e Mestres</a></li>
+                        <li><a href="{{ route('cooperative') }}" class="hover:text-white hover:translate-x-1 transition duration-150 inline-flex items-center gap-1.5"><span class="text-amber-400 font-bold">&rsaquo;</span> Cooperativa Escola</a></li>
+                    </ul>
+                </div>
+
+                {{-- Coluna 4: Localização e Atendimento --}}
+                <div class="space-y-3">
+                    <h3 class="text-xs font-extrabold uppercase tracking-widest text-amber-400">Localização & Contato</h3>
+                    <ul class="space-y-3 text-xs text-slate-300">
                         <li class="flex items-start gap-2.5">
-                            <svg class="w-4 h-4 mt-0.5 text-etec-accent flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                            <span>Estrada Vicinal Sebastião Lourenço da Silva, Km 11<br>Andradina/SP — CEP 16900-530</span>
+                            <svg class="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            <span class="leading-relaxed">Estrada Vicinal Sebastião Lourenço da Silva, Km 11<br>Andradina/SP — CEP 16900-530</span>
                         </li>
                         <li class="flex items-center gap-2.5">
-                            <svg class="w-4 h-4 text-etec-accent flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 7V5z"/></svg>
-                            <a href="tel:1837026850" class="hover:text-white transition">(18) 3702-6850</a>
+                            <svg class="w-4 h-4 text-amber-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 7V5z"/></svg>
+                            <a href="tel:1837026850" class="hover:text-amber-300 font-semibold transition">(18) 3702-6850</a>
                         </li>
                         <li class="flex items-center gap-2.5">
-                            <svg class="w-4 h-4 text-etec-accent flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                            <a href="mailto:e028dir@cps.sp.gov.br" class="hover:text-white transition">e028dir@cps.sp.gov.br</a>
+                            <svg class="w-4 h-4 text-amber-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            <a href="mailto:e028dir@cps.sp.gov.br" class="hover:text-amber-300 font-semibold transition">e028dir@cps.sp.gov.br</a>
                         </li>
                     </ul>
                 </div>
+
             </div>
-            <div class="pt-6 flex flex-col md:flex-row justify-between items-center gap-3 text-xs text-gray-500">
-                <span>&copy; {{ date('Y') }} Etec Sebastiana Augusta de Moraes &mdash; Centro Paula Souza</span>
-                <a href="{{ route('admin.dashboard') }}" class="hover:text-gray-300 transition">Acesso Administrativo</a>
+
+            <div class="pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-slate-400">
+                <span>&copy; {{ date('Y') }} Etec Sebastiana Augusta de Moraes &bull; Centro Paula Souza. Todos os direitos reservados.</span>
+                <div class="flex items-center gap-4">
+                    <a href="{{ route('contact') }}" class="hover:text-white transition">Fale Conosco</a>
+                    <span>&bull;</span>
+                    <a href="{{ route('admin.dashboard') }}" class="text-amber-400 hover:text-amber-300 font-bold transition">Painel Administrativo</a>
+                </div>
             </div>
         </div>
     </footer>

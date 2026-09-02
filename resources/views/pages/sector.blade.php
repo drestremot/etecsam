@@ -1,159 +1,156 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('content')
 
-<div class="bg-etec-dark text-white py-12 border-b-4 border-etec-accent">
+<div class="bg-gradient-to-r from-[#0c1b33] via-[#14284b] to-[#0c1b33] text-white py-14 border-b border-white/10 shadow-md" style="background-color: #0c1b33; color: #ffffff;">
     <div class="container mx-auto px-4 flex items-center gap-6">
-        <div class="w-20 h-20 bg-white/10 rounded-2xl flex items-center justify-center flex-shrink-0 border border-white/20">
+        <div class="w-18 h-18 bg-amber-400/20 rounded-3xl flex items-center justify-center flex-shrink-0 border border-amber-400/30 text-amber-300 shadow-md">
             @switch($sector->icon)
                 @case('cow')
-                    <svg class="w-10 h-10 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6c-1 0-2 .5-2 1.5S11 9 11 10c0 2-2 3-2 5s1.5 3 3 3 3-1 3-3-2-3-2-5c0-1 1-1.5 1-2.5S13 6 12 6zM9.5 6C8 4.5 6 5 6 5M14.5 6C16 4.5 18 5 18 5"/></svg>
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                     @break
-                @case('pig')
-                    <svg class="w-10 h-10 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="7" ry="5" stroke-width="1.5"/><circle cx="10" cy="11" r="1" fill="currentColor"/><circle cx="14" cy="11" r="1" fill="currentColor"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 10c-1-1-2.5-.5-3 1M18 10c1-1 2.5-.5 3 1"/></svg>
+                @case('factory')
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                     @break
-                @case('chicken')
-                @case('bee')
-                    <svg class="w-10 h-10 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4a3 3 0 100 6 3 3 0 000-6zM6.343 7.657a8 8 0 1011.314 0M12 10v10M9 16l3 3 3-3"/></svg>
+                @case('computer')
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                     @break
-                @case('fish')
-                    <svg class="w-10 h-10 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18 8c0 0-3-4-8-4S3 8 3 12s3 8 7 8c5 0 8-4 8-4l3-4-3-4z"/><circle cx="8" cy="11" r="1" fill="currentColor"/></svg>
+                @case('flask')
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
                     @break
                 @case('leaf')
                 @case('tree')
-                    <svg class="w-10 h-10 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 22V12m0 0c0 0-6-3-6-8a6 6 0 0112 0c0 5-6 8-6 8z"/></svg>
-                    @break
-                @case('factory')
-                    <svg class="w-10 h-10 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 21V9l5-3v3l5-3v3l5-3v12H3z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 21v-4h3v4M14 21v-4h3v4"/></svg>
-                    @break
-                @case('computer')
-                    <svg class="w-10 h-10 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" stroke-width="1.5"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 21h8M12 17v4"/></svg>
-                    @break
-                @case('flask')
-                    <svg class="w-10 h-10 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 3h6m-5 0v6L5 19a2 2 0 002 2h10a2 2 0 002-2L14 9V3"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 15h14"/></svg>
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                     @break
                 @default
-                    <svg class="w-10 h-10 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064"/></svg>
             @endswitch
         </div>
         <div>
-            <span class="text-etec-accent font-bold tracking-widest uppercase text-xs mb-2 block">
+            <span class="text-amber-300 font-extrabold tracking-widest uppercase text-xs mb-1.5 block">
                 Unidade Didática &amp; Laboratório
             </span>
-            <h1 class="text-3xl md:text-5xl font-bold leading-tight">
+            <h1 class="text-3xl sm:text-5xl font-extrabold leading-tight text-white tracking-tight">
                 {{ $sector->name }}
             </h1>
         </div>
     </div>
 </div>
 
-<div class="container mx-auto px-4 py-12">
-    <div class="grid lg:grid-cols-3 gap-12">
+<div class="bg-[#0b172a] text-white py-14" style="background-color: #0b172a; color: #ffffff;">
+    <div class="container mx-auto px-4">
+        <div class="grid lg:grid-cols-3 gap-10">
 
-        <div class="lg:col-span-2 space-y-8">
+            <div class="lg:col-span-2 space-y-8">
 
-            {{-- Carrossel --}}
-            @if(!empty($sector->images))
-            <div class="relative rounded-2xl overflow-hidden shadow-2xl bg-gray-900 aspect-video group">
-                <div class="flex overflow-x-auto snap-x snap-mandatory h-full w-full" style="scroll-behavior: smooth;">
-                    @foreach($sector->images as $image)
-                    <div class="snap-center flex-shrink-0 w-full h-full relative">
-                        <img src="{{ $image }}" class="w-full h-full object-cover scale-[1.15] group-hover:scale-[1.4375] transition duration-700 ease-in-out">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                {{-- Carrossel de Fotos --}}
+                @if(!empty($sector->images))
+                <div class="relative rounded-3xl overflow-hidden shadow-xl bg-slate-900 aspect-video group border border-white/10">
+                    <div class="flex overflow-x-auto snap-x snap-mandatory h-full w-full" style="scroll-behavior: smooth;">
+                        @foreach($sector->images as $image)
+                        <div class="snap-center flex-shrink-0 w-full h-full relative">
+                            <img src="{{ $image }}" class="w-full h-full object-cover transition duration-700 ease-in-out">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                        </div>
+                        @endforeach
                     </div>
-                    @endforeach
+                    <div class="absolute bottom-4 left-0 right-0 flex justify-center">
+                        <span class="inline-flex items-center gap-2 bg-black/50 backdrop-blur-md text-white/90 text-xs font-medium px-3.5 py-1.5 rounded-full border border-white/20">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                            Deslize para ver mais fotos
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </span>
+                    </div>
                 </div>
-                <div class="absolute bottom-4 left-0 right-0 flex justify-center">
-                    <span class="inline-flex items-center gap-2 bg-black/40 backdrop-blur-sm text-white/70 text-xs font-medium px-3 py-1.5 rounded-full">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                        Deslize para ver mais fotos
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    </span>
+                @endif
+
+                {{-- Descrição & Finalidade --}}
+                <div class="bg-[#14284b] p-8 rounded-3xl border border-white/10 shadow-sm space-y-6">
+                    <div>
+                        <h3 class="text-2xl font-extrabold text-white mb-3 flex items-center gap-2.5">
+                            <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                            <span>Finalidade Pedagógica</span>
+                        </h3>
+                        <p class="text-slate-200 text-base sm:text-lg leading-relaxed font-normal">
+                            {{ $sector->description ?? $sector->summary }}
+                        </p>
+                    </div>
+
+                    <div class="bg-[#0f223f] border border-white/10 rounded-2xl p-6">
+                        <h4 class="font-extrabold text-white mb-3 flex items-center gap-2 text-sm uppercase tracking-wide">
+                            <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
+                            <span>Cursos Atendidos Diretamente</span>
+                        </h4>
+                        <ul class="space-y-2.5 text-sm text-slate-200">
+                            <li class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                <span>M-TEC Integrado em Agropecuária</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                <span>M-TEC Integrado em Agronegócio</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                <span>Técnico em Agroindústria & Alimentos</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                <span>Técnico em Zootecnia & Manejo</span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-            @endif
 
-            {{-- Descrição --}}
-            <div>
-                <h3 class="text-2xl font-bold text-etec-dark dark:text-white mb-4 border-l-4 border-etec-accent pl-4"
-                   >
-                    Finalidade Pedagógica
-                </h3>
-                <p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
-                    {{ $sector->description ?? $sector->summary }}
-                </p>
-
-                <div class="bg-etec-main border border-etec-dark/30 dark:border-white/10 rounded-xl p-6 mt-6">
-                    <h4 class="font-bold text-white mb-3 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-etec-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
-                        Cursos Atendidos
+            {{-- Sidebar --}}
+            <div class="space-y-6">
+                <div class="bg-[#14284b] p-6 rounded-3xl shadow-sm border border-white/10 sticky top-24">
+                    <h4 class="font-extrabold text-white text-base mb-5 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                        <span>Destaques da Instalação</span>
                     </h4>
-                    <ul class="space-y-2 text-sm text-green-100">
-                        <li class="flex items-center gap-2">
-                            <svg class="w-4 h-4 text-etec-accent flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                            MTEC-PI em Agropecuária
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3.5">
+                            <div class="w-10 h-10 bg-emerald-400/15 text-emerald-300 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 22V12m0 0c0 0-6-3-6-8a6 6 0 0112 0c0 5-6 8-6 8z"/></svg>
+                            </div>
+                            <div>
+                                <strong class="block text-white text-sm">Sustentabilidade</strong>
+                                <span class="text-xs text-slate-300">Práticas de manejo ecológico.</span>
+                            </div>
                         </li>
-                        <li class="flex items-center gap-2">
-                            <svg class="w-4 h-4 text-etec-accent flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                            MTEC-PI em Agronegócio
+                        <li class="flex items-start gap-3.5">
+                            <div class="w-10 h-10 bg-blue-400/15 text-blue-300 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            </div>
+                            <div>
+                                <strong class="block text-white text-sm">Tecnologia</strong>
+                                <span class="text-xs text-slate-300">Equipamentos e instrumentação moderna.</span>
+                            </div>
                         </li>
-                        <li class="flex items-center gap-2">
-                            <svg class="w-4 h-4 text-etec-accent flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                            Técnico em Florestas
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <svg class="w-4 h-4 text-etec-accent flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                            Técnico em Zootecnia
+                        <li class="flex items-start gap-3.5">
+                            <div class="w-10 h-10 bg-amber-400/15 text-amber-300 rounded-xl flex items-center justify-center flex-shrink-0">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                            </div>
+                            <div>
+                                <strong class="block text-white text-sm">Normas & Segurança</strong>
+                                <span class="text-xs text-slate-300">Ambiente seguro com uso de EPIs.</span>
+                            </div>
                         </li>
                     </ul>
+
+                    <div class="mt-8 pt-6 border-t border-white/10">
+                        <a href="{{ route('home') }}#fazenda"
+                           class="flex items-center justify-center gap-2 w-full py-3 bg-[#0f223f] hover:bg-amber-400 text-white hover:text-slate-950 font-bold rounded-2xl transition text-xs border border-white/10">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                            <span>Voltar para Todos os Setores</span>
+                        </a>
+                    </div>
                 </div>
             </div>
+
         </div>
-
-        {{-- Sidebar --}}
-        <div class="space-y-6">
-            <div class="bg-etec-main p-6 rounded-2xl shadow-sm border border-etec-dark/30 dark:border-white/10 sticky top-6">
-                <h4 class="font-bold text-white text-lg mb-5">Destaques</h4>
-                <ul class="space-y-4">
-                    <li class="flex items-start gap-3">
-                        <div class="w-10 h-10 bg-green-100 text-green-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 22V12m0 0c0 0-6-3-6-8a6 6 0 0112 0c0 5-6 8-6 8z"/></svg>
-                        </div>
-                        <div>
-                            <strong class="block text-white text-sm">Sustentabilidade</strong>
-                            <span class="text-xs text-green-200/70">Práticas alinhadas com o meio ambiente.</span>
-                        </div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <div class="w-10 h-10 bg-green-100 text-green-700 rounded-xl flex items-center justify-center flex-shrink-0">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        </div>
-                        <div>
-                            <strong class="block text-white text-sm">Tecnologia</strong>
-                            <span class="text-xs text-green-200/70">Equipamentos modernos e digitais.</span>
-                        </div>
-                    </li>
-                    <li class="flex items-start gap-3">
-                        <div class="w-10 h-10 bg-yellow-100 text-yellow-700 rounded-xl flex items-center justify-center flex-shrink-0">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                        </div>
-                        <div>
-                            <strong class="block text-white text-sm">Segurança</strong>
-                            <span class="text-xs text-green-200/70">Uso obrigatório de EPIs.</span>
-                        </div>
-                    </li>
-                </ul>
-
-                <div class="mt-8 pt-6 border-t border-white/10">
-                    <a href="{{ route('home') }}#fazenda"
-                       class="flex items-center justify-center gap-2 w-full py-3 border-2 border-white/30 text-white font-bold rounded-xl hover:bg-etec-accent hover:text-etec-dark hover:border-etec-accent transition text-sm">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                        Voltar para Unidades
-                    </a>
-                </div>
-            </div>
-        </div>
-
     </div>
 </div>
 @endsection

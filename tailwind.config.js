@@ -18,13 +18,13 @@ export default {
                 heading: ['Poppins', 'Inter', 'system-ui', 'sans-serif'],
             },
             colors: {
-                'etec-dark':   '#1a4d2e',  // verde floresta escuro
-                'etec-main':   '#2d6a4f',  // verde floresta medio
-                'etec-medium': '#3a8a60',  // verde medio (CTAs)
-                'etec-accent': '#f5a623',  // amarelo âmbar (inalterado)
-                'etec-light':  '#c8e6c9',  // verde claro (ícones/tags)
-                'etec-bg':     '#f5f0e8',  // creme/bege (fundo claro)
-                'etec-night':  '#0d2818',  // verde muito escuro (dark mode)
+                'etec-dark':   '#0f223f',  // Azul marinho institucional CPS
+                'etec-main':   '#16325c',  // Azul institucional médio
+                'etec-medium': '#1e40af',  // Azul real vibrante
+                'etec-accent': '#f59e0b',  // Amarelo âmbar
+                'etec-light':  '#e2e8f0',  // Cinza claro
+                'etec-bg':     '#f8fafc',  // Fundo claro neutro (slate-50)
+                'etec-night':  '#0b1329',  // Dark navy moderno
             },
         },
     },

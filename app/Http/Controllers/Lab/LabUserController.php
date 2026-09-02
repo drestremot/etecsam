@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Lab;
 
 use App\Http\Controllers\Controller;
+use App\Models\Department;
 use App\Models\Teacher;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -14,19 +15,19 @@ class LabUserController extends Controller
 {
     public function index()
     {
-        $users = User::with(['roles', 'coordenadoresVinculados'])->orderBy('name')->paginate(20);
+        $users = User::with(['roles', 'department', 'coordenadoresVinculados'])->orderBy('name')->paginate(25);
         $roles = Role::orderBy('name')->get();
-
-        // Professores/funcionários que ainda não têm conta de usuário
-        $existingEmails = User::pluck('email')->toArray();
-        $teachers = Teacher::whereNotNull('email')
-            ->whereNotIn('email', $existingEmails)
-            ->orderBy('name')
-            ->get(['id', 'name', 'email', 'registration_number', 'role']);
-
+        $departments = Department::where('is_active', true)->orderBy('name')->get();
         $coordenadoresList = User::role('Coordenador')->where('is_active', true)->orderBy('name')->get();
 
-        return view('lab.users.index', compact('users', 'roles', 'teachers', 'coordenadoresList'));
+        // Quantidade de professores que ainda não são usuários do sistema
+        $existingUserEmails = User::pluck('email')->filter()->toArray();
+        $pendingTeachersCount = Teacher::whereNotNull('email')
+            ->where('email', '!=', '')
+            ->whereNotIn('email', $existingUserEmails)
+            ->count();
+
+        return view('lab.users.index', compact('users', 'roles', 'departments', 'coordenadoresList', 'pendingTeachersCount'));
     }
 
     public function store(Request $request)
@@ -36,7 +37,11 @@ class LabUserController extends Controller
             'email'               => 'required|email|unique:users,email',
             'registration_number' => 'nullable|string|unique:users,registration_number',
             'role'                => 'required|exists:roles,name',
+            'job_title'           => 'nullable|string|max:255',
+            'department_id'       => 'nullable|exists:departments,id',
+            'phone'               => 'nullable|string|max:30',
             'password'            => 'nullable|string|min:6|confirmed',
+            'show_on_site'        => 'nullable|boolean',
         ], [
             'password.min'       => 'A senha deve ter pelo menos 6 caracteres.',
             'password.confirmed' => 'As senhas não coincidem.',
@@ -47,26 +52,99 @@ class LabUserController extends Controller
             : 'etec1234';
 
         $user = User::create([
-            'name'                => $request->name,
-            'email'               => $request->email,
-            'registration_number' => $request->registration_number,
-            'password'            => Hash::make($password),
-            'is_active'           => true,
+            'name'                 => $request->name,
+            'email'                => $request->email,
+            'registration_number'  => $request->registration_number,
+            'role'                 => $request->job_title ?: $request->role,
+            'department_id'        => $request->department_id,
+            'phone'                => $request->phone,
+            'password'             => Hash::make($password),
+            'must_change_password' => !$request->filled('password'), // Se usou senha padrão, exige troca no 1º login
+            'is_active'            => true,
+            'is_admin'             => $request->role === 'Administrador' || $request->role === 'admin',
         ]);
 
         $user->syncRoles($request->role);
 
+        // Sincronização automática com a tabela de professores e funcionários do site institucional
+        if ($request->boolean('show_on_site', true)) {
+            Teacher::updateOrCreate(
+                ['email' => $user->email],
+                [
+                    'name'       => $user->name,
+                    'role'       => $request->job_title ?: $request->role,
+                    'phone'      => $user->phone,
+                    'is_active'  => true,
+                ]
+            );
+        }
+
         $msg = $request->filled('password')
-            ? "Usuário {$user->name} cadastrado com a senha definida."
-            : "Usuário {$user->name} cadastrado com senha padrão: etec1234";
+            ? "Usuário {$user->name} cadastrado com sucesso!"
+            : "Usuário {$user->name} cadastrado com senha padrão: etec1234 (troca exigida no 1º acesso).";
 
         return back()->with('success', $msg);
+    }
+
+    public function syncAllTeachers()
+    {
+        $existingEmails = User::whereNotNull('email')->pluck('email')->toArray();
+        $teachers = Teacher::whereNotNull('email')
+            ->where('email', '!=', '')
+            ->whereNotIn('email', $existingEmails)
+            ->get();
+
+        if ($teachers->isEmpty()) {
+            return back()->with('info', 'Todos os professores e colaboradores já possuem contas de usuário cadastradas no sistema.');
+        }
+
+        $created = 0;
+        foreach ($teachers as $teacher) {
+            $roleLower = strtolower($teacher->role ?? '');
+            if (str_contains($roleLower, 'superintendente')) {
+                $roleName = 'Superintendente';
+            } elseif (str_contains($roleLower, 'diretor') || str_contains($roleLower, 'diretora')) {
+                $roleName = 'Diretor';
+            } elseif (str_contains($roleLower, 'coordenad')) {
+                $roleName = 'Coordenador';
+            } elseif (str_contains($roleLower, 'auxiliar')) {
+                $roleName = 'Auxiliar';
+            } else {
+                $roleName = 'Professor';
+            }
+
+            $user = User::create([
+                'name'                 => $teacher->name,
+                'email'                => $teacher->email,
+                'registration_number'  => $teacher->registration_number ?? null,
+                'role'                 => $teacher->role ?? $roleName,
+                'phone'                => $teacher->phone,
+                'password'             => Hash::make('etec1234'),
+                'must_change_password' => true,
+                'is_active'            => $teacher->is_active ?? true,
+                'is_admin'             => in_array($roleName, ['Superintendente', 'Diretor', 'admin']),
+            ]);
+
+            if (Role::where('name', $roleName)->exists()) {
+                $user->assignRole($roleName);
+            }
+            $created++;
+        }
+
+        return back()->with('success', "Foram criadas {$created} novas contas de usuário com senha padrão 'etec1234'. A troca de senha será solicitada no primeiro acesso.");
     }
 
     public function updateRole(Request $request, User $user)
     {
         $request->validate(['role' => 'required|exists:roles,name']);
         $user->syncRoles($request->role);
+        $user->update(['is_admin' => $request->role === 'Administrador' || $request->role === 'admin']);
+
+        // Sincroniza cargo do docente caso exista
+        Teacher::where('email', $user->email)->update([
+            'role' => $user->role ?: $request->role
+        ]);
+
         return back()->with('success', "Papel de {$user->name} atualizado para {$request->role}.");
     }
 
@@ -91,8 +169,10 @@ class LabUserController extends Controller
     public function toggleStatus(User $user)
     {
         $user->update(['is_active' => !$user->is_active]);
+        Teacher::where('email', $user->email)->update(['is_active' => $user->is_active]);
+
         $status = $user->is_active ? 'ativado' : 'desativado';
-        return back()->with('success', "Usuário {$status}.");
+        return back()->with('success', "Usuário e perfil {$status}.");
     }
 
     public function sendResetLink(User $user)
@@ -112,7 +192,10 @@ class LabUserController extends Controller
         if ($user->id === auth()->id()) {
             return back()->with('error', 'Você não pode excluir sua própria conta.');
         }
+
+        Teacher::where('email', $user->email)->delete();
         $user->delete();
-        return back()->with('success', 'Usuário excluído.');
+
+        return back()->with('success', 'Usuário e perfil docente removidos com sucesso.');
     }
 }

@@ -5,6 +5,8 @@ use App\Http\Controllers\Api\DeviceTokenController;
 use App\Http\Controllers\Api\Lab\LabReservationController;
 use App\Http\Controllers\Api\Lab\MaterialController;
 use App\Http\Controllers\Api\Lab\SpaceController;
+use App\Http\Controllers\Api\TaskController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->name('api.')->group(function () {
@@ -56,5 +58,47 @@ Route::prefix('v1')->name('api.')->group(function () {
                 Route::post('/{reservation}/scanned-doc', [LabReservationController::class, 'uploadScannedDoc'])->name('scanned-doc');
             });
         });
+
+        // Kanban Tasks API v1
+        Route::apiResource('tasks', TaskController::class);
+        Route::patch('/tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.status');
+        Route::post('/tasks/{task}/comments', [TaskController::class, 'addComment'])->name('tasks.comments');
+        Route::post('/tasks/{task}/attachments', [TaskController::class, 'storeAttachment'])->name('tasks.attachments');
+        Route::get('/tasks-dashboard', [TaskController::class, 'dashboard'])->name('tasks.dashboard');
+        Route::get('/tasks-reports', [TaskController::class, 'reports'])->name('tasks.reports');
     });
+});
+
+// Root API endpoints (for mobile clients) - using api.* names to never overwrite web routes
+Route::post('/login', [AuthController::class, 'login'])->name('api.root.login');
+Route::middleware('auth:sanctum')->name('api.root.')->group(function () {
+    Route::post('/logout', function (Request $request) {
+        $request->user()?->currentAccessToken()?->delete();
+        return response()->json(['message' => 'Logout realizado com sucesso.']);
+    })->name('logout');
+
+    Route::get('/user', function (Request $request) {
+        $user = $request->user();
+        return response()->json([
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'registration_number' => $user->registration_number,
+                'role' => $user->role,
+                'department_id' => $user->department_id,
+                'course_id' => $user->course_id,
+                'phone' => $user->phone,
+                'profile_photo' => $user->profile_photo,
+                'is_active' => (bool) $user->is_active,
+            ],
+        ]);
+    })->name('user');
+
+    Route::apiResource('tasks', TaskController::class);
+    Route::patch('/tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.status');
+    Route::post('/tasks/{task}/comments', [TaskController::class, 'addComment'])->name('tasks.comments');
+    Route::post('/tasks/{task}/attachments', [TaskController::class, 'storeAttachment'])->name('tasks.attachments');
+    Route::get('/dashboard', [TaskController::class, 'dashboard'])->name('dashboard');
+    Route::get('/reports', [TaskController::class, 'reports'])->name('reports');
 });

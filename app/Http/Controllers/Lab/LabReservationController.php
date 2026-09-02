@@ -77,92 +77,80 @@ class LabReservationController extends Controller
     {
         $user = auth()->user();
 
-        // ── Filtros via GET ──
-        $filters = $request->only(['status', 'space_id', 'data_inicio', 'data_fim', 'busca']);
+        $query = LabReservation::with(['user', 'space', 'materials', 'auxiliar', 'coordenador']);
 
-        $applyFilters = function ($query) use ($filters, $user) {
-            if (!empty($filters['status'])) {
-                $query->where('status', $filters['status']);
-            }
-            if (!empty($filters['space_id'])) {
-                $query->where('space_id', $filters['space_id']);
-            }
-            if (!empty($filters['data_inicio'])) {
-                $query->whereDate('reservation_date', '>=', $filters['data_inicio']);
-            }
-            if (!empty($filters['data_fim'])) {
-                $query->whereDate('reservation_date', '<=', $filters['data_fim']);
-            }
-            if (!empty($filters['busca'])) {
-                $q = $filters['busca'];
-                $query->where(function ($sub) use ($q) {
-                    $sub->whereHas('space', fn($s) => $s->where('name', 'like', "%{$q}%"))
-                        ->orWhereHas('user',  fn($s) => $s->where('name', 'like', "%{$q}%"))
-                        ->orWhere('description', 'like', "%{$q}%");
-                });
-            }
-        };
-
-        if ($user->is_admin) {
-            $pendentes    = LabReservation::with(['user', 'space'])
-                ->whereIn('status', ['pre_alocada', 'aguardando_validacao'])
-                ->orderByRaw("CASE status WHEN 'aguardando_validacao' THEN 0 ELSE 1 END")
-                ->latest()->get();
-
-            $reservations = LabReservation::with(['user', 'space'])
-                ->whereNotIn('status', ['validada'])
-                ->tap($applyFilters)
-                ->latest()->paginate(20)->withQueryString();
-
-        } elseif ($user->hasRole('Coordenador')) {
-            $meus = fn ($q) => $q->where('coordenador_id', $user->id)->orWhere(fn ($s) => $s->whereNull('coordenador_id')->where('status', 'pre_alocada'));
-
-            $pendentes    = LabReservation::with(['user', 'space'])
-                ->whereIn('status', ['pre_alocada', 'aguardando_validacao'])
-                ->where($meus)
-                ->orderByRaw("CASE status WHEN 'aguardando_validacao' THEN 0 ELSE 1 END")
-                ->latest()->get();
-
-            $reservations = LabReservation::with(['user', 'space'])
-                ->whereNotIn('status', ['validada'])
-                ->where($meus)
-                ->tap($applyFilters)
-                ->latest()->paginate(20)->withQueryString();
-
-        } elseif ($user->hasRole('Auxiliar')) {
-            $meus = fn ($q) => $q->where('auxiliar_id', $user->id)->orWhereNull('auxiliar_id');
-
-            $pendentes    = LabReservation::with(['user', 'space'])
-                ->whereIn('status', ['aprovada', 'aguardando_conferencia'])
-                ->where($meus)
-                ->latest()->get();
-
-            $reservations = LabReservation::with(['user', 'space'])
-                ->whereNotIn('status', ['validada', 'recusada'])
-                ->where(fn ($q) => $q->where('auxiliar_id', $user->id)->orWhere(fn ($s) => $s->whereNull('auxiliar_id')->whereIn('status', ['aprovada', 'em_execucao', 'aguardando_conferencia'])))
-                ->tap($applyFilters)
-                ->latest()->paginate(20)->withQueryString();
-
-        } else {
-            $pendentes    = null;
-            $reservations = LabReservation::with(['space'])
-                ->where('user_id', $user->id)
-                ->whereNotIn('status', ['validada'])
-                ->tap($applyFilters)
-                ->latest()->paginate(20)->withQueryString();
+        // Se o usuário NÃO for Admin, Coordenador ou Auxiliar, ele só vê as próprias reservas
+        if (!$user->is_admin && !$user->hasRole('Coordenador') && !$user->hasRole('Auxiliar')) {
+            $query->where('user_id', $user->id);
         }
 
-        $spaces   = Space::orderBy('name')->get(['id', 'name']);
-        $statuses = [
-            'pre_alocada'            => 'Aguardando aprovação',
+        if ($request->filled('space_id')) {
+            $query->where('space_id', $request->space_id);
+        }
+
+        if ($request->filled('user_id')) {
+            $query->where('user_id', $request->user_id);
+        }
+
+        if ($request->filled('date')) {
+            $query->whereDate('reservation_date', $request->date);
+        }
+
+        $completedFilter = $request->get('completed_filter', 'ativas');
+        if (! in_array($completedFilter, ['ativas', 'ocultas', 'todas'], true)) {
+            $completedFilter = 'ativas';
+        }
+
+        $columns = [
+            'pre_alocada'            => 'Solicitada',
             'aprovada'               => 'Aprovada',
-            'em_execucao'            => 'Em execução',
-            'aguardando_conferencia' => 'Aguardando conferência',
-            'aguardando_validacao'   => 'Aguardando validação',
-            'recusada'               => 'Recusada',
+            'em_execucao'            => 'Em Aula',
+            'aguardando_conferencia' => 'Conferência',
+            'aguardando_validacao'   => 'Validação',
+            'concluida'              => 'Concluída',
         ];
 
-        return view('lab.reservations.index', compact('reservations', 'pendentes', 'user', 'filters', 'spaces', 'statuses'));
+        $oneWeekAgo = now()->subDays(7);
+        $board = [];
+
+        foreach ($columns as $status => $label) {
+            $statusQuery = (clone $query);
+
+            if ($status === 'concluida') {
+                $statusQuery->whereIn('status', ['concluida', 'validada', 'finalizada']);
+
+                if ($completedFilter === 'ativas') {
+                    $statusQuery->where(function ($q) use ($oneWeekAgo) {
+                        $q->where('updated_at', '>=', $oneWeekAgo);
+                    });
+                } elseif ($completedFilter === 'ocultas') {
+                    $statusQuery->where(function ($q) use ($oneWeekAgo) {
+                        $q->where('updated_at', '<', $oneWeekAgo);
+                    });
+                }
+            } else {
+                $statusQuery->where('status', $status);
+            }
+
+            $statusQuery->orderBy('reservation_date', 'asc')
+                        ->orderBy('start_time', 'asc');
+
+            $board[$status] = $statusQuery->get();
+        }
+
+        $spaces = Space::orderBy('name')->get();
+        $users = User::orderBy('name')->get();
+
+        return view('lab.reservations.index', [
+            'board' => $board,
+            'columns' => $columns,
+            'spaces' => $spaces,
+            'users' => $users,
+            'selectedSpace' => $request->space_id,
+            'selectedUser' => $request->user_id,
+            'selectedDate' => $request->date,
+            'selectedCompletedFilter' => $completedFilter,
+        ]);
     }
 
     public function create()
@@ -500,26 +488,85 @@ class LabReservationController extends Controller
         return response()->json($reservations);
     }
 
-    public function calendarEvents()
+    public function calendar()
     {
-        $reservations = LabReservation::with('space')
-            ->whereNotIn('status', ['recusada'])
-            ->get()
-            ->map(fn($r) => [
+        $spaces = Space::orderBy('name')->get();
+        return view('lab.reservations.calendar', compact('spaces'));
+    }
+
+    public function calendarEvents(Request $request)
+    {
+        $query = LabReservation::with(['space', 'user', 'materials'])
+            ->whereNotIn('status', ['recusada']);
+
+        if ($request->filled('space_id')) {
+            $query->where('space_id', $request->space_id);
+        }
+
+        if ($request->filled('user_id')) {
+            $query->where('user_id', $request->user_id);
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $statusLabels = [
+            'pre_alocada' => 'Solicitada',
+            'aprovada' => 'Aprovada',
+            'em_execucao' => 'Em Aula',
+            'aguardando_conferencia' => 'Conferência',
+            'aguardando_validacao' => 'Validação',
+            'validada' => 'Validada',
+            'concluida' => 'Concluída',
+            'finalizada' => 'Finalizada',
+        ];
+
+        $reservations = $query->get()->map(function ($r) use ($statusLabels) {
+            $dateStr = $r->reservation_date instanceof \DateTimeInterface
+                ? $r->reservation_date->format('Y-m-d')
+                : substr((string)$r->reservation_date, 0, 10);
+            $timeStr = $r->start_time ?? '08:00:00';
+            $endTimeStr = $r->end_time ?? \Carbon\Carbon::parse($timeStr)->addHours(2)->format('H:i:s');
+
+            $color = match($r->status) {
+                'em_execucao' => '#27ae60',
+                'aprovada' => '#2f80ed',
+                'aguardando_conferencia', 'aguardando_validacao' => '#8b5cf6',
+                'validada', 'concluida', 'finalizada' => '#56ccf2',
+                default => '#f2994a',
+            };
+
+            $teacherName = $r->user->name ?? 'Docente';
+            $spaceName = $r->space->name ?? 'Ambiente';
+
+            return [
                 'id'    => $r->id,
-                'title' => $r->space->name . ' — ' . ($r->user->name ?? ''),
-                'start' => $r->reservation_date->format('Y-m-d') . 'T' . $r->start_time,
-                'end'   => $r->reservation_date->format('Y-m-d') . 'T' . ($r->end_time ?? $r->start_time),
-                'color' => match($r->status) {
-                    'pre_alocada' => '#9ca3af',
-                    'aprovada'    => '#3b82f6',
-                    'em_execucao' => '#f59e0b',
-                    'concluida', 'finalizada' => '#22c55e',
-                    'recusada'    => '#ef4444',
-                    default       => '#6b7280',
-                },
+                'title' => $spaceName . ' • ' . $teacherName,
+                'start' => $dateStr . 'T' . $timeStr,
+                'end'   => $dateStr . 'T' . $endTimeStr,
+                'backgroundColor' => $color,
+                'borderColor' => $color,
+                'textColor' => '#ffffff',
                 'url'   => route('lab.reservations.show', $r->id),
-            ]);
+                'extendedProps' => [
+                    'id' => $r->id,
+                    'spaceName' => $spaceName,
+                    'teacherName' => $teacherName,
+                    'statusLabel' => $statusLabels[$r->status] ?? ucfirst($r->status),
+                    'statusColor' => $color,
+                    'dateFormatted' => $r->reservation_date ? \Carbon\Carbon::parse($r->reservation_date)->format('d/m/Y') : '',
+                    'timeFormatted' => substr($timeStr, 0, 5) . ' às ' . substr($endTimeStr, 0, 5),
+                    'lessonPlan' => $r->description ?? '',
+                    'materials' => $r->materials->map(fn($m) => [
+                        'name' => $m->name,
+                        'qty' => $m->pivot->quantity_used ?? $m->pivot->quantity ?? 1,
+                    ]),
+                    'showUrl' => route('lab.reservations.show', $r->id),
+                    'pdfUrl' => route('lab.reservations.pdf', $r->id),
+                ],
+            ];
+        });
 
         return response()->json($reservations);
     }

@@ -28,15 +28,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        $user = auth()->user();
-
-        // Admin e Coordenador → painel administrativo
-        // Professor, Auxiliar e demais → módulo de laboratórios
-        $destination = ($user->is_admin || $user->hasRole('Coordenador'))
-            ? route('admin.dashboard', absolute: false)
-            : route('lab.dashboard', absolute: false);
-
-        return redirect()->intended($destination);
+        return redirect()->intended(route('dashboard', absolute: false));
     }
 
     /**

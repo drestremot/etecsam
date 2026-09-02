@@ -10,28 +10,21 @@ class LabRolesSeeder extends Seeder
 {
     public function run(): void
     {
-        // Cria os 4 papéis
+        // Cria os papéis do sistema
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
+        Role::firstOrCreate(['name' => 'Superintendente']);
+        Role::firstOrCreate(['name' => 'Diretor']);
         Role::firstOrCreate(['name' => 'Coordenador']);
         Role::firstOrCreate(['name' => 'Professor']);
         Role::firstOrCreate(['name' => 'Auxiliar']);
 
-        // Atribui 'admin' a TODOS os usuários com is_admin=true
+        // Atribui 'admin' a usuários com is_admin=true que ainda não tenham outro papel
         $admins = User::where('is_admin', true)->get();
 
-        if ($admins->isEmpty()) {
-            // Fallback: garante pelo menos o primeiro usuário
-            $fallback = User::first();
-            if ($fallback) {
-                $fallback->syncRoles($adminRole);
-                $this->command->info("Papel 'admin' atribuído (fallback) a: {$fallback->email}");
-            }
-            return;
-        }
-
         foreach ($admins as $user) {
-            $user->syncRoles($adminRole);
-            $this->command->info("Papel 'admin' atribuído a: {$user->email}");
+            if ($user->roles->isEmpty()) {
+                $user->syncRoles($adminRole);
+            }
         }
     }
 }

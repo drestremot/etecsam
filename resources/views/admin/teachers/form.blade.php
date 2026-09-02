@@ -1,183 +1,162 @@
-@extends('admin.layouts.app')
-@section('page-title', $action === 'create' ? 'Novo Funcionário' : 'Editar: ' . $teacher->name)
+@extends('layouts.operational')
 
 @push('head')
 <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
 @endpush
 
 @section('content')
-<div class="max-w-2xl">
+<div class="min-h-screen bg-[#dfe1e5] px-3 sm:px-6 lg:px-8 py-5 sm:py-8 pb-20 sm:pb-8">
+    <div class="w-full max-w-4xl mx-auto space-y-6">
 
-    <div class="mb-4">
-        <a href="{{ route('admin.teachers.index') }}" class="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-indigo-600 transition">
-            ← Voltar para lista
-        </a>
-    </div>
-
-    <form action="{{ $action === 'create' ? route('admin.teachers.store') : route('admin.teachers.update', $teacher) }}"
-          method="POST" enctype="multipart/form-data" class="space-y-6">
-        @csrf
-        @if($action === 'edit') @method('PUT') @endif
-
-        {{-- Dados Pessoais --}}
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 bg-gray-50">
-                <h2 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Dados Pessoais</h2>
+        <div class="flex items-center justify-between">
+            <div>
+                <a href="{{ route('admin.teachers.index') }}" class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-gray-600 hover:text-indigo-600 transition mb-2">
+                    &larr; Voltar para a lista
+                </a>
+                <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900">
+                    {{ $action === 'create' ? 'Novo Colaborador' : 'Editar: ' . $teacher->name }}
+                </h1>
             </div>
-            <div class="p-6 space-y-5">
+        </div>
 
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">
-                        Nome completo <span class="text-red-500">*</span>
-                    </label>
-                    <input type="text" name="name" value="{{ old('name', $teacher->name) }}" required
-                           class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                           placeholder="Nome completo do funcionário">
-                    @error('name') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+        <form action="{{ $action === 'create' ? route('admin.teachers.store') : route('admin.teachers.update', $teacher) }}"
+              method="POST" enctype="multipart/form-data" class="space-y-6">
+            @csrf
+            @if($action === 'edit') @method('PUT') @endif
+
+            {{-- Dados Pessoais --}}
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/70">
+                    <h2 class="text-xs sm:text-sm font-bold text-gray-700 uppercase tracking-wide">Dados Pessoais & Identificação</h2>
                 </div>
+                <div class="p-6 space-y-5">
 
-                <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">
-                            Cargo / Função <span class="text-red-500">*</span>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1.5">
+                            Nome completo <span class="text-red-500">*</span>
                         </label>
-                        <input type="text" name="role" value="{{ old('role', $teacher->role) }}" required
-                               class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                               placeholder="Ex: Diretor, Professor">
-                        @error('role') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+                        <input type="text" name="name" value="{{ old('name', $teacher->name) }}" required
+                               class="w-full rounded-xl border border-gray-300 bg-gray-50/50 px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                               placeholder="Nome completo do funcionário">
+                        @error('name') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                     </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Especialidade / Disciplina</label>
-                        <input type="text" name="specialty" value="{{ old('specialty', $teacher->specialty) }}"
-                               class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                               placeholder="Ex: Agronomia, TI">
-                    </div>
-                </div>
 
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">E-mail</label>
-                        <input type="email" name="email" value="{{ old('email', $teacher->email) }}"
-                               class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                               placeholder="nome@etec.sp.gov.br">
-                        @error('email') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Telefone</label>
-                        <input type="text" name="phone" value="{{ old('phone', $teacher->phone) }}"
-                               class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                               placeholder="(18) 9xxxx-xxxx">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Data de Nascimento</label>
-                        <input type="date" name="birth_date"
-                               value="{{ old('birth_date', $teacher->birth_date ? \Carbon\Carbon::parse($teacher->birth_date)->format('Y-m-d') : '') }}"
-                               class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
-                        <p class="mt-1 text-xs text-gray-400">Exibida na seção de aniversariantes na Agenda</p>
-                        @error('birth_date') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Currículo Lattes (URL)</label>
-                        <input type="url" name="lattes_url" value="{{ old('lattes_url', $teacher->lattes_url) }}"
-                               class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                               placeholder="http://lattes.cnpq.br/...">
-                        @error('lattes_url') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        {{-- Mini-currículo --}}
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 bg-gray-50">
-                <h2 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Mini-currículo</h2>
-            </div>
-            <div class="p-6">
-                <label class="block text-sm font-semibold text-gray-700 mb-1.5">Sobre esta pessoa</label>
-                <div id="bio-editor" class="bg-white" style="min-height: 150px;"></div>
-                <input type="hidden" name="bio" id="bio-hidden">
-                <p class="mt-2 text-xs text-gray-400">Exibido no perfil público desta pessoa nas páginas do site. Use negrito, cor e tamanho de fonte para destacar trechos.</p>
-                @error('bio') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
-            </div>
-        </div>
-
-        {{-- Foto --}}
-        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100 bg-gray-50">
-                <h2 class="text-sm font-semibold text-gray-700 uppercase tracking-wide">Foto</h2>
-            </div>
-            <div class="p-6">
-                @if($action === 'edit' && $teacher->photo)
-                    <div class="flex items-center gap-4 mb-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                        <img src="{{ photo_url($teacher->photo) }}"
-                             onerror="this.src='{{ avatar_url($teacher->name, '1a3a6e', 'fff', ['bold' => 'true', 'size' => 128]) }}'"
-                             class="w-16 h-16 rounded-full object-cover border-2 border-white shadow">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <p class="text-sm font-medium text-gray-700">Foto atual</p>
-                            <p class="text-xs text-gray-400 mt-0.5">Selecione um novo arquivo para substituir</p>
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1.5">
+                                Cargo / Função <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" name="role" value="{{ old('role', $teacher->role) }}" required
+                                   class="w-full rounded-xl border border-gray-300 bg-gray-50/50 px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                                   placeholder="Ex: Diretor, Professor, Auxiliar">
+                            @error('role') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1.5">Especialidade / Disciplina</label>
+                            <input type="text" name="specialty" value="{{ old('specialty', $teacher->specialty) }}"
+                                   class="w-full rounded-xl border border-gray-300 bg-gray-50/50 px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                                   placeholder="Ex: Agronomia, TI, Gestão">
                         </div>
                     </div>
-                @endif
-                <input type="file" name="photo" accept="image/*"
-                       class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 transition">
-                <p class="mt-2 text-xs text-gray-400">JPG, PNG ou WebP — máx. 2 MB</p>
-                @error('photo') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1.5">E-mail Institucional</label>
+                            <input type="email" name="email" value="{{ old('email', $teacher->email) }}"
+                                   class="w-full rounded-xl border border-gray-300 bg-gray-50/50 px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                                   placeholder="email@etecsam.sp.gov.br">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1.5">Telefone / Ramal</label>
+                            <input type="text" name="phone" value="{{ old('phone', $teacher->phone) }}"
+                                   class="w-full rounded-xl border border-gray-300 bg-gray-50/50 px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                                   placeholder="(19) 99999-9999">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1.5">Link do Currículo Lattes</label>
+                            <input type="url" name="lattes_url" value="{{ old('lattes_url', $teacher->lattes_url) }}"
+                                   class="w-full rounded-xl border border-gray-300 bg-gray-50/50 px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                                   placeholder="http://lattes.cnpq.br/...">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase mb-1.5">Data de Nascimento (opcional)</label>
+                            <input type="date" name="birth_date" value="{{ old('birth_date', $teacher->birth_date) }}"
+                                   class="w-full rounded-xl border border-gray-300 bg-gray-50/50 px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
+                        </div>
+                    </div>
+
+                    {{-- Foto --}}
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase mb-1.5">Foto de Perfil</label>
+                        @if($teacher->photo)
+                            <div class="flex items-center gap-4 mb-3">
+                                <img src="{{ photo_url($teacher->photo) }}" alt="{{ $teacher->name }}"
+                                     class="w-16 h-16 rounded-2xl object-cover border border-gray-200 shadow-2xs">
+                                <p class="text-xs text-gray-500">Substitua enviando uma nova imagem abaixo.</p>
+                            </div>
+                        @endif
+                        <input type="file" name="photo" accept="image/*"
+                               class="w-full text-xs sm:text-sm text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 transition">
+                    </div>
+
+                </div>
             </div>
-        </div>
 
-        {{-- Botões --}}
-        <div class="flex items-center gap-3 pt-1">
-            <button type="submit"
-                    class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-6 py-2.5 rounded-lg shadow-sm transition">
-                {{ $action === 'create' ? '✓ Cadastrar Funcionário' : '✓ Salvar Alterações' }}
-            </button>
-            <a href="{{ route('admin.teachers.index') }}"
-               class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 px-4 py-2.5 rounded-lg border border-gray-300 hover:bg-gray-50 transition">
-                Cancelar
-            </a>
-        </div>
+            {{-- Biografia e Apresentação --}}
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/70">
+                    <h2 class="text-xs sm:text-sm font-bold text-gray-700 uppercase tracking-wide">Biografia / Apresentação no Site</h2>
+                </div>
+                <div class="p-6">
+                    <div id="quill-editor" class="min-h-[160px] bg-white rounded-xl border border-gray-200">
+                        {!! old('bio', $teacher->bio) !!}
+                    </div>
+                    <textarea name="bio" id="bio-input" class="hidden">{{ old('bio', $teacher->bio) }}</textarea>
+                </div>
+            </div>
 
-    </form>
+            {{-- Botões de Ação --}}
+            <div class="flex items-center justify-end gap-3 pt-2">
+                <a href="{{ route('admin.teachers.index') }}" class="rounded-xl px-5 py-2.5 text-xs sm:text-sm font-bold text-gray-600 hover:bg-gray-200 transition">
+                    Cancelar
+                </a>
+                <button type="submit" class="rounded-xl bg-indigo-600 px-6 py-2.5 text-xs sm:text-sm font-bold text-white shadow-sm hover:bg-indigo-500 transition">
+                    {{ $action === 'create' ? 'Salvar Colaborador' : 'Atualizar Dados' }}
+                </button>
+            </div>
+        </form>
+
+    </div>
 </div>
 
+@push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
 <script>
-    (function () {
-        var quill = new Quill('#bio-editor', {
-            theme: 'snow',
-            placeholder: 'Formação, trajetória profissional, experiência na unidade...',
-            modules: {
-                toolbar: [
-                    [{ header: [1, 2, 3, false] }],
-                    ['bold', 'italic', 'underline', 'strike'],
-                    [{ size: ['small', false, 'large', 'huge'] }],
-                    [{ color: [] }, { background: [] }],
-                    [{ list: 'ordered' }, { list: 'bullet' }],
-                    ['link'],
-                    ['clean'],
-                ],
-            },
-        });
-
-        var initialBio = @json(old('bio', $teacher->bio) ?? '');
-        if (initialBio) {
-            quill.root.innerHTML = initialBio;
+document.addEventListener('DOMContentLoaded', function () {
+    const quill = new Quill('#quill-editor', {
+        theme: 'snow',
+        placeholder: 'Escreva um breve resumo da trajetória profissional...',
+        modules: {
+            toolbar: [
+                ['bold', 'italic', 'underline'],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                ['link', 'clean']
+            ]
         }
+    });
 
-        var hiddenInput = document.getElementById('bio-hidden');
-        hiddenInput.value = initialBio;
+    const bioInput = document.getElementById('bio-input');
+    quill.on('text-change', function () {
+        bioInput.value = quill.root.innerHTML;
+    });
 
-        quill.on('text-change', function () {
-            hiddenInput.value = quill.root.innerHTML;
-        });
-
-        document.querySelector('form').addEventListener('submit', function () {
-            hiddenInput.value = quill.root.innerHTML;
-        });
-    })();
+    document.querySelector('form').addEventListener('submit', function () {
+        bioInput.value = quill.root.innerHTML;
+    });
+});
 </script>
+@endpush
 @endsection

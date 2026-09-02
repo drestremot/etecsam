@@ -27,5 +27,8 @@ Thumbs.db
 /database/database.sqlite
 /database/database.sqlite-wal
 /database/database.sqlite-shm
-/database/backups/
 /database/old-data-modificacao-database.sqlite
+
+/scratch/
+mobile/**/build/
+mobile/**/.gradle/

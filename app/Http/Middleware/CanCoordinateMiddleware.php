@@ -17,8 +17,8 @@ class CanCoordinateMiddleware
     {
         $user = auth()->user();
 
-        if (!$user || (!$user->is_admin && !$user->hasRole('Coordenador'))) {
-            abort(403, 'Acesso restrito ao coordenador.');
+        if (!$user || (!$user->is_admin && !$user->hasAnyRole(['Coordenador', 'Diretor', 'Superintendente', 'admin']))) {
+            abort(403, 'Acesso restrito à Coordenação e Direção.');
         }
 
         return $next($request);
