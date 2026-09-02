@@ -4,6 +4,10 @@
 <div class="min-h-screen bg-[#dfe1e5] px-3 sm:px-6 lg:px-8 py-5 sm:py-8 pb-20 sm:pb-8"
      x-data="{
          editOpen: false,
+         allDepts: {{ json_encode($departments->map(fn($d) => ['id' => $d->id, 'name' => $d->name])->values()) }},
+         allCourses: {{ json_encode($courses->map(fn($c) => ['id' => $c->id, 'name' => $c->title])->values()) }},
+         editDeptInput: '',
+         editCourseInput: '',
          editUser: {
              id: null,
              name: '',
@@ -18,6 +22,8 @@
              updateUrl: ''
          },
          openEdit(u, updateUrl) {
+             this.editDeptInput = '';
+             this.editCourseInput = '';
              this.editUser = {
                  id: u.id,
                  name: u.name || '',
@@ -33,21 +39,61 @@
              };
              this.editOpen = true;
          },
-         toggleEditDept(id) {
-             id = Number(id);
-             if (this.editUser.department_ids.includes(id)) {
-                 this.editUser.department_ids = this.editUser.department_ids.filter(x => x !== id);
-             } else {
+         addEditDept() {
+             if (!this.editDeptInput) return;
+             const id = Number(this.editDeptInput);
+             if (!this.editUser.department_ids.includes(id)) {
                  this.editUser.department_ids.push(id);
              }
+             this.editDeptInput = '';
          },
-         toggleEditCourse(id) {
-             id = Number(id);
-             if (this.editUser.course_ids.includes(id)) {
-                 this.editUser.course_ids = this.editUser.course_ids.filter(x => x !== id);
-             } else {
+         removeEditDept(id) {
+             this.editUser.department_ids = this.editUser.department_ids.filter(x => x !== Number(id));
+         },
+         addEditCourse() {
+             if (!this.editCourseInput) return;
+             const id = Number(this.editCourseInput);
+             if (!this.editUser.course_ids.includes(id)) {
                  this.editUser.course_ids.push(id);
              }
+             this.editCourseInput = '';
+         },
+         removeEditCourse(id) {
+             this.editUser.course_ids = this.editUser.course_ids.filter(x => x !== Number(id));
+         },
+         deptColor(id) {
+             const colors = [
+                 'bg-indigo-50 border-indigo-200 text-indigo-900',
+                 'bg-emerald-50 border-emerald-200 text-emerald-900',
+                 'bg-sky-50 border-sky-200 text-sky-900',
+                 'bg-purple-50 border-purple-200 text-purple-900',
+                 'bg-rose-50 border-rose-200 text-rose-900',
+                 'bg-teal-50 border-teal-200 text-teal-900',
+                 'bg-amber-50 border-amber-200 text-amber-900',
+                 'bg-fuchsia-50 border-fuchsia-200 text-fuchsia-900',
+             ];
+             return colors[Math.abs(Number(id)) % colors.length];
+         },
+         courseColor(id) {
+             const colors = [
+                 'bg-amber-50 border-amber-200 text-amber-900',
+                 'bg-cyan-50 border-cyan-200 text-cyan-900',
+                 'bg-lime-50 border-lime-200 text-lime-900',
+                 'bg-violet-50 border-violet-200 text-violet-900',
+                 'bg-orange-50 border-orange-200 text-orange-900',
+                 'bg-blue-50 border-blue-200 text-blue-900',
+                 'bg-emerald-50 border-emerald-200 text-emerald-900',
+                 'bg-pink-50 border-pink-200 text-pink-900',
+             ];
+             return colors[Math.abs(Number(id)) % colors.length];
+         },
+         getDeptName(id) {
+             const d = this.allDepts.find(x => x.id === Number(id));
+             return d ? d.name : 'Departamento #' + id;
+         },
+         getCourseName(id) {
+             const c = this.allCourses.find(x => x.id === Number(id));
+             return c ? c.name : 'Curso #' + id;
          }
      }">
     <div class="w-full max-w-[1850px] mx-auto space-y-5">
@@ -148,23 +194,31 @@
         <div class="rounded-2xl border border-gray-200 bg-white p-4 sm:p-5 shadow-xs"
              x-data="{
                  open: false,
+                 selectedDeptInput: '',
+                 selectedCourseInput: '',
                  selectedDepts: [],
                  selectedCourses: [],
-                 toggleDept(id) {
-                     id = Number(id);
-                     if (this.selectedDepts.includes(id)) {
-                         this.selectedDepts = this.selectedDepts.filter(x => x !== id);
-                     } else {
+                 addDept() {
+                     if (!this.selectedDeptInput) return;
+                     const id = Number(this.selectedDeptInput);
+                     if (!this.selectedDepts.includes(id)) {
                          this.selectedDepts.push(id);
                      }
+                     this.selectedDeptInput = '';
                  },
-                 toggleCourse(id) {
-                     id = Number(id);
-                     if (this.selectedCourses.includes(id)) {
-                         this.selectedCourses = this.selectedCourses.filter(x => x !== id);
-                     } else {
+                 removeDept(id) {
+                     this.selectedDepts = this.selectedDepts.filter(x => x !== Number(id));
+                 },
+                 addCourse() {
+                     if (!this.selectedCourseInput) return;
+                     const id = Number(this.selectedCourseInput);
+                     if (!this.selectedCourses.includes(id)) {
                          this.selectedCourses.push(id);
                      }
+                     this.selectedCourseInput = '';
+                 },
+                 removeCourse(id) {
+                     this.selectedCourses = this.selectedCourses.filter(x => x !== Number(id));
                  }
              }">
             <div class="flex items-center justify-between cursor-pointer select-none" @click="open = !open">
@@ -236,52 +290,112 @@
                                class="w-full rounded-xl border border-gray-300 bg-gray-50/50 px-3 py-2 text-xs text-gray-800 shadow-2xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400 transition">
                     </div>
 
-                    <!-- Departamentos / Setores (Múltipla Seleção) -->
-                    <div class="sm:col-span-2">
-                        <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-1">
+                    <!-- Departamentos / Setores (Combobox + Add Button + Cards com botão remover) -->
+                    <div class="sm:col-span-2 space-y-2">
+                        <label class="block text-[11px] font-semibold text-gray-700 uppercase">
                             Departamentos / Setores
-                            <span class="text-[10px] text-gray-400 font-normal lowercase">(clique para associar/desassociar)</span>
                         </label>
-                        <div class="flex flex-wrap gap-1.5 p-2.5 rounded-xl border border-gray-200 bg-gray-50/50 min-h-[46px] items-center">
-                            @foreach($departments as $dept)
+                        
+                        <div class="flex items-center gap-2">
+                            <select x-model="selectedDeptInput"
+                                    class="flex-1 rounded-xl border border-gray-300 bg-gray-50/50 px-3 py-2 text-xs text-gray-800 shadow-2xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400 transition">
+                                <option value="">Selecione um departamento para adicionar...</option>
+                                <template x-for="dept in allDepts" :key="'opt-d-'+dept.id">
+                                    <option :value="dept.id" :disabled="selectedDepts.includes(dept.id)" x-text="dept.name + (selectedDepts.includes(dept.id) ? ' (já adicionado)' : '')"></option>
+                                </template>
+                            </select>
                             <button type="button"
-                                    @click="toggleDept({{ $dept->id }})"
-                                    :class="selectedDepts.includes({{ $dept->id }}) ? 'bg-indigo-600 text-white border-indigo-600 shadow-2xs font-semibold ring-2 ring-indigo-200' : 'bg-white text-gray-700 border-gray-200 hover:border-indigo-300 hover:bg-indigo-50/40'"
-                                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs transition cursor-pointer select-none">
-                                <span x-show="selectedDepts.includes({{ $dept->id }})" class="font-bold">✓</span>
-                                <span>{{ $dept->name }}</span>
+                                    @click="addDept()"
+                                    :disabled="!selectedDeptInput"
+                                    class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-semibold shadow-xs transition cursor-pointer flex-shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                <span>Adicionar</span>
                             </button>
-                            @endforeach
-                            @if($departments->isEmpty())
-                            <span class="text-xs text-gray-400 italic">Nenhum departamento cadastrado.</span>
-                            @endif
                         </div>
-                        <template x-for="id in selectedDepts" :key="'new-d-'+id">
+
+                        <!-- Cards dos departamentos adicionados com cores e botão de remover -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1" x-show="selectedDepts.length > 0">
+                            <template x-for="id in selectedDepts" :key="'card-d-'+id">
+                                <div :class="deptColor(id)"
+                                     class="relative flex items-center justify-between p-2.5 rounded-xl border shadow-2xs transition">
+                                    <div class="flex items-center gap-2.5 min-w-0 pr-6">
+                                        <div class="w-7 h-7 rounded-lg bg-white/80 border border-black/5 flex items-center justify-center flex-shrink-0 shadow-2xs">
+                                            <svg class="w-3.5 h-3.5 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                                        </div>
+                                        <div class="min-w-0">
+                                            <p class="text-xs font-bold leading-tight truncate" x-text="getDeptName(id)"></p>
+                                            <p class="text-[9.5px] opacity-75 font-medium">Departamento / Setor</p>
+                                        </div>
+                                    </div>
+                                    <button type="button"
+                                            @click="removeDept(id)"
+                                            class="absolute top-1.5 right-1.5 w-5 h-5 rounded-md bg-white/90 hover:bg-red-500 hover:text-white text-gray-400 border border-black/5 flex items-center justify-center text-xs font-bold transition shadow-2xs cursor-pointer"
+                                            title="Remover vínculo">
+                                        &times;
+                                    </button>
+                                </div>
+                            </template>
+                        </div>
+                        <div x-show="selectedDepts.length === 0" class="text-[11px] text-gray-400 italic py-0.5">
+                            Nenhum departamento vinculado. Selecione acima e clique em Adicionar.
+                        </div>
+
+                        <template x-for="id in selectedDepts" :key="'new-d-in-'+id">
                             <input type="hidden" name="department_ids[]" :value="id">
                         </template>
                     </div>
 
-                    <!-- Cursos Técnicos Vinculados (Múltipla Seleção) -->
-                    <div class="sm:col-span-2">
-                        <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-1">
+                    <!-- Cursos Técnicos Vinculados (Combobox + Add Button + Cards com botão remover) -->
+                    <div class="sm:col-span-2 space-y-2">
+                        <label class="block text-[11px] font-semibold text-gray-700 uppercase">
                             Cursos Técnicos Vinculados
-                            <span class="text-[10px] text-gray-400 font-normal lowercase">(clique para associar/desassociar)</span>
                         </label>
-                        <div class="flex flex-wrap gap-1.5 p-2.5 rounded-xl border border-gray-200 bg-gray-50/50 min-h-[46px] items-center">
-                            @foreach($courses as $course)
+                        
+                        <div class="flex items-center gap-2">
+                            <select x-model="selectedCourseInput"
+                                    class="flex-1 rounded-xl border border-gray-300 bg-gray-50/50 px-3 py-2 text-xs text-gray-800 shadow-2xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 transition">
+                                <option value="">Selecione um curso para adicionar...</option>
+                                <template x-for="course in allCourses" :key="'opt-c-'+course.id">
+                                    <option :value="course.id" :disabled="selectedCourses.includes(course.id)" x-text="course.name + (selectedCourses.includes(course.id) ? ' (já adicionado)' : '')"></option>
+                                </template>
+                            </select>
                             <button type="button"
-                                    @click="toggleCourse({{ $course->id }})"
-                                    :class="selectedCourses.includes({{ $course->id }}) ? 'bg-amber-600 text-white border-amber-600 shadow-2xs font-semibold ring-2 ring-amber-200' : 'bg-white text-gray-700 border-gray-200 hover:border-amber-300 hover:bg-amber-50/40'"
-                                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs transition cursor-pointer select-none">
-                                <span x-show="selectedCourses.includes({{ $course->id }})" class="font-bold">✓</span>
-                                <span>{{ $course->title }}</span>
+                                    @click="addCourse()"
+                                    :disabled="!selectedCourseInput"
+                                    class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-semibold shadow-xs transition cursor-pointer flex-shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                <span>Adicionar</span>
                             </button>
-                            @endforeach
-                            @if($courses->isEmpty())
-                            <span class="text-xs text-gray-400 italic">Nenhum curso cadastrado.</span>
-                            @endif
                         </div>
-                        <template x-for="id in selectedCourses" :key="'new-c-'+id">
+
+                        <!-- Cards dos cursos adicionados com cores e botão de remover -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1" x-show="selectedCourses.length > 0">
+                            <template x-for="id in selectedCourses" :key="'card-c-'+id">
+                                <div :class="courseColor(id)"
+                                     class="relative flex items-center justify-between p-2.5 rounded-xl border shadow-2xs transition">
+                                    <div class="flex items-center gap-2.5 min-w-0 pr-6">
+                                        <div class="w-7 h-7 rounded-lg bg-white/80 border border-black/5 flex items-center justify-center flex-shrink-0 shadow-2xs">
+                                            <svg class="w-3.5 h-3.5 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"/></svg>
+                                        </div>
+                                        <div class="min-w-0">
+                                            <p class="text-xs font-bold leading-tight truncate" x-text="getCourseName(id)"></p>
+                                            <p class="text-[9.5px] opacity-75 font-medium">Curso Técnico</p>
+                                        </div>
+                                    </div>
+                                    <button type="button"
+                                            @click="removeCourse(id)"
+                                            class="absolute top-1.5 right-1.5 w-5 h-5 rounded-md bg-white/90 hover:bg-red-500 hover:text-white text-gray-400 border border-black/5 flex items-center justify-center text-xs font-bold transition shadow-2xs cursor-pointer"
+                                            title="Remover vínculo">
+                                        &times;
+                                    </button>
+                                </div>
+                            </template>
+                        </div>
+                        <div x-show="selectedCourses.length === 0" class="text-[11px] text-gray-400 italic py-0.5">
+                            Nenhum curso vinculado. Selecione acima e clique em Adicionar.
+                        </div>
+
+                        <template x-for="id in selectedCourses" :key="'new-c-in-'+id">
                             <input type="hidden" name="course_ids[]" :value="id">
                         </template>
                     </div>
@@ -574,46 +688,112 @@
                             <input type="text" name="phone" x-model="editUser.phone" placeholder="(19) 99999-9999" class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs sm:text-sm text-gray-800 focus:ring-2 focus:ring-indigo-400 focus:outline-none">
                         </div>
 
-                        <!-- Departamentos / Setores (Múltipla Seleção) -->
-                        <div class="sm:col-span-2">
-                            <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-1">
+                        <!-- Departamentos / Setores (Combobox + Add Button + Cards com botão remover) -->
+                        <div class="sm:col-span-2 space-y-2">
+                            <label class="block text-[11px] font-semibold text-gray-700 uppercase">
                                 Departamentos / Setores
-                                <span class="text-[10px] text-gray-400 font-normal lowercase">(clique para associar/desassociar)</span>
                             </label>
-                            <div class="flex flex-wrap gap-1.5 p-2.5 rounded-xl border border-gray-200 bg-gray-50/50 min-h-[46px] items-center">
-                                @foreach($departments as $dept)
+                            
+                            <div class="flex items-center gap-2">
+                                <select x-model="editDeptInput"
+                                        class="flex-1 rounded-xl border border-gray-300 bg-gray-50/50 px-3 py-2 text-xs text-gray-800 shadow-2xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400 transition">
+                                    <option value="">Selecione um departamento para adicionar...</option>
+                                    <template x-for="dept in allDepts" :key="'edit-opt-d-'+dept.id">
+                                        <option :value="dept.id" :disabled="editUser.department_ids.includes(dept.id)" x-text="dept.name + (editUser.department_ids.includes(dept.id) ? ' (já adicionado)' : '')"></option>
+                                    </template>
+                                </select>
                                 <button type="button"
-                                        @click="toggleEditDept({{ $dept->id }})"
-                                        :class="editUser.department_ids.includes({{ $dept->id }}) ? 'bg-indigo-600 text-white border-indigo-600 shadow-2xs font-semibold ring-2 ring-indigo-200' : 'bg-white text-gray-700 border-gray-200 hover:border-indigo-300 hover:bg-indigo-50/40'"
-                                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs transition cursor-pointer select-none">
-                                    <span x-show="editUser.department_ids.includes({{ $dept->id }})" class="font-bold">✓</span>
-                                    <span>{{ $dept->name }}</span>
+                                        @click="addEditDept()"
+                                        :disabled="!editDeptInput"
+                                        class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-semibold shadow-xs transition cursor-pointer flex-shrink-0">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                    <span>Adicionar</span>
                                 </button>
-                                @endforeach
                             </div>
-                            <template x-for="id in editUser.department_ids" :key="'edit-d-'+id">
+
+                            <!-- Cards dos departamentos adicionados com cores e botão de remover -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1" x-show="editUser.department_ids.length > 0">
+                                <template x-for="id in editUser.department_ids" :key="'edit-card-d-'+id">
+                                    <div :class="deptColor(id)"
+                                         class="relative flex items-center justify-between p-2.5 rounded-xl border shadow-2xs transition">
+                                        <div class="flex items-center gap-2.5 min-w-0 pr-6">
+                                            <div class="w-7 h-7 rounded-lg bg-white/80 border border-black/5 flex items-center justify-center flex-shrink-0 shadow-2xs">
+                                                <svg class="w-3.5 h-3.5 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                                            </div>
+                                            <div class="min-w-0">
+                                                <p class="text-xs font-bold leading-tight truncate" x-text="getDeptName(id)"></p>
+                                                <p class="text-[9.5px] opacity-75 font-medium">Departamento / Setor</p>
+                                            </div>
+                                        </div>
+                                        <button type="button"
+                                                @click="removeEditDept(id)"
+                                                class="absolute top-1.5 right-1.5 w-5 h-5 rounded-md bg-white/90 hover:bg-red-500 hover:text-white text-gray-400 border border-black/5 flex items-center justify-center text-xs font-bold transition shadow-2xs cursor-pointer"
+                                                title="Remover vínculo">
+                                            &times;
+                                        </button>
+                                    </div>
+                                </template>
+                            </div>
+                            <div x-show="editUser.department_ids.length === 0" class="text-[11px] text-gray-400 italic py-0.5">
+                                Nenhum departamento vinculado. Selecione acima e clique em Adicionar.
+                            </div>
+
+                            <template x-for="id in editUser.department_ids" :key="'edit-d-in-'+id">
                                 <input type="hidden" name="department_ids[]" :value="id">
                             </template>
                         </div>
 
-                        <!-- Cursos Técnicos Vinculados (Múltipla Seleção) -->
-                        <div class="sm:col-span-2">
-                            <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-1">
+                        <!-- Cursos Técnicos Vinculados (Combobox + Add Button + Cards com botão remover) -->
+                        <div class="sm:col-span-2 space-y-2">
+                            <label class="block text-[11px] font-semibold text-gray-700 uppercase">
                                 Cursos Técnicos Vinculados
-                                <span class="text-[10px] text-gray-400 font-normal lowercase">(clique para associar/desassociar)</span>
                             </label>
-                            <div class="flex flex-wrap gap-1.5 p-2.5 rounded-xl border border-gray-200 bg-gray-50/50 min-h-[46px] items-center">
-                                @foreach($courses as $course)
+                            
+                            <div class="flex items-center gap-2">
+                                <select x-model="editCourseInput"
+                                        class="flex-1 rounded-xl border border-gray-300 bg-gray-50/50 px-3 py-2 text-xs text-gray-800 shadow-2xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-400 transition">
+                                    <option value="">Selecione um curso para adicionar...</option>
+                                    <template x-for="course in allCourses" :key="'edit-opt-c-'+course.id">
+                                        <option :value="course.id" :disabled="editUser.course_ids.includes(course.id)" x-text="course.name + (editUser.course_ids.includes(course.id) ? ' (já adicionado)' : '')"></option>
+                                    </template>
+                                </select>
                                 <button type="button"
-                                        @click="toggleEditCourse({{ $course->id }})"
-                                        :class="editUser.course_ids.includes({{ $course->id }}) ? 'bg-amber-600 text-white border-amber-600 shadow-2xs font-semibold ring-2 ring-amber-200' : 'bg-white text-gray-700 border-gray-200 hover:border-amber-300 hover:bg-amber-50/40'"
-                                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs transition cursor-pointer select-none">
-                                    <span x-show="editUser.course_ids.includes({{ $course->id }})" class="font-bold">✓</span>
-                                    <span>{{ $course->title }}</span>
+                                        @click="addEditCourse()"
+                                        :disabled="!editCourseInput"
+                                        class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-semibold shadow-xs transition cursor-pointer flex-shrink-0">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                    <span>Adicionar</span>
                                 </button>
-                                @endforeach
                             </div>
-                            <template x-for="id in editUser.course_ids" :key="'edit-c-'+id">
+
+                            <!-- Cards dos cursos adicionados com cores e botão de remover -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1" x-show="editUser.course_ids.length > 0">
+                                <template x-for="id in editUser.course_ids" :key="'edit-card-c-'+id">
+                                    <div :class="courseColor(id)"
+                                         class="relative flex items-center justify-between p-2.5 rounded-xl border shadow-2xs transition">
+                                        <div class="flex items-center gap-2.5 min-w-0 pr-6">
+                                            <div class="w-7 h-7 rounded-lg bg-white/80 border border-black/5 flex items-center justify-center flex-shrink-0 shadow-2xs">
+                                                <svg class="w-3.5 h-3.5 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"/></svg>
+                                            </div>
+                                            <div class="min-w-0">
+                                                <p class="text-xs font-bold leading-tight truncate" x-text="getCourseName(id)"></p>
+                                                <p class="text-[9.5px] opacity-75 font-medium">Curso Técnico</p>
+                                            </div>
+                                        </div>
+                                        <button type="button"
+                                                @click="removeEditCourse(id)"
+                                                class="absolute top-1.5 right-1.5 w-5 h-5 rounded-md bg-white/90 hover:bg-red-500 hover:text-white text-gray-400 border border-black/5 flex items-center justify-center text-xs font-bold transition shadow-2xs cursor-pointer"
+                                                title="Remover vínculo">
+                                            &times;
+                                        </button>
+                                    </div>
+                                </template>
+                            </div>
+                            <div x-show="editUser.course_ids.length === 0" class="text-[11px] text-gray-400 italic py-0.5">
+                                Nenhum curso vinculado. Selecione acima e clique em Adicionar.
+                            </div>
+
+                            <template x-for="id in editUser.course_ids" :key="'edit-c-in-'+id">
                                 <input type="hidden" name="course_ids[]" :value="id">
                             </template>
                         </div>
