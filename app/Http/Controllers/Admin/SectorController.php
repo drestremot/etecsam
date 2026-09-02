@@ -11,7 +11,7 @@ class SectorController extends Controller
 {
     public function index()
     {
-        $sectors = Sector::orderByDesc('is_active')->orderBy('name')->paginate(20);
+        $sectors = Sector::orderByDesc('is_active')->orderBy('name')->get();
         return view('admin.sectors.index', compact('sectors'));
     }
 

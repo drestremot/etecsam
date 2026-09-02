@@ -10,7 +10,7 @@ class CooperativeExpenseController extends Controller
 {
     public function index()
     {
-        $cooperativeExpenses = CooperativeExpense::orderByDesc('due_date')->paginate(30);
+        $cooperativeExpenses = CooperativeExpense::orderByDesc('due_date')->get();
         return view('admin.cooperative-expenses.index', compact('cooperativeExpenses'));
     }
 

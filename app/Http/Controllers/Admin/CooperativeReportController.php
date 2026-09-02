@@ -11,7 +11,7 @@ class CooperativeReportController extends Controller
 {
     public function index()
     {
-        $cooperativeReports = CooperativeReport::orderBy('category')->orderByDesc('published_at')->paginate(20);
+        $cooperativeReports = CooperativeReport::orderBy('category')->orderByDesc('published_at')->get();
         return view('admin.cooperative-reports.index', compact('cooperativeReports'));
     }
 

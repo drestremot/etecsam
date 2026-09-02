@@ -11,7 +11,7 @@ class DocumentController extends Controller
 {
     public function index()
     {
-        $documents = Document::orderBy('category')->orderBy('title')->paginate(20);
+        $documents = Document::orderBy('category')->orderBy('title')->get();
         return view('admin.documents.index', compact('documents'));
     }
 

@@ -26,7 +26,7 @@ class WorkScheduleController extends Controller
             $query->where('day_of_week', $request->day_of_week);
         }
 
-        $schedules = $query->paginate(30)->withQueryString();
+        $schedules = $query->get();
 
         $users = User::where('is_active', true)->orderBy('name')->get(['id', 'name', 'email', 'role']);
         $units = Unit::where('is_active', true)->orderBy('name')->get(['id', 'name', 'city']);

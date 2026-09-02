@@ -11,7 +11,7 @@ class CooperativeManagerController extends Controller
 {
     public function index()
     {
-        $cooperativeManagers = CooperativeManager::orderByDesc('is_active')->orderBy('name')->paginate(50);
+        $cooperativeManagers = CooperativeManager::orderByDesc('is_active')->orderBy('name')->get();
         return view('admin.cooperative-managers.index', compact('cooperativeManagers'));
     }
 

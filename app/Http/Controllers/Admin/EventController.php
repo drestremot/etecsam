@@ -12,7 +12,7 @@ class EventController extends Controller
 {
     public function index()
     {
-        $events = Event::orderByDesc('is_active')->orderBy('start_date', 'desc')->paginate(20);
+        $events = Event::orderByDesc('is_active')->orderBy('start_date', 'desc')->get();
         return view('admin.events.index', compact('events'));
     }
 

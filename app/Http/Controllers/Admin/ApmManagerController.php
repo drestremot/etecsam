@@ -11,7 +11,7 @@ class ApmManagerController extends Controller
 {
     public function index()
     {
-        $apmManagers = ApmManager::orderByDesc('is_active')->orderBy('name')->paginate(50);
+        $apmManagers = ApmManager::orderByDesc('is_active')->orderBy('name')->get();
         return view('admin.apm-managers.index', compact('apmManagers'));
     }
 

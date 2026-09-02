@@ -6,12 +6,26 @@
 @endsection
 
 @section('content')
-<div class="bg-white rounded-xl shadow-sm overflow-hidden">
+<div class="bg-white rounded-xl shadow-sm overflow-hidden" x-data="adminTable()">
+    <div class="px-4 py-3 border-b border-gray-100 flex flex-wrap items-center justify-between gap-3 bg-gray-50/50">
+        <div class="flex items-center gap-2 flex-1 min-w-[200px]">
+            <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <input x-model="q" @input="search()" type="text" placeholder="Buscar por título, categoria, período..."
+                   class="flex-1 text-sm border-0 outline-none bg-transparent text-gray-700 placeholder-gray-400">
+            <button x-show="q" @click="q='';search()" class="text-gray-400 hover:text-gray-600 text-xs">limpar</button>
+        </div>
+        @include('admin.partials.per-page-selector')
+    </div>
+
     <table class="min-w-full divide-y divide-gray-200 text-sm">
         <thead class="bg-gray-50">
             <tr>
-                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Título</th>
-                <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Categoria</th>
+                <th @click="sort('titulo')" class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none">
+                    Título <span class="ml-1 text-gray-400" x-text="icon('titulo')"></span>
+                </th>
+                <th @click="sort('cat')" class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase cursor-pointer hover:bg-gray-100 select-none">
+                    Categoria <span class="ml-1 text-gray-400" x-text="icon('cat')"></span>
+                </th>
                 <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Período</th>
                 <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Publicado em</th>
                 <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Arquivo</th>
@@ -20,7 +34,11 @@
         </thead>
         <tbody class="divide-y divide-gray-100">
             @forelse($cooperativeReports as $report)
-            <tr class="hover:bg-gray-50">
+            <tr class="hover:bg-gray-50"
+                data-row="{{ strtolower($report->title . ' ' . $report->category . ' ' . ($report->period ?? '')) }}"
+                data-active="1"
+                data-titulo="{{ strtolower($report->title) }}"
+                data-cat="{{ strtolower($report->category) }}">
                 <td class="px-4 py-3 font-medium text-gray-800">{{ $report->title }}</td>
                 <td class="px-4 py-3">
                     <span class="px-2 py-1 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-700">{{ $report->category }}</span>
@@ -58,6 +76,6 @@
             @endforelse
         </tbody>
     </table>
-    <div class="px-4 py-3">{{ $cooperativeReports->links() }}</div>
+    @include('admin.partials.pagination-footer')
 </div>
 @endsection

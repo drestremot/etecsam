@@ -12,7 +12,7 @@ class CooperativeHousingTenantController extends Controller
 {
     public function index()
     {
-        $cooperativeHousingTenants = CooperativeHousingTenant::orderByDesc('is_active')->orderBy('name')->paginate(50);
+        $cooperativeHousingTenants = CooperativeHousingTenant::orderByDesc('is_active')->orderBy('name')->get();
         return view('admin.cooperative-housing-tenants.index', compact('cooperativeHousingTenants'));
     }
 

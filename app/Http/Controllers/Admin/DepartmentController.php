@@ -12,7 +12,7 @@ class DepartmentController extends Controller
 {
     public function index()
     {
-        $departments = Department::with('responsible')->orderByDesc('is_active')->orderBy('name')->paginate(50);
+        $departments = Department::with('responsible')->orderByDesc('is_active')->orderBy('name')->get();
         return view('admin.departments.index', compact('departments'));
     }
 

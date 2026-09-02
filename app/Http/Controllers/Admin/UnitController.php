@@ -12,7 +12,7 @@ class UnitController extends Controller
 {
     public function index()
     {
-        $units = Unit::with('coordinator')->orderByDesc('is_active')->orderBy('city')->orderBy('name')->paginate(20);
+        $units = Unit::with('coordinator')->orderByDesc('is_active')->orderBy('city')->orderBy('name')->get();
         return view('admin.units.index', compact('units'));
     }
 

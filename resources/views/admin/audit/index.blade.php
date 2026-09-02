@@ -128,12 +128,23 @@
                     </div>
                 </div>
 
-                <div class="flex items-center justify-between pt-2 border-t border-gray-100">
-                    <div class="text-xs text-gray-500 font-medium">
-                        Exibindo <strong>{{ $logs->firstItem() ?? 0 }} - {{ $logs->lastItem() ?? 0 }}</strong> de <strong>{{ $logs->total() }}</strong> registros
+                <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-gray-100">
+                    <div class="flex items-center gap-3 text-xs text-gray-500 font-medium">
+                        <span>Exibindo <strong>{{ $logs->firstItem() ?? 0 }} - {{ $logs->lastItem() ?? 0 }}</strong> de <strong>{{ $logs->total() }}</strong> registros</span>
+                        <span class="text-gray-300">|</span>
+                        <div class="flex items-center gap-1.5">
+                            <label for="perPageAudit" class="whitespace-nowrap">Exibir:</label>
+                            <select id="perPageAudit" name="per_page" onchange="this.form.submit()"
+                                    class="rounded-lg border border-gray-200 bg-white py-1 px-2 text-xs font-semibold text-gray-700 outline-none focus:border-indigo-500 shadow-2xs cursor-pointer">
+                                <option value="10" {{ request('per_page') == '10' ? 'selected' : '' }}>10</option>
+                                <option value="25" {{ request('per_page', '25') == '25' ? 'selected' : '' }}>25</option>
+                                <option value="50" {{ request('per_page') == '50' ? 'selected' : '' }}>50</option>
+                                <option value="all" {{ request('per_page') == 'all' ? 'selected' : '' }}>Todas</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="flex items-center gap-2">
-                        @if(request()->anyFilled(['q', 'user_id', 'module', 'action', 'date_from', 'date_to']))
+                        @if(request()->anyFilled(['q', 'user_id', 'module', 'action', 'date_from', 'date_to', 'per_page']))
                             <a href="{{ route('admin.audit.index') }}" class="rounded-xl border border-gray-300 bg-white px-3 py-1.5 text-xs font-semibold text-gray-600 hover:bg-gray-100 transition">
                                 Limpar Filtros
                             </a>

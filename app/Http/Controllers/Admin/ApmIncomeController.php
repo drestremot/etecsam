@@ -10,7 +10,7 @@ class ApmIncomeController extends Controller
 {
     public function index()
     {
-        $apmIncomes = ApmIncome::orderByDesc('due_date')->paginate(30);
+        $apmIncomes = ApmIncome::orderByDesc('due_date')->get();
         return view('admin.apm-incomes.index', compact('apmIncomes'));
     }
 

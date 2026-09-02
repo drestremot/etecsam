@@ -112,6 +112,16 @@
 
         <!-- Table of Schedules -->
         <div class="rounded-2xl border border-gray-200 bg-white shadow-xs overflow-hidden" x-data="adminTable()">
+            <!-- Search and Per Page bar -->
+            <div class="px-5 py-3.5 border-b border-gray-100 flex flex-wrap items-center justify-between gap-3 bg-gray-50/50">
+                <div class="flex items-center gap-3 flex-1 min-w-[200px]">
+                    <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <input x-model="q" @input="search()" type="text" placeholder="Filtrar por nome, email, dia ou unidade..."
+                           class="flex-1 text-xs sm:text-sm border-0 outline-none bg-transparent text-gray-800 placeholder-gray-400">
+                    <button x-show="q" @click="q='';search()" class="text-gray-400 hover:text-gray-600 text-xs font-bold">limpar</button>
+                </div>
+                @include('admin.partials.per-page-selector')
+            </div>
             <!-- Bulk Action Bar -->
             <div x-show="selected.length > 0" x-cloak class="px-4 py-2.5 bg-indigo-50 border-b border-indigo-100 flex flex-wrap items-center justify-between gap-3 text-xs">
                 <div class="flex items-center gap-2 text-indigo-900 font-medium">
@@ -226,11 +236,7 @@
                 </table>
             </div>
 
-            @if($schedules->hasPages())
-                <div class="px-6 py-4 border-t border-gray-100">
-                    {{ $schedules->links() }}
-                </div>
-            @endif
+            @include('admin.partials.pagination-footer')
         </div>
 
     </div>

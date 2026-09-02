@@ -11,7 +11,7 @@ class ApmReportController extends Controller
 {
     public function index()
     {
-        $apmReports = ApmReport::orderBy('category')->orderByDesc('published_at')->paginate(20);
+        $apmReports = ApmReport::orderBy('category')->orderByDesc('published_at')->get();
         return view('admin.apm-reports.index', compact('apmReports'));
     }
 

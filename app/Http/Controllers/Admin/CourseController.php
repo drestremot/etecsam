@@ -15,7 +15,7 @@ class CourseController extends Controller
     public function index()
     {
         $courses = Course::with(['unit', 'technicalCoordinators'])
-                         ->orderByDesc('is_active')->orderBy('title')->paginate(50);
+                         ->orderByDesc('is_active')->orderBy('title')->get();
         return view('admin.courses.index', compact('courses'));
     }
 

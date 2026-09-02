@@ -8,11 +8,14 @@
 @section('content')
 <div class="bg-white rounded-xl shadow-sm overflow-hidden" x-data="adminTable()">
 
-    <div class="px-4 py-3 border-b border-gray-100 flex items-center gap-2">
-        <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-        <input x-model="q" @input="search()" type="text" placeholder="Buscar laboratório, responsável, unidade..."
-               class="flex-1 text-sm border-0 outline-none bg-transparent text-gray-700 placeholder-gray-400">
-        <button x-show="q" @click="q='';search()" class="text-gray-400 hover:text-gray-600 text-xs">limpar</button>
+    <div class="px-4 py-3 border-b border-gray-100 flex flex-wrap items-center justify-between gap-3 bg-gray-50/50">
+        <div class="flex items-center gap-2 flex-1 min-w-[200px]">
+            <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <input x-model="q" @input="search()" type="text" placeholder="Buscar laboratório, responsável, unidade..."
+                   class="flex-1 text-sm border-0 outline-none bg-transparent text-gray-700 placeholder-gray-400">
+            <button x-show="q" @click="q='';search()" class="text-gray-400 hover:text-gray-600 text-xs">limpar</button>
+        </div>
+        @include('admin.partials.per-page-selector')
     </div>
 
     <!-- Bulk Action Bar -->
@@ -134,7 +137,6 @@
             @endforelse
         </tbody>
     </table>
-    <div class="px-4 py-3">{{ $laboratories->links() }}</div>
+    @include('admin.partials.pagination-footer')
 </div>
-@include('admin.partials.table-script')
 @endsection

@@ -68,7 +68,14 @@ class MedicalCertificateController extends Controller
                 ->count(),
         ];
 
-        $certificates = $query->orderBy('created_at', 'desc')->paginate(15)->withQueryString();
+        $perPage = $request->input('per_page', 25);
+        if ($perPage === 'all') {
+            $perPage = max(1, $query->count());
+        } else {
+            $perPage = in_array((int)$perPage, [10, 25, 50, 100]) ? (int)$perPage : 25;
+        }
+
+        $certificates = $query->orderBy('created_at', 'desc')->paginate($perPage)->withQueryString();
         $users = $canManage ? User::orderBy('name')->get() : collect([$user]);
 
         return view('medical_certificates.index', compact('certificates', 'stats', 'users', 'canManage', 'canViewAudit'));

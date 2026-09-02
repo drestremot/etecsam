@@ -53,7 +53,14 @@ class AuditLogController extends Controller
             'approvals'  => AuditLog::where('action', 'approved')->count(),
         ];
 
-        $logs = $query->paginate(30)->withQueryString();
+        $perPage = $request->input('per_page', 25);
+        if ($perPage === 'all') {
+            $perPage = max(1, $query->count());
+        } else {
+            $perPage = in_array((int)$perPage, [10, 25, 50, 100]) ? (int)$perPage : 25;
+        }
+
+        $logs = $query->paginate($perPage)->withQueryString();
 
         $modules = AuditLog::select('module')->distinct()->orderBy('module')->pluck('module');
         $actions = AuditLog::select('action')->distinct()->orderBy('action')->pluck('action');

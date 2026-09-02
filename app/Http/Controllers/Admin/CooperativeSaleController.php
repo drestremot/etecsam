@@ -10,7 +10,7 @@ class CooperativeSaleController extends Controller
 {
     public function index()
     {
-        $cooperativeSales = CooperativeSale::orderByDesc('sale_date')->paginate(30);
+        $cooperativeSales = CooperativeSale::orderByDesc('sale_date')->get();
         return view('admin.cooperative-sales.index', compact('cooperativeSales'));
     }
 

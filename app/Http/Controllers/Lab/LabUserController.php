@@ -15,7 +15,7 @@ class LabUserController extends Controller
 {
     public function index()
     {
-        $users = User::with(['roles', 'department', 'coordenadoresVinculados'])->orderBy('name')->paginate(25);
+        $users = User::with(['roles', 'department', 'coordenadoresVinculados'])->orderBy('name')->get();
         $roles = Role::orderBy('name')->get();
         $departments = Department::where('is_active', true)->orderBy('name')->get();
         $coordenadoresList = User::role('Coordenador')->where('is_active', true)->orderBy('name')->get();

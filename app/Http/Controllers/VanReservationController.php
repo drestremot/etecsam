@@ -52,9 +52,16 @@ class VanReservationController extends Controller
             });
         }
 
+        $perPage = $request->input('per_page', 25);
+        if ($perPage === 'all') {
+            $perPage = max(1, $query->count());
+        } else {
+            $perPage = in_array((int)$perPage, [10, 25, 50, 100]) ? (int)$perPage : 25;
+        }
+
         $reservations = $query->orderBy('departure_date', 'desc')
             ->orderBy('departure_time', 'desc')
-            ->paginate(12)
+            ->paginate($perPage)
             ->withQueryString();
 
         $pendingQuery = VanReservation::with(['user.department', 'vehicle'])

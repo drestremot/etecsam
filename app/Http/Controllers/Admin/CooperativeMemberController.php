@@ -13,7 +13,7 @@ class CooperativeMemberController extends Controller
 {
     public function index()
     {
-        $cooperativeMembers = CooperativeMember::orderByDesc('is_active')->orderBy('name')->paginate(50);
+        $cooperativeMembers = CooperativeMember::orderByDesc('is_active')->orderBy('name')->get();
         return view('admin.cooperative-members.index', compact('cooperativeMembers'));
     }
 

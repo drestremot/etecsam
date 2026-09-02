@@ -70,12 +70,15 @@
 
         <!-- Subjects Table Container -->
         <div class="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden" x-data="adminTable()">
-            <!-- Search bar -->
-            <div class="px-5 py-3.5 border-b border-gray-100 flex items-center gap-3 bg-gray-50/50">
-                <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                <input x-model="q" @input="search()" type="text" placeholder="Buscar disciplina, professor responsável, semestre..."
-                       class="flex-1 text-xs sm:text-sm border-0 outline-none bg-transparent text-gray-800 placeholder-gray-400">
-                <button x-show="q" @click="q='';search()" class="text-gray-400 hover:text-gray-600 text-xs font-bold">limpar</button>
+            <!-- Search and Per Page bar -->
+            <div class="px-5 py-3.5 border-b border-gray-100 flex flex-wrap items-center justify-between gap-3 bg-gray-50/50">
+                <div class="flex items-center gap-3 flex-1 min-w-[200px]">
+                    <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <input x-model="q" @input="search()" type="text" placeholder="Buscar disciplina, professor responsável, semestre..."
+                           class="flex-1 text-xs sm:text-sm border-0 outline-none bg-transparent text-gray-800 placeholder-gray-400">
+                    <button x-show="q" @click="q='';search()" class="text-gray-400 hover:text-gray-600 text-xs font-bold">limpar</button>
+                </div>
+                @include('admin.partials.per-page-selector')
             </div>
 
             <!-- Bulk Action Bar -->
@@ -199,6 +202,7 @@
                     </tbody>
                 </table>
             </div>
+            @include('admin.partials.pagination-footer')
         </div>
 
     </div>

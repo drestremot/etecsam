@@ -14,7 +14,7 @@ class TeacherController extends Controller
 {
     public function index()
     {
-        $teachers = Teacher::orderByDesc('is_active')->orderBy('name')->paginate(50);
+        $teachers = Teacher::orderByDesc('is_active')->orderBy('name')->get();
         $userEmails = User::pluck('email')->filter()->toArray();
         $pendingUsersCount = Teacher::whereNotNull('email')
             ->where('email', '!=', '')

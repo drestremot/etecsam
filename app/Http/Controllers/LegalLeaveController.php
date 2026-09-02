@@ -51,7 +51,14 @@ class LegalLeaveController extends Controller
             });
         }
 
-        $leaves = $leavesQuery->orderBy('created_at', 'desc')->paginate(12, ['*'], 'leaves_page')->withQueryString();
+        $perPage = $request->input('per_page', 25);
+        if ($perPage === 'all') {
+            $perPage = max(1, $leavesQuery->count());
+        } else {
+            $perPage = in_array((int)$perPage, [10, 25, 50, 100]) ? (int)$perPage : 25;
+        }
+
+        $leaves = $leavesQuery->orderBy('created_at', 'desc')->paginate($perPage, ['*'], 'leaves_page')->withQueryString();
 
         // 2. Query Solicitações de Usufruto de Folga
         $requestsQuery = LegalLeaveRequest::with(['user.department', 'legalLeave', 'reviewer']);
@@ -64,7 +71,7 @@ class LegalLeaveController extends Controller
             $requestsQuery->where('status', $request->request_status);
         }
 
-        $leaveRequests = $requestsQuery->orderBy('requested_date', 'desc')->paginate(10, ['*'], 'requests_page')->withQueryString();
+        $leaveRequests = $requestsQuery->orderBy('requested_date', 'desc')->paginate($perPage, ['*'], 'requests_page')->withQueryString();
 
         // 3. Indicadores (KPIs)
         $baseStatsQuery = LegalLeave::query();

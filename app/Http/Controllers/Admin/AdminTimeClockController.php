@@ -37,7 +37,14 @@ class AdminTimeClockController extends Controller
             $query->where('status', $request->status);
         }
 
-        $records = $query->paginate(30)->withQueryString();
+        $perPage = $request->input('per_page', 25);
+        if ($perPage === 'all') {
+            $perPage = max(1, $query->count());
+        } else {
+            $perPage = in_array((int)$perPage, [10, 25, 50, 100]) ? (int)$perPage : 25;
+        }
+
+        $records = $query->paginate($perPage)->withQueryString();
 
         $users = User::where('is_active', true)->orderBy('name')->get(['id', 'name', 'email', 'role']);
         $units = Unit::where('is_active', true)->orderBy('name')->get(['id', 'name', 'city']);

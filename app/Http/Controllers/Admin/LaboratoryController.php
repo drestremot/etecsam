@@ -15,7 +15,7 @@ class LaboratoryController extends Controller
 {
     public function index()
     {
-        $laboratories = Laboratory::with(['responsible', 'unit'])->orderByDesc('is_active')->orderBy('name')->paginate(50);
+        $laboratories = Laboratory::with(['responsible', 'unit'])->orderByDesc('is_active')->orderBy('name')->get();
         return view('admin.laboratories.index', compact('laboratories'));
     }
 

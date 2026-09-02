@@ -10,7 +10,7 @@ class ApmExpenseController extends Controller
 {
     public function index()
     {
-        $apmExpenses = ApmExpense::orderByDesc('due_date')->paginate(30);
+        $apmExpenses = ApmExpense::orderByDesc('due_date')->get();
         return view('admin.apm-expenses.index', compact('apmExpenses'));
     }
 
