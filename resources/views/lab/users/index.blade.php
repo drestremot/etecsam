@@ -45,7 +45,7 @@
                 <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-gray-900 flex items-center gap-3">
                     <span><svg class="w-4 h-4 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg> Usuários & Colaboradores</span>
                     <span class="rounded-xl bg-indigo-100 border border-indigo-200 px-2.5 py-0.5 text-xs font-semibold text-indigo-700">
-                        {{ $users->total() }} cadastros
+                        {{ method_exists($users, 'total') ? $users->total() : $users->count() }} cadastros
                     </span>
                 </h1>
                 <p class="text-xs text-gray-600 mt-0.5 font-normal">
@@ -287,7 +287,7 @@
                     <thead class="bg-gray-50/90 text-[11px] font-semibold uppercase text-gray-500 border-b border-gray-200 tracking-wider">
                         <tr>
                             <th class="px-3 py-3 w-10 text-center">
-                                <input type="checkbox" x-model="allSelected" @change="toggleSelectAll()" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer">
+                                <input type="checkbox" :checked="allSelected" @change="toggleSelectAll($event.target.checked)" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer">
                             </th>
                             <th @click="sort('nome')" class="px-3.5 py-3 cursor-pointer hover:bg-gray-100 select-none min-w-[200px]">
                                 Usuário & Cargo <span class="ml-1 text-gray-400" x-text="icon('nome')"></span>
@@ -309,7 +309,7 @@
                             data-email="{{ strtolower($u->email) }}">
                             <td class="px-3 py-2.5 text-center">
                                 @if($u->id !== auth()->id())
-                                    <input type="checkbox" value="{{ $u->id }}" x-model="selected" @change="updateSelectAll()" data-bulk-item class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer">
+                                    <input type="checkbox" value="{{ $u->id }}" :checked="selected.map(String).includes('{{ $u->id }}')" @change="toggleItem('{{ $u->id }}', $event.target.checked)" data-bulk-item class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer">
                                 @endif
                             </td>
                             <td class="px-3.5 py-2.5">

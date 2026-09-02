@@ -51,14 +51,12 @@ window.adminTable = function() {
             this.perPage = val;
             this.page = 1;
             this.paginate();
-            this.updateSelectAll();
         },
 
         goToPage(p) {
             if (p < 1 || p > this.totalPages) return;
             this.page = p;
             this.paginate();
-            this.updateSelectAll();
         },
 
         nextPage() {
@@ -79,38 +77,73 @@ window.adminTable = function() {
                     const isFiltered = this.filteredRows.includes(r);
                     r.classList.toggle('hidden', !isFiltered);
                 });
-                return;
+            } else {
+                const pp = parseInt(this.perPage, 10);
+                const start = (this.page - 1) * pp;
+                const end = start + pp;
+                const pageRows = this.filteredRows.slice(start, end);
+
+                this.rows.forEach(r => {
+                    const isVisible = pageRows.includes(r);
+                    r.classList.toggle('hidden', !isVisible);
+                });
             }
-
-            const pp = parseInt(this.perPage, 10);
-            const start = (this.page - 1) * pp;
-            const end = start + pp;
-            const pageRows = this.filteredRows.slice(start, end);
-
-            this.rows.forEach(r => {
-                const isVisible = pageRows.includes(r);
-                r.classList.toggle('hidden', !isVisible);
-            });
+            this.syncCheckboxDOM();
         },
 
-        toggleSelectAll() {
+        syncCheckboxDOM() {
+            const selSet = new Set(this.selected.map(String));
+            const checkboxes = [...this.$el.querySelectorAll('tbody input[type="checkbox"][data-bulk-item]')];
+            checkboxes.forEach(cb => {
+                cb.checked = selSet.has(String(cb.value));
+            });
+            this.updateSelectAll();
+        },
+
+        toggleSelectAll(checked) {
+            if (typeof checked === 'boolean') {
+                this.allSelected = checked;
+            }
             const visibleCheckboxes = [...this.$el.querySelectorAll('tbody tr:not(.hidden) input[type="checkbox"][data-bulk-item]')];
             if (this.allSelected) {
-                this.selected = visibleCheckboxes.map(cb => String(cb.value));
+                const newIds = visibleCheckboxes.map(cb => String(cb.value));
+                const combined = new Set([...this.selected.map(String), ...newIds]);
+                this.selected = Array.from(combined);
+                visibleCheckboxes.forEach(cb => { cb.checked = true; });
             } else {
-                this.selected = [];
+                const visibleSet = new Set(visibleCheckboxes.map(cb => String(cb.value)));
+                this.selected = this.selected.filter(id => !visibleSet.has(String(id)));
+                visibleCheckboxes.forEach(cb => { cb.checked = false; });
             }
+        },
+
+        toggleItem(id, checked) {
+            id = String(id);
+            if (checked) {
+                if (!this.selected.map(String).includes(id)) {
+                    this.selected.push(id);
+                }
+            } else {
+                this.selected = this.selected.filter(x => String(x) !== id);
+            }
+            this.updateSelectAll();
         },
 
         updateSelectAll() {
             const visibleCheckboxes = [...this.$el.querySelectorAll('tbody tr:not(.hidden) input[type="checkbox"][data-bulk-item]')];
+            if (visibleCheckboxes.length === 0) {
+                this.allSelected = false;
+                return;
+            }
             const selSet = new Set(this.selected.map(String));
-            this.allSelected = visibleCheckboxes.length > 0 && visibleCheckboxes.every(cb => selSet.has(String(cb.value)));
+            this.allSelected = visibleCheckboxes.every(cb => selSet.has(String(cb.value)));
         },
 
         clearSelection() {
             this.selected = [];
             this.allSelected = false;
+            const checkboxes = [...this.$el.querySelectorAll('tbody input[type="checkbox"][data-bulk-item]')];
+            checkboxes.forEach(cb => { cb.checked = false; });
         },
 
         search() {
@@ -120,12 +153,11 @@ window.adminTable = function() {
             });
             this.page = 1;
             this.paginate();
-            this.updateSelectAll();
         },
 
         sort(col) {
             if (this.sortCol === col) {
-                this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+                this.sortDir = this.sortDir === 'desc' ? 'asc' : 'desc';
             } else {
                 this.sortCol = col;
                 this.sortDir = 'asc';
