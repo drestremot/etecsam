@@ -287,7 +287,7 @@
                     <thead class="bg-gray-50/90 text-[11px] font-semibold uppercase text-gray-500 border-b border-gray-200 tracking-wider">
                         <tr>
                             <th class="px-3 py-3 w-10 text-center">
-                                <input type="checkbox" :checked="allSelected" @change="toggleSelectAll($event.target.checked)" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer">
+                                <input type="checkbox" x-ref="selectAllCheckbox" @click="toggleSelectAll($event.target.checked)" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer">
                             </th>
                             <th @click="sort('nome')" class="px-3.5 py-3 cursor-pointer hover:bg-gray-100 select-none min-w-[200px]">
                                 Usuário & Cargo <span class="ml-1 text-gray-400" x-text="icon('nome')"></span>
@@ -309,7 +309,7 @@
                             data-email="{{ strtolower($u->email) }}">
                             <td class="px-3 py-2.5 text-center">
                                 @if($u->id !== auth()->id())
-                                    <input type="checkbox" value="{{ $u->id }}" :checked="selected.map(String).includes('{{ $u->id }}')" @change="toggleItem('{{ $u->id }}', $event.target.checked)" data-bulk-item class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer">
+                                    <input type="checkbox" value="{{ $u->id }}" data-bulk-item @click="toggleItem('{{ $u->id }}', $event.target.checked)" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer">
                                 @endif
                             </td>
                             <td class="px-3.5 py-2.5">

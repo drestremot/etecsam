@@ -150,7 +150,7 @@
                     <thead class="bg-gray-50/90 text-[11px] font-semibold uppercase text-gray-500 border-b border-gray-200 tracking-wider">
                         <tr>
                             <th class="px-3 py-3 w-10 text-center">
-                                <input type="checkbox" :checked="allSelected" @change="toggleSelectAll($event.target.checked)" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer">
+                                <input type="checkbox" x-ref="selectAllCheckbox" @click="toggleSelectAll($event.target.checked)" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer">
                             </th>
                             <th class="px-3.5 py-3 min-w-[100px]">Dia</th>
                             <th class="px-3 py-3 min-w-[180px]">Professor / Colaborador</th>
@@ -167,7 +167,7 @@
                         <tr class="hover:bg-gray-50/80 transition"
                             data-row="{{ strtolower($sched->user->name . ' ' . $sched->user->email . ' ' . $sched->unit->name . ' ' . $sched->day_name) }}">
                             <td class="px-3 py-2.5 text-center">
-                                <input type="checkbox" value="{{ $sched->id }}" :checked="selected.map(String).includes('{{ $sched->id }}')" @change="toggleItem('{{ $sched->id }}', $event.target.checked)" data-bulk-item class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer">
+                                <input type="checkbox" value="{{ $sched->id }}" data-bulk-item @click="toggleItem('{{ $sched->id }}', $event.target.checked)" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer">
                             </td>
                             <td class="px-3.5 py-2.5 whitespace-nowrap">
                                 <span class="inline-flex items-center rounded-md bg-indigo-50 border border-indigo-200/80 px-2 py-0.5 text-[11px] font-medium text-indigo-700">
