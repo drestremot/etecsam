@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Lab;
 
 use App\Http\Controllers\Controller;
+use App\Models\Course;
 use App\Models\Department;
 use App\Models\Teacher;
 use App\Models\User;
@@ -15,9 +16,10 @@ class LabUserController extends Controller
 {
     public function index()
     {
-        $users = User::with(['roles', 'department', 'coordenadoresVinculados'])->orderBy('name')->get();
+        $users = User::with(['roles', 'department', 'departments', 'courses', 'coordenadoresVinculados'])->orderBy('name')->get();
         $roles = Role::orderBy('name')->get();
         $departments = Department::where('is_active', true)->orderBy('name')->get();
+        $courses = Course::where('is_active', true)->orderBy('title')->get();
         $coordenadoresList = User::role('Coordenador')->where('is_active', true)->orderBy('name')->get();
 
         // Quantidade de professores que ainda não são usuários do sistema
@@ -27,7 +29,7 @@ class LabUserController extends Controller
             ->whereNotIn('email', $existingUserEmails)
             ->count();
 
-        return view('lab.users.index', compact('users', 'roles', 'departments', 'coordenadoresList', 'pendingTeachersCount'));
+        return view('lab.users.index', compact('users', 'roles', 'departments', 'courses', 'coordenadoresList', 'pendingTeachersCount'));
     }
 
     public function store(Request $request)
@@ -39,6 +41,10 @@ class LabUserController extends Controller
             'role'                => 'required|exists:roles,name',
             'job_title'           => 'nullable|string|max:255',
             'department_id'       => 'nullable|exists:departments,id',
+            'department_ids'      => 'nullable|array',
+            'department_ids.*'    => 'exists:departments,id',
+            'course_ids'          => 'nullable|array',
+            'course_ids.*'        => 'exists:courses,id',
             'phone'               => 'nullable|string|max:30',
             'password'            => 'nullable|string|min:6|confirmed',
             'show_on_site'        => 'nullable|boolean',
@@ -46,6 +52,12 @@ class LabUserController extends Controller
             'password.min'       => 'A senha deve ter pelo menos 6 caracteres.',
             'password.confirmed' => 'As senhas não coincidem.',
         ]);
+
+        $deptIds = $request->input('department_ids', []);
+        if (empty($deptIds) && $request->filled('department_id')) {
+            $deptIds = [(int)$request->department_id];
+        }
+        $courseIds = $request->input('course_ids', []);
 
         $password = $request->filled('password')
             ? $request->password
@@ -56,7 +68,8 @@ class LabUserController extends Controller
             'email'                => $request->email,
             'registration_number'  => $request->registration_number,
             'role'                 => $request->job_title ?: $request->role,
-            'department_id'        => $request->department_id,
+            'department_id'        => !empty($deptIds) ? $deptIds[0] : null,
+            'course_id'            => !empty($courseIds) ? $courseIds[0] : null,
             'phone'                => $request->phone,
             'password'             => Hash::make($password),
             'must_change_password' => !$request->filled('password'), // Se usou senha padrão, exige troca no 1º login
@@ -65,6 +78,8 @@ class LabUserController extends Controller
         ]);
 
         $user->syncRoles($request->role);
+        $user->departments()->sync($deptIds);
+        $user->courses()->sync($courseIds);
 
         // Sincronização automática com a tabela de professores e funcionários do site institucional
         if ($request->boolean('show_on_site', true)) {
@@ -95,6 +110,10 @@ class LabUserController extends Controller
             'role'                => 'required|exists:roles,name',
             'job_title'           => 'nullable|string|max:255',
             'department_id'       => 'nullable|exists:departments,id',
+            'department_ids'      => 'nullable|array',
+            'department_ids.*'    => 'exists:departments,id',
+            'course_ids'          => 'nullable|array',
+            'course_ids.*'        => 'exists:courses,id',
             'phone'               => 'nullable|string|max:30',
             'password'            => 'nullable|string|min:6|confirmed',
             'show_on_site'        => 'nullable|boolean',
@@ -103,6 +122,12 @@ class LabUserController extends Controller
             'password.confirmed' => 'As senhas não coincidem.',
         ]);
 
+        $deptIds = $request->input('department_ids', []);
+        if (empty($deptIds) && $request->filled('department_id')) {
+            $deptIds = [(int)$request->department_id];
+        }
+        $courseIds = $request->input('course_ids', []);
+
         $oldEmail = $user->email;
 
         $userData = [
@@ -110,7 +135,8 @@ class LabUserController extends Controller
             'email'               => $request->email,
             'registration_number' => $request->registration_number,
             'role'                => $request->job_title ?: $request->role,
-            'department_id'       => $request->department_id,
+            'department_id'       => !empty($deptIds) ? $deptIds[0] : null,
+            'course_id'            => !empty($courseIds) ? $courseIds[0] : null,
             'phone'               => $request->phone,
             'is_admin'            => $request->role === 'Administrador' || $request->role === 'admin',
         ];
@@ -122,6 +148,8 @@ class LabUserController extends Controller
 
         $user->update($userData);
         $user->syncRoles($request->role);
+        $user->departments()->sync($deptIds);
+        $user->courses()->sync($courseIds);
 
         if ($request->role === 'Auxiliar' && $request->has('coordenador_ids')) {
             $user->coordenadoresVinculados()->sync($request->coordenador_ids ?? []);

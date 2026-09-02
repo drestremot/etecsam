@@ -10,7 +10,8 @@
              email: '',
              role: '',
              job_title: '',
-             department_id: '',
+             department_ids: [],
+             course_ids: [],
              registration_number: '',
              phone: '',
              coordenador_ids: [],
@@ -23,13 +24,30 @@
                  email: u.email || '',
                  role: u.role || '',
                  job_title: u.job_title || '',
-                 department_id: u.department_id || '',
+                 department_ids: Array.isArray(u.department_ids) ? u.department_ids.map(Number) : (u.department_id ? [Number(u.department_id)] : []),
+                 course_ids: Array.isArray(u.course_ids) ? u.course_ids.map(Number) : (u.course_id ? [Number(u.course_id)] : []),
                  registration_number: u.registration_number || '',
                  phone: u.phone || '',
-                 coordenador_ids: u.coordenador_ids || [],
+                 coordenador_ids: Array.isArray(u.coordenador_ids) ? u.coordenador_ids.map(Number) : [],
                  updateUrl: updateUrl
              };
              this.editOpen = true;
+         },
+         toggleEditDept(id) {
+             id = Number(id);
+             if (this.editUser.department_ids.includes(id)) {
+                 this.editUser.department_ids = this.editUser.department_ids.filter(x => x !== id);
+             } else {
+                 this.editUser.department_ids.push(id);
+             }
+         },
+         toggleEditCourse(id) {
+             id = Number(id);
+             if (this.editUser.course_ids.includes(id)) {
+                 this.editUser.course_ids = this.editUser.course_ids.filter(x => x !== id);
+             } else {
+                 this.editUser.course_ids.push(id);
+             }
          }
      }">
     <div class="w-full max-w-[1850px] mx-auto space-y-5">
@@ -127,7 +145,28 @@
         </div>
 
         <!-- Card: Cadastrar Novo Usuário / Colaborador -->
-        <div class="rounded-2xl border border-gray-200 bg-white p-4 sm:p-5 shadow-xs" x-data="{ open: false }">
+        <div class="rounded-2xl border border-gray-200 bg-white p-4 sm:p-5 shadow-xs"
+             x-data="{
+                 open: false,
+                 selectedDepts: [],
+                 selectedCourses: [],
+                 toggleDept(id) {
+                     id = Number(id);
+                     if (this.selectedDepts.includes(id)) {
+                         this.selectedDepts = this.selectedDepts.filter(x => x !== id);
+                     } else {
+                         this.selectedDepts.push(id);
+                     }
+                 },
+                 toggleCourse(id) {
+                     id = Number(id);
+                     if (this.selectedCourses.includes(id)) {
+                         this.selectedCourses = this.selectedCourses.filter(x => x !== id);
+                     } else {
+                         this.selectedCourses.push(id);
+                     }
+                 }
+             }">
             <div class="flex items-center justify-between cursor-pointer select-none" @click="open = !open">
                 <h2 class="text-xs sm:text-sm font-bold text-gray-800 flex items-center gap-2">
                     <span class="inline-flex h-6 w-6 items-center justify-center rounded-lg bg-indigo-100 text-indigo-700 font-bold text-xs">
@@ -180,16 +219,6 @@
                     </div>
 
                     <div>
-                        <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-1">Departamento / Setor</label>
-                        <select name="department_id" class="w-full rounded-xl border border-gray-300 bg-gray-50/50 px-3 py-2 text-xs text-gray-800 shadow-2xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400 transition">
-                            <option value="">Nenhum / Geral</option>
-                            @foreach($departments as $dept)
-                            <option value="{{ $dept->id }}" {{ old('department_id') == $dept->id ? 'selected' : '' }}>{{ $dept->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <div>
                         <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-1">Telefone / Ramal</label>
                         <input type="text" name="phone" value="{{ old('phone') }}" placeholder="(19) 99999-9999"
                                class="w-full rounded-xl border border-gray-300 bg-gray-50/50 px-3 py-2 text-xs text-gray-800 shadow-2xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400 transition">
@@ -207,18 +236,68 @@
                                class="w-full rounded-xl border border-gray-300 bg-gray-50/50 px-3 py-2 text-xs text-gray-800 shadow-2xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400 transition">
                     </div>
 
+                    <!-- Departamentos / Setores (Múltipla Seleção) -->
+                    <div class="sm:col-span-2">
+                        <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-1">
+                            Departamentos / Setores
+                            <span class="text-[10px] text-gray-400 font-normal lowercase">(clique para associar/desassociar)</span>
+                        </label>
+                        <div class="flex flex-wrap gap-1.5 p-2.5 rounded-xl border border-gray-200 bg-gray-50/50 min-h-[46px] items-center">
+                            @foreach($departments as $dept)
+                            <button type="button"
+                                    @click="toggleDept({{ $dept->id }})"
+                                    :class="selectedDepts.includes({{ $dept->id }}) ? 'bg-indigo-600 text-white border-indigo-600 shadow-2xs font-semibold ring-2 ring-indigo-200' : 'bg-white text-gray-700 border-gray-200 hover:border-indigo-300 hover:bg-indigo-50/40'"
+                                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs transition cursor-pointer select-none">
+                                <span x-show="selectedDepts.includes({{ $dept->id }})" class="font-bold">✓</span>
+                                <span>{{ $dept->name }}</span>
+                            </button>
+                            @endforeach
+                            @if($departments->isEmpty())
+                            <span class="text-xs text-gray-400 italic">Nenhum departamento cadastrado.</span>
+                            @endif
+                        </div>
+                        <template x-for="id in selectedDepts" :key="'new-d-'+id">
+                            <input type="hidden" name="department_ids[]" :value="id">
+                        </template>
+                    </div>
+
+                    <!-- Cursos Técnicos Vinculados (Múltipla Seleção) -->
+                    <div class="sm:col-span-2">
+                        <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-1">
+                            Cursos Técnicos Vinculados
+                            <span class="text-[10px] text-gray-400 font-normal lowercase">(clique para associar/desassociar)</span>
+                        </label>
+                        <div class="flex flex-wrap gap-1.5 p-2.5 rounded-xl border border-gray-200 bg-gray-50/50 min-h-[46px] items-center">
+                            @foreach($courses as $course)
+                            <button type="button"
+                                    @click="toggleCourse({{ $course->id }})"
+                                    :class="selectedCourses.includes({{ $course->id }}) ? 'bg-amber-600 text-white border-amber-600 shadow-2xs font-semibold ring-2 ring-amber-200' : 'bg-white text-gray-700 border-gray-200 hover:border-amber-300 hover:bg-amber-50/40'"
+                                    class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs transition cursor-pointer select-none">
+                                <span x-show="selectedCourses.includes({{ $course->id }})" class="font-bold">✓</span>
+                                <span>{{ $course->title }}</span>
+                            </button>
+                            @endforeach
+                            @if($courses->isEmpty())
+                            <span class="text-xs text-gray-400 italic">Nenhum curso cadastrado.</span>
+                            @endif
+                        </div>
+                        <template x-for="id in selectedCourses" :key="'new-c-'+id">
+                            <input type="hidden" name="course_ids[]" :value="id">
+                        </template>
+                    </div>
+
                     <div class="sm:col-span-2 lg:col-span-3 flex items-center gap-2 pt-1">
-                        <input type="checkbox" name="show_on_site" id="show_on_site" value="1" checked class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-3.5 w-3.5">
+                        <input type="checkbox" name="show_on_site" id="show_on_site" value="1" checked class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-3.5 w-3.5 cursor-pointer">
                         <label for="show_on_site" class="text-xs font-medium text-gray-700 cursor-pointer select-none">
                             Sincronizar e exibir no site institucional
                         </label>
                     </div>
 
                     <div class="sm:col-span-2 lg:col-span-4 flex items-center justify-end gap-2.5 pt-1">
-                        <button type="button" @click="open = false" class="px-3 py-2 rounded-xl text-xs font-semibold text-gray-600 hover:bg-gray-100 transition">
+                        <button type="button" @click="open = false" class="px-3 py-2 rounded-xl text-xs font-semibold text-gray-600 hover:bg-gray-100 transition cursor-pointer">
                             Cancelar
                         </button>
-                        <button type="submit" class="rounded-xl bg-indigo-600 px-5 py-2 text-xs font-semibold text-white shadow-xs hover:bg-indigo-500 transition">
+                        <button type="submit" class="rounded-xl bg-indigo-600 px-5 py-2 text-xs font-semibold text-white shadow-xs hover:bg-indigo-500 transition cursor-pointer">
                             Salvar Usuário & Sincronizar
                         </button>
                     </div>
@@ -296,15 +375,19 @@
                                 E-mail Institucional <span class="ml-1 text-gray-400" x-text="icon('email')"></span>
                             </th>
                             <th class="px-3 py-3 min-w-[140px]">Papel no Sistema</th>
-                            <th class="px-3 py-3 min-w-[110px]">Vínculos</th>
+                            <th class="px-3 py-3 min-w-[180px]">Vínculos & Departamentos</th>
                             <th class="px-3 py-3 text-center min-w-[80px]">Status</th>
                             <th class="px-3.5 py-3 text-right min-w-[90px]">Ações</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
                         @forelse($users as $u)
+                        @php
+                            $userDepts = $u->departments->isNotEmpty() ? $u->departments : ($u->department ? collect([$u->department]) : collect());
+                            $userCourses = $u->courses->isNotEmpty() ? $u->courses : ($u->course ? collect([$u->course]) : collect());
+                        @endphp
                         <tr class="hover:bg-gray-50/80 transition {{ !$u->is_active ? 'opacity-60' : '' }}"
-                            data-row="{{ strtolower($u->name . ' ' . $u->email . ' ' . ($u->role ?? '') . ' ' . ($u->roles->pluck('name')->implode(' '))) }}"
+                            data-row="{{ strtolower($u->name . ' ' . $u->email . ' ' . ($u->role ?? '') . ' ' . ($u->roles->pluck('name')->implode(' ')) . ' ' . ($userDepts->pluck('name')->implode(' ')) . ' ' . ($userCourses->pluck('title')->implode(' '))) }}"
                             data-nome="{{ strtolower($u->name) }}"
                             data-email="{{ strtolower($u->email) }}">
                             <td class="px-3 py-2.5 text-center">
@@ -341,17 +424,34 @@
                                 </form>
                             </td>
                             <td class="px-3 py-2.5">
-                                @if($u->hasRole('Auxiliar'))
-                                    @if($u->coordenadoresVinculados->isNotEmpty())
-                                        <span class="inline-flex items-center gap-1 text-[11px] text-teal-700 bg-teal-50 px-2 py-0.5 rounded-md border border-teal-200" title="{{ $u->coordenadoresVinculados->pluck('name')->implode(', ') }}">
-                                            {{ $u->coordenadoresVinculados->count() }} vinculado(s)
+                                <div class="flex flex-wrap gap-1 items-center max-w-[340px]">
+                                    {{-- Departamentos --}}
+                                    @foreach($userDepts as $d)
+                                        <span class="inline-flex items-center gap-1 text-[10.5px] font-medium text-indigo-700 bg-indigo-50 border border-indigo-200/80 px-2 py-0.5 rounded-md" title="Departamento: {{ $d->name }}">
+                                            <svg class="w-3 h-3 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                                            {{ $d->name }}
                                         </span>
-                                    @else
+                                    @endforeach
+
+                                    {{-- Cursos --}}
+                                    @foreach($userCourses as $c)
+                                        <span class="inline-flex items-center gap-1 text-[10.5px] font-medium text-amber-800 bg-amber-50 border border-amber-200/80 px-2 py-0.5 rounded-md" title="Curso: {{ $c->title }}">
+                                            <svg class="w-3 h-3 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"/></svg>
+                                            {{ $c->title }}
+                                        </span>
+                                    @endforeach
+
+                                    {{-- Auxiliar Coordenadores --}}
+                                    @if($u->hasRole('Auxiliar') && $u->coordenadoresVinculados->isNotEmpty())
+                                        <span class="inline-flex items-center gap-1 text-[10.5px] text-teal-700 bg-teal-50 px-2 py-0.5 rounded-md border border-teal-200" title="{{ $u->coordenadoresVinculados->pluck('name')->implode(', ') }}">
+                                            {{ $u->coordenadoresVinculados->count() }} coord.
+                                        </span>
+                                    @endif
+
+                                    @if($userDepts->isEmpty() && $userCourses->isEmpty() && (!$u->hasRole('Auxiliar') || $u->coordenadoresVinculados->isEmpty()))
                                         <span class="text-gray-400 text-xs italic">Nenhum</span>
                                     @endif
-                                @else
-                                    <span class="text-gray-300 text-xs">—</span>
-                                @endif
+                                </div>
                             </td>
                             <td class="px-3 py-2.5 text-center">
                                 <form action="{{ route('lab.users.status', $u) }}" method="POST">
@@ -371,7 +471,8 @@
                                                 'email' => $u->email,
                                                 'role' => $u->roles->first()?->name ?? 'Professor',
                                                 'job_title' => $u->role ?? '',
-                                                'department_id' => $u->department_id,
+                                                'department_ids' => $userDepts->pluck('id')->toArray(),
+                                                'course_ids' => $userCourses->pluck('id')->toArray(),
                                                 'registration_number' => $u->registration_number,
                                                 'phone' => $u->phone,
                                                 'coordenador_ids' => $u->coordenadoresVinculados->pluck('id')->toArray(),
@@ -386,7 +487,7 @@
                                     <!-- Link Reset Senha -->
                                     <form action="{{ route('lab.users.reset-link', $u) }}" method="POST" title="Enviar link de redefinição de senha">
                                         @csrf
-                                        <button class="rounded-lg bg-gray-100 p-1.5 text-gray-600 hover:bg-gray-200 transition shadow-2xs" title="Enviar link de redefinição de senha">
+                                        <button class="rounded-lg bg-gray-100 p-1.5 text-gray-600 hover:bg-gray-200 transition shadow-2xs cursor-pointer" title="Enviar link de redefinição de senha">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
                                             </svg>
@@ -397,7 +498,7 @@
                                     @if($u->id !== auth()->id())
                                     <form action="{{ route('lab.users.destroy', $u) }}" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir o usuário {{ addslashes($u->name) }}?')">
                                         @csrf @method('DELETE')
-                                        <button class="rounded-lg bg-red-50 p-1.5 text-red-600 hover:bg-red-100 transition shadow-2xs" title="Excluir usuário">
+                                        <button class="rounded-lg bg-red-50 p-1.5 text-red-600 hover:bg-red-100 transition shadow-2xs cursor-pointer" title="Excluir usuário">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                         </button>
                                     </form>
@@ -406,7 +507,7 @@
                             </td>
                         </tr>
                         @empty
-                        <tr><td colspan="6" class="px-4 py-8 text-center text-gray-400 text-xs">Nenhum usuário cadastrado.</td></tr>
+                        <tr><td colspan="7" class="px-4 py-8 text-center text-gray-400 text-xs">Nenhum usuário cadastrado.</td></tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -431,7 +532,7 @@
                         </span>
                         <span>Editar Usuário & Colaborador</span>
                     </h3>
-                    <button type="button" @click="editOpen = false" class="text-gray-400 hover:text-gray-600 text-lg font-bold">&times;</button>
+                    <button type="button" @click="editOpen = false" class="text-gray-400 hover:text-gray-600 text-lg font-bold cursor-pointer">&times;</button>
                 </div>
 
                 <form :action="editUser.updateUrl" method="POST" class="space-y-3.5">
@@ -473,14 +574,48 @@
                             <input type="text" name="phone" x-model="editUser.phone" placeholder="(19) 99999-9999" class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs sm:text-sm text-gray-800 focus:ring-2 focus:ring-indigo-400 focus:outline-none">
                         </div>
 
-                        <div>
-                            <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-1">Departamento / Setor</label>
-                            <select name="department_id" x-model="editUser.department_id" class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs sm:text-sm text-gray-800 focus:ring-2 focus:ring-indigo-400 focus:outline-none">
-                                <option value="">Nenhum / Geral</option>
+                        <!-- Departamentos / Setores (Múltipla Seleção) -->
+                        <div class="sm:col-span-2">
+                            <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-1">
+                                Departamentos / Setores
+                                <span class="text-[10px] text-gray-400 font-normal lowercase">(clique para associar/desassociar)</span>
+                            </label>
+                            <div class="flex flex-wrap gap-1.5 p-2.5 rounded-xl border border-gray-200 bg-gray-50/50 min-h-[46px] items-center">
                                 @foreach($departments as $dept)
-                                <option value="{{ $dept->id }}">{{ $dept->name }}</option>
+                                <button type="button"
+                                        @click="toggleEditDept({{ $dept->id }})"
+                                        :class="editUser.department_ids.includes({{ $dept->id }}) ? 'bg-indigo-600 text-white border-indigo-600 shadow-2xs font-semibold ring-2 ring-indigo-200' : 'bg-white text-gray-700 border-gray-200 hover:border-indigo-300 hover:bg-indigo-50/40'"
+                                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs transition cursor-pointer select-none">
+                                    <span x-show="editUser.department_ids.includes({{ $dept->id }})" class="font-bold">✓</span>
+                                    <span>{{ $dept->name }}</span>
+                                </button>
                                 @endforeach
-                            </select>
+                            </div>
+                            <template x-for="id in editUser.department_ids" :key="'edit-d-'+id">
+                                <input type="hidden" name="department_ids[]" :value="id">
+                            </template>
+                        </div>
+
+                        <!-- Cursos Técnicos Vinculados (Múltipla Seleção) -->
+                        <div class="sm:col-span-2">
+                            <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-1">
+                                Cursos Técnicos Vinculados
+                                <span class="text-[10px] text-gray-400 font-normal lowercase">(clique para associar/desassociar)</span>
+                            </label>
+                            <div class="flex flex-wrap gap-1.5 p-2.5 rounded-xl border border-gray-200 bg-gray-50/50 min-h-[46px] items-center">
+                                @foreach($courses as $course)
+                                <button type="button"
+                                        @click="toggleEditCourse({{ $course->id }})"
+                                        :class="editUser.course_ids.includes({{ $course->id }}) ? 'bg-amber-600 text-white border-amber-600 shadow-2xs font-semibold ring-2 ring-amber-200' : 'bg-white text-gray-700 border-gray-200 hover:border-amber-300 hover:bg-amber-50/40'"
+                                        class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs transition cursor-pointer select-none">
+                                    <span x-show="editUser.course_ids.includes({{ $course->id }})" class="font-bold">✓</span>
+                                    <span>{{ $course->title }}</span>
+                                </button>
+                                @endforeach
+                            </div>
+                            <template x-for="id in editUser.course_ids" :key="'edit-c-'+id">
+                                <input type="hidden" name="course_ids[]" :value="id">
+                            </template>
                         </div>
 
                         <template x-if="editUser.role === 'Auxiliar'">
