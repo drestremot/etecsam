@@ -42,7 +42,7 @@
                 <table class="w-full text-left text-xs sm:text-sm">
                     <thead class="bg-gray-50/90 text-[11px] font-semibold uppercase text-gray-500 border-b border-gray-200 tracking-wider">
                         <tr>
-                            <th @click="sort('titulo')" class="px-3.5 py-3 cursor-pointer hover:bg-gray-100 select-none min-w-[200px]">
+                            <th @click="sort('titulo')" class="px-3.5 py-3 text-center cursor-pointer hover:bg-gray-100 select-none min-w-[180px]">
                                 Curso <span class="ml-1 text-gray-400" x-text="icon('titulo')"></span>
                             </th>
                             <th @click="sort('tipo')" class="px-3 py-3 cursor-pointer hover:bg-gray-100 select-none min-w-[100px]">
@@ -67,7 +67,7 @@
                             data-tipo="{{ strtolower($course->type) }}"
                             data-unidade="{{ strtolower($course->unit?->name ?? '') }}"
                             data-status="{{ $course->is_active ? 'ativo' : 'inativo' }}">
-                            <td class="px-3.5 py-2.5 font-semibold text-gray-900 truncate max-w-[240px]" title="{{ $course->title }}">
+                            <td class="px-3.5 py-2.5 text-center font-medium text-gray-900 text-xs sm:text-[12.5px] leading-snug break-words max-w-[220px]" title="{{ $course->title }}">
                                 {{ $course->title }}
                             </td>
                             <td class="px-3 py-2.5">
