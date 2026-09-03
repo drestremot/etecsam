@@ -207,7 +207,7 @@
                             {{-- Gestão Escolar & Docentes --}}
                             <div class="py-1.5 space-y-0.5">
                                 <div class="px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-gray-400">Escola & Servidores</div>
-                                
+
                                 <a href="{{ route('lab.users.index') }}" @click="activeDropdown = null" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition">
                                     <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-100 text-blue-600 text-xs flex-shrink-0">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
@@ -516,7 +516,7 @@
                     <span>Mapa Semanal</span>
                 </span>
             </x-responsive-nav-link>
-            
+
             @if(Auth::user()->is_admin || Auth::user()->hasRole('Coordenador'))
             <div class="pt-2 pb-1 text-xs font-semibold uppercase tracking-wider text-gray-400 px-3">Gerenciamento</div>
             <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
