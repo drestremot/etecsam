@@ -104,7 +104,7 @@
                     <thead class="bg-gray-50/90 text-[11px] font-semibold uppercase text-gray-500 border-b border-gray-200 tracking-wider">
                         <tr>
                             <th class="px-3 py-3 w-10 text-center">
-                                <input type="checkbox" data-bulk-master :checked="allSelected" @click.prevent="toggleSelectAll()" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer">
+                                <input type="checkbox" data-bulk-master @click="toggleSelectAll()" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer">
                             </th>
                             <th @click="sort('nome')" class="px-3.5 py-3 cursor-pointer hover:bg-gray-100 select-none min-w-[200px]">
                                 Nome <span class="ml-1 text-gray-400" x-text="icon('nome')"></span>

@@ -117,37 +117,42 @@ window.adminTable = function() {
         },
 
         toggleSelectAll() {
+            const master = this.masterCheckbox;
             const vCbs = this.visibleBulkCheckboxes;
-            if (vCbs.length === 0) return;
+            if (vCbs.length === 0) {
+                if (master) {
+                    master.checked = false;
+                    master.indeterminate = false;
+                }
+                return;
+            }
 
             const selSet = new Set(this.selected.map(String));
             const count = vCbs.filter(cb => selSet.has(String(cb.value))).length;
             const isAllSelected = count === vCbs.length;
-            const isIndeterminate = count > 0 && count < vCbs.length;
 
             const visibleValues = vCbs.map(cb => String(cb.value));
 
-            if (isAllSelected || isIndeterminate) {
-                // Desmarcar todos os visíveis (quando estiver marcado ou indeterminado)
+            if (isAllSelected) {
+                // Se todos os visíveis já estão selecionados -> desmarca todos os visíveis
                 const visibleSet = new Set(visibleValues);
                 this.selected = this.selected.map(String).filter(id => !visibleSet.has(id));
-                vCbs.forEach(cb => { cb.checked = false; });
             } else {
-                // Selecionar todos os visíveis
+                // Se nenhum ou apenas parte está selecionada -> marca todos os visíveis
                 const combined = new Set([...this.selected.map(String), ...visibleValues]);
                 this.selected = Array.from(combined);
-                vCbs.forEach(cb => { cb.checked = true; });
             }
 
-            this.syncMasterCheckbox();
+            // Sincroniza imediatamente o DOM
+            this.$nextTick(() => {
+                this.syncCheckboxes();
+            });
+            this.syncCheckboxes();
         },
 
         clearSelection() {
             this.selected = [];
-            this.$el.querySelectorAll('tbody input[type="checkbox"][data-bulk-item]').forEach(cb => {
-                cb.checked = false;
-            });
-            this.syncMasterCheckbox();
+            this.syncCheckboxes();
         },
 
         setPerPage(val) {
