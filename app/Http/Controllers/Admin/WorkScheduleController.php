@@ -40,18 +40,45 @@ class WorkScheduleController extends Controller
         return view('admin.work-schedules.index', compact('schedules', 'users', 'units', 'stats'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $users = User::where('is_active', true)->orderBy('name')->get();
         $units = Unit::where('is_active', true)->orderBy('name')->get();
         $daysList = WorkSchedule::getDaysList();
 
+        $initialUserId = $request->input('user_id', $users->first()?->id);
+
+        $allUserSchedules = WorkSchedule::where('is_active', true)
+            ->with('unit:id,name,city')
+            ->orderBy('day_of_week')
+            ->orderBy('start_time')
+            ->get()
+            ->groupBy('user_id')
+            ->map(function ($schedules) {
+                return $schedules->map(function ($s) {
+                    return [
+                        'id'                => $s->id,
+                        'day_of_week'       => (int) $s->day_of_week,
+                        'unit_id'           => (int) $s->unit_id,
+                        'unit_name'         => $s->unit?->name ?? 'Unidade',
+                        'start_time'        => substr($s->start_time, 0, 5),
+                        'end_time'          => substr($s->end_time, 0, 5),
+                        'shift_name'        => $s->shift_name ?? '',
+                        'break_start_time'  => $s->break_start_time ? substr($s->break_start_time, 0, 5) : null,
+                        'break_end_time'    => $s->break_end_time ? substr($s->break_end_time, 0, 5) : null,
+                        'tolerance_minutes' => (int) $s->tolerance_minutes,
+                    ];
+                })->values();
+            });
+
         return view('admin.work-schedules.form', [
-            'action'    => 'create',
-            'schedule'  => new WorkSchedule(['tolerance_minutes' => 15, 'is_active' => true]),
-            'users'     => $users,
-            'units'     => $units,
-            'daysList'  => $daysList,
+            'action'           => 'create',
+            'schedule'         => new WorkSchedule(['tolerance_minutes' => 15, 'is_active' => true]),
+            'users'            => $users,
+            'units'            => $units,
+            'daysList'         => $daysList,
+            'initialUserId'    => $initialUserId,
+            'allUserSchedules' => $allUserSchedules,
         ]);
     }
 
@@ -83,13 +110,12 @@ class WorkScheduleController extends Controller
             }
 
             $userId = (int) $request->user_id;
+            $user = User::findOrFail($userId);
             $savedCount = 0;
 
-            \DB::transaction(function () use ($userId, $items, $request, &$savedCount) {
-                // Se solicitado substituir grade anterior completa
-                if ($request->boolean('replace_existing')) {
-                    WorkSchedule::where('user_id', $userId)->delete();
-                }
+            \DB::transaction(function () use ($userId, $items, &$savedCount) {
+                // Sincroniza a grade completa do professor substituindo registros anteriores
+                WorkSchedule::where('user_id', $userId)->delete();
 
                 foreach ($items as $item) {
                     $day = (int) ($item['day_of_week'] ?? 1);
@@ -103,29 +129,25 @@ class WorkScheduleController extends Controller
                     $breakEnd = !empty($item['break_end_time']) ? substr($item['break_end_time'], 0, 5) . ':00' : null;
                     $tolerance = isset($item['tolerance_minutes']) ? (int) $item['tolerance_minutes'] : 15;
 
-                    WorkSchedule::updateOrCreate(
-                        [
-                            'user_id'     => $userId,
-                            'unit_id'     => $unitId,
-                            'day_of_week' => $day,
-                            'start_time'  => $startTime,
-                        ],
-                        [
-                            'end_time'          => $endTime,
-                            'shift_name'        => $shiftName,
-                            'break_start_time'  => $breakStart,
-                            'break_end_time'    => $breakEnd,
-                            'tolerance_minutes' => $tolerance,
-                            'is_active'         => true,
-                        ]
-                    );
+                    WorkSchedule::create([
+                        'user_id'           => $userId,
+                        'unit_id'           => $unitId,
+                        'day_of_week'       => $day,
+                        'start_time'        => $startTime,
+                        'end_time'          => $endTime,
+                        'shift_name'        => $shiftName,
+                        'break_start_time'  => $breakStart,
+                        'break_end_time'    => $breakEnd,
+                        'tolerance_minutes' => $tolerance,
+                        'is_active'         => true,
+                    ]);
 
                     $savedCount++;
                 }
             });
 
-            return redirect()->route('admin.work-schedules.index')
-                ->with('success', "Grade de horários do professor cadastrada com sucesso! ({$savedCount} horário(s) configurado(s)).");
+            return redirect()->route('admin.work-schedules.create', ['user_id' => $userId])
+                ->with('success', "Grade de horários do(a) professor(a) {$user->name} salva com sucesso! ({$savedCount} horário(s) ativo(s)).");
         }
 
         // Modo formulário simples (legado)

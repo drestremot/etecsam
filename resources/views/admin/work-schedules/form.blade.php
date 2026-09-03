@@ -7,14 +7,309 @@
     {{-- ========================================================================= --}}
     {{-- CONSTRUTOR INTERATIVO DE GRADE COMPLETA (MODO CRIAÇÃO)                   --}}
     {{-- ========================================================================= --}}
-    <div class="w-full max-w-7xl mx-auto space-y-6"
-         x-data="scheduleBuilder({
-            users: {{ json_encode($users->map(fn($u) => ['id' => $u->id, 'name' => $u->name, 'role' => $u->role ?? 'Docente'])->values()) }},
-            units: {{ json_encode($units->map(fn($un) => ['id' => $un->id, 'name' => $un->name, 'city' => $un->city])->values()) }},
-            daysList: {{ json_encode($daysList) }},
-            oldUserId: '{{ old('user_id', request('user_id', '')) }}',
-            oldUnitId: '{{ old('unit_id', $units->first()?->id ?? '') }}'
-         })">
+    <script>
+        window.__WS_CONFIG__ = {
+            users: {!! json_encode($users->map(fn($u) => ['id' => $u->id, 'name' => $u->name, 'role' => $u->role ?? 'Docente'])->values()) !!},
+            units: {!! json_encode($units->map(fn($un) => ['id' => $un->id, 'name' => $un->name, 'city' => $un->city])->values()) !!},
+            daysList: {!! json_encode($daysList) !!},
+            oldUserId: '{{ old('user_id', request('user_id', $initialUserId ?? '')) }}',
+            oldUnitId: '{{ old('unit_id', $units->first()?->id ?? '') }}',
+            allUserSchedules: {!! json_encode($allUserSchedules ?? []) !!}
+        };
+
+        function scheduleBuilder(config) {
+            return {
+                users: config.users || [],
+                units: config.units || [],
+                daysList: config.daysList || {},
+                dayShortNames: { 1: 'Seg', 2: 'Ter', 3: 'Qua', 4: 'Qui', 5: 'Sex', 6: 'Sáb', 0: 'Dom' },
+                allUserSchedules: config.allUserSchedules || {},
+
+                userId: config.oldUserId || (config.users[0]?.id || ''),
+                defaultUnitId: config.oldUnitId || (config.units[0]?.id || ''),
+
+                currentDays: [1],
+                currentUnitId: config.oldUnitId || (config.units[0]?.id || ''),
+                currentStartTime: '07:10',
+                currentEndTime: '12:35',
+                currentShiftName: '',
+                currentBreakStart: '',
+                currentBreakEnd: '',
+                currentTolerance: 15,
+
+                slots: [],
+                counter: 1,
+
+                init() {
+                    if (this.userId) {
+                        this.loadUserSchedules(this.userId);
+                    }
+                },
+
+                get selectedUserName() {
+                    const u = this.users.find(x => String(x.id) === String(this.userId));
+                    return u ? u.name : '';
+                },
+
+                get uniqueDaysCount() {
+                    const unique = new Set(this.slots.map(s => s.day_of_week));
+                    return unique.size;
+                },
+
+                get totalHoursFormatted() {
+                    let totalMinutes = 0;
+                    this.slots.forEach(s => {
+                        const [sh, sm] = s.start_time.split(':').map(Number);
+                        const [eh, em] = s.end_time.split(':').map(Number);
+                        const startM = sh * 60 + sm;
+                        const endM = eh * 60 + em;
+                        if (endM > startM) {
+                            totalMinutes += (endM - startM);
+                        }
+                    });
+
+                    const h = Math.floor(totalMinutes / 60);
+                    const m = totalMinutes % 60;
+                    if (h === 0 && m === 0) return '0h';
+                    if (m === 0) return `${h}h semanais`;
+                    return `${h}h ${m}min semanais`;
+                },
+
+                onUserChange() {
+                    this.slots = [];
+                    if (this.userId) {
+                        this.loadUserSchedules(this.userId);
+                    }
+                },
+
+                loadUserSchedules(userId) {
+                    if (!userId) {
+                        this.slots = [];
+                        return;
+                    }
+
+                    // 1. Carregamento instantâneo a partir do dicionário em memória
+                    if (this.allUserSchedules && this.allUserSchedules[userId] && this.allUserSchedules[userId].length > 0) {
+                        const data = this.allUserSchedules[userId];
+                        this.slots = data.map(item => ({
+                            temp_id: 'slot_' + (this.counter++),
+                            day_of_week: Number(item.day_of_week),
+                            unit_id: Number(item.unit_id),
+                            start_time: item.start_time ? item.start_time.substring(0, 5) : '07:10',
+                            end_time: item.end_time ? item.end_time.substring(0, 5) : '12:35',
+                            shift_name: item.shift_name || '',
+                            break_start_time: item.break_start_time ? item.break_start_time.substring(0, 5) : null,
+                            break_end_time: item.break_end_time ? item.break_end_time.substring(0, 5) : null,
+                            tolerance_minutes: item.tolerance_minutes || 15
+                        }));
+                        return;
+                    }
+
+                    // 2. Requisição assíncrona caso não esteja precarregado
+                    fetch(`/admin/work-schedules/user/${userId}`)
+                        .then(r => r.json())
+                        .then(data => {
+                            if (Array.isArray(data) && data.length > 0) {
+                                this.slots = data.map(item => ({
+                                    temp_id: 'slot_' + (this.counter++),
+                                    day_of_week: Number(item.day_of_week),
+                                    unit_id: Number(item.unit_id),
+                                    start_time: item.start_time ? item.start_time.substring(0, 5) : '07:10',
+                                    end_time: item.end_time ? item.end_time.substring(0, 5) : '12:35',
+                                    shift_name: item.shift_name || '',
+                                    break_start_time: item.break_start_time ? item.break_start_time.substring(0, 5) : null,
+                                    break_end_time: item.break_end_time ? item.break_end_time.substring(0, 5) : null,
+                                    tolerance_minutes: item.tolerance_minutes || 15
+                                }));
+                            } else {
+                                this.slots = [];
+                            }
+                        })
+                        .catch(() => {
+                            this.slots = [];
+                        });
+                },
+
+                onDefaultUnitChange() {
+                    this.currentUnitId = this.defaultUnitId;
+                },
+
+                selectWeekdays() {
+                    this.currentDays = [1, 2, 3, 4, 5];
+                },
+
+                toggleDay(day) {
+                    if (this.currentDays.includes(day)) {
+                        this.currentDays = this.currentDays.filter(d => d !== day);
+                    } else {
+                        this.currentDays.push(day);
+                    }
+                },
+
+                applyPreset(start, end, name) {
+                    this.currentStartTime = start;
+                    this.currentEndTime = end;
+                    if (name && !this.currentShiftName) {
+                        this.currentShiftName = name;
+                    }
+                },
+
+                getUnitName(unitId) {
+                    const un = this.units.find(x => String(x.id) === String(unitId));
+                    return un ? un.name : 'Unidade';
+                },
+
+                getDaySlots(day) {
+                    return this.slots
+                        .filter(s => Number(s.day_of_week) === Number(day))
+                        .sort((a, b) => a.start_time.localeCompare(b.start_time));
+                },
+
+                calculateDuration(start, end) {
+                    if (!start || !end) return '';
+                    const [sh, sm] = start.split(':').map(Number);
+                    const [eh, em] = end.split(':').map(Number);
+                    const startM = sh * 60 + sm;
+                    const endM = eh * 60 + em;
+                    const diff = endM - startM;
+                    if (diff <= 0) return '';
+                    const h = Math.floor(diff / 60);
+                    const m = diff % 60;
+                    if (h === 0) return `${m}min`;
+                    if (m === 0) return `${h}h`;
+                    return `${h}h ${m}m`;
+                },
+
+                getDayContainerClass(day) {
+                    const classes = {
+                        1: 'border-blue-200 bg-blue-50/20',
+                        2: 'border-indigo-200 bg-indigo-50/20',
+                        3: 'border-purple-200 bg-purple-50/20',
+                        4: 'border-emerald-200 bg-emerald-50/20',
+                        5: 'border-amber-200 bg-amber-50/20',
+                        6: 'border-rose-200 bg-rose-50/20',
+                        0: 'border-gray-300 bg-gray-50/40',
+                    };
+                    return classes[day] || 'border-gray-200 bg-white';
+                },
+
+                getDayHeaderBorderClass(day) {
+                    const classes = {
+                        1: 'border-blue-100 bg-blue-50/40',
+                        2: 'border-indigo-100 bg-indigo-50/40',
+                        3: 'border-purple-100 bg-purple-50/40',
+                        4: 'border-emerald-100 bg-emerald-50/40',
+                        5: 'border-amber-100 bg-amber-50/40',
+                        6: 'border-rose-100 bg-rose-50/40',
+                        0: 'border-gray-200 bg-gray-100/50',
+                    };
+                    return classes[day] || 'border-gray-100';
+                },
+
+                getDayDotClass(day) {
+                    const classes = {
+                        1: 'bg-blue-500',
+                        2: 'bg-indigo-500',
+                        3: 'bg-purple-500',
+                        4: 'bg-emerald-500',
+                        5: 'bg-amber-500',
+                        6: 'bg-rose-500',
+                        0: 'bg-gray-500',
+                    };
+                    return classes[day] || 'bg-indigo-500';
+                },
+
+                getDayTitleClass(day) {
+                    const classes = {
+                        1: 'text-blue-900',
+                        2: 'text-indigo-900',
+                        3: 'text-purple-900',
+                        4: 'text-emerald-900',
+                        5: 'text-amber-900',
+                        6: 'text-rose-900',
+                        0: 'text-gray-900',
+                    };
+                    return classes[day] || 'text-gray-900';
+                },
+
+                addSlot() {
+                    if (!this.userId) {
+                        alert('Por favor, selecione um Professor / Colaborador primeiro.');
+                        return;
+                    }
+                    if (this.currentDays.length === 0) {
+                        alert('Selecione pelo menos um dia da semana para adicionar a aula.');
+                        return;
+                    }
+                    if (!this.currentStartTime || !this.currentEndTime) {
+                        alert('Preencha os horários de início e término.');
+                        return;
+                    }
+                    if (this.currentEndTime <= this.currentStartTime) {
+                        alert('O horário de saída (término) deve ser posterior ao horário de entrada (início).');
+                        return;
+                    }
+
+                    let addedCount = 0;
+                    this.currentDays.forEach(day => {
+                        const exists = this.slots.some(s =>
+                            Number(s.day_of_week) === Number(day) &&
+                            s.start_time === this.currentStartTime
+                        );
+
+                        if (!exists) {
+                            this.slots.push({
+                                temp_id: 'slot_' + (this.counter++),
+                                day_of_week: Number(day),
+                                unit_id: Number(this.currentUnitId || this.defaultUnitId),
+                                start_time: this.currentStartTime,
+                                end_time: this.currentEndTime,
+                                shift_name: this.currentShiftName || '',
+                                break_start_time: this.currentBreakStart || null,
+                                break_end_time: this.currentBreakEnd || null,
+                                tolerance_minutes: Number(this.currentTolerance || 15)
+                            });
+                            addedCount++;
+                        }
+                    });
+
+                    if (addedCount === 0) {
+                        alert('O horário configurado já está presente neste(s) dia(s) na grade.');
+                    }
+                },
+
+                removeSlot(tempId) {
+                    this.slots = this.slots.filter(s => s.temp_id !== tempId);
+                },
+
+                clearAllSlots() {
+                    if (confirm('Deseja realmente limpar todos os horários da grade deste professor?')) {
+                        this.slots = [];
+                    }
+                },
+
+                prepareSubmit(e) {
+                    if (!this.userId) {
+                        e.preventDefault();
+                        alert('Selecione o Professor / Colaborador.');
+                        return;
+                    }
+                    if (this.slots.length === 0) {
+                        e.preventDefault();
+                        alert('Adicione pelo menos um horário de aula à grade antes de salvar.');
+                        return;
+                    }
+
+                    const hiddenInput = e.target.querySelector('input[name="schedules_json"]');
+                    if (hiddenInput) {
+                        hiddenInput.value = JSON.stringify(this.slots);
+                    }
+                }
+            };
+        }
+    </script>
+
+    <div class="w-full max-w-7xl mx-auto space-y-6" x-data="scheduleBuilder(window.__WS_CONFIG__)">
 
         <!-- Top Navigation -->
         <div class="flex flex-wrap items-center justify-between gap-3">
@@ -38,6 +333,23 @@
             </a>
         </div>
 
+        @if(session('success'))
+            <div class="rounded-2xl bg-emerald-500 text-white p-4 text-xs font-semibold shadow-sm flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <svg class="w-4 h-4 text-white flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                    <span>{{ session('success') }}</span>
+                </div>
+                <button type="button" onclick="this.parentElement.remove()" class="text-white hover:text-gray-200 text-base font-semibold cursor-pointer">&times;</button>
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="rounded-2xl bg-red-600 text-white p-4 text-xs font-semibold shadow-sm flex items-center justify-between">
+                <span>{{ session('error') }}</span>
+                <button type="button" onclick="this.parentElement.remove()" class="text-white hover:text-gray-200 text-base font-semibold cursor-pointer">&times;</button>
+            </div>
+        @endif
+
         @if($errors->any())
             <div class="rounded-2xl bg-rose-50 border border-rose-200 p-4 text-xs font-medium text-rose-800 space-y-1">
                 @foreach($errors->all() as $err)
@@ -50,7 +362,7 @@
             @csrf
             <!-- Campo Oculto com o JSON dos Horários -->
             <input type="hidden" name="schedules_json" :value="JSON.stringify(slots)">
-            <input type="hidden" name="replace_existing" :value="replaceExisting ? '1' : '0'">
+            <input type="hidden" name="replace_existing" value="1">
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
@@ -87,22 +399,14 @@
                             </select>
                         </div>
 
-                        <!-- Notificação e Carregamento de Grade Existente -->
-                        <div x-show="existingCount > 0" x-cloak class="rounded-2xl bg-amber-50 border border-amber-200 p-3.5 text-xs text-amber-900 space-y-2">
-                            <div class="flex items-center gap-2 font-semibold">
-                                <svg class="w-4 h-4 text-amber-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                <span>Este professor já possui <strong x-text="existingCount"></strong> horário(s) cadastrados.</span>
+                        <div class="rounded-2xl bg-indigo-50/70 border border-indigo-100 p-3 text-[11.5px] text-indigo-900 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-indigo-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                <span>Horários carregados para o professor: <strong x-text="slots.length"></strong></span>
                             </div>
-                            <div class="flex flex-wrap items-center gap-2 pt-1">
-                                <button type="button" @click="loadExistingSchedules()"
-                                        class="rounded-lg bg-amber-600 px-2.5 py-1 text-[11px] font-semibold text-white hover:bg-amber-700 shadow-2xs transition">
-                                    Carregar Grade Atual
-                                </button>
-                                <label class="inline-flex items-center gap-1.5 text-[11px] text-amber-800 cursor-pointer select-none">
-                                    <input type="checkbox" x-model="replaceExisting" class="rounded text-amber-600 focus:ring-amber-500">
-                                    <span>Substituir grade anterior ao salvar</span>
-                                </label>
-                            </div>
+                            <button type="button" @click="loadUserSchedules(userId)" class="text-indigo-700 hover:text-indigo-900 font-bold underline text-[11px] cursor-pointer">
+                                Recarregar
+                            </button>
                         </div>
                     </div>
 
@@ -511,287 +815,4 @@
     @endif
 
 </div>
-
-@push('scripts')
-<script>
-function scheduleBuilder(config) {
-    return {
-        users: config.users || [],
-        units: config.units || [],
-        daysList: config.daysList || {},
-        dayShortNames: { 1: 'Seg', 2: 'Ter', 3: 'Qua', 4: 'Qui', 5: 'Sex', 6: 'Sáb', 0: 'Dom' },
-
-        userId: config.oldUserId || (config.users[0]?.id || ''),
-        defaultUnitId: config.oldUnitId || (config.units[0]?.id || ''),
-        replaceExisting: false,
-        existingCount: 0,
-
-        currentDays: [1], // Segunda-feira por padrão
-        currentUnitId: config.oldUnitId || (config.units[0]?.id || ''),
-        currentStartTime: '07:10',
-        currentEndTime: '12:35',
-        currentShiftName: '',
-        currentBreakStart: '',
-        currentBreakEnd: '',
-        currentTolerance: 15,
-
-        slots: [],
-        counter: 1,
-
-        init() {
-            if (this.userId) {
-                this.checkExistingSchedules();
-            }
-        },
-
-        get selectedUserName() {
-            const u = this.users.find(x => String(x.id) === String(this.userId));
-            return u ? u.name : '';
-        },
-
-        get uniqueDaysCount() {
-            const unique = new Set(this.slots.map(s => s.day_of_week));
-            return unique.size;
-        },
-
-        get totalHoursFormatted() {
-            let totalMinutes = 0;
-            this.slots.forEach(s => {
-                const [sh, sm] = s.start_time.split(':').map(Number);
-                const [eh, em] = s.end_time.split(':').map(Number);
-                const startM = sh * 60 + sm;
-                const endM = eh * 60 + em;
-                if (endM > startM) {
-                    totalMinutes += (endM - startM);
-                }
-            });
-
-            const h = Math.floor(totalMinutes / 60);
-            const m = totalMinutes % 60;
-            if (h === 0 && m === 0) return '0h';
-            if (m === 0) return `${h}h semanais`;
-            return `${h}h ${m}min semanais`;
-        },
-
-        onUserChange() {
-            this.existingCount = 0;
-            if (this.userId) {
-                this.checkExistingSchedules();
-            }
-        },
-
-        onDefaultUnitChange() {
-            this.currentUnitId = this.defaultUnitId;
-        },
-
-        selectWeekdays() {
-            this.currentDays = [1, 2, 3, 4, 5];
-        },
-
-        toggleDay(day) {
-            if (this.currentDays.includes(day)) {
-                this.currentDays = this.currentDays.filter(d => d !== day);
-            } else {
-                this.currentDays.push(day);
-            }
-        },
-
-        applyPreset(start, end, name) {
-            this.currentStartTime = start;
-            this.currentEndTime = end;
-            if (name && !this.currentShiftName) {
-                this.currentShiftName = name;
-            }
-        },
-
-        getUnitName(unitId) {
-            const un = this.units.find(x => String(x.id) === String(unitId));
-            return un ? un.name : 'Unidade';
-        },
-
-        getDaySlots(day) {
-            return this.slots
-                .filter(s => Number(s.day_of_week) === Number(day))
-                .sort((a, b) => a.start_time.localeCompare(b.start_time));
-        },
-
-        calculateDuration(start, end) {
-            if (!start || !end) return '';
-            const [sh, sm] = start.split(':').map(Number);
-            const [eh, em] = end.split(':').map(Number);
-            const startM = sh * 60 + sm;
-            const endM = eh * 60 + em;
-            const diff = endM - startM;
-            if (diff <= 0) return '';
-            const h = Math.floor(diff / 60);
-            const m = diff % 60;
-            if (h === 0) return `${m}min`;
-            if (m === 0) return `${h}h`;
-            return `${h}h ${m}m`;
-        },
-
-        getDayContainerClass(day) {
-            const classes = {
-                1: 'border-blue-200 bg-blue-50/20',
-                2: 'border-indigo-200 bg-indigo-50/20',
-                3: 'border-purple-200 bg-purple-50/20',
-                4: 'border-emerald-200 bg-emerald-50/20',
-                5: 'border-amber-200 bg-amber-50/20',
-                6: 'border-rose-200 bg-rose-50/20',
-                0: 'border-gray-300 bg-gray-50/40',
-            };
-            return classes[day] || 'border-gray-200 bg-white';
-        },
-
-        getDayHeaderBorderClass(day) {
-            const classes = {
-                1: 'border-blue-100 bg-blue-50/40',
-                2: 'border-indigo-100 bg-indigo-50/40',
-                3: 'border-purple-100 bg-purple-50/40',
-                4: 'border-emerald-100 bg-emerald-50/40',
-                5: 'border-amber-100 bg-amber-50/40',
-                6: 'border-rose-100 bg-rose-50/40',
-                0: 'border-gray-200 bg-gray-100/50',
-            };
-            return classes[day] || 'border-gray-100';
-        },
-
-        getDayDotClass(day) {
-            const classes = {
-                1: 'bg-blue-500',
-                2: 'bg-indigo-500',
-                3: 'bg-purple-500',
-                4: 'bg-emerald-500',
-                5: 'bg-amber-500',
-                6: 'bg-rose-500',
-                0: 'bg-gray-500',
-            };
-            return classes[day] || 'bg-indigo-500';
-        },
-
-        getDayTitleClass(day) {
-            const classes = {
-                1: 'text-blue-900',
-                2: 'text-indigo-900',
-                3: 'text-purple-900',
-                4: 'text-emerald-900',
-                5: 'text-amber-900',
-                6: 'text-rose-900',
-                0: 'text-gray-900',
-            };
-            return classes[day] || 'text-gray-900';
-        },
-
-        addSlot() {
-            if (!this.userId) {
-                alert('Por favor, selecione um Professor / Colaborador primeiro.');
-                return;
-            }
-            if (this.currentDays.length === 0) {
-                alert('Selecione pelo menos um dia da semana para adicionar a aula.');
-                return;
-            }
-            if (!this.currentStartTime || !this.currentEndTime) {
-                alert('Preencha os horários de início e término.');
-                return;
-            }
-            if (this.currentEndTime <= this.currentStartTime) {
-                alert('O horário de saída (término) deve ser posterior ao horário de entrada (início).');
-                return;
-            }
-
-            let addedCount = 0;
-            this.currentDays.forEach(day => {
-                // Verificar duplicidade de horário no mesmo dia
-                const exists = this.slots.some(s =>
-                    Number(s.day_of_week) === Number(day) &&
-                    s.start_time === this.currentStartTime
-                );
-
-                if (!exists) {
-                    this.slots.push({
-                        temp_id: 'slot_' + (this.counter++),
-                        day_of_week: Number(day),
-                        unit_id: Number(this.currentUnitId || this.defaultUnitId),
-                        start_time: this.currentStartTime,
-                        end_time: this.currentEndTime,
-                        shift_name: this.currentShiftName || '',
-                        break_start_time: this.currentBreakStart || null,
-                        break_end_time: this.currentBreakEnd || null,
-                        tolerance_minutes: Number(this.currentTolerance || 15)
-                    });
-                    addedCount++;
-                }
-            });
-
-            if (addedCount > 0) {
-                // Manter horários para próxima inserção rápida
-            } else {
-                alert('Os horários configurados já estão presentes na grade.');
-            }
-        },
-
-        removeSlot(tempId) {
-            this.slots = this.slots.filter(s => s.temp_id !== tempId);
-        },
-
-        clearAllSlots() {
-            if (confirm('Deseja realmente limpar todos os horários da grade em construção?')) {
-                this.slots = [];
-            }
-        },
-
-        checkExistingSchedules() {
-            if (!this.userId) return;
-            fetch(`/admin/work-schedules/user/${this.userId}`)
-                .then(r => r.json())
-                .then(data => {
-                    if (Array.isArray(data)) {
-                        this.existingCount = data.length;
-                    }
-                })
-                .catch(() => {});
-        },
-
-        loadExistingSchedules() {
-            if (!this.userId) return;
-            fetch(`/admin/work-schedules/user/${this.userId}`)
-                .then(r => r.json())
-                .then(data => {
-                    if (Array.isArray(data) && data.length > 0) {
-                        this.slots = data.map(item => ({
-                            temp_id: 'slot_' + (this.counter++),
-                            day_of_week: Number(item.day_of_week),
-                            unit_id: Number(item.unit_id),
-                            start_time: item.start_time ? item.start_time.substring(0, 5) : '07:10',
-                            end_time: item.end_time ? item.end_time.substring(0, 5) : '12:35',
-                            shift_name: item.shift_name || '',
-                            break_start_time: item.break_start_time ? item.break_start_time.substring(0, 5) : null,
-                            break_end_time: item.break_end_time ? item.break_end_time.substring(0, 5) : null,
-                            tolerance_minutes: item.tolerance_minutes || 15
-                        }));
-                        this.replaceExisting = true;
-                    }
-                })
-                .catch(err => {
-                    alert('Erro ao carregar grade existente: ' + err.message);
-                });
-        },
-
-        prepareSubmit(e) {
-            if (!this.userId) {
-                e.preventDefault();
-                alert('Selecione o Professor / Colaborador.');
-                return;
-            }
-            if (this.slots.length === 0) {
-                e.preventDefault();
-                alert('Adicione pelo menos um horário de aula à grade antes de salvar.');
-                return;
-            }
-        }
-    };
-}
-</script>
-@endpush
 @endsection
