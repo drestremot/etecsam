@@ -37,7 +37,7 @@ class LabUserController extends Controller
         $request->validate([
             'name'                => 'required|string|max:255',
             'email'               => 'required|email|unique:users,email',
-            'registration_number' => 'nullable|string|unique:users,registration_number',
+            'registration_number' => 'nullable|string|max:50',
             'role'                => 'required|exists:roles,name',
             'job_title'           => 'nullable|string|max:255',
             'department_id'       => 'nullable|exists:departments,id',
@@ -49,15 +49,30 @@ class LabUserController extends Controller
             'password'            => 'nullable|string|min:6|confirmed',
             'show_on_site'        => 'nullable|boolean',
         ], [
+            'name.required'      => 'O nome completo é obrigatório.',
+            'email.required'     => 'O e-mail institucional é obrigatório.',
+            'email.email'        => 'Informe um e-mail válido.',
+            'email.unique'       => 'Este e-mail já está sendo utilizado por outro usuário no sistema.',
+            'role.required'       => 'Selecione um papel no sistema.',
             'password.min'       => 'A senha deve ter pelo menos 6 caracteres.',
-            'password.confirmed' => 'As senhas não coincidem.',
+            'password.confirmed' => 'A confirmação de senha não confere.',
         ]);
 
-        $deptIds = $request->input('department_ids', []);
+        $deptIds = $request->filled('department_ids_json')
+            ? (json_decode($request->department_ids_json, true) ?: [])
+            : $request->input('department_ids', []);
         if (empty($deptIds) && $request->filled('department_id')) {
             $deptIds = [(int)$request->department_id];
         }
-        $courseIds = $request->input('course_ids', []);
+        $deptIds = array_values(array_unique(array_filter(array_map('intval', (array)$deptIds))));
+
+        $courseIds = $request->filled('course_ids_json')
+            ? (json_decode($request->course_ids_json, true) ?: [])
+            : $request->input('course_ids', []);
+        if (empty($courseIds) && $request->filled('course_id')) {
+            $courseIds = [(int)$request->course_id];
+        }
+        $courseIds = array_values(array_unique(array_filter(array_map('intval', (array)$courseIds))));
 
         $password = $request->filled('password')
             ? $request->password
@@ -74,7 +89,7 @@ class LabUserController extends Controller
             'password'             => Hash::make($password),
             'must_change_password' => !$request->filled('password'), // Se usou senha padrão, exige troca no 1º login
             'is_active'            => true,
-            'is_admin'             => $request->role === 'Administrador' || $request->role === 'admin',
+            'is_admin'             => in_array($request->role, ['Administrador', 'admin', 'Superintendente']),
         ]);
 
         $user->syncRoles($request->role);
@@ -106,7 +121,7 @@ class LabUserController extends Controller
         $request->validate([
             'name'                => 'required|string|max:255',
             'email'               => 'required|email|unique:users,email,' . $user->id,
-            'registration_number' => 'nullable|string|unique:users,registration_number,' . $user->id,
+            'registration_number' => 'nullable|string|max:50',
             'role'                => 'required|exists:roles,name',
             'job_title'           => 'nullable|string|max:255',
             'department_id'       => 'nullable|exists:departments,id',
@@ -118,15 +133,30 @@ class LabUserController extends Controller
             'password'            => 'nullable|string|min:6|confirmed',
             'show_on_site'        => 'nullable|boolean',
         ], [
+            'name.required'      => 'O nome completo é obrigatório.',
+            'email.required'     => 'O e-mail institucional é obrigatório.',
+            'email.email'        => 'Informe um e-mail válido.',
+            'email.unique'       => 'Este e-mail já está sendo utilizado por outro usuário no sistema.',
+            'role.required'       => 'Selecione um papel no sistema.',
             'password.min'       => 'A nova senha deve ter pelo menos 6 caracteres.',
-            'password.confirmed' => 'As senhas não coincidem.',
+            'password.confirmed' => 'A confirmação de senha não confere.',
         ]);
 
-        $deptIds = $request->input('department_ids', []);
+        $deptIds = $request->filled('department_ids_json')
+            ? (json_decode($request->department_ids_json, true) ?: [])
+            : $request->input('department_ids', []);
         if (empty($deptIds) && $request->filled('department_id')) {
             $deptIds = [(int)$request->department_id];
         }
-        $courseIds = $request->input('course_ids', []);
+        $deptIds = array_values(array_unique(array_filter(array_map('intval', (array)$deptIds))));
+
+        $courseIds = $request->filled('course_ids_json')
+            ? (json_decode($request->course_ids_json, true) ?: [])
+            : $request->input('course_ids', []);
+        if (empty($courseIds) && $request->filled('course_id')) {
+            $courseIds = [(int)$request->course_id];
+        }
+        $courseIds = array_values(array_unique(array_filter(array_map('intval', (array)$courseIds))));
 
         $oldEmail = $user->email;
 
@@ -136,9 +166,9 @@ class LabUserController extends Controller
             'registration_number' => $request->registration_number,
             'role'                => $request->job_title ?: $request->role,
             'department_id'       => !empty($deptIds) ? $deptIds[0] : null,
-            'course_id'            => !empty($courseIds) ? $courseIds[0] : null,
+            'course_id'           => !empty($courseIds) ? $courseIds[0] : null,
             'phone'               => $request->phone,
-            'is_admin'            => $request->role === 'Administrador' || $request->role === 'admin',
+            'is_admin'            => in_array($request->role, ['Administrador', 'admin', 'Superintendente']),
         ];
 
         if ($request->filled('password')) {

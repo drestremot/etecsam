@@ -28,10 +28,10 @@
                  id: u.id,
                  name: u.name || '',
                  email: u.email || '',
-                 role: u.role || '',
+                 role: u.role || 'Professor',
                  job_title: u.job_title || '',
-                 department_ids: Array.isArray(u.department_ids) ? u.department_ids.map(Number) : (u.department_id ? [Number(u.department_id)] : []),
-                 course_ids: Array.isArray(u.course_ids) ? u.course_ids.map(Number) : (u.course_id ? [Number(u.course_id)] : []),
+                 department_ids: Array.isArray(u.department_ids) ? u.department_ids.map(Number).filter(Boolean) : (u.department_id ? [Number(u.department_id)] : []),
+                 course_ids: Array.isArray(u.course_ids) ? u.course_ids.map(Number).filter(Boolean) : (u.course_id ? [Number(u.course_id)] : []),
                  registration_number: u.registration_number || '',
                  phone: u.phone || '',
                  coordenador_ids: Array.isArray(u.coordenador_ids) ? u.coordenador_ids.map(Number) : [],
@@ -151,6 +151,22 @@
             <div class="rounded-xl bg-red-600 text-white px-4 py-3 text-xs font-semibold shadow-sm flex items-center justify-between">
                 <span>{{ session('error') }}</span>
                 <button onclick="this.parentElement.remove()" class="text-white hover:text-gray-200 text-base font-semibold">&times;</button>
+            </div>
+        @endif
+        @if($errors->any())
+            <div class="rounded-xl bg-rose-600 text-white px-4 py-3 text-xs font-semibold shadow-sm space-y-1">
+                <div class="flex items-center justify-between font-bold">
+                    <span class="flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        Não foi possível salvar as informações:
+                    </span>
+                    <button onclick="this.parentElement.parentElement.remove()" class="text-white hover:text-gray-200 text-base font-semibold">&times;</button>
+                </div>
+                <div class="space-y-0.5 pl-5 font-normal text-[11.5px]">
+                    @foreach($errors->all() as $err)
+                        <div>• {{ $err }}</div>
+                    @endforeach
+                </div>
             </div>
         @endif
 
@@ -340,6 +356,7 @@
                             Nenhum departamento vinculado.
                         </div>
 
+                        <input type="hidden" name="department_ids_json" :value="JSON.stringify(selectedDepts)">
                         <template x-for="id in selectedDepts" :key="'new-d-in-'+id">
                             <input type="hidden" name="department_ids[]" :value="id">
                         </template>
@@ -395,6 +412,7 @@
                             Nenhum curso vinculado.
                         </div>
 
+                        <input type="hidden" name="course_ids_json" :value="JSON.stringify(selectedCourses)">
                         <template x-for="id in selectedCourses" :key="'new-c-in-'+id">
                             <input type="hidden" name="course_ids[]" :value="id">
                         </template>
@@ -499,6 +517,16 @@
                         @php
                             $userDepts = $u->departments->isNotEmpty() ? $u->departments : ($u->department ? collect([$u->department]) : collect());
                             $userCourses = $u->courses->isNotEmpty() ? $u->courses : ($u->course ? collect([$u->course]) : collect());
+
+                            $userDeptIds = $u->departments->pluck('id')->all();
+                            if (empty($userDeptIds) && $u->department_id) {
+                                $userDeptIds = [(int)$u->department_id];
+                            }
+
+                            $userCourseIds = $u->courses->pluck('id')->all();
+                            if (empty($userCourseIds) && $u->course_id) {
+                                $userCourseIds = [(int)$u->course_id];
+                            }
                         @endphp
                         <tr class="hover:bg-gray-50/80 transition {{ !$u->is_active ? 'opacity-60' : '' }}"
                             data-row="{{ strtolower($u->name . ' ' . $u->email . ' ' . ($u->role ?? '') . ' ' . ($u->roles->pluck('name')->implode(' ')) . ' ' . ($userDepts->pluck('name')->implode(' ')) . ' ' . ($userCourses->pluck('title')->implode(' '))) }}"
@@ -542,7 +570,7 @@
                                     {{-- Departamentos --}}
                                     @foreach($userDepts as $d)
                                         <span class="inline-flex items-center gap-1 text-[10.5px] font-medium text-indigo-700 bg-indigo-50 border border-indigo-200/80 px-2 py-0.5 rounded-md" title="Departamento: {{ $d->name }}">
-                                            <svg class="w-3 h-3 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                                            <svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                                             {{ $d->name }}
                                         </span>
                                     @endforeach
@@ -550,7 +578,7 @@
                                     {{-- Cursos --}}
                                     @foreach($userCourses as $c)
                                         <span class="inline-flex items-center gap-1 text-[10.5px] font-medium text-amber-800 bg-amber-50 border border-amber-200/80 px-2 py-0.5 rounded-md" title="Curso: {{ $c->title }}">
-                                            <svg class="w-3 h-3 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"/></svg>
+                                            <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"/></svg>
                                             {{ $c->title }}
                                         </span>
                                     @endforeach
@@ -585,10 +613,10 @@
                                                 'email' => $u->email,
                                                 'role' => $u->roles->first()?->name ?? 'Professor',
                                                 'job_title' => $u->role ?? '',
-                                                'department_ids' => $userDepts->pluck('id')->toArray(),
-                                                'course_ids' => $userCourses->pluck('id')->toArray(),
-                                                'registration_number' => $u->registration_number,
-                                                'phone' => $u->phone,
+                                                'department_ids' => array_values($userDeptIds),
+                                                'course_ids' => array_values($userCourseIds),
+                                                'registration_number' => $u->registration_number ?? '',
+                                                'phone' => $u->phone ?? '',
                                                 'coordenador_ids' => $u->coordenadoresVinculados->pluck('id')->toArray(),
                                             ]) }}, '{{ route('lab.users.update', $u) }}')"
                                             class="rounded-lg bg-blue-50 p-1.5 text-blue-600 hover:bg-blue-100 hover:text-blue-800 transition shadow-2xs cursor-pointer"
@@ -738,6 +766,7 @@
                                 Nenhum departamento vinculado.
                             </div>
 
+                            <input type="hidden" name="department_ids_json" :value="JSON.stringify(editUser.department_ids)">
                             <template x-for="id in editUser.department_ids" :key="'edit-d-in-'+id">
                                 <input type="hidden" name="department_ids[]" :value="id">
                             </template>
@@ -793,6 +822,7 @@
                                 Nenhum curso vinculado.
                             </div>
 
+                            <input type="hidden" name="course_ids_json" :value="JSON.stringify(editUser.course_ids)">
                             <template x-for="id in editUser.course_ids" :key="'edit-c-in-'+id">
                                 <input type="hidden" name="course_ids[]" :value="id">
                             </template>
