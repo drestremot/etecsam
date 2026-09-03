@@ -148,6 +148,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::resource('documents',   \App\Http\Controllers\Admin\DocumentController::class)->except(['show']);
 
     // Cooperativa Escola
+    Route::post('cooperative-managers/bulk-action', [\App\Http\Controllers\Admin\CooperativeManagerController::class, 'bulkAction'])->name('cooperative-managers.bulk-action');
     Route::resource('cooperative-managers', \App\Http\Controllers\Admin\CooperativeManagerController::class)->except(['show']);
     Route::patch('cooperative-managers/{cooperative_manager}/toggle', [\App\Http\Controllers\Admin\CooperativeManagerController::class, 'toggle'])->name('cooperative-managers.toggle');
     Route::resource('cooperative-members', \App\Http\Controllers\Admin\CooperativeMemberController::class)->except(['show']);
@@ -172,6 +173,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::resource('cooperative-housing-fees', \App\Http\Controllers\Admin\CooperativeHousingFeeController::class)->except(['show']);
 
     // APM (Associação de Pais e Mestres)
+    Route::post('apm-managers/bulk-action', [\App\Http\Controllers\Admin\ApmManagerController::class, 'bulkAction'])->name('apm-managers.bulk-action');
     Route::resource('apm-managers', \App\Http\Controllers\Admin\ApmManagerController::class)->except(['show']);
     Route::patch('apm-managers/{apm_manager}/toggle', [\App\Http\Controllers\Admin\ApmManagerController::class, 'toggle'])->name('apm-managers.toggle');
     Route::resource('apm-reports', \App\Http\Controllers\Admin\ApmReportController::class)->except(['show']);

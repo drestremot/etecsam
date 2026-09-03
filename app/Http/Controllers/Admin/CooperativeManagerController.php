@@ -18,64 +18,120 @@ class CooperativeManagerController extends Controller
     public function toggle(CooperativeManager $cooperativeManager)
     {
         $cooperativeManager->update(['is_active' => !$cooperativeManager->is_active]);
-        return back()->with('success', '"' . $cooperativeManager->name . '" ' . ($cooperativeManager->is_active ? 'ativado' : 'desativado') . '.');
+        $statusStr = $cooperativeManager->is_active ? 'ativado(a)' : 'desativado(a)';
+        return back()->with('success', "Gestor(a) \"{$cooperativeManager->name}\" {$statusStr} com sucesso.");
     }
 
     public function create()
     {
-        return view('admin.cooperative-managers.form', ['cooperativeManager' => new CooperativeManager(), 'action' => 'create']);
+        return redirect()->route('admin.cooperative-managers.index');
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name'  => 'required|string|max:255',
-            'role'  => 'required|string|max:255',
-            'email' => 'nullable|email|max:255',
-            'phone' => 'nullable|string|max:30',
-            'photo' => 'nullable|image|max:4096',
+            'name'      => 'required|string|max:255',
+            'role'      => 'required|string|max:255',
+            'email'     => 'nullable|email|max:255',
+            'phone'     => 'nullable|string|max:30',
+            'photo'     => 'nullable|image|max:4096',
+            'is_active' => 'nullable',
+        ], [
+            'name.required' => 'O nome do gestor da Cooperativa é obrigatório.',
+            'role.required' => 'O cargo na Cooperativa é obrigatório.',
+            'email.email'   => 'Insira um endereço de e-mail válido.',
+            'photo.image'   => 'O arquivo enviado deve ser uma imagem válida (JPG, PNG, WebP).',
+            'photo.max'     => 'A foto não pode ultrapassar 4 MB.',
         ]);
+
+        $data['is_active'] = $request->has('is_active') ? $request->boolean('is_active') : true;
 
         if ($request->hasFile('photo')) {
             $data['photo'] = $request->file('photo')->store('cooperative-managers', 'public');
         }
 
         CooperativeManager::create($data);
-        return redirect()->route('admin.cooperative-managers.index')->with('success', 'Gestor cadastrado com sucesso!');
+
+        return redirect()->route('admin.cooperative-managers.index')->with('success', 'Gestor(a) da Cooperativa cadastrado(a) com sucesso!');
     }
 
     public function edit(CooperativeManager $cooperativeManager)
     {
-        return view('admin.cooperative-managers.form', compact('cooperativeManager') + ['action' => 'edit']);
+        return redirect()->route('admin.cooperative-managers.index');
     }
 
     public function update(Request $request, CooperativeManager $cooperativeManager)
     {
         $data = $request->validate([
-            'name'  => 'required|string|max:255',
-            'role'  => 'required|string|max:255',
-            'email' => 'nullable|email|max:255',
-            'phone' => 'nullable|string|max:30',
-            'photo' => 'nullable|image|max:4096',
+            'name'      => 'required|string|max:255',
+            'role'      => 'required|string|max:255',
+            'email'     => 'nullable|email|max:255',
+            'phone'     => 'nullable|string|max:30',
+            'photo'     => 'nullable|image|max:4096',
+            'is_active' => 'nullable',
+        ], [
+            'name.required' => 'O nome do gestor da Cooperativa é obrigatório.',
+            'role.required' => 'O cargo na Cooperativa é obrigatório.',
+            'email.email'   => 'Insira um endereço de e-mail válido.',
+            'photo.image'   => 'O arquivo enviado deve ser uma imagem válida (JPG, PNG, WebP).',
+            'photo.max'     => 'A foto não pode ultrapassar 4 MB.',
         ]);
 
+        $data['is_active'] = $request->has('is_active') ? $request->boolean('is_active') : $cooperativeManager->is_active;
+
         if ($request->hasFile('photo')) {
-            if ($cooperativeManager->photo) {
+            if ($cooperativeManager->photo && Storage::disk('public')->exists($cooperativeManager->photo)) {
                 Storage::disk('public')->delete($cooperativeManager->photo);
             }
             $data['photo'] = $request->file('photo')->store('cooperative-managers', 'public');
         }
 
         $cooperativeManager->update($data);
-        return redirect()->route('admin.cooperative-managers.index')->with('success', 'Gestor atualizado com sucesso!');
+
+        return redirect()->route('admin.cooperative-managers.index')->with('success', 'Cadastro do(a) gestor(a) da Cooperativa atualizado com sucesso!');
     }
 
     public function destroy(CooperativeManager $cooperativeManager)
     {
-        if ($cooperativeManager->photo) {
+        if ($cooperativeManager->photo && Storage::disk('public')->exists($cooperativeManager->photo)) {
             Storage::disk('public')->delete($cooperativeManager->photo);
         }
+        $name = $cooperativeManager->name;
         $cooperativeManager->delete();
-        return redirect()->route('admin.cooperative-managers.index')->with('success', 'Gestor removido!');
+
+        return redirect()->route('admin.cooperative-managers.index')->with('success', "Gestor(a) \"{$name}\" removido(a) com sucesso!");
+    }
+
+    public function bulkAction(Request $request)
+    {
+        $action = $request->input('action');
+        $ids = $request->input('ids', []);
+
+        if (empty($ids) || !is_array($ids)) {
+            return back()->with('error', 'Selecione pelo menos um gestor para executar a ação em lote.');
+        }
+
+        switch ($action) {
+            case 'activate':
+                CooperativeManager::whereIn('id', $ids)->update(['is_active' => true]);
+                return back()->with('success', count($ids) . ' gestor(es) da Cooperativa ativado(s) com sucesso!');
+
+            case 'deactivate':
+                CooperativeManager::whereIn('id', $ids)->update(['is_active' => false]);
+                return back()->with('success', count($ids) . ' gestor(es) da Cooperativa desativado(s) com sucesso!');
+
+            case 'delete':
+                $managers = CooperativeManager::whereIn('id', $ids)->get();
+                foreach ($managers as $m) {
+                    if ($m->photo && Storage::disk('public')->exists($m->photo)) {
+                        Storage::disk('public')->delete($m->photo);
+                    }
+                    $m->delete();
+                }
+                return back()->with('success', count($ids) . ' gestor(es) da Cooperativa excluído(s) com sucesso!');
+
+            default:
+                return back()->with('error', 'Ação em lote inválida.');
+        }
     }
 }
