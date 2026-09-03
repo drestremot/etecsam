@@ -188,10 +188,11 @@
                             x-transition:leave="transition ease-in duration-100"
                             x-transition:leave-start="opacity-100 translate-y-0"
                             x-transition:leave-end="opacity-0 translate-y-1"
-                            class="absolute left-0 mt-2 w-64 sm:w-72 rounded-2xl bg-white p-1.5 shadow-xl border border-gray-200/80 z-50 divide-y divide-gray-100 max-h-[85vh] overflow-y-auto"
+                            class="absolute left-0 mt-2 w-72 sm:w-80 rounded-2xl bg-white p-2 shadow-2xl border border-gray-200/80 z-50 divide-y divide-gray-100 max-h-[85vh] overflow-y-auto"
                             style="display: none;"
                         >
-                            <div class="py-0.5 space-y-0.5">
+                            {{-- Hub Principal --}}
+                            <div class="py-1 space-y-0.5">
                                 <a href="{{ route('admin.dashboard') }}" @click="activeDropdown = null" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition">
                                     <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 text-xs flex-shrink-0">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
@@ -201,7 +202,12 @@
                                         <div class="text-[10.5px] text-gray-400 font-normal truncate">Hub central administrativo</div>
                                     </div>
                                 </a>
+                            </div>
 
+                            {{-- Gestão Escolar & Docentes --}}
+                            <div class="py-1.5 space-y-0.5">
+                                <div class="px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-gray-400">Escola & Servidores</div>
+                                
                                 <a href="{{ route('lab.users.index') }}" @click="activeDropdown = null" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition">
                                     <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-100 text-blue-600 text-xs flex-shrink-0">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
@@ -209,6 +215,36 @@
                                     <div class="min-w-0 flex-1">
                                         <div class="font-semibold text-gray-900 text-xs truncate">Usuários & Colaboradores</div>
                                         <div class="text-[10.5px] text-gray-400 font-normal truncate">Acessos, perfis e equipe</div>
+                                    </div>
+                                </a>
+
+                                <a href="{{ route('admin.work-schedules.index') }}" @click="activeDropdown = null" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition">
+                                    <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-100 text-blue-600 text-xs flex-shrink-0">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                    </span>
+                                    <div class="min-w-0 flex-1">
+                                        <div class="font-semibold text-gray-900 text-xs truncate">Grade de Horários</div>
+                                        <div class="text-[10.5px] text-gray-400 font-normal truncate">Jornada e aulas dos docentes</div>
+                                    </div>
+                                </a>
+
+                                <a href="{{ route('admin.timeclock.index') }}" @click="activeDropdown = null" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-gray-700 hover:bg-teal-50 hover:text-teal-700 transition">
+                                    <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-teal-100 text-teal-600 text-xs flex-shrink-0">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    </span>
+                                    <div class="min-w-0 flex-1">
+                                        <div class="font-semibold text-gray-900 text-xs truncate">Radar de Ponto & Espelho</div>
+                                        <div class="text-[10.5px] text-gray-400 font-normal truncate">Auditoria facial e frequência</div>
+                                    </div>
+                                </a>
+
+                                <a href="{{ route('admin.courses.index') }}" @click="activeDropdown = null" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-gray-700 hover:bg-amber-50 hover:text-amber-700 transition">
+                                    <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-amber-100 text-amber-600 text-xs flex-shrink-0">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
+                                    </span>
+                                    <div class="min-w-0 flex-1">
+                                        <div class="font-semibold text-gray-900 text-xs truncate">Cursos & Departamentos</div>
+                                        <div class="text-[10.5px] text-gray-400 font-normal truncate">Grade acadêmica e setores</div>
                                     </div>
                                 </a>
 
@@ -231,36 +267,107 @@
                                         <div class="text-[10.5px] text-gray-400 font-normal truncate">Equipamentos e insumos</div>
                                     </div>
                                 </a>
+                            </div>
 
-                                <a href="{{ route('admin.timeclock.index') }}" @click="activeDropdown = null" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-gray-700 hover:bg-teal-50 hover:text-teal-700 transition">
-                                    <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-teal-100 text-teal-600 text-xs flex-shrink-0">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            {{-- APM - Associação de Pais e Mestres --}}
+                            <div class="py-1.5 space-y-0.5">
+                                <div class="px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-indigo-600 flex items-center justify-between">
+                                    <span>APM (Pais e Mestres)</span>
+                                    <a href="{{ route('admin.apm-dashboard') }}" class="text-[9.5px] font-bold text-indigo-500 hover:text-indigo-800 lowercase">financeiro &rarr;</a>
+                                </div>
+
+                                <a href="{{ route('admin.apm-managers.index') }}" @click="activeDropdown = null" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition">
+                                    <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 text-xs flex-shrink-0">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                                     </span>
                                     <div class="min-w-0 flex-1">
-                                        <div class="font-semibold text-gray-900 text-xs truncate">Radar de Ponto & Espelho</div>
-                                        <div class="text-[10.5px] text-gray-400 font-normal truncate">Auditoria facial e frequência</div>
+                                        <div class="font-semibold text-gray-900 text-xs truncate">Gestores & Diretoria APM</div>
+                                        <div class="text-[10.5px] text-gray-400 font-normal truncate">Cargos e diretoria executiva</div>
                                     </div>
                                 </a>
 
-                                <a href="{{ route('admin.work-schedules.index') }}" @click="activeDropdown = null" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition">
-                                    <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-100 text-blue-600 text-xs flex-shrink-0">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                <a href="{{ route('admin.apm-dashboard') }}" @click="activeDropdown = null" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition">
+                                    <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600 text-xs flex-shrink-0">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                     </span>
                                     <div class="min-w-0 flex-1">
-                                        <div class="font-semibold text-gray-900 text-xs truncate">Grade de Horários</div>
-                                        <div class="text-[10.5px] text-gray-400 font-normal truncate">Jornada dos docentes</div>
+                                        <div class="font-semibold text-gray-900 text-xs truncate">Financeiro & Prestação APM</div>
+                                        <div class="text-[10.5px] text-gray-400 font-normal truncate">Entradas, saídas e balancete</div>
                                     </div>
                                 </a>
 
-                                <a href="{{ route('admin.courses.index') }}" @click="activeDropdown = null" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-gray-700 hover:bg-amber-50 hover:text-amber-700 transition">
-                                    <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-amber-100 text-amber-600 text-xs flex-shrink-0">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
+                                <a href="{{ route('admin.apm-reports.index') }}" @click="activeDropdown = null" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition">
+                                    <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-purple-100 text-purple-600 text-xs flex-shrink-0">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                     </span>
                                     <div class="min-w-0 flex-1">
-                                        <div class="font-semibold text-gray-900 text-xs truncate">Cursos & Departamentos</div>
-                                        <div class="text-[10.5px] text-gray-400 font-normal truncate">Grade acadêmica e setores</div>
+                                        <div class="font-semibold text-gray-900 text-xs truncate">Documentos & Estatutos APM</div>
+                                        <div class="text-[10.5px] text-gray-400 font-normal truncate">Atas de reunião e prestações</div>
                                     </div>
                                 </a>
+                            </div>
+
+                            {{-- Cooperativa Escola --}}
+                            <div class="py-1.5 space-y-0.5">
+                                <div class="px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-700 flex items-center justify-between">
+                                    <span>Cooperativa Escola</span>
+                                    <a href="{{ route('admin.cooperative-dashboard') }}" class="text-[9.5px] font-bold text-amber-600 hover:text-amber-800 lowercase">financeiro &rarr;</a>
+                                </div>
+
+                                <a href="{{ route('admin.cooperative-managers.index') }}" @click="activeDropdown = null" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-gray-700 hover:bg-amber-50 hover:text-amber-700 transition">
+                                    <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-amber-100 text-amber-700 text-xs flex-shrink-0">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                    </span>
+                                    <div class="min-w-0 flex-1">
+                                        <div class="font-semibold text-gray-900 text-xs truncate">Gestores da Cooperativa</div>
+                                        <div class="text-[10.5px] text-gray-400 font-normal truncate">Diretoria e conselho fiscal</div>
+                                    </div>
+                                </a>
+
+                                <a href="{{ route('admin.cooperative-members.index') }}" @click="activeDropdown = null" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 transition">
+                                    <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-100 text-emerald-600 text-xs flex-shrink-0">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                                    </span>
+                                    <div class="min-w-0 flex-1">
+                                        <div class="font-semibold text-gray-900 text-xs truncate">Cooperados & Mensalidades</div>
+                                        <div class="text-[10.5px] text-gray-400 font-normal truncate">Quadro de sócios e taxas</div>
+                                    </div>
+                                </a>
+
+                                <a href="{{ route('admin.cooperative-dashboard') }}" @click="activeDropdown = null" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-gray-700 hover:bg-amber-50 hover:text-amber-700 transition">
+                                    <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-amber-100 text-amber-700 text-xs flex-shrink-0">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                                    </span>
+                                    <div class="min-w-0 flex-1">
+                                        <div class="font-semibold text-gray-900 text-xs truncate">Financeiro & Vendas da Fazenda</div>
+                                        <div class="text-[10.5px] text-gray-400 font-normal truncate">Vendas agropecuárias e despesas</div>
+                                    </div>
+                                </a>
+
+                                <a href="{{ route('admin.cooperative-housing-tenants.index') }}" @click="activeDropdown = null" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition">
+                                    <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-indigo-100 text-indigo-700 text-xs flex-shrink-0">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                                    </span>
+                                    <div class="min-w-0 flex-1">
+                                        <div class="font-semibold text-gray-900 text-xs truncate">Moradia Estudantil (Alojamento)</div>
+                                        <div class="text-[10.5px] text-gray-400 font-normal truncate">Residentes e mensalidades</div>
+                                    </div>
+                                </a>
+
+                                <a href="{{ route('admin.cooperative-reports.index') }}" @click="activeDropdown = null" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition">
+                                    <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-purple-100 text-purple-600 text-xs flex-shrink-0">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                    </span>
+                                    <div class="min-w-0 flex-1">
+                                        <div class="font-semibold text-gray-900 text-xs truncate">Documentos & Estatutos</div>
+                                        <div class="text-[10.5px] text-gray-400 font-normal truncate">Atas e prestações de contas</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            {{-- Governança & Segurança --}}
+                            <div class="py-1.5 space-y-0.5">
+                                <div class="px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-gray-400">Governança & Acessos</div>
 
                                 <a href="{{ route('admin.permissions.index') }}" @click="activeDropdown = null" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl text-xs font-medium text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition">
                                     <span class="flex h-6 w-6 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 text-xs flex-shrink-0">
@@ -454,6 +561,65 @@
                     <span>{{ __('Cursos & Departamentos') }}</span>
                 </span>
             </x-responsive-nav-link>
+            <div class="pt-2 pb-1 text-xs font-semibold uppercase tracking-wider text-indigo-600 px-3 flex items-center justify-between">
+                <span>APM (Pais e Mestres)</span>
+                <a href="{{ route('admin.apm-dashboard') }}" class="text-[10px] font-bold text-indigo-500 lowercase">financeiro &rarr;</a>
+            </div>
+            <x-responsive-nav-link :href="route('admin.apm-managers.index')" :active="request()->routeIs('admin.apm-managers.*')">
+                <span class="inline-flex items-center gap-2">
+                    <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    <span>Gestores da APM</span>
+                </span>
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.apm-dashboard')" :active="request()->routeIs('admin.apm-dashboard') || request()->routeIs('admin.apm-incomes.*') || request()->routeIs('admin.apm-expenses.*')">
+                <span class="inline-flex items-center gap-2">
+                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span>Financeiro & Balancete APM</span>
+                </span>
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.apm-reports.index')" :active="request()->routeIs('admin.apm-reports.*')">
+                <span class="inline-flex items-center gap-2">
+                    <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <span>Documentos & Atas APM</span>
+                </span>
+            </x-responsive-nav-link>
+
+            <div class="pt-2 pb-1 text-xs font-semibold uppercase tracking-wider text-amber-700 px-3 flex items-center justify-between">
+                <span>Cooperativa Escola</span>
+                <a href="{{ route('admin.cooperative-dashboard') }}" class="text-[10px] font-bold text-amber-600 lowercase">financeiro &rarr;</a>
+            </div>
+            <x-responsive-nav-link :href="route('admin.cooperative-managers.index')" :active="request()->routeIs('admin.cooperative-managers.*')">
+                <span class="inline-flex items-center gap-2">
+                    <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    <span>Gestores da Cooperativa</span>
+                </span>
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.cooperative-members.index')" :active="request()->routeIs('admin.cooperative-members.*')">
+                <span class="inline-flex items-center gap-2">
+                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    <span>Cooperados & Mensalidades</span>
+                </span>
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.cooperative-dashboard')" :active="request()->routeIs('admin.cooperative-dashboard') || request()->routeIs('admin.cooperative-sales.*') || request()->routeIs('admin.cooperative-expenses.*')">
+                <span class="inline-flex items-center gap-2">
+                    <svg class="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    <span>Financeiro & Vendas da Fazenda</span>
+                </span>
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.cooperative-housing-tenants.index')" :active="request()->routeIs('admin.cooperative-housing-tenants.*')">
+                <span class="inline-flex items-center gap-2">
+                    <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                    <span>Moradia Estudantil (Alojamento)</span>
+                </span>
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.cooperative-reports.index')" :active="request()->routeIs('admin.cooperative-reports.*')">
+                <span class="inline-flex items-center gap-2">
+                    <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <span>Documentos da Cooperativa</span>
+                </span>
+            </x-responsive-nav-link>
+
+            <div class="pt-2 pb-1 text-xs font-semibold uppercase tracking-wider text-gray-400 px-3">Governança & Acessos</div>
             <x-responsive-nav-link :href="route('admin.permissions.index')" :active="request()->routeIs('admin.permissions.*')">
                 <span class="inline-flex items-center gap-2">
                     <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
