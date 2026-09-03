@@ -88,8 +88,8 @@ window.adminTable = function() {
 
             const vCbs = this.visibleBulkCheckboxes;
             if (vCbs.length === 0) {
-                master.checked = false;
                 master.indeterminate = false;
+                master.checked = false;
                 return;
             }
 
@@ -97,11 +97,11 @@ window.adminTable = function() {
             const count = vCbs.filter(cb => selSet.has(String(cb.value))).length;
 
             if (count === 0) {
+                master.indeterminate = false;
                 master.checked = false;
-                master.indeterminate = false;
             } else if (count === vCbs.length) {
-                master.checked = true;
                 master.indeterminate = false;
+                master.checked = true;
             } else {
                 master.checked = false;
                 master.indeterminate = true;
@@ -112,41 +112,46 @@ window.adminTable = function() {
             const selSet = new Set(this.selected.map(String));
             this.$el.querySelectorAll('tbody input[type="checkbox"][data-bulk-item]').forEach(cb => {
                 const shouldBeChecked = selSet.has(String(cb.value));
-                if (cb.checked !== shouldBeChecked) {
-                    cb.checked = shouldBeChecked;
-                }
+                cb.checked = shouldBeChecked;
             });
             this.syncMasterCheckbox();
         },
 
-        toggleSelectAll(e) {
-            const master = (e && e.target) ? e.target : this.masterCheckbox;
+        toggleSelectAll() {
+            const master = this.masterCheckbox;
             const vCbs = this.visibleBulkCheckboxes;
             if (vCbs.length === 0) {
                 if (master) {
-                    master.checked = false;
                     master.indeterminate = false;
+                    master.checked = false;
                 }
                 return;
             }
 
-            let shouldCheckAll;
-            if (master && typeof master.checked === 'boolean') {
-                shouldCheckAll = master.checked;
-            } else {
-                const selSet = new Set(this.selected.map(String));
-                const count = vCbs.filter(cb => selSet.has(String(cb.value))).length;
-                shouldCheckAll = count < vCbs.length;
-            }
+            const selSet = new Set(this.selected.map(String));
+            const count = vCbs.filter(cb => selSet.has(String(cb.value))).length;
+            const isAllSelected = (count === vCbs.length);
 
             const visibleValues = vCbs.map(cb => String(cb.value));
 
-            if (shouldCheckAll) {
-                const combined = new Set([...this.selected.map(String), ...visibleValues]);
-                this.selected = Array.from(combined);
-            } else {
+            if (isAllSelected) {
+                // Se todas já estavam selecionadas -> desmarcar todas
                 const visibleSet = new Set(visibleValues);
                 this.selected = this.selected.map(String).filter(id => !visibleSet.has(id));
+                vCbs.forEach(cb => { cb.checked = false; });
+                if (master) {
+                    master.indeterminate = false;
+                    master.checked = false;
+                }
+            } else {
+                // Se nenhuma ou apenas parte estava selecionada -> marcar todas!
+                const combined = new Set([...this.selected.map(String), ...visibleValues]);
+                this.selected = Array.from(combined);
+                vCbs.forEach(cb => { cb.checked = true; });
+                if (master) {
+                    master.indeterminate = false;
+                    master.checked = true;
+                }
             }
 
             this.syncCheckboxes();
