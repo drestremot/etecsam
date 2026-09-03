@@ -20,12 +20,13 @@ class CooperativeMemberController extends Controller
     public function toggle(CooperativeMember $cooperativeMember)
     {
         $cooperativeMember->update(['is_active' => !$cooperativeMember->is_active]);
-        return back()->with('success', '"' . $cooperativeMember->name . '" ' . ($cooperativeMember->is_active ? 'ativado' : 'desativado') . '.');
+        $statusStr = $cooperativeMember->is_active ? 'ativado(a)' : 'desativado(a)';
+        return back()->with('success', "Cooperado(a) \"{$cooperativeMember->name}\" {$statusStr} com sucesso.");
     }
 
     public function create()
     {
-        return view('admin.cooperative-members.form', ['cooperativeMember' => new CooperativeMember(), 'action' => 'create']);
+        return redirect()->route('admin.cooperative-members.index');
     }
 
     public function store(Request $request)
@@ -40,19 +41,27 @@ class CooperativeMemberController extends Controller
             'guardian_phone'       => 'nullable|string|max:30',
             'joined_at'            => 'nullable|date',
             'photo'                => 'nullable|image|max:4096',
+            'is_active'            => 'nullable',
+        ], [
+            'name.required' => 'O nome do cooperado é obrigatório.',
+            'email.email'   => 'Insira um e-mail válido.',
+            'photo.image'   => 'O arquivo de foto deve ser uma imagem válida.',
+            'photo.max'     => 'A foto não pode ultrapassar 4 MB.',
         ]);
+
+        $data['is_active'] = $request->has('is_active') ? $request->boolean('is_active') : true;
 
         if ($request->hasFile('photo')) {
             $data['photo'] = $request->file('photo')->store('cooperative-members', 'public');
         }
 
         CooperativeMember::create($data);
-        return redirect()->route('admin.cooperative-members.index')->with('success', 'Cooperado cadastrado com sucesso!');
+        return redirect()->route('admin.cooperative-members.index')->with('success', 'Cooperado(a) cadastrado(a) com sucesso!');
     }
 
     public function edit(CooperativeMember $cooperativeMember)
     {
-        return view('admin.cooperative-members.form', compact('cooperativeMember') + ['action' => 'edit']);
+        return redirect()->route('admin.cooperative-members.index');
     }
 
     public function update(Request $request, CooperativeMember $cooperativeMember)
@@ -67,26 +76,35 @@ class CooperativeMemberController extends Controller
             'guardian_phone'       => 'nullable|string|max:30',
             'joined_at'            => 'nullable|date',
             'photo'                => 'nullable|image|max:4096',
+            'is_active'            => 'nullable',
+        ], [
+            'name.required' => 'O nome do cooperado é obrigatório.',
+            'email.email'   => 'Insira um e-mail válido.',
+            'photo.image'   => 'O arquivo de foto deve ser uma imagem válida.',
+            'photo.max'     => 'A foto não pode ultrapassar 4 MB.',
         ]);
 
+        $data['is_active'] = $request->has('is_active') ? $request->boolean('is_active') : $cooperativeMember->is_active;
+
         if ($request->hasFile('photo')) {
-            if ($cooperativeMember->photo) {
+            if ($cooperativeMember->photo && Storage::disk('public')->exists($cooperativeMember->photo)) {
                 Storage::disk('public')->delete($cooperativeMember->photo);
             }
             $data['photo'] = $request->file('photo')->store('cooperative-members', 'public');
         }
 
         $cooperativeMember->update($data);
-        return redirect()->route('admin.cooperative-members.index')->with('success', 'Cooperado atualizado com sucesso!');
+        return redirect()->route('admin.cooperative-members.index')->with('success', 'Cadastro do(a) cooperado(a) atualizado com sucesso!');
     }
 
     public function destroy(CooperativeMember $cooperativeMember)
     {
-        if ($cooperativeMember->photo) {
+        if ($cooperativeMember->photo && Storage::disk('public')->exists($cooperativeMember->photo)) {
             Storage::disk('public')->delete($cooperativeMember->photo);
         }
+        $name = $cooperativeMember->name;
         $cooperativeMember->delete();
-        return redirect()->route('admin.cooperative-members.index')->with('success', 'Cooperado removido!');
+        return redirect()->route('admin.cooperative-members.index')->with('success', "Cooperado(a) \"{$name}\" removido(a) com sucesso!");
     }
 
     public function dues(CooperativeMember $cooperativeMember)
@@ -111,6 +129,39 @@ class CooperativeMemberController extends Controller
         $due->paid_at = $due->paid ? now() : null;
         $due->save();
 
-        return back()->with('success', 'Pagamento ' . ($due->paid ? 'marcado como pago' : 'marcado como pendente') . '.');
+        return back()->with('success', 'Mensalidade ' . ($due->paid ? 'marcada como paga!' : 'marcada como pendente.'));
+    }
+
+    public function bulkAction(Request $request)
+    {
+        $action = $request->input('action');
+        $ids = $request->input('ids', []);
+
+        if (empty($ids) || !is_array($ids)) {
+            return back()->with('error', 'Selecione pelo menos um cooperado para a ação em lote.');
+        }
+
+        switch ($action) {
+            case 'activate':
+                CooperativeMember::whereIn('id', $ids)->update(['is_active' => true]);
+                return back()->with('success', count($ids) . ' cooperado(s) ativado(s) com sucesso!');
+
+            case 'deactivate':
+                CooperativeMember::whereIn('id', $ids)->update(['is_active' => false]);
+                return back()->with('success', count($ids) . ' cooperado(s) desativado(s) com sucesso!');
+
+            case 'delete':
+                $members = CooperativeMember::whereIn('id', $ids)->get();
+                foreach ($members as $m) {
+                    if ($m->photo && Storage::disk('public')->exists($m->photo)) {
+                        Storage::disk('public')->delete($m->photo);
+                    }
+                    $m->delete();
+                }
+                return back()->with('success', count($ids) . ' cooperado(s) excluído(s) com sucesso!');
+
+            default:
+                return back()->with('error', 'Ação em lote inválida.');
+        }
     }
 }

@@ -151,21 +151,29 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('cooperative-managers/bulk-action', [\App\Http\Controllers\Admin\CooperativeManagerController::class, 'bulkAction'])->name('cooperative-managers.bulk-action');
     Route::resource('cooperative-managers', \App\Http\Controllers\Admin\CooperativeManagerController::class)->except(['show']);
     Route::patch('cooperative-managers/{cooperative_manager}/toggle', [\App\Http\Controllers\Admin\CooperativeManagerController::class, 'toggle'])->name('cooperative-managers.toggle');
+
+    Route::post('cooperative-members/bulk-action', [\App\Http\Controllers\Admin\CooperativeMemberController::class, 'bulkAction'])->name('cooperative-members.bulk-action');
     Route::resource('cooperative-members', \App\Http\Controllers\Admin\CooperativeMemberController::class)->except(['show']);
     Route::patch('cooperative-members/{cooperative_member}/toggle', [\App\Http\Controllers\Admin\CooperativeMemberController::class, 'toggle'])->name('cooperative-members.toggle');
     Route::get('cooperative-members/{cooperative_member}/dues', [\App\Http\Controllers\Admin\CooperativeMemberController::class, 'dues'])->name('cooperative-members.dues');
     Route::patch('cooperative-members/{cooperative_member}/dues/{cooperative_monthly_fee}/toggle', [\App\Http\Controllers\Admin\CooperativeMemberController::class, 'toggleDue'])->name('cooperative-members.dues.toggle');
+
+    Route::post('cooperative-reports/bulk-action', [\App\Http\Controllers\Admin\CooperativeReportController::class, 'bulkAction'])->name('cooperative-reports.bulk-action');
     Route::resource('cooperative-reports', \App\Http\Controllers\Admin\CooperativeReportController::class)->except(['show']);
     Route::resource('cooperative-monthly-fees', \App\Http\Controllers\Admin\CooperativeMonthlyFeeController::class)->except(['show']);
 
     // Financeiro da Cooperativa
     Route::get('cooperative-dashboard', [\App\Http\Controllers\Admin\CooperativeDashboardController::class, 'index'])->name('cooperative-dashboard');
+    Route::post('cooperative-expenses/bulk-action', [\App\Http\Controllers\Admin\CooperativeExpenseController::class, 'bulkAction'])->name('cooperative-expenses.bulk-action');
     Route::resource('cooperative-expenses', \App\Http\Controllers\Admin\CooperativeExpenseController::class)->except(['show']);
     Route::patch('cooperative-expenses/{cooperative_expense}/mark-paid', [\App\Http\Controllers\Admin\CooperativeExpenseController::class, 'markPaid'])->name('cooperative-expenses.mark-paid');
+
+    Route::post('cooperative-sales/bulk-action', [\App\Http\Controllers\Admin\CooperativeSaleController::class, 'bulkAction'])->name('cooperative-sales.bulk-action');
     Route::resource('cooperative-sales', \App\Http\Controllers\Admin\CooperativeSaleController::class)->except(['show']);
     Route::patch('cooperative-sales/{cooperative_sale}/mark-received', [\App\Http\Controllers\Admin\CooperativeSaleController::class, 'markReceived'])->name('cooperative-sales.mark-received');
 
     // Moradia Estudantil
+    Route::post('cooperative-housing-tenants/bulk-action', [\App\Http\Controllers\Admin\CooperativeHousingTenantController::class, 'bulkAction'])->name('cooperative-housing-tenants.bulk-action');
     Route::resource('cooperative-housing-tenants', \App\Http\Controllers\Admin\CooperativeHousingTenantController::class)->except(['show']);
     Route::patch('cooperative-housing-tenants/{cooperative_housing_tenant}/toggle', [\App\Http\Controllers\Admin\CooperativeHousingTenantController::class, 'toggle'])->name('cooperative-housing-tenants.toggle');
     Route::get('cooperative-housing-tenants/{cooperative_housing_tenant}/dues', [\App\Http\Controllers\Admin\CooperativeHousingTenantController::class, 'dues'])->name('cooperative-housing-tenants.dues');
@@ -176,12 +184,17 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('apm-managers/bulk-action', [\App\Http\Controllers\Admin\ApmManagerController::class, 'bulkAction'])->name('apm-managers.bulk-action');
     Route::resource('apm-managers', \App\Http\Controllers\Admin\ApmManagerController::class)->except(['show']);
     Route::patch('apm-managers/{apm_manager}/toggle', [\App\Http\Controllers\Admin\ApmManagerController::class, 'toggle'])->name('apm-managers.toggle');
+
+    Route::post('apm-reports/bulk-action', [\App\Http\Controllers\Admin\ApmReportController::class, 'bulkAction'])->name('apm-reports.bulk-action');
     Route::resource('apm-reports', \App\Http\Controllers\Admin\ApmReportController::class)->except(['show']);
 
     // Financeiro da APM
     Route::get('apm-dashboard', [\App\Http\Controllers\Admin\ApmDashboardController::class, 'index'])->name('apm-dashboard');
+    Route::post('apm-expenses/bulk-action', [\App\Http\Controllers\Admin\ApmExpenseController::class, 'bulkAction'])->name('apm-expenses.bulk-action');
     Route::resource('apm-expenses', \App\Http\Controllers\Admin\ApmExpenseController::class)->except(['show']);
     Route::patch('apm-expenses/{apm_expense}/mark-paid', [\App\Http\Controllers\Admin\ApmExpenseController::class, 'markPaid'])->name('apm-expenses.mark-paid');
+
+    Route::post('apm-incomes/bulk-action', [\App\Http\Controllers\Admin\ApmIncomeController::class, 'bulkAction'])->name('apm-incomes.bulk-action');
     Route::resource('apm-incomes', \App\Http\Controllers\Admin\ApmIncomeController::class)->except(['show']);
     Route::patch('apm-incomes/{apm_income}/mark-received', [\App\Http\Controllers\Admin\ApmIncomeController::class, 'markReceived'])->name('apm-incomes.mark-received');
 

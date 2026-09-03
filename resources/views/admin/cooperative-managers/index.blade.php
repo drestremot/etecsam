@@ -254,7 +254,7 @@
         {{-- Filtros, Busca & Seleção em Lote --}}
         <div class="rounded-2xl border border-gray-200 bg-white p-4 sm:p-5 shadow-xs space-y-4">
             <div class="flex flex-wrap items-center justify-between gap-3">
-                
+
                 {{-- Campo de Busca --}}
                 <div class="relative flex-1 min-w-[240px] max-w-md">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">

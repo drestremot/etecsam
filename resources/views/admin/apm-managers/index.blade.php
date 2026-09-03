@@ -139,7 +139,7 @@
                 <button onclick="this.parentElement.remove()" class="text-white hover:text-gray-200 text-base font-semibold">&times;</button>
             </div>
         @endif
-        @if($errors->any())
+        @if(isset($errors) && $errors->any())
             <div class="rounded-xl bg-rose-600 text-white px-4 py-3 text-xs font-semibold shadow-sm space-y-1">
                 <div class="flex items-center justify-between font-bold">
                     <span class="flex items-center gap-1.5">
@@ -273,7 +273,7 @@
         {{-- Filtros, Busca & Seleção em Lote (Padrão de Usuários) --}}
         <div class="rounded-2xl border border-gray-200 bg-white p-4 sm:p-5 shadow-xs space-y-4">
             <div class="flex flex-wrap items-center justify-between gap-3">
-                
+
                 {{-- Campo de Busca --}}
                 <div class="relative flex-1 min-w-[240px] max-w-md">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
