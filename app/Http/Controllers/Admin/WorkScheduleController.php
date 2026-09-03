@@ -55,8 +55,80 @@ class WorkScheduleController extends Controller
         ]);
     }
 
+    public function userSchedules(User $user)
+    {
+        $schedules = WorkSchedule::where('user_id', $user->id)
+            ->with('unit:id,name,city')
+            ->orderBy('day_of_week')
+            ->orderBy('start_time')
+            ->get();
+
+        return response()->json($schedules);
+    }
+
     public function store(Request $request)
     {
+        // Se vier com array/JSON da grade interativa
+        if ($request->filled('schedules_json') || $request->has('items')) {
+            $request->validate([
+                'user_id' => 'required|exists:users,id',
+            ]);
+
+            $items = $request->filled('schedules_json')
+                ? json_decode($request->input('schedules_json'), true)
+                : $request->input('items', []);
+
+            if (empty($items) || !is_array($items)) {
+                return back()->withInput()->withErrors(['items' => 'Adicione pelo menos um horário na grade antes de salvar.']);
+            }
+
+            $userId = (int) $request->user_id;
+            $savedCount = 0;
+
+            \DB::transaction(function () use ($userId, $items, $request, &$savedCount) {
+                // Se solicitado substituir grade anterior completa
+                if ($request->boolean('replace_existing')) {
+                    WorkSchedule::where('user_id', $userId)->delete();
+                }
+
+                foreach ($items as $item) {
+                    $day = (int) ($item['day_of_week'] ?? 1);
+                    $unitId = (int) ($item['unit_id'] ?? null);
+                    if (!$unitId) continue;
+
+                    $startTime = substr($item['start_time'] ?? '07:10', 0, 5) . ':00';
+                    $endTime = substr($item['end_time'] ?? '12:35', 0, 5) . ':00';
+                    $shiftName = !empty($item['shift_name']) ? trim($item['shift_name']) : null;
+                    $breakStart = !empty($item['break_start_time']) ? substr($item['break_start_time'], 0, 5) . ':00' : null;
+                    $breakEnd = !empty($item['break_end_time']) ? substr($item['break_end_time'], 0, 5) . ':00' : null;
+                    $tolerance = isset($item['tolerance_minutes']) ? (int) $item['tolerance_minutes'] : 15;
+
+                    WorkSchedule::updateOrCreate(
+                        [
+                            'user_id'     => $userId,
+                            'unit_id'     => $unitId,
+                            'day_of_week' => $day,
+                            'start_time'  => $startTime,
+                        ],
+                        [
+                            'end_time'          => $endTime,
+                            'shift_name'        => $shiftName,
+                            'break_start_time'  => $breakStart,
+                            'break_end_time'    => $breakEnd,
+                            'tolerance_minutes' => $tolerance,
+                            'is_active'         => true,
+                        ]
+                    );
+
+                    $savedCount++;
+                }
+            });
+
+            return redirect()->route('admin.work-schedules.index')
+                ->with('success', "Grade de horários do professor cadastrada com sucesso! ({$savedCount} horário(s) configurado(s)).");
+        }
+
+        // Modo formulário simples (legado)
         $request->validate([
             'user_id'           => 'required|exists:users,id',
             'unit_id'           => 'required|exists:units,id',

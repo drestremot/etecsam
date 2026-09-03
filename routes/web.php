@@ -212,6 +212,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('usuarios/{user}/permissoes/toggle', [\App\Http\Controllers\Admin\RolePermissionController::class, 'toggleUserPermission'])->name('users.permissions.toggle');
 
     // Gestão de Grade de Horários dos Professores & Colaboradores
+    Route::get('work-schedules/user/{user}', [\App\Http\Controllers\Admin\WorkScheduleController::class, 'userSchedules'])->name('work-schedules.user-schedules');
     Route::post('work-schedules/bulk-action', [\App\Http\Controllers\Admin\WorkScheduleController::class, 'bulkAction'])->name('work-schedules.bulk-action');
     Route::resource('work-schedules', \App\Http\Controllers\Admin\WorkScheduleController::class)->except(['show']);
 
