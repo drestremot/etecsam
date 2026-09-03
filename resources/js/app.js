@@ -111,13 +111,16 @@ window.adminTable = function() {
         syncCheckboxes() {
             const selSet = new Set(this.selected.map(String));
             this.$el.querySelectorAll('tbody input[type="checkbox"][data-bulk-item]').forEach(cb => {
-                cb.checked = selSet.has(String(cb.value));
+                const shouldBeChecked = selSet.has(String(cb.value));
+                if (cb.checked !== shouldBeChecked) {
+                    cb.checked = shouldBeChecked;
+                }
             });
             this.syncMasterCheckbox();
         },
 
-        toggleSelectAll() {
-            const master = this.masterCheckbox;
+        toggleSelectAll(e) {
+            const master = (e && e.target) ? e.target : this.masterCheckbox;
             const vCbs = this.visibleBulkCheckboxes;
             if (vCbs.length === 0) {
                 if (master) {
@@ -127,26 +130,25 @@ window.adminTable = function() {
                 return;
             }
 
-            const selSet = new Set(this.selected.map(String));
-            const count = vCbs.filter(cb => selSet.has(String(cb.value))).length;
-            const isAllSelected = count === vCbs.length;
+            let shouldCheckAll;
+            if (master && typeof master.checked === 'boolean') {
+                shouldCheckAll = master.checked;
+            } else {
+                const selSet = new Set(this.selected.map(String));
+                const count = vCbs.filter(cb => selSet.has(String(cb.value))).length;
+                shouldCheckAll = count < vCbs.length;
+            }
 
             const visibleValues = vCbs.map(cb => String(cb.value));
 
-            if (isAllSelected) {
-                // Se todos os visíveis já estão selecionados -> desmarca todos os visíveis
-                const visibleSet = new Set(visibleValues);
-                this.selected = this.selected.map(String).filter(id => !visibleSet.has(id));
-            } else {
-                // Se nenhum ou apenas parte está selecionada -> marca todos os visíveis
+            if (shouldCheckAll) {
                 const combined = new Set([...this.selected.map(String), ...visibleValues]);
                 this.selected = Array.from(combined);
+            } else {
+                const visibleSet = new Set(visibleValues);
+                this.selected = this.selected.map(String).filter(id => !visibleSet.has(id));
             }
 
-            // Sincroniza imediatamente o DOM
-            this.$nextTick(() => {
-                this.syncCheckboxes();
-            });
             this.syncCheckboxes();
         },
 
