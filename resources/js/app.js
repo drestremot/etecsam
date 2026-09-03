@@ -4,7 +4,7 @@ import Alpine from 'alpinejs';
 
 window.Alpine = Alpine;
 
-// Componente de tabela admin (busca + ordenação + seleção em massa + paginação 10/25/50/todas)
+// Componente de tabela admin (busca + ordenação + seleção em massa + paginação 10/25/50/todas + estado indeterminate)
 window.adminTable = function() {
     return {
         q: '',
@@ -13,7 +13,6 @@ window.adminTable = function() {
         rows: [],
         filteredRows: [],
         selected: [],
-        allSelected: false,
         perPage: '25',
         page: 1,
 
@@ -22,6 +21,16 @@ window.adminTable = function() {
             this.filteredRows = [...this.rows];
             this.applySort();
             this.paginate();
+
+            // Sincroniza o master checkbox e os itens sempre que 'selected' mudar
+            this.$watch('selected', () => {
+                this.syncCheckboxes();
+            });
+
+            // Sincroniza na inicialização
+            this.$nextTick(() => {
+                this.syncCheckboxes();
+            });
         },
 
         get totalItems() {
@@ -47,12 +56,98 @@ window.adminTable = function() {
             return Math.min(this.page * pp, this.filteredRows.length);
         },
 
+        get masterCheckbox() {
+            if (!this.$el) return null;
+            return this.$el.querySelector('thead input[type="checkbox"][data-bulk-master]') ||
+                   this.$el.querySelector('thead input[type="checkbox"]');
+        },
+
+        get visibleBulkCheckboxes() {
+            if (!this.$el) return [];
+            return [...this.$el.querySelectorAll('tbody tr:not(.hidden) input[type="checkbox"][data-bulk-item]')];
+        },
+
         get allSelected() {
-            if (!this.$el) return false;
-            const visibleCheckboxes = [...this.$el.querySelectorAll('tbody tr:not(.hidden) input[type="checkbox"][data-bulk-item]')];
-            if (visibleCheckboxes.length === 0) return false;
+            const vCbs = this.visibleBulkCheckboxes;
+            if (vCbs.length === 0) return false;
             const selSet = new Set(this.selected.map(String));
-            return visibleCheckboxes.every(cb => selSet.has(String(cb.value)));
+            return vCbs.every(cb => selSet.has(String(cb.value)));
+        },
+
+        get isIndeterminate() {
+            const vCbs = this.visibleBulkCheckboxes;
+            if (vCbs.length === 0) return false;
+            const selSet = new Set(this.selected.map(String));
+            const count = vCbs.filter(cb => selSet.has(String(cb.value))).length;
+            return count > 0 && count < vCbs.length;
+        },
+
+        syncMasterCheckbox() {
+            const master = this.masterCheckbox;
+            if (!master) return;
+
+            const vCbs = this.visibleBulkCheckboxes;
+            if (vCbs.length === 0) {
+                master.checked = false;
+                master.indeterminate = false;
+                return;
+            }
+
+            const selSet = new Set(this.selected.map(String));
+            const count = vCbs.filter(cb => selSet.has(String(cb.value))).length;
+
+            if (count === 0) {
+                master.checked = false;
+                master.indeterminate = false;
+            } else if (count === vCbs.length) {
+                master.checked = true;
+                master.indeterminate = false;
+            } else {
+                master.checked = false;
+                master.indeterminate = true;
+            }
+        },
+
+        syncCheckboxes() {
+            const selSet = new Set(this.selected.map(String));
+            this.$el.querySelectorAll('tbody input[type="checkbox"][data-bulk-item]').forEach(cb => {
+                cb.checked = selSet.has(String(cb.value));
+            });
+            this.syncMasterCheckbox();
+        },
+
+        toggleSelectAll() {
+            const vCbs = this.visibleBulkCheckboxes;
+            if (vCbs.length === 0) return;
+
+            const selSet = new Set(this.selected.map(String));
+            const count = vCbs.filter(cb => selSet.has(String(cb.value))).length;
+            const isAllSelected = count === vCbs.length;
+            const isIndeterminate = count > 0 && count < vCbs.length;
+
+            const visibleValues = vCbs.map(cb => String(cb.value));
+
+            if (isAllSelected || isIndeterminate) {
+                // Desmarcar todos os visíveis (quando estiver marcado ou indeterminado)
+                const visibleSet = new Set(visibleValues);
+                this.selected = this.selected.map(String).filter(id => !visibleSet.has(id));
+                vCbs.forEach(cb => { cb.checked = false; });
+            } else {
+                // Selecionar todos os visíveis
+                const combined = new Set([...this.selected.map(String), ...visibleValues]);
+                this.selected = Array.from(combined);
+                vCbs.forEach(cb => { cb.checked = true; });
+            }
+
+            this.syncMasterCheckbox();
+        },
+
+        clearSelection() {
+            this.selected = [];
+            this.$el.querySelectorAll('tbody input[type="checkbox"][data-bulk-item]').forEach(cb => {
+                cb.checked = false;
+            });
+            this.syncMasterCheckbox();
         },
 
         setPerPage(val) {
@@ -96,33 +191,7 @@ window.adminTable = function() {
                     r.classList.toggle('hidden', !isVisible);
                 });
             }
-            const selSet = new Set(this.selected.map(String));
-            this.$el.querySelectorAll('tbody input[type="checkbox"][data-bulk-item]').forEach(cb => {
-                cb.checked = selSet.has(String(cb.value));
-            });
-        },
-
-        toggleSelectAll() {
-            const shouldSelectAll = !this.allSelected;
-            const visibleCheckboxes = [...this.$el.querySelectorAll('tbody tr:not(.hidden) input[type="checkbox"][data-bulk-item]')];
-            const visibleValues = visibleCheckboxes.map(cb => String(cb.value));
-
-            if (shouldSelectAll) {
-                const combined = new Set([...this.selected.map(String), ...visibleValues]);
-                this.selected = Array.from(combined);
-                visibleCheckboxes.forEach(cb => { cb.checked = true; });
-            } else {
-                const visibleSet = new Set(visibleValues);
-                this.selected = this.selected.map(String).filter(id => !visibleSet.has(id));
-                visibleCheckboxes.forEach(cb => { cb.checked = false; });
-            }
-        },
-
-        clearSelection() {
-            this.selected = [];
-            this.$el.querySelectorAll('tbody input[type="checkbox"][data-bulk-item]').forEach(cb => {
-                cb.checked = false;
-            });
+            this.syncCheckboxes();
         },
 
         search() {
