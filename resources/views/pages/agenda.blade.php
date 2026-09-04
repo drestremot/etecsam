@@ -212,42 +212,67 @@
     </div>
 </div>
 
-{{-- Modal Carrossel de Fotos --}}
+{{-- Modal Carrossel de Fotos & Detalhes do Evento --}}
 <div id="event-modal" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true">
     <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="closeEventModal()"></div>
-    <div class="relative z-10 flex items-center justify-center min-h-full p-4">
-        <div class="bg-[#0f223f] rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden border border-white/15">
-            <div id="modal-header" class="px-6 py-4 border-b border-white/10 flex items-start justify-between gap-4">
+    <div class="relative z-10 flex items-center justify-center min-h-full p-3 sm:p-4">
+        <div class="bg-[#0f223f] rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden border border-white/15">
+            {{-- Modal Header --}}
+            <div id="modal-header" class="flex-shrink-0 px-6 py-4 border-b border-white/10 flex items-start justify-between gap-4 bg-[#0c1b33]">
                 <div>
                     <p id="modal-date" class="text-xs font-bold text-amber-300 uppercase tracking-widest mb-1"></p>
-                    <h2 id="modal-title" class="text-xl font-bold text-white leading-tight"></h2>
-                    <p id="modal-location" class="text-sm text-slate-300 mt-0.5 hidden"></p>
+                    <h2 id="modal-title" class="text-lg sm:text-xl font-bold text-white leading-tight"></h2>
+                    <p id="modal-location" class="text-xs sm:text-sm text-slate-300 mt-1 hidden"></p>
                 </div>
                 <button onclick="closeEventModal()"
-                        class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full text-slate-300 hover:bg-white/10 hover:text-white transition text-lg">
-                    ×
+                        class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full text-slate-300 hover:bg-white/10 hover:text-white transition text-lg"
+                        title="Fechar">
+                    ✕
                 </button>
             </div>
-            <div id="modal-carousel" class="relative bg-black/50 hidden">
-                <div id="carousel-track" class="relative overflow-hidden" style="height: 360px;"></div>
-                <button id="carousel-prev" onclick="carouselMove(-1)"
-                        class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 text-white rounded-full flex items-center justify-center transition z-10">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                </button>
-                <button id="carousel-next" onclick="carouselMove(1)"
-                        class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/60 hover:bg-black/80 text-white rounded-full flex items-center justify-center transition z-10">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                </button>
-                <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent px-5 py-4">
-                    <p id="carousel-caption" class="text-white text-sm font-medium min-h-[1.25rem]"></p>
-                    <p id="carousel-counter" class="text-slate-300 text-xs mt-0.5"></p>
+
+            {{-- Modal Body (Scrollable) --}}
+            <div class="flex-1 overflow-y-auto overscroll-contain">
+                {{-- Carousel Section --}}
+                <div id="modal-carousel" class="hidden">
+                    <div class="relative bg-black/60 overflow-hidden flex items-center justify-center min-h-[260px] sm:min-h-[340px]">
+                        {{-- Carousel Track --}}
+                        <div id="carousel-track" class="relative w-full h-[280px] sm:h-[380px] overflow-hidden flex items-center justify-center"></div>
+
+                        {{-- Nav Prev / Next --}}
+                        <button id="carousel-prev" onclick="carouselMove(-1)"
+                                class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/70 hover:bg-black/90 text-white rounded-full flex items-center justify-center transition z-20 shadow-lg border border-white/10 backdrop-blur-xs">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                        </button>
+                        <button id="carousel-next" onclick="carouselMove(1)"
+                                class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/70 hover:bg-black/90 text-white rounded-full flex items-center justify-center transition z-20 shadow-lg border border-white/10 backdrop-blur-xs">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </button>
+
+                        {{-- Counter Badge (Top-Right) --}}
+                        <div id="carousel-counter-wrap" class="absolute top-3 right-3 z-20">
+                            <span id="carousel-counter" class="bg-black/70 backdrop-blur-xs text-white text-xs font-semibold px-2.5 py-1 rounded-full border border-white/10 shadow-xs"></span>
+                        </div>
+
+                        {{-- Dots (Top-Center) --}}
+                        <div id="carousel-dots" class="absolute top-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-20 bg-black/40 backdrop-blur-xs px-2.5 py-1 rounded-full border border-white/10"></div>
+                    </div>
+
+                    {{-- Dedicated Caption Bar (Below Image, NOT overlapping) --}}
+                    <div id="carousel-caption-wrap" class="px-6 py-2.5 bg-[#0a1728] border-b border-white/10 hidden">
+                        <p id="carousel-caption" class="text-amber-300 text-xs sm:text-sm font-medium text-center leading-snug"></p>
+                    </div>
                 </div>
-                <div id="carousel-dots" class="absolute top-3 inset-x-0 flex justify-center gap-1.5 z-10"></div>
+
+                {{-- Event Description --}}
+                <div id="modal-description-wrap" class="px-6 py-5 hidden">
+                    <span class="text-xs font-bold text-amber-400 uppercase tracking-wider block mb-2">Informações do Evento</span>
+                    <div id="modal-description" class="text-slate-200 text-sm leading-relaxed"></div>
+                </div>
             </div>
-            <div id="modal-description-wrap" class="px-6 py-5 hidden">
-                <p id="modal-description" class="text-slate-200 text-sm leading-relaxed"></p>
-            </div>
-            <div class="px-6 py-4 border-t border-white/10 flex justify-end">
+
+            {{-- Modal Footer --}}
+            <div class="flex-shrink-0 px-6 py-3.5 border-t border-white/10 flex justify-end bg-[#0c1b33]">
                 <button onclick="closeEventModal()"
                         class="px-5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition">
                     Fechar
@@ -270,7 +295,7 @@ function openEventModal(data) {
 
     const locEl = document.getElementById('modal-location');
     if (data.location) {
-        locEl.innerHTML = '<svg class="w-4 h-4 inline-block mr-1 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg> ' + data.location;
+        locEl.innerHTML = '<svg class="w-3.5 h-3.5 inline-block mr-1 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg> ' + data.location;
         locEl.classList.remove('hidden');
     } else {
         locEl.classList.add('hidden');
@@ -278,7 +303,7 @@ function openEventModal(data) {
 
     const descWrap = document.getElementById('modal-description-wrap');
     const descEl   = document.getElementById('modal-description');
-    if (data.description) {
+    if (data.description && data.description.trim().length > 0) {
         descEl.innerHTML = data.description;
         descWrap.classList.remove('hidden');
     } else {
@@ -313,11 +338,11 @@ function buildCarousel() {
 
     carouselPhotos.forEach((photo, i) => {
         const slide = document.createElement('div');
-        slide.className = 'absolute inset-0 transition-opacity duration-300';
+        slide.className = 'absolute inset-0 flex items-center justify-center p-3 transition-opacity duration-300';
         slide.style.opacity = i === 0 ? '1' : '0';
         slide.style.zIndex  = i === 0 ? '1' : '0';
         slide.innerHTML = `<img src="${photo.url}" alt="${photo.caption || ''}"
-                                class="w-full h-full object-contain">`;
+                                class="max-h-full max-w-full object-contain rounded-xl shadow-md">`;
         track.appendChild(slide);
 
         const dot = document.createElement('button');
@@ -355,12 +380,25 @@ function carouselMove(dir) {
 }
 
 function updateCarouselInfo() {
+    if (!carouselPhotos || carouselPhotos.length === 0) return;
     const photo = carouselPhotos[carouselIndex];
-    document.getElementById('carousel-caption').textContent = photo.caption || '';
-    document.getElementById('carousel-counter').textContent =
-        carouselPhotos.length > 1
+    const captionEl = document.getElementById('carousel-caption');
+    const captionWrap = document.getElementById('carousel-caption-wrap');
+    const counterEl = document.getElementById('carousel-counter');
+
+    if (photo && photo.caption && photo.caption.trim().length > 0) {
+        captionEl.textContent = photo.caption;
+        captionWrap.classList.remove('hidden');
+    } else {
+        captionEl.textContent = '';
+        captionWrap.classList.add('hidden');
+    }
+
+    if (counterEl) {
+        counterEl.textContent = carouselPhotos.length > 1
             ? (carouselIndex + 1) + ' / ' + carouselPhotos.length
             : '';
+    }
 }
 
 document.addEventListener('keydown', (e) => {
