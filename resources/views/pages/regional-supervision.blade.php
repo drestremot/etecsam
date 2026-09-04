@@ -108,7 +108,7 @@
     {{-- Equipe da Supervisão --}}
     @if($staff->isNotEmpty())
     <div>
-        <h2 class="text-xl font-bold text-etec-dark dark:text-white mb-6 border-l-4 border-etec-accent pl-3">Equipe da Supervisão Regional</h2>
+        <h2 class="text-xl font-bold text-white mb-6 border-l-4 border-etec-accent pl-3">Equipe da Supervisão Regional</h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
             @foreach($staff as $member)
             <div class="bg-[#14284b] rounded-2xl shadow-sm border border-white/10 p-5 flex gap-4 hover:border-amber-400/40 hover:shadow-lg transition items-start min-w-0">
@@ -143,7 +143,7 @@
 
     {{-- Navegação para as demais estruturas de Gestão --}}
     <div>
-        <h2 class="text-xl font-bold text-etec-dark dark:text-white mb-6 border-l-4 border-etec-medium pl-3">Estrutura de Gestão</h2>
+        <h2 class="text-xl font-bold text-white mb-6 border-l-4 border-etec-medium pl-3">Estrutura de Gestão</h2>
         <div class="grid md:grid-cols-2 gap-5">
             <a href="{{ route('superintendence') }}"
                class="group bg-etec-main rounded-xl border border-etec-dark/30 dark:border-white/10 shadow-sm p-6 flex items-center gap-5 hover:border-etec-accent hover:shadow-md hover:shadow-etec-dark/30 transition">
@@ -181,8 +181,8 @@
     {{-- Documentos --}}
     @if($downloads->isNotEmpty())
     <div class="bg-white/50 dark:bg-white/5 rounded-2xl p-8 border border-gray-200 dark:border-white/10">
-        <h2 class="text-xl font-bold text-etec-dark dark:text-white mb-6 flex items-center gap-2.5">
-            <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-2.5">
+            <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
             </svg>
             Documentos da Supervisão

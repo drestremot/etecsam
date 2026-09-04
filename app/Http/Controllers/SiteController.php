@@ -181,9 +181,7 @@ class SiteController extends Controller
                   ->orWhere('role', 'like', '%Orientadora%');
             })
             ->where('role', 'not like', '%Secretaria%')
-            ->where(function ($q) use ($director) {
-                if ($director) $q->where('id', '!=', $director->id);
-            })
+            ->when($director, fn($q) => $q->where('id', '!=', $director->id))
             ->orderBy('role')
             ->orderBy('name')
             ->get();
@@ -198,7 +196,7 @@ class SiteController extends Controller
 
     public function administrative()
     {
-        // Diretora de Serviços (Myruane)
+        // Diretora de Serviços
         $director = \App\Models\Teacher::where('role', 'like', '%Serviços%')
             ->orderByRaw("CASE WHEN role LIKE '%Diretora%' OR role LIKE '%Diretor%' THEN 0 ELSE 1 END")
             ->first();
@@ -208,21 +206,22 @@ class SiteController extends Controller
                 $q->where('role', 'like', '%Administrativo%')
                   ->orWhere('role', 'like', '%Financeiro%')
                   ->orWhere('role', 'like', '%Recursos Humanos%')
+                  ->orWhere('role', 'like', '%RH%')
                   ->orWhere('role', 'like', '%Manutenção%')
                   ->orWhere('role', 'like', '%Agente%');
             })
-            ->where(function ($q) use ($director) {
-                if ($director) $q->where('id', '!=', $director->id);
-            })
+            ->where('role', 'not like', '%Secretaria%')
+            ->when($director, fn($q) => $q->where('id', '!=', $director->id))
+            ->orderBy('name')
             ->get();
 
         $downloads = \App\Models\Document::where('category', 'Administrativo')->get();
 
         $links = [
-            ['name' => 'GDAE',          'desc' => 'Gestão Escolar',       'url' => 'https://www.gdae.sp.gov.br/',         'icon' => '📋'],
-            ['name' => 'SEP',           'desc' => 'Portal do Servidor',    'url' => 'https://www.sep.sp.gov.br/',          'icon' => '👤'],
-            ['name' => 'e-Folha',          'desc' => 'Folha de Pagamento',    'url' => 'https://www.e-folha.prodesp.sp.gov.br/',             'icon' => '💰'],
-            ['name' => 'SIEEESP',       'desc' => 'Legislação',            'url' => 'https://www.sieeesp.org.br/',         'icon' => '⚖️'],
+            ['name' => 'GDAE',          'desc' => 'Gestão Escolar',       'url' => 'https://www.gdae.sp.gov.br/',             'icon' => '📋'],
+            ['name' => 'SEP',           'desc' => 'Portal do Servidor',    'url' => 'https://www.sep.sp.gov.br/',              'icon' => '👤'],
+            ['name' => 'e-Folha',       'desc' => 'Folha de Pagamento',    'url' => 'https://www.e-folha.prodesp.sp.gov.br/', 'icon' => '💰'],
+            ['name' => 'SIEEESP',       'desc' => 'Legislação',            'url' => 'https://www.sieeesp.org.br/',             'icon' => '⚖️'],
             ['name' => 'Transparência', 'desc' => 'Dados Públicos',        'url' => 'https://www.cps.sp.gov.br/transparencia/', 'icon' => '🔍'],
         ];
 
@@ -305,20 +304,31 @@ class SiteController extends Controller
 
     public function academic()
     {
-        // 1. Busca a Equipe
-        $director = \App\Models\Teacher::where('role', 'like', '%acadêmica%')->first();
-        $staff = \App\Models\Teacher::where('role', 'like', '%secretaria%')->get();
+        // 1. Busca a Diretora de Secretaria
+        $director = \App\Models\Teacher::where('role', 'like', '%Secretár%')
+            ->orWhere('role', 'like', '%acadêmica%')
+            ->first();
 
-        // 2. Busca os Downloads da categoria 'Secretaria'
+        // 2. Busca os Colaboradores da Secretaria
+        $staff = \App\Models\Teacher::where(function ($q) {
+                $q->where('role', 'like', '%Secretaria%')
+                  ->orWhere('role', 'like', '%Agente Técnico%')
+                  ->orWhere('role', 'like', '%Atendimento%');
+            })
+            ->when($director, fn($q) => $q->where('id', '!=', $director->id))
+            ->orderBy('name')
+            ->get();
+
+        // 3. Busca os Downloads da categoria 'Secretaria'
         $downloads = \App\Models\Document::where('category', 'Secretaria')->get();
 
-        // 3. Links Úteis para Alunos
+        // 4. Links Úteis para Alunos
         $links = [
-            ['name' => 'NSA Online', 'desc' => 'Notas e Frequência', 'url' => 'https://nsa.cps.sp.gov.br/', 'icon' => '🎓'],
-            ['name' => 'Vestibulinho Etec', 'desc' => 'Inscrições e Provas', 'url' => 'https://www.vestibulinhoetec.com.br/', 'icon' => '📝'],
-            ['name' => 'Email Institucional', 'desc' => 'Acesso ao Teams/Email', 'url' => 'http://mail.etec.sp.gov.br/', 'icon' => '📧'],
-            ['name' => 'Carteirinha Digital', 'desc' => 'Documento do Estudante', 'url' => '#', 'icon' => '🆔'],
-            ['name' => 'Calendário Escolar', 'desc' => 'Datas Importantes', 'url' => '#', 'icon' => '📅'],
+            ['name' => 'NSA Online',          'desc' => 'Notas e Frequência',       'url' => 'https://nsa.cps.sp.gov.br/',               'icon' => '🎓'],
+            ['name' => 'Vestibulinho Etec',   'desc' => 'Inscrições e Resultados',  'url' => 'https://www.vestibulinhoetec.com.br/',      'icon' => '📝'],
+            ['name' => 'Email Institucional', 'desc' => 'Teams / Outlook CPS',      'url' => 'http://mail.etec.sp.gov.br/',              'icon' => '📧'],
+            ['name' => 'SED - Secretaria',    'desc' => 'Secretaria Escolar Digital', 'url' => 'https://sed.educacao.sp.gov.br/',       'icon' => '🏛️'],
+            ['name' => 'GDAE',                'desc' => 'Gestão Escolar',            'url' => 'https://www.gdae.sp.gov.br/',             'icon' => '📋'],
         ];
 
         return view('pages.academic', compact('director', 'staff', 'links', 'downloads'));

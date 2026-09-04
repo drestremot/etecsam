@@ -1,4 +1,4 @@
-﻿@extends('layouts.app')
+@extends('layouts.app')
 
 @section('content')
 
@@ -22,7 +22,7 @@
 
     {{-- Resumo do mes --}}
     <div>
-        <h2 class="text-xl font-bold text-etec-dark dark:text-white mb-6 border-l-4 border-etec-accent pl-3">Resumo do Mês</h2>
+        <h2 class="text-xl font-bold text-white mb-6 border-l-4 border-etec-accent pl-3">Resumo do Mês</h2>
         <div class="grid md:grid-cols-3 gap-5">
             <div class="bg-etec-main rounded-2xl shadow-sm border border-etec-dark/30 dark:border-white/10 p-6">
                 <p class="text-xs font-bold text-etec-light uppercase tracking-widest mb-2">Entradas</p>
@@ -42,7 +42,7 @@
 
     {{-- Atrasados --}}
     <div>
-        <h2 class="text-xl font-bold text-etec-dark dark:text-white mb-6 border-l-4 border-etec-medium pl-3">Pendências</h2>
+        <h2 class="text-xl font-bold text-white mb-6 border-l-4 border-etec-medium pl-3">Pendências</h2>
         <div class="grid grid-cols-2 gap-5">
             <div class="bg-etec-main rounded-2xl shadow-sm border border-etec-dark/30 dark:border-white/10 p-5 text-center">
                 <p class="text-2xl font-bold text-white">{{ $overdueExpenses->count() }}</p>
@@ -57,7 +57,7 @@
 
     {{-- Previsao futura --}}
     <div>
-        <h2 class="text-xl font-bold text-etec-dark dark:text-white mb-6 border-l-4 border-etec-accent pl-3">Previsão Futura</h2>
+        <h2 class="text-xl font-bold text-white mb-6 border-l-4 border-etec-accent pl-3">Previsão Futura</h2>
         <div class="grid md:grid-cols-2 gap-5">
             <div class="bg-etec-main rounded-2xl shadow-sm border border-etec-dark/30 dark:border-white/10 p-6">
                 <p class="text-xs font-bold text-etec-light uppercase tracking-widest mb-2">A Pagar (saídas futuras)</p>
