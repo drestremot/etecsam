@@ -1,7 +1,7 @@
 <?php
 
 /**
- * ExportedDataSeeder — gerado automaticamente em 2026-09-05 19:11:29
+ * ExportedDataSeeder — gerado automaticamente em 2026-09-05 19:11:39
  * Comando: php artisan db:export-seeders
  *
  * Para restaurar: php artisan db:seed --class=ExportedDataSeeder
