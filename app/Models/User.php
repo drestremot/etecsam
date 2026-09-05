@@ -296,4 +296,31 @@ class User extends Authenticatable
 
         return false;
     }
+
+    public function getScheduleRoleTypeAttribute(): string
+    {
+        $roleStr = strtolower($this->role ?? '');
+        $hasTeacherRole = $this->roles->contains(function ($r) {
+            $n = strtolower($r->name);
+            return str_contains($n, 'profess') || str_contains($n, 'docente') || str_contains($n, 'teacher');
+        });
+        if ($hasTeacherRole || str_contains($roleStr, 'profess') || str_contains($roleStr, 'docente') || str_contains($roleStr, 'teacher')) {
+            return 'teacher';
+        }
+
+        $hasCoordRole = $this->roles->contains(function ($r) {
+            $n = strtolower($r->name);
+            return str_contains($n, 'coordenad');
+        });
+        if ($hasCoordRole || str_contains($roleStr, 'coordenad')) {
+            return 'coordinator';
+        }
+
+        return 'staff';
+    }
+
+    public function getTeacherColorAttribute(): array
+    {
+        return WorkSchedule::getTeacherColorForUser($this->id, $this->name);
+    }
 }

@@ -17,11 +17,16 @@
                     <span>Grade de Horários dos Professores & Colaboradores</span>
                 </h1>
                 <p class="text-xs sm:text-sm text-gray-600 mt-1 font-normal">
-                    Definição de turnos, jornadas e unidades escolares onde cada docente leciona durante a semana
+                    Definição de disciplinas, turmas (A/B), turnos e horários de trabalho por unidade escolar
                 </p>
             </div>
 
-            <div class="flex items-center gap-2.5">
+            <div class="flex flex-wrap items-center gap-2.5">
+                <a href="{{ route('admin.work-schedules.print') }}" class="inline-flex items-center gap-2 rounded-xl bg-teal-600 px-4 py-2.5 text-xs font-semibold text-white shadow-xs hover:bg-teal-500 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                    <span>Imprimir Grade por Unidade</span>
+                </a>
+
                 <a href="{{ route('admin.work-schedules.create') }}" class="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-semibold text-white shadow-xs hover:bg-indigo-500 transition">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                     <span>Cadastrar Horário</span>
@@ -54,7 +59,7 @@
             </div>
 
             <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-xs">
-                <span class="text-xs font-medium text-gray-500 block">Professores com Grade</span>
+                <span class="text-xs font-medium text-gray-500 block">Professores & Colaboradores</span>
                 <div class="text-xl sm:text-2xl font-semibold tracking-tight text-indigo-700 mt-1">{{ $stats['scheduled_users'] }}</div>
             </div>
 
@@ -66,11 +71,11 @@
 
         <!-- Filters Bar -->
         <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-xs">
-            <form method="GET" action="{{ route('admin.work-schedules.index') }}" class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+            <form method="GET" action="{{ route('admin.work-schedules.index') }}" class="grid grid-cols-1 sm:grid-cols-5 gap-3">
                 <div>
                     <label class="block text-[11px] font-medium text-gray-600 uppercase mb-1">Professor / Funcionário</label>
                     <select name="user_id" class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-400">
-                        <option value="">Todos os Professores</option>
+                        <option value="">Todos os Usuários</option>
                         @foreach($users as $u)
                             <option value="{{ $u->id }}" {{ request('user_id') == $u->id ? 'selected' : '' }}>{{ $u->name }}</option>
                         @endforeach
@@ -99,6 +104,16 @@
                     </select>
                 </div>
 
+                <div>
+                    <label class="block text-[11px] font-medium text-gray-600 uppercase mb-1">Tipo de Horário</label>
+                    <select name="schedule_type" class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                        <option value="">Todos os Tipos</option>
+                        <option value="class" {{ request('schedule_type') === 'class' ? 'selected' : '' }}>Aula (Docente)</option>
+                        <option value="coordination" {{ request('schedule_type') === 'coordination' ? 'selected' : '' }}>Coordenação</option>
+                        <option value="administrative" {{ request('schedule_type') === 'administrative' ? 'selected' : '' }}>Administrativo / Expediente</option>
+                    </select>
+                </div>
+
                 <div class="flex items-end gap-2">
                     <button type="submit" class="flex-1 rounded-xl bg-gray-900 px-4 py-2 text-xs font-semibold text-white hover:bg-gray-800 transition">
                         Filtrar
@@ -116,7 +131,7 @@
             <div class="px-5 py-3.5 border-b border-gray-100 flex flex-wrap items-center justify-between gap-3 bg-gray-50/50">
                 <div class="flex items-center gap-3 flex-1 min-w-[200px]">
                     <svg class="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                    <input x-model="q" @input="search()" type="text" placeholder="Filtrar por nome, email, dia ou unidade..."
+                    <input x-model="q" @input="search()" type="text" placeholder="Filtrar por nome, disciplina, turma, dia ou unidade..."
                            class="flex-1 text-xs sm:text-sm border-0 outline-none bg-transparent text-gray-800 placeholder-gray-400">
                     <button x-show="q" @click="q='';search()" class="text-gray-400 hover:text-gray-600 text-xs font-bold">limpar</button>
                 </div>
@@ -150,12 +165,13 @@
                     <thead class="bg-gray-50/90 text-[11px] font-semibold uppercase text-gray-500 border-b border-gray-200 tracking-wider">
                         <tr>
                             <th class="px-3 py-3 w-10 text-center">
-                            <input type="checkbox" data-bulk-master @click.prevent="toggleSelectAll()" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer">
-                        </th>
-                            <th class="px-3.5 py-3 min-w-[100px]">Dia</th>
-                            <th class="px-3 py-3 min-w-[180px]">Professor / Colaborador</th>
+                                <input type="checkbox" data-bulk-master @click.prevent="toggleSelectAll()" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer">
+                            </th>
+                            <th class="px-3.5 py-3 min-w-[110px]">Dia</th>
+                            <th class="px-3 py-3 min-w-[200px]">Professor / Colaborador</th>
+                            <th class="px-3 py-3 min-w-[220px]">Disciplina & Turma</th>
                             <th class="px-3 py-3 text-center min-w-[130px]">Unidade</th>
-                            <th class="px-3 py-3 min-w-[110px]">Turno</th>
+                            <th class="px-3 py-3 min-w-[100px]">Turno</th>
                             <th class="px-3 py-3 text-center min-w-[100px]">Horário</th>
                             <th class="px-3 py-3 text-center min-w-[90px]">Intervalo</th>
                             <th class="px-3 py-3 text-center min-w-[80px]">Tolerância</th>
@@ -164,20 +180,82 @@
                     </thead>
                     <tbody class="divide-y divide-gray-100">
                         @forelse($schedules as $sched)
+                        @php
+                            $teacherColor = $sched->teacher_color;
+                        @endphp
                         <tr class="hover:bg-gray-50/80 transition"
-                            data-row="{{ strtolower($sched->user->name . ' ' . $sched->user->email . ' ' . $sched->unit->name . ' ' . $sched->day_name) }}">
+                            data-row="{{ strtolower($sched->user->name . ' ' . $sched->user->email . ' ' . $sched->unit->name . ' ' . $sched->day_name . ' ' . $sched->subject_name . ' ' . $sched->class_name) }}">
                             <td class="px-3 py-2.5 text-center">
                                 <input type="checkbox" value="{{ $sched->id }}" x-model="selected" data-bulk-item class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4 cursor-pointer">
                             </td>
                             <td class="px-3.5 py-2.5 whitespace-nowrap">
-                                <span class="inline-flex items-center rounded-md bg-indigo-50 border border-indigo-200/80 px-2 py-0.5 text-[11px] font-medium text-indigo-700">
-                                    {{ $sched->day_short }} • {{ $sched->day_name }}
+                                <span class="inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-[11px] font-semibold {{ $sched->day_badge_class }}">
+                                    <span class="w-1.5 h-1.5 rounded-full" style="background-color: {{ $sched->day_color_hex }}"></span>
+                                    <span>{{ $sched->day_short }} • {{ $sched->day_name }}</span>
                                 </span>
                             </td>
 
                             <td class="px-3 py-2.5">
-                                <div class="font-semibold text-gray-900 truncate max-w-[200px]" title="{{ $sched->user->name }}">{{ $sched->user->name }}</div>
-                                <div class="text-[11px] text-gray-500 font-normal truncate max-w-[200px]">{{ $sched->user->email }}</div>
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background-color: {{ $teacherColor['dot'] }};" title="{{ $teacherColor['name'] }}"></span>
+                                    <div class="min-w-0">
+                                        <div class="font-semibold text-gray-900 truncate max-w-[190px]" title="{{ $sched->user->name }}">
+                                            {{ $sched->user->name }}
+                                        </div>
+                                        <div class="text-[10.5px] text-gray-500 truncate max-w-[190px]">
+                                            {{ $sched->user->email }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td class="px-3 py-2.5">
+                                @if($sched->isCoordinationSchedule())
+                                    <div class="inline-flex items-center gap-1.5 rounded-lg bg-purple-50 border border-purple-200 px-2 py-1 text-purple-700 font-semibold text-[11px]">
+                                        <svg class="w-3.5 h-3.5 text-purple-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                        <span>Horário de Coordenação</span>
+                                    </div>
+                                    @if($sched->shift_name)
+                                        <div class="text-[10px] text-gray-500 mt-0.5 truncate">{{ $sched->shift_name }}</div>
+                                    @endif
+                                @elseif($sched->isAdministrativeSchedule())
+                                    <div class="inline-flex items-center gap-1.5 rounded-lg bg-slate-100 border border-slate-200 px-2 py-1 text-slate-700 font-semibold text-[11px]">
+                                        <svg class="w-3.5 h-3.5 text-slate-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                        <span>Expediente Administrativo</span>
+                                    </div>
+                                    @if($sched->shift_name)
+                                        <div class="text-[10px] text-gray-500 mt-0.5 truncate">{{ $sched->shift_name }}</div>
+                                    @endif
+                                @else
+                                    {{-- Docente / Aula --}}
+                                    <div>
+                                        @if($sched->subject_name)
+                                            <div class="font-semibold text-gray-900 flex items-center gap-1.5 flex-wrap">
+                                                <span class="truncate max-w-[200px]" title="{{ $sched->subject_name }}">{{ $sched->subject_name }}</span>
+                                                @if(str_contains(strtoupper($sched->subject_name), '(A)') || str_contains(strtoupper($sched->subject_name), 'TURMA A'))
+                                                    <span class="rounded bg-sky-100 text-sky-800 border border-sky-200 px-1 py-0.2 text-[9.5px] font-bold">Turma (A)</span>
+                                                @elseif(str_contains(strtoupper($sched->subject_name), '(B)') || str_contains(strtoupper($sched->subject_name), 'TURMA B'))
+                                                    <span class="rounded bg-orange-100 text-orange-800 border border-orange-200 px-1 py-0.2 text-[9.5px] font-bold">Turma (B)</span>
+                                                @endif
+                                            </div>
+                                        @else
+                                            <div class="text-gray-400 italic text-[11px]">Disciplina não especificada</div>
+                                        @endif
+
+                                        <div class="flex items-center gap-2 mt-0.5 text-[10.5px] text-gray-500">
+                                            @if($sched->class_name)
+                                                <span class="font-medium text-indigo-700 bg-indigo-50 px-1.5 py-0.2 rounded border border-indigo-100">
+                                                    {{ $sched->class_name }}
+                                                </span>
+                                            @endif
+                                            @if($sched->classroom)
+                                                <span class="text-gray-600 bg-gray-100 px-1.5 py-0.2 rounded">
+                                                    {{ $sched->classroom }}
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endif
                             </td>
 
                             <td class="px-3 py-2.5 text-center">
@@ -210,7 +288,7 @@
 
                             <td class="px-3.5 py-2.5 text-right whitespace-nowrap">
                                 <div class="flex items-center justify-end gap-1">
-                                    <a href="{{ route('admin.work-schedules.edit', $sched) }}" class="rounded-lg bg-gray-100 hover:bg-gray-200 p-1 text-gray-700 transition" title="Editar">
+                                    <a href="{{ route('admin.work-schedules.edit', $sched) }}" class="rounded-lg bg-gray-100 hover:bg-gray-200 p-1.5 text-gray-700 transition" title="Editar">
                                         <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                     </a>
 
@@ -226,7 +304,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="8" class="px-6 py-12 text-center text-gray-400">
+                            <td colspan="10" class="px-6 py-12 text-center text-gray-400">
                                 <svg class="w-8 h-8 mx-auto text-gray-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                                 <p class="text-sm font-normal text-gray-500">Nenhum horário cadastrado para os filtros selecionados.</p>
                             </td>
@@ -242,3 +320,4 @@
     </div>
 </div>
 @endsection
+

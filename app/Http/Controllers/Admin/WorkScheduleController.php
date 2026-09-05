@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Subject;
 use App\Models\Unit;
 use App\Models\User;
 use App\Models\WorkSchedule;
@@ -22,8 +23,12 @@ class WorkScheduleController extends Controller
             $query->where('unit_id', $request->unit_id);
         }
 
-        if ($request->filled('day_of_week')) {
-            $query->where('day_of_week', $request->day_of_week);
+        if ($request->filled('day_of_week') && $request->day_of_week !== '') {
+            $query->where('day_of_week', (int) $request->day_of_week);
+        }
+
+        if ($request->filled('schedule_type')) {
+            $query->where('schedule_type', $request->schedule_type);
         }
 
         $schedules = $query->get();
@@ -45,6 +50,9 @@ class WorkScheduleController extends Controller
         $users = User::where('is_active', true)->orderBy('name')->get();
         $units = Unit::where('is_active', true)->orderBy('name')->get();
         $daysList = WorkSchedule::getDaysList();
+        $dayColorConfigs = WorkSchedule::getDayColorConfig();
+
+        $subjects = Subject::orderBy('name')->pluck('name')->unique()->values();
 
         $initialUserId = $request->input('user_id', $users->first()?->id);
 
@@ -64,6 +72,10 @@ class WorkScheduleController extends Controller
                         'start_time'        => substr($s->start_time, 0, 5),
                         'end_time'          => substr($s->end_time, 0, 5),
                         'shift_name'        => $s->shift_name ?? '',
+                        'subject_name'      => $s->subject_name ?? '',
+                        'class_name'        => $s->class_name ?? '',
+                        'classroom'         => $s->classroom ?? '',
+                        'schedule_type'     => $s->schedule_type ?? 'class',
                         'break_start_time'  => $s->break_start_time ? substr($s->break_start_time, 0, 5) : null,
                         'break_end_time'    => $s->break_end_time ? substr($s->break_end_time, 0, 5) : null,
                         'tolerance_minutes' => (int) $s->tolerance_minutes,
@@ -73,10 +85,12 @@ class WorkScheduleController extends Controller
 
         return view('admin.work-schedules.form', [
             'action'           => 'create',
-            'schedule'         => new WorkSchedule(['tolerance_minutes' => 15, 'is_active' => true]),
+            'schedule'         => new WorkSchedule(['tolerance_minutes' => 15, 'is_active' => true, 'schedule_type' => 'class']),
             'users'            => $users,
             'units'            => $units,
             'daysList'         => $daysList,
+            'dayColorConfigs'  => $dayColorConfigs,
+            'subjects'         => $subjects,
             'initialUserId'    => $initialUserId,
             'allUserSchedules' => $allUserSchedules,
         ]);
@@ -95,7 +109,7 @@ class WorkScheduleController extends Controller
 
     public function store(Request $request)
     {
-        // Se vier com array/JSON da grade interativa
+        // Modo construtor interativo via JSON / Array
         if ($request->filled('schedules_json') || $request->has('items')) {
             $request->validate([
                 'user_id' => 'required|exists:users,id',
@@ -114,7 +128,7 @@ class WorkScheduleController extends Controller
             $savedCount = 0;
 
             \DB::transaction(function () use ($userId, $items, &$savedCount) {
-                // Sincroniza a grade completa do professor substituindo registros anteriores
+                // Sincroniza a grade completa substituindo registros anteriores
                 WorkSchedule::where('user_id', $userId)->delete();
 
                 foreach ($items as $item) {
@@ -125,6 +139,10 @@ class WorkScheduleController extends Controller
                     $startTime = substr($item['start_time'] ?? '07:10', 0, 5) . ':00';
                     $endTime = substr($item['end_time'] ?? '12:35', 0, 5) . ':00';
                     $shiftName = !empty($item['shift_name']) ? trim($item['shift_name']) : null;
+                    $subjectName = !empty($item['subject_name']) ? trim($item['subject_name']) : null;
+                    $className = !empty($item['class_name']) ? trim($item['class_name']) : null;
+                    $classroom = !empty($item['classroom']) ? trim($item['classroom']) : null;
+                    $scheduleType = !empty($item['schedule_type']) ? trim($item['schedule_type']) : 'class';
                     $breakStart = !empty($item['break_start_time']) ? substr($item['break_start_time'], 0, 5) . ':00' : null;
                     $breakEnd = !empty($item['break_end_time']) ? substr($item['break_end_time'], 0, 5) . ':00' : null;
                     $tolerance = isset($item['tolerance_minutes']) ? (int) $item['tolerance_minutes'] : 15;
@@ -136,6 +154,10 @@ class WorkScheduleController extends Controller
                         'start_time'        => $startTime,
                         'end_time'          => $endTime,
                         'shift_name'        => $shiftName,
+                        'subject_name'      => $subjectName,
+                        'class_name'        => $className,
+                        'classroom'         => $classroom,
+                        'schedule_type'     => $scheduleType,
                         'break_start_time'  => $breakStart,
                         'break_end_time'    => $breakEnd,
                         'tolerance_minutes' => $tolerance,
@@ -147,16 +169,20 @@ class WorkScheduleController extends Controller
             });
 
             return redirect()->route('admin.work-schedules.create', ['user_id' => $userId])
-                ->with('success', "Grade de horários do(a) professor(a) {$user->name} salva com sucesso! ({$savedCount} horário(s) ativo(s)).");
+                ->with('success', "Grade de horários de {$user->name} salva com sucesso! ({$savedCount} horário(s) ativo(s)).");
         }
 
-        // Modo formulário simples (legado)
+        // Modo formulário simples
         $request->validate([
             'user_id'           => 'required|exists:users,id',
             'unit_id'           => 'required|exists:units,id',
             'days_of_week'      => 'required|array|min:1',
             'days_of_week.*'    => 'integer|between:0,6',
             'shift_name'        => 'nullable|string|max:100',
+            'subject_name'      => 'nullable|string|max:255',
+            'class_name'        => 'nullable|string|max:100',
+            'classroom'         => 'nullable|string|max:100',
+            'schedule_type'     => 'nullable|string|in:class,coordination,administrative',
             'start_time'        => 'required|date_format:H:i',
             'end_time'          => 'required|date_format:H:i|after:start_time',
             'break_start_time'  => 'nullable|date_format:H:i',
@@ -165,6 +191,7 @@ class WorkScheduleController extends Controller
         ]);
 
         $tolerance = $request->input('tolerance_minutes', 15);
+        $scheduleType = $request->input('schedule_type', 'class');
 
         foreach ($request->days_of_week as $day) {
             WorkSchedule::updateOrCreate(
@@ -176,6 +203,10 @@ class WorkScheduleController extends Controller
                 ],
                 [
                     'shift_name'        => $request->shift_name,
+                    'subject_name'      => $request->subject_name,
+                    'class_name'        => $request->class_name,
+                    'classroom'         => $request->classroom,
+                    'schedule_type'     => $scheduleType,
                     'end_time'          => $request->end_time . ':00',
                     'break_start_time'  => $request->break_start_time ? $request->break_start_time . ':00' : null,
                     'break_end_time'    => $request->break_end_time ? $request->break_end_time . ':00' : null,
@@ -194,6 +225,7 @@ class WorkScheduleController extends Controller
         $users = User::where('is_active', true)->orderBy('name')->get();
         $units = Unit::where('is_active', true)->orderBy('name')->get();
         $daysList = WorkSchedule::getDaysList();
+        $subjects = Subject::orderBy('name')->pluck('name')->unique()->values();
 
         return view('admin.work-schedules.form', [
             'action'    => 'edit',
@@ -201,6 +233,7 @@ class WorkScheduleController extends Controller
             'users'     => $users,
             'units'     => $units,
             'daysList'  => $daysList,
+            'subjects'  => $subjects,
         ]);
     }
 
@@ -211,6 +244,10 @@ class WorkScheduleController extends Controller
             'unit_id'           => 'required|exists:units,id',
             'day_of_week'       => 'required|integer|between:0,6',
             'shift_name'        => 'nullable|string|max:100',
+            'subject_name'      => 'nullable|string|max:255',
+            'class_name'        => 'nullable|string|max:100',
+            'classroom'         => 'nullable|string|max:100',
+            'schedule_type'     => 'nullable|string|in:class,coordination,administrative',
             'start_time'        => 'required',
             'end_time'          => 'required',
             'break_start_time'  => 'nullable',
@@ -224,6 +261,10 @@ class WorkScheduleController extends Controller
             'unit_id'           => $request->unit_id,
             'day_of_week'       => $request->day_of_week,
             'shift_name'        => $request->shift_name,
+            'subject_name'      => $request->subject_name,
+            'class_name'        => $request->class_name,
+            'classroom'         => $request->classroom,
+            'schedule_type'     => $request->input('schedule_type', 'class'),
             'start_time'        => substr($request->start_time, 0, 5) . ':00',
             'end_time'          => substr($request->end_time, 0, 5) . ':00',
             'break_start_time'  => $request->break_start_time ? substr($request->break_start_time, 0, 5) . ':00' : null,
@@ -258,6 +299,82 @@ class WorkScheduleController extends Controller
         }
 
         return back();
+    }
+
+    /**
+     * Tela de visualização e impressão da Grade Horária por Unidade Escolar
+     */
+    public function printSchedule(Request $request)
+    {
+        $units = Unit::where('is_active', true)->orderBy('name')->get();
+
+        $selectedUnitId = $request->input('unit_id', $units->first()?->id);
+        $selectedUnit = $units->firstWhere('id', $selectedUnitId) ?? $units->first();
+
+        $selectedShift = $request->input('shift_name', '');
+        $selectedType = $request->input('schedule_type', '');
+
+        $query = WorkSchedule::with(['user', 'unit'])
+            ->where('is_active', true);
+
+        if ($selectedUnit) {
+            $query->where('unit_id', $selectedUnit->id);
+        }
+
+        if (!empty($selectedShift)) {
+            $query->where('shift_name', 'like', "%{$selectedShift}%");
+        }
+
+        if (!empty($selectedType)) {
+            $query->where('schedule_type', $selectedType);
+        }
+
+        $schedules = $query->orderBy('day_of_week')
+            ->orderBy('start_time')
+            ->get();
+
+        $daysList = WorkSchedule::getDaysList();
+        // Apenas Segunda a Sábado para a grade principal (e Domingo se houver registro)
+        $hasSunday = $schedules->contains('day_of_week', 0);
+        $activeDays = [1, 2, 3, 4, 5, 6];
+        if ($hasSunday) {
+            $activeDays[] = 0;
+        }
+
+        $dayColorConfigs = WorkSchedule::getDayColorConfig();
+
+        // Professores presentes nesta grade para a legenda de cores
+        $teachersInSchedule = $schedules->pluck('user')
+            ->filter()
+            ->unique('id')
+            ->sortBy('name')
+            ->values();
+
+        // Identifica os slots de horários existentes ordenados por início
+        $timeSlots = $schedules->map(function ($s) {
+            return [
+                'start' => substr($s->start_time, 0, 5),
+                'end'   => substr($s->end_time, 0, 5),
+                'key'   => substr($s->start_time, 0, 5) . ' às ' . substr($s->end_time, 0, 5),
+            ];
+        })->unique('key')->sortBy('start')->values();
+
+        // Agrupa por dia da semana
+        $schedulesByDay = $schedules->groupBy('day_of_week');
+
+        return view('admin.work-schedules.print', [
+            'units'              => $units,
+            'selectedUnit'       => $selectedUnit,
+            'selectedShift'      => $selectedShift,
+            'selectedType'       => $selectedType,
+            'schedules'          => $schedules,
+            'schedulesByDay'     => $schedulesByDay,
+            'activeDays'         => $activeDays,
+            'daysList'           => $daysList,
+            'dayColorConfigs'    => $dayColorConfigs,
+            'teachersInSchedule' => $teachersInSchedule,
+            'timeSlots'          => $timeSlots,
+        ]);
     }
 }
 
