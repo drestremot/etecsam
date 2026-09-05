@@ -74,6 +74,10 @@
                 slots: [],
                 counter: 1,
 
+                // Modal de Edição de Slot Específico
+                showEditModal: false,
+                editingSlot: null,
+
                 init() {
                     if (this.userId) {
                         this.syncUserRoleType();
@@ -167,7 +171,6 @@
                     } else {
                         this.currentScheduleType = 'class';
                         this.currentShiftName = '';
-                        // Se o professor tiver disciplinas atribuídas, seleciona o modo 'assigned'
                         if (this.userAssignedSubjects.length > 0) {
                             this.subjectSelectionMode = 'assigned';
                         }
@@ -271,7 +274,6 @@
                             this.currentCourseName = sub.course_title || this.getCourseName(sub.course_id);
                         }
 
-                        // Detecção automática de Turma A ou B no título
                         if (sub.name.includes('(A)') || sub.name.toUpperCase().includes('TURMA A')) {
                             this.currentDivision = 'A';
                         } else if (sub.name.includes('(B)') || sub.name.toUpperCase().includes('TURMA B')) {
@@ -280,7 +282,6 @@
                             this.currentDivision = '';
                         }
 
-                        // Sugere o nome da turma / módulo
                         if (sub.course_title) {
                             const parts = sub.course_title.split('-');
                             if (parts.length > 1) {
@@ -472,6 +473,90 @@
                     }
                 },
 
+                // ==========================================
+                // MODAL DE EDIÇÃO DE SLOT ESPECÍFICO
+                // ==========================================
+                openEditSlot(tempId) {
+                    const slot = this.slots.find(s => s.temp_id === tempId);
+                    if (!slot) return;
+                    this.editingSlot = JSON.parse(JSON.stringify(slot));
+                    this.showEditModal = true;
+                },
+
+                closeEditModal() {
+                    this.showEditModal = false;
+                    this.editingSlot = null;
+                },
+
+                selectAssignedSubjectForEditing(subId) {
+                    if (!this.editingSlot) return;
+                    if (!subId) {
+                        this.editingSlot.subject_id = null;
+                        this.editingSlot.subject_name = '';
+                        return;
+                    }
+                    const sub = this.userAssignedSubjects.find(s => String(s.id) === String(subId));
+                    if (sub) {
+                        this.editingSlot.subject_id = sub.id;
+                        this.editingSlot.subject_name = sub.name;
+                        if (sub.course_id) {
+                            this.editingSlot.course_id = sub.course_id;
+                            this.editingSlot.course_name = sub.course_title || this.getCourseName(sub.course_id);
+                        }
+                        if (sub.name.includes('(A)') || sub.name.toUpperCase().includes('TURMA A')) {
+                            this.editingSlot.division = 'A';
+                        } else if (sub.name.includes('(B)') || sub.name.toUpperCase().includes('TURMA B')) {
+                            this.editingSlot.division = 'B';
+                        } else {
+                            this.editingSlot.division = '';
+                        }
+                        if (sub.course_title && !this.editingSlot.class_name) {
+                            const parts = sub.course_title.split('-');
+                            if (parts.length > 1) {
+                                this.editingSlot.class_name = parts[parts.length - 1].trim();
+                            }
+                        }
+                    }
+                },
+
+                onEditingCourseChange() {
+                    if (!this.editingSlot) return;
+                    if (this.editingSlot.course_id) {
+                        const course = this.courses.find(c => String(c.id) === String(this.editingSlot.course_id));
+                        if (course) {
+                            this.editingSlot.course_name = course.title;
+                        }
+                    } else {
+                        this.editingSlot.course_name = '';
+                    }
+                },
+
+                appendEditingTurmaDivision(div) {
+                    if (!this.editingSlot) return;
+                    this.editingSlot.division = div;
+                    let sub = (this.editingSlot.subject_name || '').trim();
+                    sub = sub.replace(/\s*\(?(Turma\s*)?[AB]\)?\s*$/i, '').trim();
+                    if (div === 'A') {
+                        this.editingSlot.subject_name = sub ? `${sub} (A)` : 'Turma (A)';
+                    } else if (div === 'B') {
+                        this.editingSlot.subject_name = sub ? `${sub} (B)` : 'Turma (B)';
+                    } else {
+                        this.editingSlot.subject_name = sub;
+                    }
+                },
+
+                saveEditingSlot() {
+                    if (!this.editingSlot) return;
+                    const idx = this.slots.findIndex(s => s.temp_id === this.editingSlot.temp_id);
+                    if (idx !== -1) {
+                        if (this.editingSlot.course_id && !this.editingSlot.course_name) {
+                            this.editingSlot.course_name = this.getCourseName(this.editingSlot.course_id);
+                        }
+                        this.slots[idx] = JSON.parse(JSON.stringify(this.editingSlot));
+                    }
+                    this.closeEditModal();
+                },
+
                 prepareSubmit(event) {
                     if (!this.userId) {
                         event.preventDefault();
@@ -509,7 +594,7 @@
                     <span>Montar Grade de Horários do Docente</span>
                 </h1>
                 <p class="text-xs text-gray-600 mt-0.5">
-                    O sistema busca automaticamente as disciplinas atribuídas ao docente para montar a grade e publicar aos alunos.
+                    Atribua e edite as disciplinas, cursos e turmas de cada horário para gerar a grade oficial para publicação aos alunos.
                 </p>
             </div>
 
@@ -985,6 +1070,7 @@
                                             <template x-for="slot in getDaySlots(day)" :key="slot.temp_id">
                                                 <div class="relative rounded-xl border bg-white p-3 shadow-2xs hover:shadow-xs transition flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5"
                                                      :style="'border-left-width: 5px; border-left-color: ' + getDayColor(day).hex + '; border-color: ' + (getDayColor(day).border_hex || getDayColor(day).hex) + '70;'">
+                                                    
                                                     <div class="flex items-center gap-3 min-w-0 flex-1">
                                                         <!-- Horário Badge com Cor do Dia -->
                                                         <div class="rounded-lg px-2.5 py-1 text-center flex-shrink-0 border shadow-2xs"
@@ -1027,6 +1113,15 @@
                                                                     <!-- Nome da Disciplina e Turma -->
                                                                     <div class="text-xs font-bold text-gray-900 flex items-center gap-1.5 flex-wrap">
                                                                         <span x-text="slot.subject_name || slot.shift_name || 'Aula'"></span>
+                                                                        
+                                                                        <!-- Se não tiver disciplina definida, exibe botão de ação rápida -->
+                                                                        <template x-if="!slot.subject_name || slot.subject_name === 'Aula'">
+                                                                            <button type="button" @click="openEditSlot(slot.temp_id)"
+                                                                                    class="rounded bg-amber-100 text-amber-900 border border-amber-300 px-1.5 py-0.2 text-[9.5px] font-bold hover:bg-amber-200 transition">
+                                                                                + Atribuir Disciplina
+                                                                            </button>
+                                                                        </template>
+
                                                                         <template x-if="slot.division === 'A' || (slot.subject_name && (slot.subject_name.includes('(A)') || slot.subject_name.toUpperCase().includes('TURMA A')))">
                                                                             <span class="rounded bg-sky-100 text-sky-800 border border-sky-300 px-1.5 py-0.2 text-[9px] font-extrabold">Turma (A)</span>
                                                                         </template>
@@ -1060,13 +1155,23 @@
                                                         </div>
                                                     </div>
 
-                                                    <!-- Botão Remover Slot Individual -->
-                                                    <button type="button"
-                                                            @click="removeSlot(slot.temp_id)"
-                                                            class="w-7 h-7 rounded-lg bg-gray-100 hover:bg-rose-100 text-gray-400 hover:text-rose-600 flex items-center justify-center transition flex-shrink-0 cursor-pointer"
-                                                            title="Remover horário">
-                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                                                    </button>
+                                                    <!-- Botões de Ação: Editar Slot (✏️) & Remover Slot (🗑️) -->
+                                                    <div class="flex items-center gap-1 flex-shrink-0">
+                                                        <button type="button"
+                                                                @click="openEditSlot(slot.temp_id)"
+                                                                class="w-8 h-8 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 flex items-center justify-center transition cursor-pointer"
+                                                                title="Editar disciplina, curso ou horário desta aula">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                                        </button>
+
+                                                        <button type="button"
+                                                                @click="removeSlot(slot.temp_id)"
+                                                                class="w-8 h-8 rounded-xl bg-gray-100 hover:bg-rose-100 text-gray-400 hover:text-rose-600 flex items-center justify-center transition cursor-pointer"
+                                                                title="Remover horário">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                                        </button>
+                                                    </div>
+
                                                 </div>
                                             </template>
                                         </div>
@@ -1116,6 +1221,144 @@
 
             </div>
         </form>
+
+        {{-- ========================================================================= --}}
+        {{-- MODAL INTERATIVO: EDITAR DISCIPLINA / CURSO DO HORÁRIO (QUICK EDIT)       --}}
+        {{-- ========================================================================= --}}
+        <template x-if="showEditModal && editingSlot">
+            <div class="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+                <div @click.outside="closeEditModal()"
+                     class="relative w-full max-w-lg bg-white rounded-3xl p-6 shadow-2xl space-y-4 border border-gray-100 transition">
+
+                    <!-- Modal Header -->
+                    <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm font-black">
+                                ✏️
+                            </span>
+                            <div>
+                                <h3 class="text-sm sm:text-base font-bold text-gray-900">Editar Disciplina & Horário</h3>
+                                <p class="text-[11px] text-gray-500" x-text="daysList[editingSlot.day_of_week] + ' • ' + editingSlot.start_time + ' às ' + editingSlot.end_time"></p>
+                            </div>
+                        </div>
+                        <button type="button" @click="closeEditModal()" class="w-8 h-8 rounded-xl bg-gray-100 text-gray-400 hover:text-gray-700 flex items-center justify-center transition cursor-pointer">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </button>
+                    </div>
+
+                    <!-- Modal Body Form -->
+                    <div class="space-y-3.5 text-xs">
+
+                        <!-- 1. Disciplinas Atribuídas ao Docente (Atalho Rápido) -->
+                        <template x-if="userAssignedSubjects.length > 0">
+                            <div class="p-3 bg-indigo-50/60 rounded-2xl border border-indigo-100 space-y-1.5">
+                                <label class="block text-[11px] font-bold text-indigo-950 uppercase">
+                                    ✨ Atribuir Disciplina do Docente:
+                                </label>
+                                <select @change="selectAssignedSubjectForEditing($event.target.value)"
+                                        class="w-full rounded-xl border border-indigo-300 px-3 py-2 text-xs font-semibold text-gray-900 bg-white focus:ring-2 focus:ring-indigo-400">
+                                    <option value="">-- Selecione uma das disciplinas deste professor --</option>
+                                    <template x-for="sub in userAssignedSubjects" :key="'modal-sub-'+sub.id">
+                                        <option :value="sub.id" :selected="String(editingSlot.subject_id) === String(sub.id)"
+                                                x-text="sub.name + (sub.course_title ? ' ➔ ' + sub.course_title : '')"></option>
+                                    </template>
+                                </select>
+                            </div>
+                        </template>
+
+                        <!-- 2. Seleção de Curso -->
+                        <div>
+                            <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Curso</label>
+                            <select x-model="editingSlot.course_id" @change="onEditingCourseChange()"
+                                    class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs text-gray-900 bg-white focus:ring-2 focus:ring-indigo-400">
+                                <option value="">-- Sem Curso Específico --</option>
+                                <template x-for="c in courses" :key="'modal-crs-'+c.id">
+                                    <option :value="c.id" :selected="String(editingSlot.course_id) === String(c.id)" x-text="c.title + (c.type ? ' (' + c.type + ')' : '')"></option>
+                                </template>
+                            </select>
+                        </div>
+
+                        <!-- 3. Nome da Disciplina & Divisão de Turma -->
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <label class="text-[11px] font-bold text-gray-700 uppercase">Nome da Disciplina *</label>
+                                <div class="flex items-center gap-1">
+                                    <span class="text-[10px] text-gray-500">Turma:</span>
+                                    <button type="button" @click="appendEditingTurmaDivision('A')"
+                                            :class="editingSlot.division === 'A' ? 'bg-sky-600 text-white font-bold' : 'bg-sky-50 text-sky-800 border-sky-300 hover:bg-sky-100'"
+                                            class="rounded border px-1.5 py-0.5 text-[10px] font-semibold transition cursor-pointer">
+                                        (A)
+                                    </button>
+                                    <button type="button" @click="appendEditingTurmaDivision('B')"
+                                            :class="editingSlot.division === 'B' ? 'bg-orange-600 text-white font-bold' : 'bg-orange-50 text-orange-800 border-orange-300 hover:bg-orange-100'"
+                                            class="rounded border px-1.5 py-0.5 text-[10px] font-semibold transition cursor-pointer">
+                                        (B)
+                                    </button>
+                                    <button type="button" @click="appendEditingTurmaDivision('')"
+                                            :class="!editingSlot.division ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+                                            class="rounded px-1.5 py-0.5 text-[10px] font-medium transition cursor-pointer">
+                                        Geral
+                                    </button>
+                                </div>
+                            </div>
+                            <input type="text" x-model="editingSlot.subject_name" list="all_subjects_datalist"
+                                   placeholder="Ex: Matemática (A), Programação Web..."
+                                   class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs text-gray-900 bg-white font-medium focus:ring-2 focus:ring-indigo-400">
+                        </div>
+
+                        <!-- 4. Turma/Série & Sala/Laboratório -->
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-1">Turma / Série</label>
+                                <input type="text" x-model="editingSlot.class_name" placeholder="Ex: 1º Info B, 2º Adm"
+                                       class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs text-gray-900 bg-white">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-1">Sala / Lab</label>
+                                <input type="text" x-model="editingSlot.classroom" placeholder="Ex: Lab 01, Sala 04"
+                                       class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs text-gray-900 bg-white">
+                            </div>
+                        </div>
+
+                        <!-- 5. Horários de Início & Término -->
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-1">Início</label>
+                                <input type="time" x-model="editingSlot.start_time" required
+                                       class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs font-mono font-bold text-gray-900 bg-white">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-1">Término</label>
+                                <input type="time" x-model="editingSlot.end_time" required
+                                       class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs font-mono font-bold text-gray-900 bg-white">
+                            </div>
+                        </div>
+
+                        <!-- 6. Unidade Escolar -->
+                        <div>
+                            <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-1">Unidade Escolar</label>
+                            <select x-model="editingSlot.unit_id" class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs text-gray-900 bg-white">
+                                <template x-for="un in units" :key="'modal-unit-'+un.id">
+                                    <option :value="un.id" :selected="String(editingSlot.unit_id) === String(un.id)" x-text="un.name + (un.city ? ' - ' + un.city : '')"></option>
+                                </template>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Modal Actions Footer -->
+                    <div class="pt-3 border-t border-gray-100 flex items-center justify-end gap-2.5">
+                        <button type="button" @click="closeEditModal()" class="rounded-xl border border-gray-300 px-4 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 transition cursor-pointer">
+                            Cancelar
+                        </button>
+                        <button type="button" @click="saveEditingSlot()" class="rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-2 text-xs shadow-md shadow-emerald-200 transition flex items-center gap-1.5 cursor-pointer">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            <span>Salvar Alteração</span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </template>
 
     </div>
 
