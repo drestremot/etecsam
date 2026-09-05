@@ -201,30 +201,26 @@
                 </div>
             </div>
 
-            <!-- Matriz Semanal em Tabela / Colunas (Coluna de Aulas + Segunda a Sexta/Sábado) -->
+            <!-- Matriz Semanal em Tabela / Colunas (Coluna de Aulas Vertical + Segunda a Sexta/Sábado) -->
             <div class="w-full overflow-x-auto print:overflow-visible">
-                <div class="grid gap-2.5 items-start min-w-[820px] print:min-w-0"
-                     style="grid-template-columns: minmax(75px, 95px) repeat({{ count($activeDays) }}, minmax(0, 1fr));">
+                <div class="grid gap-1.5 sm:gap-2.5 items-start min-w-[780px] print:min-w-0"
+                     style="grid-template-columns: 28px repeat({{ count($activeDays) }}, minmax(0, 1fr));">
 
-                    <!-- Coluna de Aulas / Horários (Antes de Segunda-feira, sem bordas e perfeitamente centralizada) -->
-                    <div class="flex flex-col print-page-break justify-start">
-                        <!-- Espaçador do Cabeçalho alinhado com os dias da semana -->
-                        <div class="h-[36px] flex items-center justify-center font-extrabold text-[11px] text-gray-700 uppercase tracking-wider">
-                            <span>AULAS</span>
-                        </div>
+                    <!-- Coluna Lateral de Aulas (Vertical Rotacionada -90deg, sem bordas) -->
+                    <div class="flex flex-col print-page-break justify-start w-7 flex-shrink-0">
+                        <!-- Espaçador no topo com a mesma altura do cabeçalho dos dias -->
+                        <div class="h-[36px] flex items-center justify-center"></div>
 
-                        <!-- Lista de Aulas (Apenas os cards pretos, centralizados verticalmente em frente a cada card) -->
-                        <div class="p-2 space-y-2 flex-1 flex flex-col">
+                        <!-- Lista de Badges Rotacionados (Alinhados ao centro vertical de cada card) -->
+                        <div class="p-2 space-y-2 flex-1 flex flex-col justify-start">
                             @forelse($timeSlots as $slotIdx => $slotItem)
                                 <div class="flex items-center justify-center min-h-[80px]">
-                                    <span class="rounded-xl bg-gray-900 text-white px-2.5 py-1.5 text-[10.5px] font-black uppercase tracking-wider shadow-sm text-center leading-none">
+                                    <span class="rounded-lg bg-gray-950 text-white px-2 py-0.5 text-[8.5px] font-black uppercase tracking-wider whitespace-nowrap shadow-xs -rotate-90 inline-block select-none transform origin-center">
                                         {{ $slotIdx + 1 }}ª AULA
                                     </span>
                                 </div>
                             @empty
-                                <div class="py-6 text-center text-xs text-gray-400 italic">
-                                    -
-                                </div>
+                                <div class="py-6 text-center text-xs text-gray-400 italic"></div>
                             @endforelse
                         </div>
                     </div>
