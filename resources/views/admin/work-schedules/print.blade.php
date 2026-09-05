@@ -142,17 +142,23 @@
             <!-- Cabeçalho Oficial da Instituição / Grade Escolar -->
             <div class="border-b-2 border-gray-800 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 rounded-2xl bg-indigo-900 text-white flex items-center justify-center font-black text-xl shadow-sm">
-                        SAM
+                    <div class="w-12 h-12 rounded-2xl bg-indigo-900 text-white flex items-center justify-center font-black text-xl shadow-sm flex-shrink-0">
+                        @if(file_exists(public_path('imagens/logo/etec.png')))
+                            <img src="{{ asset('imagens/logo/etec.png') }}" alt="ETEC" class="h-8 w-auto object-contain">
+                        @else
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                        @endif
                     </div>
                     <div>
                         <h2 class="text-base sm:text-lg font-black uppercase tracking-tight text-gray-900">
-                            ETEC SANTO ANTÔNIO DE MATÃO
+                            {{ $selectedUnit ? $selectedUnit->name : 'GRADE DE HORÁRIOS' }}
                         </h2>
                         <div class="text-xs font-semibold text-gray-700 flex items-center gap-2 flex-wrap">
-                            <span class="inline-flex items-center gap-1">
-                                🏢 {{ $selectedUnit ? $selectedUnit->name . ' (' . $selectedUnit->city . ')' : 'Todas as Unidades' }}
-                            </span>
+                            @if($selectedUnit && $selectedUnit->city && !str_contains(strtoupper($selectedUnit->name), strtoupper($selectedUnit->city)))
+                                <span class="inline-flex items-center gap-1 text-gray-600">
+                                    🏢 {{ $selectedUnit->city }}
+                                </span>
+                            @endif
                             @if($selectedCourse)
                                 <span class="rounded bg-indigo-100 text-indigo-900 border border-indigo-200 px-2 py-0.5 font-bold">
                                     🎓 {{ $selectedCourse->title }}
@@ -162,6 +168,9 @@
                                 <span class="rounded bg-emerald-100 text-emerald-900 border border-emerald-200 px-2 py-0.5 font-bold">
                                     👨‍🏫 Docente: {{ $selectedTeacher->name }}
                                 </span>
+                            @endif
+                            @if(!$selectedUnit)
+                                <span class="text-gray-500 font-medium">🏢 Todas as Unidades</span>
                             @endif
                         </div>
                     </div>

@@ -60,7 +60,7 @@
                 currentStartTime: '07:10',
                 currentEndTime: '12:35',
                 currentShiftName: '',
-                
+
                 // Atribuições Acadêmicas (Docente)
                 currentCourseId: '',
                 currentCourseName: '',
@@ -69,10 +69,10 @@
                 currentDivision: '',
                 currentClassName: '',
                 currentClassroom: '',
-                
+
                 // Modo de seleção de disciplinas: 'assigned' (atribuídas ao docente) ou 'all' (geral de cursos)
                 subjectSelectionMode: 'assigned',
-                
+
                 currentBreakStart: '',
                 currentBreakEnd: '',
                 currentTolerance: 15,
@@ -959,7 +959,7 @@
                 <div class="lg:col-span-7 space-y-4">
 
                     <div class="rounded-3xl border border-gray-200 bg-white p-5 shadow-xs space-y-4">
-                        
+
                         <!-- Top Header da Grade -->
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-100 pb-3">
                             <div class="flex items-center gap-2">
@@ -1005,7 +1005,7 @@
                                             <template x-for="slot in getDaySlots(day)" :key="slot.temp_id">
                                                 <div class="relative rounded-xl border bg-white p-3 shadow-2xs hover:shadow-xs transition flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5"
                                                      :style="'border-left-width: 5px; border-left-color: ' + getDayColor(day).hex + '; border-color: ' + (getDayColor(day).border_hex || getDayColor(day).hex) + '70;'">
-                                                    
+
                                                     <div class="flex items-center gap-3 min-w-0 flex-1">
                                                         <!-- Horário Badge com Cor do Dia -->
                                                         <div class="rounded-lg px-2.5 py-1 text-center flex-shrink-0 border shadow-2xs"
@@ -1048,7 +1048,7 @@
                                                                     <!-- Nome da Disciplina e Turma -->
                                                                     <div class="text-xs font-bold text-gray-900 flex items-center gap-1.5 flex-wrap">
                                                                         <span x-text="slot.subject_name || slot.shift_name || 'Aula'"></span>
-                                                                        
+
                                                                         <!-- Se não tiver disciplina definida, exibe botão de ação rápida -->
                                                                         <template x-if="!slot.subject_name || slot.subject_name === 'Aula'">
                                                                             <button type="button" @click.stop="openEditSlot(slot)"
@@ -1164,7 +1164,7 @@
              x-cloak
              @keydown.escape.window="closeEditModal()"
              class="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-            
+
             <!-- Backdrop Click -->
             <div class="fixed inset-0" @click="closeEditModal()"></div>
 
