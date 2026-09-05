@@ -721,7 +721,7 @@
                         <!-- Visualização da Grade Agrupada por Dias (Com Cores Exclusivas por Dia) -->
                         <div class="space-y-4">
                             <template x-for="day in [1, 2, 3, 4, 5, 6, 0]" :key="day">
-                                <div class="rounded-2xl border transition overflow-hidden"
+                                <div class="rounded-2xl border-2 transition overflow-hidden"
                                      :style="getDaySlots(day).length > 0 ? ('border-color: ' + getDayColor(day).hex + '; background-color: ' + getDayColor(day).light_bg) : 'border-color: #e5e7eb; background-color: #fcfcfc; opacity: 0.85;'">
 
                                     <!-- Cabeçalho do Dia (Com Cor Sólida Temática e Alto Contraste) -->
@@ -746,13 +746,13 @@
                                         <div class="space-y-2">
                                             <template x-for="slot in getDaySlots(day)" :key="slot.temp_id">
                                                 <div class="relative rounded-xl border bg-white p-3 shadow-2xs hover:shadow-xs transition flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5"
-                                                     :style="'border-left-width: 4.5px; border-left-color: ' + selectedUserColor.dot">
+                                                     :style="'border-left-width: 5px; border-left-color: ' + getDayColor(day).hex + '; border-color: ' + (getDayColor(day).border_hex || getDayColor(day).hex) + '70;'">
                                                     <div class="flex items-center gap-3 min-w-0 flex-1">
-                                                        <!-- Horário Badge -->
-                                                        <div class="rounded-lg px-2.5 py-1 text-center flex-shrink-0 border"
-                                                             :style="'background-color: ' + selectedUserColor.bg + '; border-color: ' + selectedUserColor.border">
-                                                            <div class="text-xs font-mono font-bold" :style="'color: ' + selectedUserColor.text" x-text="slot.start_time + ' - ' + slot.end_time"></div>
-                                                            <div class="text-[9.5px] font-semibold opacity-75" :style="'color: ' + selectedUserColor.text" x-text="calculateDuration(slot.start_time, slot.end_time)"></div>
+                                                        <!-- Horário Badge com Cor do Dia -->
+                                                        <div class="rounded-lg px-2.5 py-1 text-center flex-shrink-0 border shadow-2xs"
+                                                             :style="'background-color: ' + getDayColor(day).light_bg + '; border-color: ' + (getDayColor(day).border_hex || getDayColor(day).hex) + '; color: ' + getDayColor(day).hex">
+                                                            <div class="text-xs font-mono font-bold" x-text="slot.start_time + ' - ' + slot.end_time"></div>
+                                                            <div class="text-[9.5px] font-semibold opacity-85" x-text="calculateDuration(slot.start_time, slot.end_time)"></div>
                                                         </div>
 
                                                         <!-- Detalhes do Horário / Disciplina / Turma -->

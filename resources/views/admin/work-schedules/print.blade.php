@@ -168,8 +168,8 @@
                         $daySlots = $schedulesByDay->get($day, collect())->sortBy('start_time');
                     @endphp
 
-                    <div class="rounded-2xl border transition overflow-hidden print-page-break"
-                         style="border-color: {{ $dayConf['hex'] }}50; background-color: {{ $dayConf['light_bg'] }};">
+                    <div class="rounded-2xl border-2 transition overflow-hidden print-page-break"
+                         style="border-color: {{ $dayConf['hex'] }}; background-color: {{ $dayConf['light_bg'] }};">
 
                         <!-- Cabeçalho do Dia com Cor Temática -->
                         <div class="px-3.5 py-2.5 text-white flex items-center justify-between"
@@ -193,15 +193,16 @@
                                 @endphp
 
                                 <div class="rounded-xl p-2.5 border text-left shadow-2xs transition print-page-break bg-white"
-                                     style="border-left-width: 4.5px; border-left-color: {{ $tColor['dot'] }}; border-color: {{ $tColor['border'] }};">
+                                     style="border-left-width: 5px; border-left-color: {{ $dayConf['hex'] }}; border-color: {{ $dayConf['border_hex'] }};">
 
                                     <!-- Linha 1: Horário e Turno -->
-                                    <div class="flex items-center justify-between gap-1 mb-1 pb-1 border-b border-gray-100">
-                                        <span class="font-mono text-[11px] font-extrabold text-gray-900">
+                                    <div class="flex items-center justify-between gap-1 mb-1.5 pb-1 border-b" style="border-color: {{ $dayConf['border_hex'] }}50;">
+                                        <span class="font-mono text-[11px] font-extrabold px-1.5 py-0.5 rounded shadow-2xs"
+                                              style="background-color: {{ $dayConf['light_bg'] }}; color: {{ $dayConf['hex'] }}; border: 1px solid {{ $dayConf['border_hex'] }};">
                                             {{ $sched->formatted_start_time }} - {{ $sched->formatted_end_time }}
                                         </span>
                                         @if($sched->shift_name)
-                                            <span class="text-[9.5px] font-medium text-gray-500 truncate max-w-[90px]">
+                                            <span class="text-[9.5px] font-semibold text-gray-500 truncate max-w-[90px]">
                                                 {{ $sched->shift_name }}
                                             </span>
                                         @endif
@@ -209,7 +210,7 @@
 
                                     <!-- Linha 2: Professor com Cor Exclusiva -->
                                     <div class="flex items-center gap-1.5 mb-1.5">
-                                        <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background-color: {{ $tColor['dot'] }};"></span>
+                                        <span class="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-2xs" style="background-color: {{ $tColor['dot'] }};" title="{{ $tColor['name'] }}"></span>
                                         <span class="font-bold text-xs truncate text-gray-900" title="{{ $sched->user->name }}">
                                             {{ $sched->user->name }}
                                         </span>
