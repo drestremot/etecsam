@@ -142,38 +142,38 @@
             <!-- Cabeçalho Oficial da Instituição / Grade Escolar -->
             <div class="border-b-2 border-gray-800 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex items-center gap-3.5">
-                    <div class="w-12 h-12 rounded-2xl bg-indigo-900 text-white flex items-center justify-center font-black text-xl shadow-sm flex-shrink-0">
+                    <div class="w-14 h-14 rounded-2xl bg-white border border-gray-200 p-1.5 flex items-center justify-center shadow-xs flex-shrink-0">
                         @if(file_exists(public_path('imagens/logo/etec.png')))
-                            <img src="{{ asset('imagens/logo/etec.png') }}" alt="ETEC" class="h-8 w-auto object-contain">
+                            <img src="{{ asset('imagens/logo/etec.png') }}" alt="ETEC" class="h-10 w-auto object-contain">
                         @else
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                            <div class="w-10 h-10 rounded-xl bg-indigo-900 text-white flex items-center justify-center font-black text-sm">ETEC</div>
                         @endif
                     </div>
                     <div>
-                        <div class="text-[10.5px] font-extrabold text-indigo-900 uppercase tracking-wider">
+                        <div class="text-[10px] font-extrabold text-indigo-900 uppercase tracking-widest">
                             CENTRO PAULA SOUZA • GOVERNO DO ESTADO DE SÃO PAULO
                         </div>
-                        <h2 class="text-base sm:text-lg font-black uppercase tracking-tight text-gray-900">
+                        <h2 class="text-lg sm:text-xl font-black uppercase tracking-tight text-gray-900 leading-tight">
                             ETEC SEBASTIANA AUGUSTA DE MORAES
                         </h2>
-                        <div class="text-xs font-semibold text-gray-700 flex items-center gap-2 flex-wrap mt-0.5">
+                        <div class="text-xs sm:text-sm font-semibold text-gray-800 flex items-center gap-2 flex-wrap mt-0.5">
                             @if($selectedUnit)
-                                <span class="inline-flex items-center gap-1 font-bold text-gray-800 bg-gray-100 border border-gray-200 px-2 py-0.5 rounded">
-                                    🏢 {{ $selectedUnit->name }} {{ ($selectedUnit->city && !str_contains(strtoupper($selectedUnit->name), strtoupper($selectedUnit->city))) ? ' (' . $selectedUnit->city . ')' : '' }}
+                                <span class="inline-flex items-center gap-1.5 font-black text-gray-900 bg-gray-100 border border-gray-300 px-2.5 py-0.5 rounded-lg">
+                                    🏢 {{ $selectedUnit->name }} {{ ($selectedUnit->city && !str_contains(strtoupper($selectedUnit->name), strtoupper($selectedUnit->city))) ? ' — ' . $selectedUnit->city : '' }}
                                 </span>
                             @else
-                                <span class="inline-flex items-center gap-1 text-gray-600 bg-gray-100 px-2 py-0.5 rounded">
+                                <span class="inline-flex items-center gap-1.5 font-bold text-gray-700 bg-gray-100 border border-gray-200 px-2.5 py-0.5 rounded-lg">
                                     🏢 Todas as Unidades / Sedes
                                 </span>
                             @endif
                             @if($selectedCourse)
-                                <span class="rounded bg-indigo-100 text-indigo-900 border border-indigo-200 px-2 py-0.5 font-bold">
+                                <span class="rounded-lg bg-indigo-100 text-indigo-950 border border-indigo-300 px-2.5 py-0.5 font-black">
                                     🎓 {{ $selectedCourse->title }}
                                 </span>
                             @endif
                             @if($selectedTeacher)
-                                <span class="rounded bg-emerald-100 text-emerald-900 border border-emerald-200 px-2 py-0.5 font-bold">
-                                    👨‍🏫 Docente: {{ $selectedTeacher->name }}
+                                <span class="rounded-lg bg-emerald-100 text-emerald-950 border border-emerald-300 px-2.5 py-0.5 font-black">
+                                    👨‍🏫 {{ $selectedTeacher->name }}
                                 </span>
                             @endif
                         </div>
