@@ -52,6 +52,23 @@ class User extends Authenticatable
         return $this->hasOne(Teacher::class, 'email', 'email');
     }
 
+    public function getTeacherProfileAttribute(): ?Teacher
+    {
+        return $this->teacher ?? Teacher::where('email', $this->email)->orWhere('name', $this->name)->first();
+    }
+
+    public function getAssignedSubjectsAttribute()
+    {
+        $teacher = $this->teacher_profile;
+        if ($teacher) {
+            return Subject::with('course:id,title,type,unit_id')
+                ->where('teacher_id', $teacher->id)
+                ->orderBy('name')
+                ->get();
+        }
+        return collect();
+    }
+
     public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class);

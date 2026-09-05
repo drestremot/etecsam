@@ -23,4 +23,9 @@ class Teacher extends Model
     ];
 
     protected $casts = ['is_active' => 'boolean'];
+
+    public function subjects()
+    {
+        return $this->hasMany(Subject::class);
+    }
 }

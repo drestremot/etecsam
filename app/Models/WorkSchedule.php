@@ -17,9 +17,13 @@ class WorkSchedule extends Model
         'user_id',
         'unit_id',
         'day_of_week',
+        'course_id',
+        'subject_id',
+        'course_name',
         'shift_name',
         'subject_name',
         'class_name',
+        'division',
         'classroom',
         'schedule_type',
         'start_time',
@@ -33,6 +37,8 @@ class WorkSchedule extends Model
     protected function casts(): array
     {
         return [
+            'course_id'         => 'integer',
+            'subject_id'        => 'integer',
             'day_of_week'       => 'integer',
             'tolerance_minutes' => 'integer',
             'is_active'         => 'boolean',
@@ -47,6 +53,16 @@ class WorkSchedule extends Model
     public function unit(): BelongsTo
     {
         return $this->belongsTo(Unit::class);
+    }
+
+    public function course(): BelongsTo
+    {
+        return $this->belongsTo(Course::class);
+    }
+
+    public function subject(): BelongsTo
+    {
+        return $this->belongsTo(Subject::class);
     }
 
     public function timeClockRecords(): HasMany
