@@ -206,22 +206,19 @@
                 <div class="grid gap-2.5 items-start min-w-[820px] print:min-w-0"
                      style="grid-template-columns: minmax(75px, 95px) repeat({{ count($activeDays) }}, minmax(0, 1fr));">
 
-                    <!-- Coluna de Aulas / Horários (Antes de Segunda-feira) -->
-                    <div class="rounded-2xl border-2 border-slate-300 overflow-hidden flex flex-col bg-white shadow-2xs print-page-break">
-                        <!-- Cabeçalho Aulas -->
-                        <div class="px-2 py-2 bg-slate-800 text-white flex items-center justify-center font-extrabold text-xs tracking-wide">
+                    <!-- Coluna de Aulas / Horários (Antes de Segunda-feira, sem bordas e perfeitamente centralizada) -->
+                    <div class="flex flex-col print-page-break justify-start">
+                        <!-- Espaçador do Cabeçalho alinhado com os dias da semana -->
+                        <div class="h-[36px] flex items-center justify-center font-extrabold text-[11px] text-gray-700 uppercase tracking-wider">
                             <span>AULAS</span>
                         </div>
 
-                        <!-- Lista de Aulas (1ª Aula, 2ª Aula, 3ª Aula...) -->
-                        <div class="p-2 space-y-2 flex-1 bg-slate-50/60 flex flex-col">
+                        <!-- Lista de Aulas (Apenas os cards pretos, centralizados verticalmente em frente a cada card) -->
+                        <div class="p-2 space-y-2 flex-1 flex flex-col">
                             @forelse($timeSlots as $slotIdx => $slotItem)
-                                <div class="rounded-xl border border-slate-300/80 bg-white p-2 text-center shadow-2xs flex flex-col justify-center items-center space-y-1 min-h-[80px]">
-                                    <span class="rounded-md bg-slate-900 text-white px-1.5 py-0.5 text-[10px] font-black uppercase tracking-wider shadow-2xs">
-                                        {{ $slotIdx + 1 }}ª Aula
-                                    </span>
-                                    <span class="font-mono text-[9px] font-bold text-slate-700 leading-tight mt-0.5">
-                                        {{ $slotItem['start'] }}<br><span class="text-[8px] text-slate-400 font-normal">às</span><br>{{ $slotItem['end'] }}
+                                <div class="flex items-center justify-center min-h-[80px]">
+                                    <span class="rounded-xl bg-gray-900 text-white px-2.5 py-1.5 text-[10.5px] font-black uppercase tracking-wider shadow-sm text-center leading-none">
+                                        {{ $slotIdx + 1 }}ª AULA
                                     </span>
                                 </div>
                             @empty
@@ -265,7 +262,7 @@
                                 @forelse($timeSlots as $slotIdx => $slotItem)
                                     @php
                                         $slotsInTime = $daySlots->filter(function($item) use ($slotItem) {
-                                            return substr($item->start_time, 0, 5) === $slotItem['start'] 
+                                            return substr($item->start_time, 0, 5) === $slotItem['start']
                                                 && substr($item->end_time, 0, 5) === $slotItem['end'];
                                         });
                                         $firstSlot = $slotsInTime->first();
