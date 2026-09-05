@@ -685,7 +685,7 @@
                                         class="w-full rounded-2xl border border-gray-300 px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 bg-white font-semibold focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                                     <option value="">-- Selecione um Professor / Colaborador --</option>
                                     @foreach($users as $u)
-                                        <option value="{{ $u->id }}">{{ $u->name }} ({{ $u->role }})</option>
+                                        <option value="{{ $u->id }}">{{ $u->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -708,7 +708,7 @@
                                         <span class="w-3.5 h-3.5 rounded-full shadow-2xs" :style="'background-color: ' + selectedUserColor.dot"></span>
                                         <div class="truncate">
                                             <div class="font-bold truncate" x-text="selectedUserName"></div>
-                                            <div class="text-[11px] opacity-80" x-text="'Perfil: ' + selectedUser.role"></div>
+                                            <div class="text-[11px] opacity-80" x-text="selectedUser.role ? 'Perfil: ' + selectedUser.role : 'Perfil: Docente'"></div>
                                         </div>
                                     </div>
                                     <div class="flex items-center gap-1 flex-shrink-0">
@@ -1387,7 +1387,7 @@
                     <select name="user_id" required class="w-full rounded-2xl border border-gray-300 px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 bg-white font-semibold">
                         @foreach($users as $u)
                             <option value="{{ $u->id }}" {{ old('user_id', $schedule->user_id) == $u->id ? 'selected' : '' }}>
-                                {{ $u->name }} ({{ $u->role }})
+                                {{ $u->name }}
                             </option>
                         @endforeach
                     </select>
