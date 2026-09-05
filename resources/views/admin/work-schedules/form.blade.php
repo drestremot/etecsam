@@ -1,5 +1,11 @@
 @extends('layouts.operational')
 
+@push('styles')
+<style>
+    [x-cloak] { display: none !important; }
+</style>
+@endpush
+
 @section('content')
 <div class="min-h-screen bg-[#dfe1e5] px-3 sm:px-6 lg:px-8 py-5 sm:py-8 pb-24 sm:pb-10">
 
@@ -320,32 +326,35 @@
                                 const course = this.courses.find(c => String(c.id) === String(sub.course_id));
                                 if (course) this.currentCourseName = course.title;
                             }
-                            if (sub.name.includes('(A)') || sub.name.toUpperCase().includes('TURMA A')) {
-                                this.currentDivision = 'A';
-                            } else if (sub.name.includes('(B)') || sub.name.toUpperCase().includes('TURMA B')) {
-                                this.currentDivision = 'B';
-                            }
                         }
                     }
+                },
+
+                toggleDay(dayNum) {
+                    if (this.currentDays.includes(dayNum)) {
+                        this.currentDays = this.currentDays.filter(d => d !== dayNum);
+                    } else {
+                        this.currentDays.push(dayNum);
+                    }
+                },
+
+                selectAllDays() {
+                    this.currentDays = [1, 2, 3, 4, 5, 6];
                 },
 
                 selectWeekdays() {
                     this.currentDays = [1, 2, 3, 4, 5];
                 },
 
-                toggleDay(day) {
-                    if (this.currentDays.includes(day)) {
-                        this.currentDays = this.currentDays.filter(d => d !== day);
-                    } else {
-                        this.currentDays.push(day);
-                    }
+                clearDays() {
+                    this.currentDays = [];
                 },
 
-                applyPreset(start, end, name) {
+                setShiftPreset(start, end, label) {
                     this.currentStartTime = start;
                     this.currentEndTime = end;
-                    if (name && !this.currentShiftName) {
-                        this.currentShiftName = name;
+                    if (!this.currentShiftName) {
+                        this.currentShiftName = label;
                     }
                 },
 
@@ -476,9 +485,17 @@
                 // ==========================================
                 // MODAL DE EDIÇÃO DE SLOT ESPECÍFICO
                 // ==========================================
-                openEditSlot(tempId) {
-                    const slot = this.slots.find(s => s.temp_id === tempId);
-                    if (!slot) return;
+                openEditSlot(slotOrId) {
+                    let slot = null;
+                    if (typeof slotOrId === 'object' && slotOrId !== null) {
+                        slot = slotOrId;
+                    } else {
+                        slot = this.slots.find(s => String(s.temp_id) === String(slotOrId));
+                    }
+                    if (!slot) {
+                        console.warn('Slot não encontrado:', slotOrId);
+                        return;
+                    }
                     this.editingSlot = JSON.parse(JSON.stringify(slot));
                     this.showEditModal = true;
                 },
@@ -547,6 +564,14 @@
 
                 saveEditingSlot() {
                     if (!this.editingSlot) return;
+                    if (!this.editingSlot.start_time || !this.editingSlot.end_time) {
+                        alert('Informe os horários de início e término.');
+                        return;
+                    }
+                    if (this.editingSlot.end_time <= this.editingSlot.start_time) {
+                        alert('O horário de término deve ser posterior ao horário de início.');
+                        return;
+                    }
                     const idx = this.slots.findIndex(s => s.temp_id === this.editingSlot.temp_id);
                     if (idx !== -1) {
                         if (this.editingSlot.course_id && !this.editingSlot.course_name) {
@@ -639,381 +664,289 @@
                 {{-- ============================================================= --}}
                 {{-- COLUNA DA ESQUERDA (5 COLUNAS): SELEÇÃO & CONSTRUTOR DE AULA  --}}
                 {{-- ============================================================= --}}
-                <div class="lg:col-span-5 space-y-5">
+                <div class="lg:col-span-5 space-y-6">
 
-                    <!-- Card 1: Seleção do Professor & Unidade Padrão -->
-                    <div class="rounded-3xl border border-gray-200 bg-white p-5 sm:p-6 shadow-xs space-y-4">
-                        <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+                    <!-- Painel 1: Seleção do Docente / Colaborador -->
+                    <div class="rounded-3xl border border-gray-200 bg-white p-5 shadow-xs space-y-4">
+                        <div class="flex items-center justify-between">
                             <div class="flex items-center gap-2">
                                 <span class="w-7 h-7 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold">1</span>
-                                <h2 class="text-sm font-bold text-gray-900">Docente / Colaborador</h2>
+                                <div>
+                                    <h2 class="text-sm font-bold text-gray-900">Docente ou Colaborador</h2>
+                                    <p class="text-[11px] text-gray-500">Selecione para carregar os horários</p>
+                                </div>
                             </div>
-                            <span class="text-[11px] font-medium text-gray-500">Passo Inicial</span>
                         </div>
 
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 uppercase mb-1.5">Professor / Colaborador *</label>
-                            <select x-model="userId" @change="onUserChange()" required
-                                    class="w-full rounded-2xl border border-gray-300 px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-400 font-semibold bg-white shadow-2xs">
-                                <option value="">Selecione o Usuário</option>
-                                <template x-for="u in users" :key="u.id">
-                                    <option :value="u.id" x-text="u.name + ' (' + u.role + ')' + (u.assigned_subjects?.length ? ' • ' + u.assigned_subjects.length + ' disc.' : '')"></option>
-                                </template>
-                            </select>
-                        </div>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 uppercase mb-1.5">Professor / Colaborador *</label>
+                                <select x-model="userId" @change="onUserChange()" required
+                                        class="w-full rounded-2xl border border-gray-300 px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 bg-white font-semibold focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                    <option value="">-- Selecione um Professor / Colaborador --</option>
+                                    @foreach($users as $u)
+                                        <option value="{{ $u->id }}">{{ $u->name }} ({{ $u->role }})</option>
+                                    @endforeach
+                                </select>
+                            </div>
 
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-700 uppercase mb-1.5">Unidade Escolar Padrão *</label>
-                            <select x-model="defaultUnitId" @change="onDefaultUnitChange()" required
-                                    class="w-full rounded-2xl border border-gray-300 px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-400 font-medium bg-white">
-                                <template x-for="un in units" :key="un.id">
-                                    <option :value="un.id" x-text="un.name + (un.city ? ' - ' + un.city : '')"></option>
-                                </template>
-                            </select>
-                        </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 uppercase mb-1.5">Unidade Padrão de Lotação</label>
+                                <select x-model="defaultUnitId" @change="onDefaultUnitChange()" required
+                                        class="w-full rounded-2xl border border-gray-300 px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                    @foreach($units as $un)
+                                        <option value="{{ $un->id }}">{{ $un->name }} ({{ $un->city }})</option>
+                                    @endforeach
+                                </select>
+                            </div>
 
-                        <!-- Badge com Cor Exclusiva do Docente e Resumo de Disciplinas Atribuídas -->
-                        <template x-if="selectedUser">
-                            <div class="rounded-2xl p-3 text-xs space-y-2 border"
-                                 :style="'background-color: ' + selectedUserColor.bg + '; border-color: ' + selectedUserColor.border + '; color: ' + selectedUserColor.text">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center gap-2">
+                            <!-- Badge de Identificação Visual do Docente -->
+                            <template x-if="selectedUser">
+                                <div class="p-3 rounded-2xl border flex items-center justify-between gap-3 text-xs transition"
+                                     :style="'background-color: ' + selectedUserColor.bg + '; border-color: ' + selectedUserColor.border + '; color: ' + selectedUserColor.text">
+                                    <div class="flex items-center gap-2.5 min-w-0">
                                         <span class="w-3.5 h-3.5 rounded-full shadow-2xs" :style="'background-color: ' + selectedUserColor.dot"></span>
-                                        <div>
-                                            <div class="font-bold" x-text="selectedUserName"></div>
+                                        <div class="truncate">
+                                            <div class="font-bold truncate" x-text="selectedUserName"></div>
                                             <div class="text-[11px] opacity-80" x-text="'Perfil: ' + selectedUser.role"></div>
                                         </div>
                                     </div>
-                                    <span class="text-[11px] font-bold px-2 py-0.5 rounded-lg bg-white/70 shadow-2xs" x-text="slots.length + ' horário(s)'"></span>
-                                </div>
-
-                                <template x-if="userAssignedSubjects.length > 0">
-                                    <div class="pt-1.5 border-t border-black/10 flex items-center justify-between text-[11px]">
-                                        <span class="font-bold">✨ Disciplinas no Sistema:</span>
-                                        <span class="font-extrabold px-1.5 py-0.5 rounded bg-white/80" x-text="userAssignedSubjects.length + ' atribuída(s)'"></span>
+                                    <div class="flex items-center gap-1 flex-shrink-0">
+                                        <span class="rounded-lg px-2 py-0.5 text-[10px] font-bold border"
+                                              :style="'background-color: ' + selectedUserColor.dot + '; color: #ffffff'">
+                                            Cor no Horário
+                                        </span>
                                     </div>
-                                </template>
-                            </div>
-                        </template>
+                                </div>
+                            </template>
+                        </div>
                     </div>
 
-                    <!-- Card 2: Construtor da Aula / Horário (Add Slot) -->
-                    <div class="rounded-3xl border border-gray-200 bg-white p-5 sm:p-6 shadow-xs space-y-4">
-                        <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+                    <!-- Painel 2: Adicionar Horário à Grade -->
+                    <div class="rounded-3xl border border-gray-200 bg-white p-5 shadow-xs space-y-4">
+                        <div class="flex items-center justify-between">
                             <div class="flex items-center gap-2">
                                 <span class="w-7 h-7 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold">2</span>
-                                <h2 class="text-sm font-bold text-gray-900">Configurar Horário / Aula</h2>
-                            </div>
-                            <span class="text-[11px] font-medium text-gray-500">Adicionar à Grade</span>
-                        </div>
-
-                        <!-- Seletor do Tipo de Horário (Docente / Coordenação / Administrativo) -->
-                        <div>
-                            <label class="block text-[11px] font-semibold text-gray-600 uppercase mb-1.5">Tipo de Atividade</label>
-                            <div class="grid grid-cols-3 gap-1.5 p-1 bg-gray-100 rounded-2xl">
-                                <button type="button" @click="currentScheduleType = 'class'"
-                                        :class="currentScheduleType === 'class' ? 'bg-white text-indigo-700 font-bold shadow-2xs' : 'text-gray-600 hover:text-gray-900'"
-                                        class="py-1.5 text-center text-xs rounded-xl transition cursor-pointer">
-                                    👨‍🏫 Aula
-                                </button>
-                                <button type="button" @click="currentScheduleType = 'coordination'; if(!currentShiftName) currentShiftName = 'Coordenação Pedagógica'"
-                                        :class="currentScheduleType === 'coordination' ? 'bg-white text-purple-700 font-bold shadow-2xs' : 'text-gray-600 hover:text-gray-900'"
-                                        class="py-1.5 text-center text-xs rounded-xl transition cursor-pointer">
-                                    📋 Coordenação
-                                </button>
-                                <button type="button" @click="currentScheduleType = 'administrative'; if(!currentShiftName) currentShiftName = 'Expediente Administrativo'"
-                                        :class="currentScheduleType === 'administrative' ? 'bg-white text-slate-800 font-bold shadow-2xs' : 'text-gray-600 hover:text-gray-900'"
-                                        class="py-1.5 text-center text-xs rounded-xl transition cursor-pointer">
-                                    🏢 Expediente
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Seleção de Dias da Semana (Com Cores Temáticas) -->
-                        <div>
-                            <div class="flex items-center justify-between mb-1.5">
-                                <label class="text-xs font-semibold text-gray-700 uppercase">Dia(s) da Semana *</label>
-                                <div class="flex items-center gap-1.5 text-[11px]">
-                                    <button type="button" @click="selectWeekdays()" class="text-indigo-600 hover:underline font-medium">Seg a Sex</button>
-                                    <span class="text-gray-300">|</span>
-                                    <button type="button" @click="currentDays = []" class="text-gray-400 hover:text-gray-600">Limpar</button>
+                                <div>
+                                    <h2 class="text-sm font-bold text-gray-900">Atribuir Aula / Atividade</h2>
+                                    <p class="text-[11px] text-gray-500">Defina os dados e dias da semana</p>
                                 </div>
                             </div>
-                            <div class="grid grid-cols-4 sm:grid-cols-7 gap-1.5">
-                                <template x-for="day in [1, 2, 3, 4, 5, 6, 0]" :key="day">
-                                    <button type="button"
-                                            @click="toggleDay(day)"
-                                            :style="currentDays.includes(day) ? ('background-color: ' + getDayColor(day).hex + '; border-color: ' + getDayColor(day).hex + '; color: #ffffff;') : ''"
-                                            :class="currentDays.includes(day)
-                                                ? 'font-bold shadow-sm'
-                                                : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50 font-medium'"
-                                            class="py-2 text-center text-xs rounded-xl border transition cursor-pointer flex flex-col items-center justify-center">
-                                        <span class="text-[11px]" x-text="dayShortNames[day]"></span>
-                                    </button>
-                                </template>
-                            </div>
                         </div>
 
-                        <!-- Horários de Início & Término com Atalhos Rápidos de Turnos -->
-                        <div class="space-y-2">
+                        <div class="space-y-4">
+                            <!-- Tipo de Registro / Atividade -->
                             <div>
-                                <label class="block text-[11px] font-semibold text-gray-500 uppercase mb-1.5">Atalhos de Turnos & Horários</label>
-                                <div class="flex flex-wrap gap-1.5">
-                                    <button type="button" @click="applyPreset('07:10', '12:35', 'Manhã')"
-                                            class="rounded-lg bg-blue-50 border border-blue-200 px-2 py-1 text-[11px] font-medium text-blue-800 hover:bg-blue-100 transition">
-                                        🌅 Manhã (07:10 - 12:35)
+                                <label class="block text-xs font-semibold text-gray-700 uppercase mb-1.5">Tipo de Atividade</label>
+                                <div class="grid grid-cols-3 gap-1.5 text-xs">
+                                    <button type="button" @click="currentScheduleType = 'class'"
+                                            :class="currentScheduleType === 'class' ? 'bg-indigo-600 text-white font-bold shadow-xs' : 'bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200'"
+                                            class="p-2.5 rounded-xl text-center transition cursor-pointer">
+                                        👨‍🏫 Aula
                                     </button>
-                                    <button type="button" @click="applyPreset('13:00', '18:20', 'Tarde')"
-                                            class="rounded-lg bg-amber-50 border border-amber-200 px-2 py-1 text-[11px] font-medium text-amber-800 hover:bg-amber-100 transition">
-                                        ☀️ Tarde (13:00 - 18:20)
+                                    <button type="button" @click="currentScheduleType = 'coordination'"
+                                            :class="currentScheduleType === 'coordination' ? 'bg-indigo-600 text-white font-bold shadow-xs' : 'bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200'"
+                                            class="p-2.5 rounded-xl text-center transition cursor-pointer">
+                                        📋 Coordenação
                                     </button>
-                                    <button type="button" @click="applyPreset('19:00', '22:50', 'Noite')"
-                                            class="rounded-lg bg-purple-50 border border-purple-200 px-2 py-1 text-[11px] font-medium text-purple-800 hover:bg-purple-100 transition">
-                                        🌙 Noite (19:00 - 22:50)
+                                    <button type="button" @click="currentScheduleType = 'administrative'"
+                                            :class="currentScheduleType === 'administrative' ? 'bg-indigo-600 text-white font-bold shadow-xs' : 'bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200'"
+                                            class="p-2.5 rounded-xl text-center transition cursor-pointer">
+                                        🏢 Expediente
                                     </button>
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-2 gap-2.5">
-                                <div>
-                                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Início *</label>
-                                    <input type="time" x-model="currentStartTime" required
-                                           class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs sm:text-sm font-mono font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-white">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Término *</label>
-                                    <input type="time" x-model="currentEndTime" required
-                                           class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs sm:text-sm font-mono font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-white">
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- ============================================================= --}}
-                        {{-- SEÇÃO 1: BUSCA AUTOMÁTICA DE DISCIPLINAS DO PROFESSOR (DOCENTE) --}}
-                        {{-- ============================================================= --}}
-                        <template x-if="currentScheduleType === 'class'">
-                            <div class="space-y-3.5 bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100">
-                                
-                                <div class="flex items-center justify-between border-b border-indigo-100 pb-2">
-                                    <span class="text-xs font-bold text-indigo-950 uppercase tracking-wide flex items-center gap-1.5">
-                                        📚 Disciplinas do Docente
-                                    </span>
-                                    
-                                    <!-- Alternador de Modo: Atribuídas vs Todas -->
-                                    <div class="flex items-center gap-1 text-[10px]">
-                                        <button type="button" @click="subjectSelectionMode = 'assigned'"
-                                                :class="subjectSelectionMode === 'assigned' ? 'bg-indigo-600 text-white font-bold' : 'bg-white text-indigo-700 hover:bg-indigo-100'"
-                                                class="rounded px-2 py-0.5 border border-indigo-200 transition">
-                                            Atribuídas (<span x-text="userAssignedSubjects.length"></span>)
-                                        </button>
-                                        <button type="button" @click="subjectSelectionMode = 'all'"
-                                                :class="subjectSelectionMode === 'all' ? 'bg-indigo-600 text-white font-bold' : 'bg-white text-indigo-700 hover:bg-indigo-100'"
-                                                class="rounded px-2 py-0.5 border border-indigo-200 transition">
-                                            Ver Todos os Cursos
-                                        </button>
+                            <!-- Seleção dos Dias da Semana com Cores Temáticas -->
+                            <div>
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <label class="block text-xs font-semibold text-gray-700 uppercase">Dias da Semana *</label>
+                                    <div class="flex items-center gap-2 text-[11px]">
+                                        <button type="button" @click="selectWeekdays()" class="text-indigo-600 hover:underline font-medium cursor-pointer">Seg a Sex</button>
+                                        <span class="text-gray-300">|</span>
+                                        <button type="button" @click="selectAllDays()" class="text-indigo-600 hover:underline font-medium cursor-pointer">Todos</button>
+                                        <span class="text-gray-300">|</span>
+                                        <button type="button" @click="clearDays()" class="text-rose-600 hover:underline font-medium cursor-pointer">Limpar</button>
                                     </div>
                                 </div>
+                                <div class="grid grid-cols-7 gap-1">
+                                    <template x-for="dayNum in [1, 2, 3, 4, 5, 6, 0]" :key="dayNum">
+                                        <button type="button" @click="toggleDay(dayNum)"
+                                                :style="currentDays.includes(dayNum) ? ('background-color: ' + getDayColor(dayNum).hex + '; color: #ffffff; border-color: ' + getDayColor(dayNum).hex) : 'background-color: #f8fafc; color: #475569; border-color: #e2e8f0;'"
+                                                class="py-2.5 px-1 rounded-xl text-center font-bold text-xs border transition cursor-pointer flex flex-col items-center justify-center gap-0.5">
+                                            <span x-text="dayShortNames[dayNum]"></span>
+                                            <span class="w-1.5 h-1.5 rounded-full" :style="'background-color: ' + (currentDays.includes(dayNum) ? '#ffffff' : getDayColor(dayNum).hex)"></span>
+                                        </button>
+                                    </template>
+                                </div>
+                            </div>
 
-                                {{-- MODO 1: DISCIPLINAS ATRIBUÍDAS AO DOCENTE (PADRÃO RECOMENDADO) --}}
-                                <template x-if="subjectSelectionMode === 'assigned'">
-                                    <div class="space-y-2">
-                                        <label class="block text-[11px] font-bold text-indigo-900 uppercase">
-                                            Selecione a Disciplina Atribuída a este Docente *
-                                        </label>
+                            <!-- Configuração de Aula (Curso, Disciplina, Turma A/B, Sala) -->
+                            <template x-if="currentScheduleType === 'class'">
+                                <div class="space-y-3.5 p-3.5 bg-indigo-50/40 rounded-2xl border border-indigo-100">
+                                    <div class="flex items-center justify-between border-b border-indigo-100 pb-2">
+                                        <span class="text-xs font-bold text-indigo-950 uppercase tracking-wide flex items-center gap-1.5">
+                                            <span>📚 Dados Acadêmicos da Aula</span>
+                                        </span>
 
+                                        <!-- Alternador de Modo de Seleção de Disciplina -->
                                         <template x-if="userAssignedSubjects.length > 0">
-                                            <div>
-                                                <select @change="selectAssignedSubject($event.target.value)"
-                                                        class="w-full rounded-xl border border-indigo-300 px-3 py-2.5 text-xs font-semibold text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white shadow-2xs">
-                                                    <option value="">-- Escolha uma das disciplinas atribuídas ao docente --</option>
-                                                    <template x-for="sub in userAssignedSubjects" :key="'assigned-'+sub.id">
-                                                        <option :value="sub.id" :selected="String(currentSubjectId) === String(sub.id)"
-                                                                x-text="sub.name + (sub.course_title ? ' ➔ Curso: ' + sub.course_title : '')"></option>
-                                                    </template>
-                                                </select>
-                                                <p class="text-[10.5px] text-indigo-700 mt-1 font-medium">
-                                                    💡 Ao selecionar, o curso, disciplina e divisão são preenchidos automaticamente.
-                                                </p>
-                                            </div>
-                                        </template>
-
-                                        <template x-if="userAssignedSubjects.length === 0">
-                                            <div class="rounded-xl bg-amber-50 border border-amber-200 p-2.5 text-[11px] text-amber-800 space-y-1">
-                                                <div class="font-bold">Nenhuma disciplina vinculada previamente a este docente.</div>
-                                                <p>Você pode selecionar o curso e a disciplina diretamente abaixo:</p>
-                                                <button type="button" @click="subjectSelectionMode = 'all'" class="text-xs font-bold text-indigo-700 hover:underline">
-                                                    ➔ Abrir catálogo completo de Cursos e Disciplinas
+                                            <div class="flex items-center gap-1 bg-indigo-100/70 p-0.5 rounded-lg text-[10px]">
+                                                <button type="button" @click="subjectSelectionMode = 'assigned'"
+                                                        :class="subjectSelectionMode === 'assigned' ? 'bg-indigo-600 text-white font-bold' : 'bg-white text-indigo-700 hover:bg-indigo-100'"
+                                                        class="px-2 py-0.5 rounded-md transition cursor-pointer">
+                                                    Do Professor (<span x-text="userAssignedSubjects.length"></span>)
+                                                </button>
+                                                <button type="button" @click="subjectSelectionMode = 'all'"
+                                                        :class="subjectSelectionMode === 'all' ? 'bg-indigo-600 text-white font-bold' : 'bg-white text-indigo-700 hover:bg-indigo-100'"
+                                                        class="px-2 py-0.5 rounded-md transition cursor-pointer">
+                                                    Todos Cursos
                                                 </button>
                                             </div>
                                         </template>
                                     </div>
-                                </template>
 
-                                {{-- MODO 2: SELEÇÃO MANUAL / COMPLETA DE TODOS OS CURSOS --}}
-                                <template x-if="subjectSelectionMode === 'all' || userAssignedSubjects.length === 0">
-                                    <div class="space-y-3 pt-1">
-                                        <!-- Seleção de Curso -->
+                                    <!-- 1. ATALHO: Disciplinas Atribuídas ao Docente (1-Clique) -->
+                                    <template x-if="subjectSelectionMode === 'assigned' && userAssignedSubjects.length > 0">
                                         <div>
-                                            <label class="block text-[11px] font-bold text-indigo-900 uppercase mb-1">Curso *</label>
-                                            <select x-model="currentCourseId" @change="onCourseChange()"
-                                                    class="w-full rounded-xl border border-indigo-200 px-3 py-2 text-xs font-medium text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-white">
-                                                <option value="">-- Selecione o Curso --</option>
-                                                <template x-for="c in availableCourses" :key="c.id">
-                                                    <option :value="c.id" x-text="c.title + (c.type ? ' (' + c.type + ')' : '')"></option>
+                                            <label class="block text-[11px] font-bold text-indigo-900 uppercase mb-1">
+                                                ✨ Disciplinas Atribuídas a este Professor *
+                                            </label>
+                                            <select @change="selectAssignedSubject($event.target.value)"
+                                                    class="w-full rounded-xl border border-indigo-300 px-3 py-2 text-xs font-semibold text-gray-900 bg-white focus:ring-2 focus:ring-indigo-500">
+                                                <option value="">-- Selecione uma das disciplinas deste professor --</option>
+                                                <template x-for="sub in userAssignedSubjects" :key="'assigned-sub-'+sub.id">
+                                                    <option :value="sub.id" :selected="String(currentSubjectId) === String(sub.id)"
+                                                            x-text="sub.name + (sub.course_title ? ' ➔ ' + sub.course_title : '')"></option>
                                                 </template>
                                             </select>
+                                            <p class="text-[10px] text-indigo-700 mt-1">
+                                                💡 Ao selecionar, preenchemos automaticamente o Curso, a Disciplina e a Divisão da Turma.
+                                            </p>
                                         </div>
+                                    </template>
 
-                                        <!-- Seleção de Disciplina do Curso -->
-                                        <template x-if="filteredSubjects.length > 0">
-                                            <div>
-                                                <label class="block text-[11px] font-bold text-indigo-900 uppercase mb-1">Disciplinas do Curso</label>
-                                                <select x-model="currentSubjectId" @change="onGeneralSubjectChange()"
-                                                        class="w-full rounded-xl border border-indigo-200 px-3 py-2 text-xs font-semibold text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-white">
-                                                    <option value="">Selecione na lista de disciplinas do curso...</option>
-                                                    <template x-for="s in filteredSubjects" :key="s.id">
-                                                        <option :value="s.id" x-text="s.name + (s.semester ? ' (' + s.semester + ')' : '')"></option>
-                                                    </template>
-                                                </select>
+                                    <!-- 2. Seleção de Curso -->
+                                    <div>
+                                        <label class="block text-[11px] font-bold text-gray-700 uppercase mb-1">Curso *</label>
+                                        <select x-model="currentCourseId" @change="onCourseChange()"
+                                                class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs text-gray-900 bg-white focus:ring-2 focus:ring-indigo-500">
+                                            <option value="">-- Selecione o Curso --</option>
+                                            @foreach($courses as $c)
+                                                <option value="{{ $c->id }}">{{ $c->title }} {{ $c->type ? '('.$c->type.')' : '' }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <!-- 3. Nome da Disciplina & Divisão de Turma (A / B) -->
+                                    <div>
+                                        <div class="flex items-center justify-between mb-1">
+                                            <label class="text-[11px] font-bold text-gray-700 uppercase">Nome da Disciplina *</label>
+                                            <div class="flex items-center gap-1">
+                                                <span class="text-[10px] text-gray-500">Divisão:</span>
+                                                <button type="button" @click="appendTurmaDivision('A')"
+                                                        :class="currentDivision === 'A' ? 'bg-sky-600 text-white font-bold' : 'bg-sky-50 text-sky-800 border-sky-300 hover:bg-sky-100'"
+                                                        class="rounded border px-1.5 py-0.5 text-[10px] font-semibold transition cursor-pointer">
+                                                    (A)
+                                                </button>
+                                                <button type="button" @click="appendTurmaDivision('B')"
+                                                        :class="currentDivision === 'B' ? 'bg-orange-600 text-white font-bold' : 'bg-orange-50 text-orange-800 border-orange-300 hover:bg-orange-100'"
+                                                        class="rounded border px-1.5 py-0.5 text-[10px] font-semibold transition cursor-pointer">
+                                                    (B)
+                                                </button>
+                                                <button type="button" @click="appendTurmaDivision('')"
+                                                        :class="!currentDivision ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+                                                        class="rounded px-1.5 py-0.5 text-[10px] font-medium transition cursor-pointer">
+                                                    Geral
+                                                </button>
                                             </div>
-                                        </template>
+                                        </div>
+                                        <input type="text" x-model="currentSubjectName" list="all_subjects_datalist"
+                                               placeholder="Ex: Matemática (A), Algoritmos, Química..."
+                                               class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs text-gray-900 bg-white font-medium focus:ring-2 focus:ring-indigo-500">
+                                        <datalist id="all_subjects_datalist">
+                                            <template x-for="sub in filteredSubjects" :key="'dl-'+sub.id">
+                                                <option :value="sub.name"></option>
+                                            </template>
+                                        </datalist>
                                     </div>
-                                </template>
 
-                                <!-- Nome da Disciplina & Divisão de Turma -->
-                                <div>
-                                    <div class="flex items-center justify-between mb-1">
-                                        <label class="text-[11px] font-bold text-indigo-900 uppercase">Nome da Disciplina *</label>
-                                        
-                                        <!-- Botões Rápidos de Divisão Turma A / Turma B -->
-                                        <div class="flex items-center gap-1">
-                                            <span class="text-[10px] text-gray-500 font-medium">Turma:</span>
-                                            <button type="button" @click="appendTurmaDivision('A')"
-                                                    :class="currentDivision === 'A' ? 'bg-sky-600 text-white font-bold' : 'bg-sky-50 text-sky-800 border-sky-300 hover:bg-sky-100'"
-                                                    class="rounded border px-1.5 py-0.5 text-[10px] font-semibold transition cursor-pointer">
-                                                (A)
-                                            </button>
-                                            <button type="button" @click="appendTurmaDivision('B')"
-                                                    :class="currentDivision === 'B' ? 'bg-orange-600 text-white font-bold' : 'bg-orange-50 text-orange-800 border-orange-300 hover:bg-orange-100'"
-                                                    class="rounded border px-1.5 py-0.5 text-[10px] font-semibold transition cursor-pointer">
-                                                (B)
-                                            </button>
-                                            <button type="button" @click="appendTurmaDivision('')"
-                                                    :class="!currentDivision ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
-                                                    class="rounded px-1.5 py-0.5 text-[10px] font-medium transition cursor-pointer">
-                                                Geral
-                                            </button>
+                                    <!-- 4. Turma/Série & Sala de Aula / Laboratório -->
+                                    <div class="grid grid-cols-2 gap-2.5">
+                                        <div>
+                                            <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-1">Turma / Série</label>
+                                            <input type="text" x-model="currentClassName" placeholder="Ex: 1º Info B, 2º Adm"
+                                                   class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs text-gray-900 bg-white">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-1">Sala / Lab</label>
+                                            <input type="text" x-model="currentClassroom" placeholder="Ex: Lab 01, Sala 04"
+                                                   class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs text-gray-900 bg-white">
                                         </div>
                                     </div>
+                                </div>
+                            </template>
 
-                                    <input type="text" x-model="currentSubjectName" list="all_subjects_datalist"
-                                           placeholder="Ex: Matemática (A), Programação Web..."
-                                           class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs sm:text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-400 bg-white">
-                                    <datalist id="all_subjects_datalist">
-                                        <template x-for="s in subjects" :key="'dl-'+s.id">
-                                            <option :value="s.name"></option>
-                                        </template>
-                                    </datalist>
+                            <!-- Descrição para Coordenação ou Expediente Administrativo -->
+                            <template x-if="currentScheduleType !== 'class'">
+                                <div class="space-y-3 p-3.5 bg-gray-50 rounded-2xl border border-gray-200">
+                                    <label class="block text-xs font-semibold text-gray-700 uppercase">Descrição da Atividade</label>
+                                    <input type="text" x-model="currentShiftName"
+                                           :placeholder="currentScheduleType === 'coordination' ? 'Ex: Coordenação de Curso, Reunião de Área...' : 'Ex: Atendimento Secretaria, Biblioteca...'"
+                                           class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs text-gray-900 bg-white">
+                                </div>
+                            </template>
+
+                            <!-- Horários de Início e Término & Presets Rápidos de Turno -->
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <label class="block text-xs font-semibold text-gray-700 uppercase">Horário da Aula *</label>
+                                    <div class="flex items-center gap-1 text-[10px]">
+                                        <button type="button" @click="setShiftPreset('07:30', '11:55', 'Manhã')" class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 transition cursor-pointer">🌅 Manhã</button>
+                                        <button type="button" @click="setShiftPreset('13:10', '17:35', 'Tarde')" class="px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100 transition cursor-pointer">☀️ Tarde</button>
+                                        <button type="button" @click="setShiftPreset('19:00', '22:45', 'Noite')" class="px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 transition cursor-pointer">🌙 Noite</button>
+                                    </div>
                                 </div>
 
-                                <!-- Curso Selecionado Badge -->
-                                <template x-if="currentCourseName">
-                                    <div class="rounded-lg bg-indigo-100/70 border border-indigo-200 p-2 text-xs flex items-center justify-between">
-                                        <div class="flex items-center gap-1.5 text-indigo-900 font-semibold truncate">
-                                            <span>🎓 Curso:</span>
-                                            <span class="font-extrabold truncate" x-text="currentCourseName"></span>
-                                        </div>
-                                        <button type="button" @click="currentCourseId = ''; currentCourseName = ''" class="text-[10px] text-indigo-700 hover:underline">
-                                            trocar
-                                        </button>
-                                    </div>
-                                </template>
-
-                                <!-- Turma/Série & Sala/Laboratório -->
-                                <div class="grid grid-cols-2 gap-2.5">
+                                <div class="grid grid-cols-2 gap-3">
                                     <div>
-                                        <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-1">Turma / Série</label>
-                                        <input type="text" x-model="currentClassName"
-                                               placeholder="Ex: 1º Info B, 2º Adm"
-                                               class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs text-gray-900 bg-white">
+                                        <label class="block text-[11px] font-semibold text-gray-500 mb-1">Início</label>
+                                        <input type="time" x-model="currentStartTime" required
+                                               class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs sm:text-sm font-mono font-bold text-gray-900 bg-white">
                                     </div>
                                     <div>
-                                        <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-1">Sala / Laboratório</label>
-                                        <input type="text" x-model="currentClassroom"
-                                               placeholder="Ex: Lab 01, Sala 04"
-                                               class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs text-gray-900 bg-white">
+                                        <label class="block text-[11px] font-semibold text-gray-500 mb-1">Término</label>
+                                        <input type="time" x-model="currentEndTime" required
+                                               class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs sm:text-sm font-mono font-bold text-gray-900 bg-white">
                                     </div>
                                 </div>
                             </div>
-                        </template>
 
-                        {{-- SEÇÃO 2: CAMPOS PARA COORDENADOR --}}
-                        <template x-if="currentScheduleType === 'coordination'">
-                            <div class="bg-purple-50/60 p-3.5 rounded-2xl border border-purple-200 space-y-2">
-                                <div class="flex items-center gap-2 text-purple-900 text-xs font-semibold">
-                                    <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                    <span>Horário de Coordenação</span>
-                                </div>
-                                <p class="text-[11px] text-purple-700 leading-snug">
-                                    Em horários de coordenação, o colaborador não possui disciplina vinculada.
-                                </p>
+                            <!-- Unidade Escolar e Intervalo -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <div>
-                                    <label class="block text-[11px] font-semibold text-purple-900 uppercase mb-1">Descrição / Turno</label>
-                                    <input type="text" x-model="currentShiftName"
-                                           placeholder="Ex: Coordenação Pedagógica - Manhã"
-                                           class="w-full rounded-xl border border-purple-300 px-3 py-2 text-xs text-gray-900 bg-white">
+                                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Unidade Escolar</label>
+                                    <select x-model="currentUnitId"
+                                            class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs text-gray-900 bg-white">
+                                        @foreach($units as $un)
+                                            <option value="{{ $un->id }}">{{ $un->name }} ({{ $un->city }})</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Intervalo (Opcional)</label>
+                                    <div class="grid grid-cols-2 gap-1.5">
+                                        <input type="time" x-model="currentBreakStart" placeholder="Início" class="w-full rounded-xl border border-gray-300 px-2 py-2 text-[11px] font-mono bg-white">
+                                        <input type="time" x-model="currentBreakEnd" placeholder="Fim" class="w-full rounded-xl border border-gray-300 px-2 py-2 text-[11px] font-mono bg-white">
+                                    </div>
                                 </div>
                             </div>
-                        </template>
 
-                        {{-- SEÇÃO 3: CAMPOS PARA FUNCIONÁRIO ADMINISTRATIVO --}}
-                        <template x-if="currentScheduleType === 'administrative'">
-                            <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-2">
-                                <div class="flex items-center gap-2 text-slate-900 text-xs font-semibold">
-                                    <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                                    <span>Expediente de Funcionário</span>
-                                </div>
-                                <p class="text-[11px] text-slate-600 leading-snug">
-                                    Horário de jornada de trabalho administrativo do colaborador.
-                                </p>
-                                <div>
-                                    <label class="block text-[11px] font-semibold text-slate-900 uppercase mb-1">Setor / Identificação</label>
-                                    <input type="text" x-model="currentShiftName"
-                                           placeholder="Ex: Expediente Secretaria Acadêmica"
-                                           class="w-full rounded-xl border border-slate-300 px-3 py-2 text-xs text-gray-900 bg-white">
-                                </div>
-                            </div>
-                        </template>
-
-                        <!-- Opções Avançadas: Intervalo & Tolerância (Colapsável) -->
-                        <div x-data="{ showAdvanced: false }" class="border-t border-gray-100 pt-2">
-                            <button type="button" @click="showAdvanced = !showAdvanced" class="flex items-center gap-1.5 text-xs text-indigo-600 hover:text-indigo-800 font-medium">
-                                <span x-text="showAdvanced ? '− Ocultar Intervalo e Tolerância' : '+ Definir Intervalo e Tolerância'"></span>
-                            </button>
-
-                            <div x-show="showAdvanced" x-cloak class="grid grid-cols-3 gap-2 mt-3 p-3 bg-gray-50 rounded-xl border border-gray-200">
-                                <div>
-                                    <label class="block text-[10px] font-semibold text-gray-600 uppercase mb-1">Início Intervalo</label>
-                                    <input type="time" x-model="currentBreakStart" class="w-full rounded-lg border border-gray-300 px-2 py-1 text-xs font-mono">
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-semibold text-gray-600 uppercase mb-1">Fim Intervalo</label>
-                                    <input type="time" x-model="currentBreakEnd" class="w-full rounded-lg border border-gray-300 px-2 py-1 text-xs font-mono">
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-semibold text-gray-600 uppercase mb-1">Tolerância (min)</label>
-                                    <input type="number" min="0" max="60" x-model="currentTolerance" class="w-full rounded-lg border border-gray-300 px-2 py-1 text-xs font-mono">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Botão Adicionar à Grade -->
-                        <div class="pt-2">
-                            <button type="button"
-                                    @click="addSlot()"
-                                    class="w-full rounded-2xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-bold py-3 text-xs sm:text-sm shadow-md shadow-indigo-200 hover:shadow-lg transition flex items-center justify-center gap-2 cursor-pointer">
-                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-                                <span>Adicionar à Grade Semanal</span>
+                            <!-- Botão Adicionar à Grade -->
+                            <button type="button" @click="addSlot()"
+                                    class="w-full rounded-2xl bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-bold py-3 text-xs sm:text-sm shadow-md shadow-indigo-200 transition flex items-center justify-center gap-2 cursor-pointer">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                                <span>Adicionar Horário aos Dias Selecionados</span>
                             </button>
                         </div>
                     </div>
@@ -1021,12 +954,14 @@
                 </div>
 
                 {{-- ============================================================= --}}
-                {{-- COLUNA DA DIREITA (7 COLUNAS): GRADE SEMANAL EM CONSTRUÇÃO    --}}
+                {{-- COLUNA DA DIREITA (7 COLUNAS): GRADE SEMANAL VISUAL AGRUPADA  --}}
                 {{-- ============================================================= --}}
-                <div class="lg:col-span-7 space-y-5">
+                <div class="lg:col-span-7 space-y-4">
 
-                    <div class="rounded-3xl border border-gray-200 bg-white p-5 sm:p-6 shadow-xs space-y-4">
-                        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 pb-3">
+                    <div class="rounded-3xl border border-gray-200 bg-white p-5 shadow-xs space-y-4">
+                        
+                        <!-- Top Header da Grade -->
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-100 pb-3">
                             <div class="flex items-center gap-2">
                                 <span class="w-7 h-7 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold">3</span>
                                 <div>
@@ -1035,7 +970,7 @@
                                 </div>
                             </div>
                             <div class="flex items-center gap-2">
-                                <button type="button" @click="clearAllSlots()" class="rounded-xl border border-gray-200 px-3 py-1 text-[11px] font-semibold text-rose-600 hover:bg-rose-50 transition">
+                                <button type="button" @click="clearAllSlots()" class="rounded-xl border border-gray-200 px-3 py-1 text-[11px] font-semibold text-rose-600 hover:bg-rose-50 transition cursor-pointer">
                                     Limpar Grade
                                 </button>
                             </div>
@@ -1116,8 +1051,8 @@
                                                                         
                                                                         <!-- Se não tiver disciplina definida, exibe botão de ação rápida -->
                                                                         <template x-if="!slot.subject_name || slot.subject_name === 'Aula'">
-                                                                            <button type="button" @click="openEditSlot(slot.temp_id)"
-                                                                                    class="rounded bg-amber-100 text-amber-900 border border-amber-300 px-1.5 py-0.2 text-[9.5px] font-bold hover:bg-amber-200 transition">
+                                                                            <button type="button" @click.stop="openEditSlot(slot)"
+                                                                                    class="rounded bg-amber-100 text-amber-900 border border-amber-300 px-1.5 py-0.2 text-[9.5px] font-bold hover:bg-amber-200 transition cursor-pointer">
                                                                                 + Atribuir Disciplina
                                                                             </button>
                                                                         </template>
@@ -1158,14 +1093,14 @@
                                                     <!-- Botões de Ação: Editar Slot (✏️) & Remover Slot (🗑️) -->
                                                     <div class="flex items-center gap-1 flex-shrink-0">
                                                         <button type="button"
-                                                                @click="openEditSlot(slot.temp_id)"
+                                                                @click.stop="openEditSlot(slot)"
                                                                 class="w-8 h-8 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 flex items-center justify-center transition cursor-pointer"
                                                                 title="Editar disciplina, curso ou horário desta aula">
                                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                                         </button>
 
                                                         <button type="button"
-                                                                @click="removeSlot(slot.temp_id)"
+                                                                @click.stop="removeSlot(slot.temp_id)"
                                                                 class="w-8 h-8 rounded-xl bg-gray-100 hover:bg-rose-100 text-gray-400 hover:text-rose-600 flex items-center justify-center transition cursor-pointer"
                                                                 title="Remover horário">
                                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -1225,44 +1160,60 @@
         {{-- ========================================================================= --}}
         {{-- MODAL INTERATIVO: EDITAR DISCIPLINA / CURSO DO HORÁRIO (QUICK EDIT)       --}}
         {{-- ========================================================================= --}}
-        <template x-if="showEditModal && editingSlot">
-            <div class="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-                <div @click.outside="closeEditModal()"
-                     class="relative w-full max-w-lg bg-white rounded-3xl p-6 shadow-2xl space-y-4 border border-gray-100 transition">
+        <div x-show="showEditModal && editingSlot"
+             x-cloak
+             @keydown.escape.window="closeEditModal()"
+             class="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+            
+            <!-- Backdrop Click -->
+            <div class="fixed inset-0" @click="closeEditModal()"></div>
 
-                    <!-- Modal Header -->
-                    <div class="flex items-center justify-between border-b border-gray-100 pb-3">
-                        <div class="flex items-center gap-2.5">
-                            <span class="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm font-black">
-                                ✏️
-                            </span>
-                            <div>
-                                <h3 class="text-sm sm:text-base font-bold text-gray-900">Editar Disciplina & Horário</h3>
+            <!-- Modal Dialog Box -->
+            <div @click.stop
+                 class="relative w-full max-w-lg bg-white rounded-3xl p-6 shadow-2xl space-y-4 border border-gray-100 z-10 max-h-[92vh] overflow-y-auto">
+
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-sm font-black">
+                            ✏️
+                        </span>
+                        <div>
+                            <h3 class="text-sm sm:text-base font-bold text-gray-900">Editar Disciplina & Horário</h3>
+                            <template x-if="editingSlot">
                                 <p class="text-[11px] text-gray-500" x-text="daysList[editingSlot.day_of_week] + ' • ' + editingSlot.start_time + ' às ' + editingSlot.end_time"></p>
-                            </div>
+                            </template>
                         </div>
-                        <button type="button" @click="closeEditModal()" class="w-8 h-8 rounded-xl bg-gray-100 text-gray-400 hover:text-gray-700 flex items-center justify-center transition cursor-pointer">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                        </button>
                     </div>
+                    <button type="button" @click="closeEditModal()" class="w-8 h-8 rounded-xl bg-gray-100 text-gray-400 hover:text-gray-700 flex items-center justify-center transition cursor-pointer">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
 
+                <template x-if="editingSlot">
                     <!-- Modal Body Form -->
                     <div class="space-y-3.5 text-xs">
 
-                        <!-- 1. Disciplinas Atribuídas ao Docente (Atalho Rápido) -->
+                        <!-- 1. Disciplinas Atribuídas ao Docente (Atalho Rápido 1-Clique) -->
                         <template x-if="userAssignedSubjects.length > 0">
-                            <div class="p-3 bg-indigo-50/60 rounded-2xl border border-indigo-100 space-y-1.5">
-                                <label class="block text-[11px] font-bold text-indigo-950 uppercase">
-                                    ✨ Atribuir Disciplina do Docente:
+                            <div class="p-3 bg-indigo-50/70 rounded-2xl border border-indigo-200 space-y-2">
+                                <label class="block text-[11px] font-bold text-indigo-950 uppercase flex items-center gap-1.5">
+                                    <span>✨ Disciplinas Atribuídas a este Professor:</span>
                                 </label>
-                                <select @change="selectAssignedSubjectForEditing($event.target.value)"
-                                        class="w-full rounded-xl border border-indigo-300 px-3 py-2 text-xs font-semibold text-gray-900 bg-white focus:ring-2 focus:ring-indigo-400">
-                                    <option value="">-- Selecione uma das disciplinas deste professor --</option>
+                                <div class="grid grid-cols-1 gap-1.5 max-h-36 overflow-y-auto pr-1">
                                     <template x-for="sub in userAssignedSubjects" :key="'modal-sub-'+sub.id">
-                                        <option :value="sub.id" :selected="String(editingSlot.subject_id) === String(sub.id)"
-                                                x-text="sub.name + (sub.course_title ? ' ➔ ' + sub.course_title : '')"></option>
+                                        <button type="button"
+                                                @click="selectAssignedSubjectForEditing(sub.id)"
+                                                :class="String(editingSlot.subject_id) === String(sub.id) ? 'bg-indigo-600 text-white border-indigo-700 shadow-xs' : 'bg-white text-gray-800 border-indigo-100 hover:bg-indigo-100/70 hover:border-indigo-300'"
+                                                class="w-full text-left p-2 rounded-xl border text-xs transition flex items-center justify-between gap-2 cursor-pointer">
+                                            <div class="min-w-0 flex-1">
+                                                <div class="font-bold truncate" x-text="sub.name"></div>
+                                                <div class="text-[10px] opacity-80 truncate" x-text="sub.course_title || 'Sem curso associado'"></div>
+                                            </div>
+                                            <span x-show="String(editingSlot.subject_id) === String(sub.id)" class="text-xs font-black">✓</span>
+                                        </button>
                                     </template>
-                                </select>
+                                </div>
                             </div>
                         </template>
 
@@ -1272,9 +1223,9 @@
                             <select x-model="editingSlot.course_id" @change="onEditingCourseChange()"
                                     class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs text-gray-900 bg-white focus:ring-2 focus:ring-indigo-400">
                                 <option value="">-- Sem Curso Específico --</option>
-                                <template x-for="c in courses" :key="'modal-crs-'+c.id">
-                                    <option :value="c.id" :selected="String(editingSlot.course_id) === String(c.id)" x-text="c.title + (c.type ? ' (' + c.type + ')' : '')"></option>
-                                </template>
+                                @foreach($courses as $c)
+                                    <option value="{{ $c->id }}">{{ $c->title }} {{ $c->type ? '('.$c->type.')' : '' }}</option>
+                                @endforeach
                             </select>
                         </div>
 
@@ -1286,17 +1237,17 @@
                                     <span class="text-[10px] text-gray-500">Turma:</span>
                                     <button type="button" @click="appendEditingTurmaDivision('A')"
                                             :class="editingSlot.division === 'A' ? 'bg-sky-600 text-white font-bold' : 'bg-sky-50 text-sky-800 border-sky-300 hover:bg-sky-100'"
-                                            class="rounded border px-1.5 py-0.5 text-[10px] font-semibold transition cursor-pointer">
+                                            class="rounded border px-2 py-0.5 text-[10px] font-semibold transition cursor-pointer">
                                         (A)
                                     </button>
                                     <button type="button" @click="appendEditingTurmaDivision('B')"
                                             :class="editingSlot.division === 'B' ? 'bg-orange-600 text-white font-bold' : 'bg-orange-50 text-orange-800 border-orange-300 hover:bg-orange-100'"
-                                            class="rounded border px-1.5 py-0.5 text-[10px] font-semibold transition cursor-pointer">
+                                            class="rounded border px-2 py-0.5 text-[10px] font-semibold transition cursor-pointer">
                                         (B)
                                     </button>
                                     <button type="button" @click="appendEditingTurmaDivision('')"
                                             :class="!editingSlot.division ? 'bg-gray-700 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
-                                            class="rounded px-1.5 py-0.5 text-[10px] font-medium transition cursor-pointer">
+                                            class="rounded px-2 py-0.5 text-[10px] font-medium transition cursor-pointer">
                                         Geral
                                     </button>
                                 </div>
@@ -1320,7 +1271,29 @@
                             </div>
                         </div>
 
-                        <!-- 5. Horários de Início & Término -->
+                        <!-- 5. Dia da Semana & Tipo de Horário -->
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <div>
+                                <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-1">Dia da Semana</label>
+                                <select x-model.number="editingSlot.day_of_week"
+                                        class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs text-gray-900 bg-white font-medium">
+                                    @foreach($daysList as $num => $dayName)
+                                        <option value="{{ $num }}">{{ $dayName }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-1">Tipo de Horário</label>
+                                <select x-model="editingSlot.schedule_type"
+                                        class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs text-gray-900 bg-white font-medium">
+                                    <option value="class">👨‍🏫 Aula</option>
+                                    <option value="coordination">📋 Coordenação</option>
+                                    <option value="administrative">🏢 Expediente</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- 6. Horários de Início & Término -->
                         <div class="grid grid-cols-2 gap-2.5">
                             <div>
                                 <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-1">Início</label>
@@ -1334,31 +1307,31 @@
                             </div>
                         </div>
 
-                        <!-- 6. Unidade Escolar -->
+                        <!-- 7. Unidade Escolar -->
                         <div>
                             <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-1">Unidade Escolar</label>
                             <select x-model="editingSlot.unit_id" class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs text-gray-900 bg-white">
-                                <template x-for="un in units" :key="'modal-unit-'+un.id">
-                                    <option :value="un.id" :selected="String(editingSlot.unit_id) === String(un.id)" x-text="un.name + (un.city ? ' - ' + un.city : '')"></option>
-                                </template>
+                                @foreach($units as $un)
+                                    <option value="{{ $un->id }}">{{ $un->name }} {{ $un->city ? ' - '.$un->city : '' }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
+                </template>
 
-                    <!-- Modal Actions Footer -->
-                    <div class="pt-3 border-t border-gray-100 flex items-center justify-end gap-2.5">
-                        <button type="button" @click="closeEditModal()" class="rounded-xl border border-gray-300 px-4 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 transition cursor-pointer">
-                            Cancelar
-                        </button>
-                        <button type="button" @click="saveEditingSlot()" class="rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-2 text-xs shadow-md shadow-emerald-200 transition flex items-center gap-1.5 cursor-pointer">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                            <span>Salvar Alteração</span>
-                        </button>
-                    </div>
-
+                <!-- Modal Actions Footer -->
+                <div class="pt-3 border-t border-gray-100 flex items-center justify-end gap-2.5">
+                    <button type="button" @click="closeEditModal()" class="rounded-xl border border-gray-300 px-4 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 transition cursor-pointer">
+                        Cancelar
+                    </button>
+                    <button type="button" @click="saveEditingSlot()" class="rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-2 text-xs shadow-md shadow-emerald-200 transition flex items-center gap-1.5 cursor-pointer">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        <span>Salvar Alteração</span>
+                    </button>
                 </div>
+
             </div>
-        </template>
+        </div>
 
     </div>
 
@@ -1454,13 +1427,14 @@
                 </div>
             </div>
 
-            <div class="p-4 rounded-2xl bg-indigo-50/50 border border-indigo-100 space-y-3">
-                <div class="text-xs font-bold text-indigo-900 uppercase">Atribuição do Curso & Disciplina</div>
-                
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <!-- Dados da Disciplina / Curso -->
+            <div class="p-4 bg-indigo-50/50 rounded-2xl border border-indigo-100 space-y-4">
+                <div class="font-bold text-xs text-indigo-950 uppercase tracking-wide">📚 Atribuição de Disciplina & Curso</div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-1">Curso</label>
-                        <select name="course_id" class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs bg-white">
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1.5">Curso</label>
+                        <select name="course_id" class="w-full rounded-2xl border border-gray-300 px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 bg-white">
                             <option value="">-- Sem Curso Específico --</option>
                             @foreach($courses as $c)
                                 <option value="{{ $c->id }}" {{ old('course_id', $schedule->course_id) == $c->id ? 'selected' : '' }}>
@@ -1471,75 +1445,98 @@
                     </div>
 
                     <div>
-                        <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-1">Disciplina</label>
-                        <input type="text" name="subject_name" value="{{ old('subject_name', $schedule->subject_name) }}"
-                               placeholder="Ex: Matemática (A), Programação..."
-                               class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs bg-white">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-3 gap-3">
-                    <div>
-                        <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-1">Turma / Série</label>
-                        <input type="text" name="class_name" value="{{ old('class_name', $schedule->class_name) }}"
-                               placeholder="Ex: 1º Info B"
-                               class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs bg-white">
-                    </div>
-                    <div>
-                        <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-1">Divisão Turma</label>
-                        <select name="division" class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs bg-white">
-                            <option value="">Geral / Completa</option>
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1.5">Divisão de Turma</label>
+                        <select name="division" class="w-full rounded-2xl border border-gray-300 px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 bg-white">
+                            <option value="" {{ old('division', $schedule->division) === '' ? 'selected' : '' }}>Turma Integral / Geral</option>
                             <option value="A" {{ old('division', $schedule->division) === 'A' ? 'selected' : '' }}>Turma (A)</option>
                             <option value="B" {{ old('division', $schedule->division) === 'B' ? 'selected' : '' }}>Turma (B)</option>
                         </select>
                     </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-[11px] font-semibold text-gray-700 uppercase mb-1">Sala / Laboratório</label>
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1.5">Nome da Disciplina</label>
+                        <input type="text" name="subject_name" value="{{ old('subject_name', $schedule->subject_name) }}"
+                               placeholder="Ex: Matemática (A), Algoritmos..."
+                               class="w-full rounded-2xl border border-gray-300 px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 bg-white">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1.5">Turma / Série</label>
+                        <input type="text" name="class_name" value="{{ old('class_name', $schedule->class_name) }}"
+                               placeholder="Ex: 1º Info B, 2º Adm"
+                               class="w-full rounded-2xl border border-gray-300 px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 bg-white">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1.5">Sala / Laboratório</label>
                         <input type="text" name="classroom" value="{{ old('classroom', $schedule->classroom) }}"
                                placeholder="Ex: Lab 01, Sala 04"
-                               class="w-full rounded-xl border border-gray-300 px-3 py-2 text-xs bg-white">
+                               class="w-full rounded-2xl border border-gray-300 px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 bg-white">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-700 uppercase mb-1.5">Turno / Rótulo</label>
+                        <input type="text" name="shift_name" value="{{ old('shift_name', $schedule->shift_name) }}"
+                               placeholder="Ex: Manhã, Tarde, Noite"
+                               class="w-full rounded-2xl border border-gray-300 px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 bg-white">
                     </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
+            <!-- Horários de Início e Término -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-semibold text-gray-700 uppercase mb-1.5">Horário de Início *</label>
-                    <input type="time" name="start_time" value="{{ old('start_time', substr($schedule->start_time, 0, 5)) }}" required
+                    <input type="time" name="start_time" required
+                           value="{{ old('start_time', substr($schedule->start_time, 0, 5)) }}"
                            class="w-full rounded-2xl border border-gray-300 px-3.5 py-2.5 text-xs sm:text-sm font-mono font-bold text-gray-900 bg-white">
                 </div>
+
                 <div>
                     <label class="block text-xs font-semibold text-gray-700 uppercase mb-1.5">Horário de Término *</label>
-                    <input type="time" name="end_time" value="{{ old('end_time', substr($schedule->end_time, 0, 5)) }}" required
+                    <input type="time" name="end_time" required
+                           value="{{ old('end_time', substr($schedule->end_time, 0, 5)) }}"
                            class="w-full rounded-2xl border border-gray-300 px-3.5 py-2.5 text-xs sm:text-sm font-mono font-bold text-gray-900 bg-white">
                 </div>
             </div>
 
-            <div class="grid grid-cols-3 gap-3">
+            <!-- Intervalo e Tolerância -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                    <label class="block text-[10px] font-semibold text-gray-600 uppercase mb-1">Início Intervalo</label>
-                    <input type="time" name="break_start_time" value="{{ old('break_start_time', $schedule->break_start_time ? substr($schedule->break_start_time, 0, 5) : '') }}" class="w-full rounded-xl border border-gray-300 px-2 py-1.5 text-xs font-mono">
+                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1.5">Início do Intervalo</label>
+                    <input type="time" name="break_start_time"
+                           value="{{ old('break_start_time', $schedule->break_start_time ? substr($schedule->break_start_time, 0, 5) : '') }}"
+                           class="w-full rounded-2xl border border-gray-300 px-3.5 py-2.5 text-xs sm:text-sm font-mono text-gray-900 bg-white">
                 </div>
+
                 <div>
-                    <label class="block text-[10px] font-semibold text-gray-600 uppercase mb-1">Fim Intervalo</label>
-                    <input type="time" name="break_end_time" value="{{ old('break_end_time', $schedule->break_end_time ? substr($schedule->break_end_time, 0, 5) : '') }}" class="w-full rounded-xl border border-gray-300 px-2 py-1.5 text-xs font-mono">
+                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1.5">Término do Intervalo</label>
+                    <input type="time" name="break_end_time"
+                           value="{{ old('break_end_time', $schedule->break_end_time ? substr($schedule->break_end_time, 0, 5) : '') }}"
+                           class="w-full rounded-2xl border border-gray-300 px-3.5 py-2.5 text-xs sm:text-sm font-mono text-gray-900 bg-white">
                 </div>
+
                 <div>
-                    <label class="block text-[10px] font-semibold text-gray-600 uppercase mb-1">Tolerância (min)</label>
-                    <input type="number" name="tolerance_minutes" value="{{ old('tolerance_minutes', $schedule->tolerance_minutes ?? 15) }}" min="0" max="60" class="w-full rounded-xl border border-gray-300 px-2 py-1.5 text-xs font-mono">
+                    <label class="block text-xs font-semibold text-gray-700 uppercase mb-1.5">Tolerância (minutos)</label>
+                    <input type="number" name="tolerance_minutes" min="0" max="60"
+                           value="{{ old('tolerance_minutes', $schedule->tolerance_minutes ?? 15) }}"
+                           class="w-full rounded-2xl border border-gray-300 px-3.5 py-2.5 text-xs sm:text-sm text-gray-900 bg-white">
                 </div>
             </div>
 
-            <div class="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
-                <a href="{{ route('admin.work-schedules.index') }}" class="rounded-2xl border border-gray-300 px-5 py-2.5 text-xs font-medium text-gray-700 hover:bg-gray-50 transition">
+            <div class="pt-4 border-t border-gray-100 flex items-center justify-end gap-3">
+                <a href="{{ route('admin.work-schedules.index') }}" class="rounded-2xl border border-gray-300 px-5 py-2.5 text-xs sm:text-sm font-medium text-gray-700 hover:bg-gray-50 transition">
                     Cancelar
                 </a>
-                <button type="submit" class="rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-6 py-2.5 text-xs sm:text-sm shadow-md shadow-indigo-200 transition">
+                <button type="submit" class="rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-6 py-2.5 text-xs sm:text-sm shadow-md shadow-indigo-200 hover:shadow-lg transition">
                     Salvar Alterações
                 </button>
             </div>
         </form>
-
     </div>
     @endif
 
