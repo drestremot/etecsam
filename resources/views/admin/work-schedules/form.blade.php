@@ -71,11 +71,11 @@
 
                 get selectedUserColor() {
                     return this.selectedUser?.teacher_color || {
-                        dot: '#4f46e5',
-                        bg: '#eef2ff',
-                        border: '#c7d2fe',
-                        text: '#4338ca',
-                        badge: 'bg-indigo-50 text-indigo-700 border-indigo-200'
+                        dot: '#2563eb',
+                        bg: '#eff6ff',
+                        border: '#bfdbfe',
+                        text: '#1d4ed8',
+                        badge: 'bg-blue-50 text-blue-700 border-blue-200'
                     };
                 },
 
@@ -268,7 +268,7 @@
                         return;
                     }
                     if (this.currentDays.length === 0) {
-                        alert('Selecione pelo menos um dia da semana para adicionar a aula.');
+                        alert('Selecione pelo menos um dia da semana para adicionar.');
                         return;
                     }
                     if (!this.currentStartTime || !this.currentEndTime) {
@@ -317,7 +317,7 @@
                 },
 
                 clearAllSlots() {
-                    if (confirm('Deseja realmente limpar todos os horários da grade deste professor?')) {
+                    if (confirm('Deseja realmente limpar todos os horários da grade deste usuário?')) {
                         this.slots = [];
                     }
                 },
@@ -543,7 +543,7 @@
                             <label class="block text-[11px] font-semibold text-gray-500 uppercase mb-1.5">Atalhos de Turnos & Horários</label>
                             <div class="flex flex-wrap gap-1.5">
                                 <button type="button" @click="applyPreset('07:10', '12:35', 'Manhã')"
-                                        class="rounded-lg bg-sky-50 border border-sky-200 px-2 py-1 text-[11px] font-medium text-sky-800 hover:bg-sky-100 transition">
+                                        class="rounded-lg bg-blue-50 border border-blue-200 px-2 py-1 text-[11px] font-medium text-blue-800 hover:bg-blue-100 transition">
                                     🌅 Manhã (07:10 - 12:35)
                                 </button>
                                 <button type="button" @click="applyPreset('13:00', '18:20', 'Tarde')"
@@ -722,17 +722,16 @@
                         <div class="space-y-4">
                             <template x-for="day in [1, 2, 3, 4, 5, 6, 0]" :key="day">
                                 <div class="rounded-2xl border transition overflow-hidden"
-                                     :style="getDaySlots(day).length > 0 ? ('border-color: ' + getDayColor(day).hex + '40; background-color: ' + getDayColor(day).light_bg) : 'border-color: #e5e7eb; background-color: #fcfcfc; opacity: 0.85;'">
+                                     :style="getDaySlots(day).length > 0 ? ('border-color: ' + getDayColor(day).hex + '; background-color: ' + getDayColor(day).light_bg) : 'border-color: #e5e7eb; background-color: #fcfcfc; opacity: 0.85;'">
 
-                                    <!-- Cabeçalho do Dia -->
-                                    <div class="px-4 py-2.5 flex items-center justify-between border-b"
-                                         :style="getDaySlots(day).length > 0 ? ('border-color: ' + getDayColor(day).hex + '30; background-color: ' + getDayColor(day).light_bg) : 'border-color: #f3f4f6;'">
+                                    <!-- Cabeçalho do Dia (Com Cor Sólida Temática e Alto Contraste) -->
+                                    <div class="px-4 py-2.5 flex items-center justify-between text-white"
+                                         :style="'background-color: ' + getDayColor(day).hex + ';'">
                                         <div class="flex items-center gap-2">
-                                            <span class="w-2.5 h-2.5 rounded-full" :style="'background-color: ' + getDayColor(day).hex"></span>
-                                            <span class="text-xs font-bold" :style="'color: ' + getDayColor(day).hex" x-text="daysList[day]"></span>
+                                            <span class="w-2.5 h-2.5 rounded-full bg-white shadow-2xs"></span>
+                                            <span class="text-xs font-extrabold uppercase tracking-wide text-white" x-text="getDayColor(day).short + ' • ' + daysList[day]"></span>
                                         </div>
-                                        <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-white shadow-2xs"
-                                              :style="'color: ' + getDayColor(day).hex"
+                                        <span class="text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-white/20 text-white shadow-2xs"
                                               x-text="getDaySlots(day).length + ' registro(s)'"></span>
                                     </div>
 
@@ -747,7 +746,7 @@
                                         <div class="space-y-2">
                                             <template x-for="slot in getDaySlots(day)" :key="slot.temp_id">
                                                 <div class="relative rounded-xl border bg-white p-3 shadow-2xs hover:shadow-xs transition flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5"
-                                                     :style="'border-left-width: 4px; border-left-color: ' + selectedUserColor.dot">
+                                                     :style="'border-left-width: 4.5px; border-left-color: ' + selectedUserColor.dot">
                                                     <div class="flex items-center gap-3 min-w-0 flex-1">
                                                         <!-- Horário Badge -->
                                                         <div class="rounded-lg px-2.5 py-1 text-center flex-shrink-0 border"
@@ -816,7 +815,7 @@
                                                     <!-- Botão Remover Slot Individual -->
                                                     <button type="button"
                                                             @click="removeSlot(slot.temp_id)"
-                                                            class="w-7 h-7 rounded-lg bg-gray-100 hover:bg-rose-100 text-gray-400 hover:text-rose-600 flex items-center justify-center transition flex-shrink-0"
+                                                            class="w-7 h-7 rounded-lg bg-gray-100 hover:bg-rose-100 text-gray-400 hover:text-rose-600 flex items-center justify-center transition flex-shrink-0 cursor-pointer"
                                                             title="Remover horário">
                                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                                                     </button>
