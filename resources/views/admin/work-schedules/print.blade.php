@@ -141,7 +141,7 @@
 
             <!-- Cabeçalho Oficial da Instituição / Grade Escolar -->
             <div class="border-b-2 border-gray-800 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3.5">
                     <div class="w-12 h-12 rounded-2xl bg-indigo-900 text-white flex items-center justify-center font-black text-xl shadow-sm flex-shrink-0">
                         @if(file_exists(public_path('imagens/logo/etec.png')))
                             <img src="{{ asset('imagens/logo/etec.png') }}" alt="ETEC" class="h-8 w-auto object-contain">
@@ -150,13 +150,20 @@
                         @endif
                     </div>
                     <div>
+                        <div class="text-[10.5px] font-extrabold text-indigo-900 uppercase tracking-wider">
+                            CENTRO PAULA SOUZA • GOVERNO DO ESTADO DE SÃO PAULO
+                        </div>
                         <h2 class="text-base sm:text-lg font-black uppercase tracking-tight text-gray-900">
-                            {{ $selectedUnit ? $selectedUnit->name : 'GRADE DE HORÁRIOS' }}
+                            ETEC SEBASTIANA AUGUSTA DE MORAES
                         </h2>
-                        <div class="text-xs font-semibold text-gray-700 flex items-center gap-2 flex-wrap">
-                            @if($selectedUnit && $selectedUnit->city && !str_contains(strtoupper($selectedUnit->name), strtoupper($selectedUnit->city)))
-                                <span class="inline-flex items-center gap-1 text-gray-600">
-                                    🏢 {{ $selectedUnit->city }}
+                        <div class="text-xs font-semibold text-gray-700 flex items-center gap-2 flex-wrap mt-0.5">
+                            @if($selectedUnit)
+                                <span class="inline-flex items-center gap-1 font-bold text-gray-800 bg-gray-100 border border-gray-200 px-2 py-0.5 rounded">
+                                    🏢 {{ $selectedUnit->name }} {{ ($selectedUnit->city && !str_contains(strtoupper($selectedUnit->name), strtoupper($selectedUnit->city))) ? ' (' . $selectedUnit->city . ')' : '' }}
+                                </span>
+                            @else
+                                <span class="inline-flex items-center gap-1 text-gray-600 bg-gray-100 px-2 py-0.5 rounded">
+                                    🏢 Todas as Unidades / Sedes
                                 </span>
                             @endif
                             @if($selectedCourse)
@@ -168,9 +175,6 @@
                                 <span class="rounded bg-emerald-100 text-emerald-900 border border-emerald-200 px-2 py-0.5 font-bold">
                                     👨‍🏫 Docente: {{ $selectedTeacher->name }}
                                 </span>
-                            @endif
-                            @if(!$selectedUnit)
-                                <span class="text-gray-500 font-medium">🏢 Todas as Unidades</span>
                             @endif
                         </div>
                     </div>
@@ -187,7 +191,7 @@
                         @endif
                     </div>
                     <div class="text-gray-500 font-medium">
-                        Ano Letivo 2026 • Emissão: {{ date('d/m/Y H:i') }}
+                        Ano Letivo {{ date('Y') }} • Emissão: {{ date('d/m/Y H:i') }}
                     </div>
                     @if($selectedShift)
                         <div class="text-[11px] font-bold text-indigo-600 mt-0.5">
