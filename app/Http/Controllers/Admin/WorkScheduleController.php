@@ -460,9 +460,13 @@ class WorkScheduleController extends Controller
             ->get();
 
         $daysList = WorkSchedule::getDaysList();
-        // Apenas Segunda a Sábado para a grade principal (e Domingo se houver registro)
+        // Segunda a Sexta por padrão. Sábado e Domingo entram apenas se houver aulas cadastradas no curso/filtro.
+        $hasSaturday = $schedules->contains('day_of_week', 6);
         $hasSunday = $schedules->contains('day_of_week', 0);
-        $activeDays = [1, 2, 3, 4, 5, 6];
+        $activeDays = [1, 2, 3, 4, 5];
+        if ($hasSaturday) {
+            $activeDays[] = 6;
+        }
         if ($hasSunday) {
             $activeDays[] = 0;
         }
