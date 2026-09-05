@@ -213,10 +213,11 @@
                             'light_bg' => '#f8fafc',
                         ];
                         $daySlots = $schedulesByDay->get($day, collect())->sortBy('start_time');
+                        // Agrupa os horários do dia pelo mesmo intervalo de início e fim
+                        $groupedTimeSlots = $daySlots->groupBy(function($item) {
+                            return substr($item->start_time, 0, 5) . '-' . substr($item->end_time, 0, 5);
+                        });
                     @endphp
-
-                    <div class="rounded-2xl border-2 transition overflow-hidden print-page-break"
-                         style="border-color: {{ $dayConf['hex'] }}; background-color: {{ $dayConf['light_bg'] }};">
 
                         <!-- Cabeçalho do Dia com Cor Sólida Temática -->
                         <div class="px-3.5 py-2.5 text-white flex items-center justify-between"
@@ -231,99 +232,194 @@
                         </div>
 
                         <!-- Lista de Aulas e Horários do Dia -->
-                        <div class="p-2.5 space-y-2">
-                            @forelse($daySlots as $sched)
+                        <div class="p-2.5 space-y-2.5">
+                            @forelse($groupedTimeSlots as $timeKey => $slotsInTime)
                                 @php
-                                    $tColor = $sched->teacher_color;
-                                    $hasDivA = $sched->division === 'A' || str_contains(strtoupper($sched->subject_name ?? ''), '(A)') || str_contains(strtoupper($sched->subject_name ?? ''), 'TURMA A');
-                                    $hasDivB = $sched->division === 'B' || str_contains(strtoupper($sched->subject_name ?? ''), '(B)') || str_contains(strtoupper($sched->subject_name ?? ''), 'TURMA B');
+                                    $firstSlot = $slotsInTime->first();
+                                    $isMultiSlot = $slotsInTime->count() > 1;
                                 @endphp
 
-                                <div class="rounded-xl p-2.5 border text-left shadow-2xs transition print-page-break bg-white space-y-1.5"
-                                     style="border-left-width: 5px; border-left-color: {{ $dayConf['hex'] }}; border-color: {{ $dayConf['border_hex'] }};">
-
-                                    <!-- Linha 1: Horário e Turno -->
-                                    <div class="flex items-center justify-between gap-1 pb-1 border-b" style="border-color: {{ $dayConf['border_hex'] }}50;">
-                                        <span class="font-mono text-[11px] font-extrabold px-1.5 py-0.5 rounded shadow-2xs"
-                                              style="background-color: {{ $dayConf['light_bg'] }}; color: {{ $dayConf['hex'] }}; border: 1px solid {{ $dayConf['border_hex'] }};">
-                                            {{ $sched->formatted_start_time }} - {{ $sched->formatted_end_time }}
-                                        </span>
-                                        @if($sched->shift_name)
-                                            <span class="text-[9.5px] font-semibold text-gray-500 truncate max-w-[90px]">
-                                                {{ $sched->shift_name }}
+                                @if($isMultiSlot)
+                                    {{-- ======================================================== --}}
+                                    {{-- TURMAS DIVIDIDAS (A e B) NA MESMA LINHA EM COLUNAS       --}}
+                                    {{-- ======================================================== --}}
+                                    <div class="rounded-xl border bg-white p-2 text-left shadow-2xs transition print-page-break space-y-1.5"
+                                         style="border-left-width: 5px; border-left-color: {{ $dayConf['hex'] }}; border-color: {{ $dayConf['border_hex'] }};">
+                                        
+                                        <!-- Barra Superior do Horário Unificado -->
+                                        <div class="flex items-center justify-between gap-1 pb-1 border-b" style="border-color: {{ $dayConf['border_hex'] }}40;">
+                                            <span class="font-mono text-[10.5px] font-black px-1.5 py-0.5 rounded shadow-2xs"
+                                                  style="background-color: {{ $dayConf['light_bg'] }}; color: {{ $dayConf['hex'] }}; border: 1px solid {{ $dayConf['border_hex'] }};">
+                                                {{ $firstSlot->formatted_start_time }} - {{ $firstSlot->formatted_end_time }}
                                             </span>
-                                        @endif
-                                    </div>
-
-                                    <!-- Linha 2: Professor com Cor Exclusiva -->
-                                    <div class="flex items-center gap-1.5">
-                                        <span class="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-2xs" style="background-color: {{ $tColor['dot'] }};" title="{{ $tColor['name'] }}"></span>
-                                        <span class="font-bold text-xs truncate text-gray-900" title="{{ $sched->user->name }}">
-                                            {{ $sched->user->name }}
-                                        </span>
-                                    </div>
-
-                                    <!-- Linha 3: Curso (se atribuído) -->
-                                    @if($sched->course_name || $sched->course)
-                                        <div>
-                                            <span class="inline-flex items-center gap-1 rounded bg-indigo-50 border border-indigo-200 px-1.5 py-0.2 text-[9.5px] font-bold text-indigo-900 leading-tight">
-                                                🎓 {{ $sched->course_name ?? $sched->course->title }}
+                                            <span class="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300">
+                                                Turmas (A / B)
                                             </span>
                                         </div>
-                                    @endif
 
-                                    <!-- Linha 4: Disciplina ou Atividade -->
-                                    @if($sched->isCoordinationSchedule())
-                                        <div class="rounded-lg bg-purple-50 border border-purple-200 px-2 py-1 text-purple-700 text-[10.5px] font-bold">
-                                            📋 Coordenação Pedagógica
-                                        </div>
-                                    @elseif($sched->isAdministrativeSchedule())
-                                        <div class="rounded-lg bg-slate-100 border border-slate-200 px-2 py-1 text-slate-700 text-[10.5px] font-bold">
-                                            🏢 Expediente Administrativo
-                                        </div>
-                                    @else
-                                        {{-- Aula com Disciplina & Turma --}}
-                                        <div class="space-y-1">
-                                            @if($sched->subject_name)
-                                                <div class="font-bold text-[11.5px] text-gray-900 leading-tight">
-                                                    {{ $sched->subject_name }}
+                                        <!-- Sub-colunas Lado a Lado para Turma A e Turma B -->
+                                        <div class="grid grid-cols-2 gap-1.5">
+                                            @foreach($slotsInTime as $sched)
+                                                @php
+                                                    $tColor = $sched->teacher_color;
+                                                    $isA = $sched->division === 'A' || str_contains(strtoupper($sched->subject_name ?? ''), '(A)') || str_contains(strtoupper($sched->subject_name ?? ''), 'TURMA A');
+                                                    $isB = $sched->division === 'B' || str_contains(strtoupper($sched->subject_name ?? ''), '(B)') || str_contains(strtoupper($sched->subject_name ?? ''), 'TURMA B');
+                                                    $cardBg = $isA ? 'bg-sky-50/70 border-sky-300' : ($isB ? 'bg-orange-50/70 border-orange-300' : 'bg-gray-50 border-gray-200');
+                                                @endphp
+                                                <div class="rounded-lg p-1.5 border {{ $cardBg }} space-y-1 flex flex-col justify-between">
+                                                    <div>
+                                                        <!-- Tag Turma A / B -->
+                                                        <div class="flex items-center justify-between gap-1 mb-1">
+                                                            @if($isA)
+                                                                <span class="rounded bg-sky-600 text-white px-1.5 py-0.2 text-[8.5px] font-black uppercase shadow-2xs">
+                                                                    Turma (A)
+                                                                </span>
+                                                            @elseif($isB)
+                                                                <span class="rounded bg-orange-600 text-white px-1.5 py-0.2 text-[8.5px] font-black uppercase shadow-2xs">
+                                                                    Turma (B)
+                                                                </span>
+                                                            @else
+                                                                <span class="rounded bg-indigo-600 text-white px-1.5 py-0.2 text-[8.5px] font-black uppercase shadow-2xs">
+                                                                    Geral
+                                                                </span>
+                                                            @endif
+                                                            
+                                                            @if($sched->classroom)
+                                                                <span class="text-[8px] font-bold text-gray-700 bg-white px-1 py-0.2 rounded border border-gray-200 truncate max-w-[55px]" title="{{ $sched->classroom }}">
+                                                                    {{ $sched->classroom }}
+                                                                </span>
+                                                            @endif
+                                                        </div>
+
+                                                        <!-- Professor com Cor -->
+                                                        <div class="flex items-center gap-1">
+                                                            <span class="w-2 h-2 rounded-full flex-shrink-0 shadow-2xs" style="background-color: {{ $tColor['dot'] }};"></span>
+                                                            <span class="font-bold text-[10px] truncate text-gray-900" title="{{ $sched->user->name }}">
+                                                                {{ $sched->user->name }}
+                                                            </span>
+                                                        </div>
+
+                                                        <!-- Nome da Disciplina -->
+                                                        <div class="font-black text-[10.5px] text-gray-900 leading-tight mt-0.5">
+                                                            {{ $sched->subject_name ?: ($sched->shift_name ?: 'Aula') }}
+                                                        </div>
+                                                    </div>
+
+                                                    @if($sched->class_name)
+                                                        <div class="text-[8.5px] text-gray-600 font-medium truncate pt-0.5 border-t border-gray-200/60">
+                                                            {{ $sched->class_name }}
+                                                        </div>
+                                                    @endif
                                                 </div>
-                                            @endif
+                                            @endforeach
+                                        </div>
 
-                                            <div class="flex flex-wrap items-center gap-1 text-[10px]">
-                                                @if($hasDivA)
-                                                    <span class="rounded bg-sky-100 text-sky-800 border border-sky-300 px-1.5 py-0.2 font-extrabold">
-                                                        Turma (A)
-                                                    </span>
-                                                @elseif($hasDivB)
-                                                    <span class="rounded bg-orange-100 text-orange-800 border border-orange-300 px-1.5 py-0.2 font-extrabold">
-                                                        Turma (B)
-                                                    </span>
-                                                @endif
-
-                                                @if($sched->class_name)
-                                                    <span class="rounded bg-indigo-50 text-indigo-700 border border-indigo-200 px-1.5 py-0.2 font-semibold">
-                                                        {{ $sched->class_name }}
-                                                    </span>
-                                                @endif
-
-                                                @if($sched->classroom)
-                                                    <span class="rounded bg-gray-100 text-gray-700 px-1 py-0.2 font-medium">
-                                                        {{ $sched->classroom }}
-                                                    </span>
-                                                @endif
+                                        <!-- Intervalo se houver -->
+                                        @if($firstSlot->break_start_time && $firstSlot->break_end_time)
+                                            <div class="pt-1 border-t border-gray-100 text-[9px] text-amber-700 font-medium">
+                                                Intervalo: {{ substr($firstSlot->break_start_time, 0, 5) }} às {{ substr($firstSlot->break_end_time, 0, 5) }}
                                             </div>
-                                        </div>
-                                    @endif
+                                        @endif
 
-                                    <!-- Linha 5: Intervalo se houver -->
-                                    @if($sched->break_start_time && $sched->break_end_time)
-                                        <div class="pt-1 border-t border-gray-100 text-[9.5px] text-amber-700 font-medium">
-                                            Intervalo: {{ substr($sched->break_start_time, 0, 5) }} às {{ substr($sched->break_end_time, 0, 5) }}
-                                        </div>
-                                    @endif
+                                    </div>
 
-                                </div>
+                                @else
+                                    {{-- ======================================================== --}}
+                                    {{-- HORÁRIO INDIVIDUAL / TURMA COMPLETA                      --}}
+                                    {{-- ======================================================== --}}
+                                    @php
+                                        $sched = $slotsInTime->first();
+                                        $tColor = $sched->teacher_color;
+                                        $hasDivA = $sched->division === 'A' || str_contains(strtoupper($sched->subject_name ?? ''), '(A)') || str_contains(strtoupper($sched->subject_name ?? ''), 'TURMA A');
+                                        $hasDivB = $sched->division === 'B' || str_contains(strtoupper($sched->subject_name ?? ''), '(B)') || str_contains(strtoupper($sched->subject_name ?? ''), 'TURMA B');
+                                    @endphp
+
+                                    <div class="rounded-xl p-2.5 border text-left shadow-2xs transition print-page-break bg-white space-y-1.5"
+                                         style="border-left-width: 5px; border-left-color: {{ $dayConf['hex'] }}; border-color: {{ $dayConf['border_hex'] }};">
+
+                                        <!-- Linha 1: Horário e Turno -->
+                                        <div class="flex items-center justify-between gap-1 pb-1 border-b" style="border-color: {{ $dayConf['border_hex'] }}50;">
+                                            <span class="font-mono text-[11px] font-extrabold px-1.5 py-0.5 rounded shadow-2xs"
+                                                  style="background-color: {{ $dayConf['light_bg'] }}; color: {{ $dayConf['hex'] }}; border: 1px solid {{ $dayConf['border_hex'] }};">
+                                                {{ $sched->formatted_start_time }} - {{ $sched->formatted_end_time }}
+                                            </span>
+                                            @if($sched->shift_name)
+                                                <span class="text-[9.5px] font-semibold text-gray-500 truncate max-w-[90px]">
+                                                    {{ $sched->shift_name }}
+                                                </span>
+                                            @endif
+                                        </div>
+
+                                        <!-- Linha 2: Professor com Cor Exclusiva -->
+                                        <div class="flex items-center gap-1.5">
+                                            <span class="w-2.5 h-2.5 rounded-full flex-shrink-0 shadow-2xs" style="background-color: {{ $tColor['dot'] }};" title="{{ $tColor['name'] }}"></span>
+                                            <span class="font-bold text-xs truncate text-gray-900" title="{{ $sched->user->name }}">
+                                                {{ $sched->user->name }}
+                                            </span>
+                                        </div>
+
+                                        <!-- Linha 3: Curso (se atribuído e quando não há curso filtrado) -->
+                                        @if(($sched->course_name || $sched->course) && empty($selectedCourseId))
+                                            <div>
+                                                <span class="inline-flex items-center gap-1 rounded bg-indigo-50 border border-indigo-200 px-1.5 py-0.2 text-[9.5px] font-bold text-indigo-900 leading-tight">
+                                                    🎓 {{ $sched->course_name ?? $sched->course->title }}
+                                                </span>
+                                            </div>
+                                        @endif
+
+                                        <!-- Linha 4: Disciplina ou Atividade -->
+                                        @if($sched->isCoordinationSchedule())
+                                            <div class="rounded-lg bg-purple-50 border border-purple-200 px-2 py-1 text-purple-700 text-[10.5px] font-bold">
+                                                📋 Coordenação Pedagógica
+                                            </div>
+                                        @elseif($sched->isAdministrativeSchedule())
+                                            <div class="rounded-lg bg-slate-100 border border-slate-200 px-2 py-1 text-slate-700 text-[10.5px] font-bold">
+                                                🏢 Expediente Administrativo
+                                            </div>
+                                        @else
+                                            {{-- Aula com Disciplina & Turma --}}
+                                            <div class="space-y-1">
+                                                @if($sched->subject_name)
+                                                    <div class="font-bold text-[11.5px] text-gray-900 leading-tight">
+                                                        {{ $sched->subject_name }}
+                                                    </div>
+                                                @endif
+
+                                                <div class="flex flex-wrap items-center gap-1 text-[10px]">
+                                                    @if($hasDivA)
+                                                        <span class="rounded bg-sky-100 text-sky-800 border border-sky-300 px-1.5 py-0.2 font-extrabold">
+                                                            Turma (A)
+                                                        </span>
+                                                    @elseif($hasDivB)
+                                                        <span class="rounded bg-orange-100 text-orange-800 border border-orange-300 px-1.5 py-0.2 font-extrabold">
+                                                            Turma (B)
+                                                        </span>
+                                                    @endif
+
+                                                    @if($sched->class_name)
+                                                        <span class="rounded bg-indigo-50 text-indigo-700 border border-indigo-200 px-1.5 py-0.2 font-semibold">
+                                                            {{ $sched->class_name }}
+                                                        </span>
+                                                    @endif
+
+                                                    @if($sched->classroom)
+                                                        <span class="rounded bg-gray-100 text-gray-700 px-1 py-0.2 font-medium">
+                                                            {{ $sched->classroom }}
+                                                        </span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        @endif
+
+                                        <!-- Linha 5: Intervalo se houver -->
+                                        @if($sched->break_start_time && $sched->break_end_time)
+                                            <div class="pt-1 border-t border-gray-100 text-[9.5px] text-amber-700 font-medium">
+                                                Intervalo: {{ substr($sched->break_start_time, 0, 5) }} às {{ substr($sched->break_end_time, 0, 5) }}
+                                            </div>
+                                        @endif
+
+                                    </div>
+                                @endif
                             @empty
                                 <div class="py-6 text-center text-xs text-gray-400 italic">
                                     Sem horários

@@ -408,8 +408,13 @@ class WorkScheduleController extends Controller
         $courses = Course::where('is_active', true)->orderBy('title')->get(['id', 'title', 'type', 'unit_id']);
         $users = User::where('is_active', true)->orderBy('name')->get(['id', 'name', 'role']);
 
-        $selectedUnitId = $request->input('unit_id', $units->first()?->id);
-        $selectedUnit = $units->firstWhere('id', $selectedUnitId) ?? $units->first();
+        $selectedUnitId = $request->input('unit_id');
+        if ($selectedUnitId === null && !$request->has('course_id') && !$request->has('teacher_id')) {
+            $selectedUnit = $units->first();
+            $selectedUnitId = $selectedUnit?->id;
+        } else {
+            $selectedUnit = !empty($selectedUnitId) ? $units->firstWhere('id', $selectedUnitId) : null;
+        }
 
         $selectedCourseId = $request->input('course_id', '');
         $selectedTeacherId = $request->input('teacher_id', '');
@@ -423,8 +428,19 @@ class WorkScheduleController extends Controller
             $query->where('unit_id', $selectedUnit->id);
         }
 
+        $selectedCourse = !empty($selectedCourseId) ? $courses->firstWhere('id', $selectedCourseId) : null;
+        $selectedTeacher = !empty($selectedTeacherId) ? $users->firstWhere('id', $selectedTeacherId) : null;
+
         if (!empty($selectedCourseId)) {
-            $query->where('course_id', $selectedCourseId);
+            $query->where(function ($q) use ($selectedCourseId, $selectedCourse) {
+                $q->where('course_id', $selectedCourseId)
+                  ->orWhereHas('subject', function ($sq) use ($selectedCourseId) {
+                      $sq->where('course_id', $selectedCourseId);
+                  });
+                if ($selectedCourse) {
+                    $q->orWhere('course_name', 'like', "%{$selectedCourse->title}%");
+                }
+            });
         }
 
         if (!empty($selectedTeacherId)) {
